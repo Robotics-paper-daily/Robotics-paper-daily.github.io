@@ -1,4 +1,4 @@
-# Arxiv Daily Robotics
+# Robotics Arxiv Daily
 
 这是一个自动化项目，旨在每日从 arXiv 获取机器人学相关领域的最新论文，使用 AI (目前通过 OpenRouter API) 筛选出与机器人学、强化学习、视觉-语言模型、世界模型、大语言模型、视觉-语言-动作、视觉-语言导航相关的论文，并将结果生成为结构化的 JSON 数据和美观的 HTML 页面，最终通过 GitHub Actions 自动部署到 GitHub Pages。
 
