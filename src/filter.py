@@ -213,6 +213,69 @@ def rate_papers(papers: list) -> list:
     return papers
 
 
+def translate_summaries(papers: list, target_language: str = "中文") -> list:
+    """使用 OpenRouter API 翻译论文摘要，返回包含翻译摘要的字典列表。
+    
+    Args:
+        papers (list): 包含论文信息的字典列表，每个字典应包含 'summary'。
+        target_language (str): 目标语言，默认为"中文"。
+    
+    Returns:
+        list: 包含翻译摘要的字典列表，每个字典包含 'summary_zh' 字段。
+    """
+    if not OPENROUTER_API_KEY:
+        logging.error("未设置 OPENROUTER_API_KEY 环境变量。无法进行翻译。")
+        return papers
+    
+    logging.info(f"开始使用 OpenRouter API 翻译 {len(papers)} 篇论文的摘要为 {target_language}...")
+    
+    for i, paper in enumerate(papers):
+        summary = paper.get('summary', '')
+        if not summary or summary == 'N/A':
+            logging.warning(f"论文 {i+1}/{len(papers)}: 摘要为空，跳过翻译。")
+            continue
+        
+        # 构建翻译 Prompt
+        translate_prompt = (
+            f"请将以下英文论文摘要翻译成{target_language}。"
+            "要求：保持专业术语的准确性，翻译流畅自然，保留原文的技术含义。"
+            "只输出翻译结果，不要添加任何解释或说明。"
+            f"\n\n摘要：\n{summary}"
+        )
+        
+        # 添加重试逻辑 (最多尝试 2 次)
+        success = False
+        for attempt in range(2):
+            # 调用 API，翻译摘要通常需要更多 tokens
+            translated_summary = call_openrouter_api(translate_prompt, max_tokens=2000)
+            
+            if translated_summary is not None and translated_summary.strip():
+                # 清理可能的格式标记
+                translated_summary = translated_summary.strip()
+                # 移除可能的引号或代码块标记
+                if translated_summary.startswith('```'):
+                    translated_summary = translated_summary.split('```')[1]
+                    if translated_summary.startswith('text') or translated_summary.startswith('markdown'):
+                        translated_summary = translated_summary.split('\n', 1)[1] if '\n' in translated_summary else translated_summary
+                translated_summary = translated_summary.strip('"').strip("'").strip()
+                
+                paper['summary_zh'] = translated_summary
+                logging.info(f"论文 {i+1}/{len(papers)} (尝试 {attempt+1}): 摘要翻译完成")
+                success = True
+                break
+            else:
+                logging.warning(f"论文 {i+1}/{len(papers)} (尝试 {attempt+1}): 无法获取翻译结果 (API 返回 None 或空字符串)。")
+                if attempt < 1:
+                    logging.info(f"论文 {i+1}/{len(papers)}: 重试翻译...")
+        
+        if not success:
+            logging.error(f"论文 {i+1}/{len(papers)}: 两次尝试均未能成功翻译摘要，保留原文。")
+            # 如果翻译失败，不添加 summary_zh 字段，模板中会显示原文
+    
+    logging.info(f"摘要翻译完成。")
+    return papers
+
+
 # 可以在这里添加一些测试代码
 if __name__ == '__main__':
     # 确保设置了 OPENROUTER_API_KEY 环境变量才能运行测试
