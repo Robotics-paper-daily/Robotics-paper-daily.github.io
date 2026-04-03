@@ -1,40 +1,102 @@
 import os
+import re
+import random
 import requests
 import time
 import json
 import logging
-from typing import Optional
+from typing import Optional, Any
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# 从环境变量中获取 OpenRouter API Key
-# 在 GitHub Actions 中，这应该设置为 Secret
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
+# DeepSeek API 配置
+# 在 GitHub Actions 中，DEEPSEEK_API_KEY 应设置为 Secret
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+DEEPSEEK_API_URL = "https://models.sjtu.edu.cn/api/v1/chat/completions"
+MODEL_NAME = "minimax-m2.5"
 
-# 可以选择一个合适的模型，例如免费或低成本的模型进行分类任务
-# 查阅 OpenRouter 文档获取可用模型列表: https://openrouter.ai/docs#models
-# 例如使用 'mistralai/mistral-7b-instruct:free'
-MODEL_NAME = "google/gemini-2.0-flash-001"
-# MODEL_NAME = "openai/gpt-5.1"
 
-def call_openrouter_api(prompt: str, max_tokens: int = 5) -> Optional[str]:
-    """调用 OpenRouter API 并返回模型的响应。
+def extract_json_from_response(text: str) -> Optional[Any]:
+    """从 LLM 回复中提取 JSON 对象或数组。
+
+    按优先级尝试三种策略：
+    1. 直接解析整个文本
+    2. 提取 ```json ... ``` 或 ``` ... ``` 代码块
+    3. 查找最外层的 {...} 或 [...]
+    """
+    if not text or not text.strip():
+        return None
+
+    text = text.strip()
+
+    # 策略 1：直接解析
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+
+    # 策略 2：提取代码块
+    fence_match = re.search(r'```(?:json)?\s*\n?(.*?)\n?\s*```', text, re.DOTALL)
+    if fence_match:
+        try:
+            return json.loads(fence_match.group(1).strip())
+        except json.JSONDecodeError:
+            pass
+
+    # 策略 3：查找最外层 { } 或 [ ]
+    for open_char, close_char in [('{', '}'), ('[', ']')]:
+        start = text.find(open_char)
+        end = text.rfind(close_char)
+        if start != -1 and end > start:
+            try:
+                return json.loads(text[start:end + 1])
+            except json.JSONDecodeError:
+                pass
+
+    return None
+
+
+def clean_translation(text: str) -> str:
+    """清理翻译结果中可能的代码块标记和多余引号。"""
+    text = text.strip()
+    if text.startswith('```'):
+        parts = text.split('```')
+        # 取代码块内容（跳过可能的语言标记行）
+        if len(parts) >= 2:
+            content = parts[1]
+            if content.startswith(('text', 'markdown')):
+                content = content.split('\n', 1)[1] if '\n' in content else content
+            text = content
+    text = text.strip('"').strip("'").strip()
+    return text
+
+
+def call_llm_api(
+    prompt: str,
+    max_tokens: int = 5,
+    max_retries: int = 4,
+    base_delay: float = 2.0,
+    timeout: int = 60,
+) -> Optional[str]:
+    """调用 OpenRouter API 并返回模型的响应，带重试和指数退避。
 
     Args:
         prompt (str): 发送给模型的提示。
         max_tokens (int): 限制模型响应的最大 token 数。
+        max_retries (int): 最大重试次数（不含首次请求）。
+        base_delay (float): 退避基础延迟秒数。
+        timeout (int): 单次请求超时秒数。
 
     Returns:
         Optional[str]: 模型的响应文本，如果发生错误则返回 None。
     """
-    if not OPENROUTER_API_KEY:
-        logging.error("未设置 OPENROUTER_API_KEY 环境变量。无法调用 API。")
+    if not DEEPSEEK_API_KEY:
+        logging.error("未设置 DEEPSEEK_API_KEY 环境变量。无法调用 API。")
         return None
 
     headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
         "Content-Type": "application/json",
     }
 
@@ -43,243 +105,271 @@ def call_openrouter_api(prompt: str, max_tokens: int = 5) -> Optional[str]:
         "messages": [
             {"role": "user", "content": prompt}
         ],
-        "max_tokens": max_tokens
+        "max_tokens": max_tokens,
+        "response_format": {"type": "json_object"},
     }
 
-    try:
-        response = requests.post(OPENROUTER_API_URL, headers=headers, json=data, timeout=30) # 设置超时
-        response.raise_for_status()  # 如果请求失败 (状态码 >= 400)，则抛出 HTTPError
+    for attempt in range(max_retries + 1):
+        try:
+            response = requests.post(
+                DEEPSEEK_API_URL, headers=headers, json=data, timeout=timeout
+            )
+            response.raise_for_status()
 
-        result = response.json()
-        ai_response = result['choices'][0]['message']['content'].strip()
-        return ai_response
+            result = response.json()
+            ai_response = result['choices'][0]['message']['content'].strip()
+            return ai_response
 
-    except requests.exceptions.RequestException as e:
-        logging.error(f"调用 OpenRouter API 时出错: {e}")
-        return None
-    except (KeyError, IndexError) as e:
-        logging.error(f"解析 OpenRouter API 响应时出错: {e}")
-        return None
-    except Exception as e:
-        logging.error(f"调用 OpenRouter API 时发生意外错误: {e}", exc_info=True)
-        return None
+        except requests.exceptions.Timeout:
+            logging.warning(f"API 请求超时 (尝试 {attempt + 1}/{max_retries + 1})")
+        except requests.exceptions.ConnectionError:
+            logging.warning(f"API 连接错误 (尝试 {attempt + 1}/{max_retries + 1})")
+        except requests.exceptions.HTTPError as e:
+            status_code = e.response.status_code if e.response is not None else 0
+            if status_code == 429 or status_code >= 500:
+                logging.warning(
+                    f"API 返回 {status_code} (尝试 {attempt + 1}/{max_retries + 1})"
+                )
+            else:
+                # 4xx 客户端错误（非 429）不重试
+                logging.error(f"API 客户端错误 {status_code}，不重试: {e}")
+                return None
+        except (KeyError, IndexError) as e:
+            logging.error(f"解析 API 响应结构出错: {e}")
+            return None
+        except Exception as e:
+            logging.error(f"调用 API 时发生意外错误: {e}", exc_info=True)
+            return None
 
-def filter_papers_by_topic(papers: list, topic: str = "robotics, reinforcement learning, vision-language models, world models, large language models, vision-language-action, or vision-language-navigation") -> list:
-    """使用 OpenRouter API 过滤论文列表，只保留与指定主题相关的论文。
+        # 指数退避 + 随机抖动
+        if attempt < max_retries:
+            delay = base_delay * (2 ** attempt) + random.uniform(0, 1)
+            logging.info(f"等待 {delay:.1f}s 后重试...")
+            time.sleep(delay)
 
-    Args:
-        papers (list): 包含论文信息的字典列表，每个字典应包含 'title' 和 'summary'。
-        topic (str): 需要过滤的主题，默认为机器人学相关主题。
+    logging.error(f"API 调用在 {max_retries + 1} 次尝试后仍然失败。")
+    return None
 
-    Returns:
-        list: 只包含与主题相关论文的字典列表。
-    """
-    if not OPENROUTER_API_KEY:
-        logging.error("未设置 OPENROUTER_API_KEY 环境变量。无法进行过滤。")
-        # 在没有 API Key 的情况下，可以选择返回原始列表或空列表
-        # 这里返回原始列表，以便流程继续，但会跳过过滤
-        return papers
-
-    filtered_papers = []
-    logging.info(f"开始使用 OpenRouter API 过滤 {len(papers)} 篇论文，主题: '{topic}'...")
-
-    for i, paper in enumerate(papers):
-        title = paper.get('title', 'N/A')
-        summary = paper.get('summary', 'N/A')
-
-        # 构建 Prompt：强化机器人学相关性判断，明确包含/排除标准
-        prompt = (
-            "You are selecting robotics-related papers. "
-            "Answer with ONLY 'yes' or 'no'. "
-            "Say 'yes' if the main contribution is about robotics, embodied AI, reinforcement learning for control, "
-            "vision-language(-action/-navigation) for robots/embodied agents, world models for control or sim-to-real, "
-            "robot planning, manipulation, navigation, locomotion, or safety in robotics. "
-            "Say 'no' if it is purely perception/vision without a robot/control angle, purely NLP, or unrelated theory. "
-            f"\nTitle: {title}\nAbstract: {summary}"
-        )
-
-        # 调用封装好的 API 函数
-        ai_response = call_openrouter_api(prompt, max_tokens=5)
-
-        if ai_response is not None:
-            logging.info(f"论文 {i+1}/{len(papers)}: '{title[:50]}...' - AI 回复: {ai_response}")
-            if 'yes' in ai_response.lower():
-                filtered_papers.append(paper)
-            # OpenRouter 对免费模型的速率有限制，可以考虑在 call_openrouter_api 内部或外部添加延时
-            # time.sleep(1) # 暂停 1 秒
-        else:
-            logging.warning(f"无法获取论文 '{title[:50]}...' 的 AI 回复，跳过此论文。")
-            continue # 跳过出错的论文
-
-    logging.info(f"过滤完成，找到 {len(filtered_papers)} 篇与 '{topic}' 相关的论文。")
-    return filtered_papers
-
-
-rating_prompt_template = """
+RATE_PROMPT_TEMPLATE = """
 # Role Setting
-You are an experienced researcher in the field of Artificial Intelligence, skilled at quickly evaluating the potential value of research papers.
+You are an experienced researcher in the field of Artificial Intelligence, skilled at quickly evaluating the potential value of research papers. You must be strict and discriminating in your relevance scoring.
 
 # Task
-Based on the following paper's title and abstract, please summarize it and score it across multiple dimensions (1-10 points, 1 being the lowest, 10 being the highest). Finally, provide an overall preliminary priority score.
+For EACH of the following papers, score it across multiple dimensions (1-10 points). Return a JSON array with one object per paper, in the same order as the input.
 
-# Input
-Paper Title: %s
-Paper Abstract: %s
+# My Research Interests (be strict about these)
+My core interests are: **Robotics** and **Embodied AI**. Specifically:
+- Robot manipulation, grasping, locomotion, navigation, planning
+- Reinforcement learning / imitation learning **applied to robot control**
+- Vision-Language-Action (VLA) models for robotic tasks
+- Vision-Language-Navigation (VLN) for embodied agents
+- World models for robot control, sim-to-real transfer
+- Large Language Models / Vision-Language Models **applied to robotics or embodied agents**
+- Safety, sim-to-real, multi-modal perception **in a robotics context**
 
-# My Research Interests
-Reinforcement Learning, Robotics, Vision-Language Models, World Models, Large Language Models, Vision-Language-Action, Vision-Language-Navigation
+# What is NOT highly relevant (should get low relevance_score, e.g. 1-3):
+- Pure computer vision (detection, segmentation, generation) without robotic application
+- Pure NLP / dialogue / text generation without embodied or robotic context
+- Theoretical ML (optimization, generalization bounds) without robotics connection
+- Autonomous driving (unless explicitly about general robot learning)
+- Medical imaging, protein folding, drug discovery
+- General LLM/VLM benchmarks, pretraining, or alignment without robotics use
 
-# Output Requirements
-Output should always be in JSON format, strictly compliant with RFC8259.
-Please output the evaluation and explanations in the following JSON format:
-{
-  "tldr": "<summary>", // Too Long; Didn't Read. Summarize the paper in one or two brief sentences.
-  "tldr_zh": "<summary>", // Too Long; Didn't Read. Summarize the paper in one or two brief sentences, in Chinese.
-  "relevance_score": <score>, // Relevance to my research interests
-  "novelty_claim_score": <score>, // Degree of novelty claimed in the abstract
-  "clarity_score": <score>, // Clarity and completeness of the abstract writing
-  "potential_impact_score": <score>, // Estimated potential impact based on abstract claims
-  "overall_priority_score": <score> // Preliminary reading priority score combining all factors above
-}
+# Papers
+%s
+
+# Output Format
+Return ONLY a JSON array (no extra text). Each element must have this exact structure:
+[
+  {
+    "paper_index": 0,
+    "tldr": "<1-2 sentence English summary>",
+    "tldr_zh": "<1-2 sentence Chinese summary>",
+    "relevance_score": 8,
+    "novelty_claim_score": 7,
+    "clarity_score": 8,
+    "potential_impact_score": 7,
+    "overall_priority_score": 7
+  }
+]
 
 # Scoring Guidelines
-- Relevance: Focus on whether it is directly related to the research interests I provided.
-- Novelty: Evaluate the degree of innovation claimed in the abstract regarding the method or viewpoint compared to known work.
-- Clarity: Evaluate whether the abstract itself is easy to understand and complete with essential elements.
-- Potential Impact: Evaluate the importance of the problem it claims to solve and the potential application value of the results.
-- Overall Priority: Provide an overall score combining all the above factors. A high score indicates suggested priority for reading.
+- Relevance (1-10): How directly related is it to my robotics/embodied AI interests above? Be strict: a pure vision or pure NLP paper should score 1-3 even if it uses fancy models. Only score 7+ if the paper explicitly involves robots, embodied agents, or physical control.
+- Novelty (1-10): Degree of innovation claimed in the abstract.
+- Clarity (1-10): Is the abstract easy to understand and complete?
+- Potential Impact (1-10): Importance of the problem and potential application value.
+- Overall Priority (1-10): Weighted combination — relevance should dominate. A paper with relevance 2 should never get overall_priority above 4, regardless of other scores.
 """
 
 
-def rate_papers(papers: list) -> list:
-    """使用 OpenRouter API 对论文进行评分，返回一个包含评分的字典列表。
+def filter_and_rate_papers(
+    papers: list,
+    batch_size: int = 5,
+) -> list:
+    """批量评分论文。保留所有论文，通过 overall_priority_score 排序区分优先级。
+
     Args:
-        papers (list): 包含论文信息的字典列表，每个字典应包含 'title' 和'summary'。
+        papers: 包含论文信息的字典列表，每个字典应包含 'title' 和 'summary'。
+        batch_size: 每批处理的论文数量。
+
     Returns:
-        list: 包含论文评分的字典列表，每个字典包含 'title', 'summary', 和 'rating'。
+        评分后的论文列表（保留全部）。API 失败的论文标记 ai_processed=False。
     """
-    if not OPENROUTER_API_KEY:
-        logging.error("未设置 OPENROUTER_API_KEY 环境变量。无法进行评分。")
-        # 在没有 API Key 的情况下，可以选择返回原始列表或空列表
-        # 这里返回原始列表，以便流程继续，但会跳过评分
+    if not DEEPSEEK_API_KEY:
+        logging.error("未设置 DEEPSEEK_API_KEY 环境变量。无法进行评分。")
         return papers
 
-    logging.info(f"开始使用 OpenRouter API 对 {len(papers)} 篇论文进行评分...")
-    for i, paper in enumerate(papers):
-        title = paper.get('title', 'N/A')
-        summary = paper.get('summary', 'N/A')
-        # 构建 Prompt
-        prompt = rating_prompt_template % (title, summary)
+    logging.info(f"开始批量评分 {len(papers)} 篇论文 (batch_size={batch_size})...")
+    rated_papers = []
 
-        # 添加重试逻辑 (最多尝试 2 次)
-        success = False
-        for attempt in range(2):
-            # 调用封装好的 API 函数
-            ai_response = call_openrouter_api(prompt, max_tokens=1000)
+    for batch_start in range(0, len(papers), batch_size):
+        batch = papers[batch_start:batch_start + batch_size]
+        batch_num = batch_start // batch_size + 1
+        total_batches = (len(papers) + batch_size - 1) // batch_size
+        logging.info(f"处理批次 {batch_num}/{total_batches} ({len(batch)} 篇论文)...")
 
-            if ai_response is not None:
-                # 检查是否是有效的 JSON 响应
-                try:
-                    # 尝试解析 JSON 响应
-                    # 1. 去掉字符串中的非 JSON 内容 (如果存在)
-                    if '```json' in ai_response:
-                        ai_response = ai_response.split('```json')[1].split('```')[0]
-                    # 2. json加载
-                    rating_data = json.loads(ai_response)
-                    logging.info(f"论文 {i+1}/{len(papers)} (尝试 {attempt+1}): '{title[:50]}...' - AI Rating: {rating_data}")
-                    papers[i].update(rating_data)
-                    success = True
-                    break # 成功获取并解析，跳出重试循环
-                except json.JSONDecodeError:
-                    logging.warning(f"论文 {i+1}/{len(papers)} (尝试 {attempt+1}): '{title[:50]}...' - AI 回复不是有效的 JSON: {ai_response[:100]}...")
-                    # JSON 解析失败，继续重试 (如果还有尝试次数)
-                except Exception as e:
-                    logging.error(f"论文 {i+1}/{len(papers)} (尝试 {attempt+1}): '{title[:50]}...' - 解析响应时发生意外错误: {e}", exc_info=True)
-                    # 其他解析错误，继续重试 (如果还有尝试次数)
-            else:
-                logging.warning(f"论文 {i+1}/{len(papers)} (尝试 {attempt+1}): 无法获取论文 '{title[:50]}...' 的 AI Rating (API 返回 None)。")
-                # API 调用失败，继续重试 (如果还有尝试次数)
+        # 构建批量 prompt
+        papers_text = ""
+        for j, paper in enumerate(batch):
+            title = paper.get('title', 'N/A')
+            summary = paper.get('summary', 'N/A')
+            papers_text += f"Paper {j}:\nTitle: {title}\nAbstract: {summary}\n\n"
 
-            # 如果不是最后一次尝试，则等待后重试
-            if attempt < 1:
-                logging.info(f"论文 {i+1}/{len(papers)}: 重试...")
+        prompt = RATE_PROMPT_TEMPLATE % papers_text.strip()
+        ai_response = call_llm_api(prompt, max_tokens=batch_size * 300)
 
-        # 如果两次尝试都失败了
-        if not success:
-            logging.error(f"论文 {i+1}/{len(papers)}: 两次尝试均未能成功获取和解析 '{title[:50]}...' 的评分，跳过此论文。")
-            continue # 跳过出错的论文
+        if ai_response is None:
+            logging.warning(f"批次 {batch_num} API 调用失败，保留该批次所有论文 (ai_processed=False)")
+            for paper in batch:
+                paper['ai_processed'] = False
+                rated_papers.append(paper)
+            continue
 
-    logging.info(f"评分完成。")
-    return papers
+        parsed = extract_json_from_response(ai_response)
+
+        if parsed is None or not isinstance(parsed, list):
+            logging.warning(
+                f"批次 {batch_num} JSON 解析失败，保留该批次所有论文 (ai_processed=False)。"
+                f" 原始回复: {ai_response[:200]}..."
+            )
+            for paper in batch:
+                paper['ai_processed'] = False
+                rated_papers.append(paper)
+            continue
+
+        # 用 paper_index 匹配结果到论文
+        matched_indices = set()
+        for result in parsed:
+            if not isinstance(result, dict):
+                continue
+            idx = result.get('paper_index')
+            if idx is None or not isinstance(idx, int) or idx < 0 or idx >= len(batch):
+                continue
+
+            matched_indices.add(idx)
+            paper = batch[idx]
+
+            # 更新论文评分数据（保留所有论文，不做过滤）
+            for key in ('tldr', 'tldr_zh', 'relevance_score', 'novelty_claim_score',
+                        'clarity_score', 'potential_impact_score', 'overall_priority_score'):
+                if key in result:
+                    paper[key] = result[key]
+            paper['ai_processed'] = True
+            rated_papers.append(paper)
+
+        # 未被匹配到的论文 → 容错保留
+        for j, paper in enumerate(batch):
+            if j not in matched_indices:
+                logging.warning(f"  论文 '{paper.get('title', '')[:50]}...' 未在 AI 响应中匹配到，保留 (ai_processed=False)")
+                paper['ai_processed'] = False
+                rated_papers.append(paper)
+
+    logging.info(f"评分完成，共 {len(rated_papers)} 篇论文。")
+    return rated_papers
 
 
-def translate_summaries(papers: list, target_language: str = "中文") -> list:
-    """使用 OpenRouter API 翻译论文摘要，返回包含翻译摘要的字典列表。
-    
+TRANSLATE_PROMPT_TEMPLATE = """请将以下编号的英文论文摘要翻译成%s。
+要求：保持专业术语的准确性，翻译流畅自然，保留原文的技术含义。
+
+返回一个 JSON 数组，每个元素包含 paper_index 和 translation 字段，按输入顺序排列。
+示例格式：
+[
+  {"paper_index": 0, "translation": "翻译内容..."},
+  {"paper_index": 1, "translation": "翻译内容..."}
+]
+
+以下是需要翻译的摘要：
+
+%s"""
+
+
+def translate_summaries(papers: list, target_language: str = "中文", batch_size: int = 5) -> list:
+    """批量翻译论文摘要。翻译失败时保留原文。
+
     Args:
-        papers (list): 包含论文信息的字典列表，每个字典应包含 'summary'。
-        target_language (str): 目标语言，默认为"中文"。
-    
+        papers: 包含论文信息的字典列表，每个字典应包含 'summary'。
+        target_language: 目标语言，默认为"中文"。
+        batch_size: 每批处理的论文数量。
+
     Returns:
-        list: 包含翻译摘要的字典列表，每个字典包含 'summary_zh' 字段。
+        包含翻译摘要的字典列表，成功的论文包含 'summary_zh' 字段。
     """
-    if not OPENROUTER_API_KEY:
-        logging.error("未设置 OPENROUTER_API_KEY 环境变量。无法进行翻译。")
+    if not DEEPSEEK_API_KEY:
+        logging.error("未设置 DEEPSEEK_API_KEY 环境变量。无法进行翻译。")
         return papers
-    
-    logging.info(f"开始使用 OpenRouter API 翻译 {len(papers)} 篇论文的摘要为 {target_language}...")
-    
+
+    # 筛选出有摘要需要翻译的论文及其原始索引
+    to_translate = []
     for i, paper in enumerate(papers):
         summary = paper.get('summary', '')
-        if not summary or summary == 'N/A':
-            logging.warning(f"论文 {i+1}/{len(papers)}: 摘要为空，跳过翻译。")
+        if summary and summary != 'N/A':
+            to_translate.append((i, paper))
+
+    logging.info(f"开始批量翻译 {len(to_translate)} 篇论文的摘要为 {target_language} (batch_size={batch_size})...")
+
+    for batch_start in range(0, len(to_translate), batch_size):
+        batch = to_translate[batch_start:batch_start + batch_size]
+        batch_num = batch_start // batch_size + 1
+        total_batches = (len(to_translate) + batch_size - 1) // batch_size
+        logging.info(f"翻译批次 {batch_num}/{total_batches} ({len(batch)} 篇)...")
+
+        # 构建批量 prompt，用局部 0-based index
+        abstracts_text = ""
+        for j, (_, paper) in enumerate(batch):
+            abstracts_text += f"Paper {j}:\n{paper['summary']}\n\n"
+
+        prompt = TRANSLATE_PROMPT_TEMPLATE % (target_language, abstracts_text.strip())
+        ai_response = call_llm_api(prompt, max_tokens=batch_size * 400)
+
+        if ai_response is None:
+            logging.warning(f"翻译批次 {batch_num} API 调用失败，保留原文。")
             continue
-        
-        # 构建翻译 Prompt
-        translate_prompt = (
-            f"请将以下英文论文摘要翻译成{target_language}。"
-            "要求：保持专业术语的准确性，翻译流畅自然，保留原文的技术含义。"
-            "只输出翻译结果，不要添加任何解释或说明。"
-            f"\n\n摘要：\n{summary}"
-        )
-        
-        # 添加重试逻辑 (最多尝试 2 次)
-        success = False
-        for attempt in range(2):
-            # 调用 API，翻译摘要通常需要更多 tokens
-            translated_summary = call_openrouter_api(translate_prompt, max_tokens=2000)
-            
-            if translated_summary is not None and translated_summary.strip():
-                # 清理可能的格式标记
-                translated_summary = translated_summary.strip()
-                # 移除可能的引号或代码块标记
-                if translated_summary.startswith('```'):
-                    translated_summary = translated_summary.split('```')[1]
-                    if translated_summary.startswith('text') or translated_summary.startswith('markdown'):
-                        translated_summary = translated_summary.split('\n', 1)[1] if '\n' in translated_summary else translated_summary
-                translated_summary = translated_summary.strip('"').strip("'").strip()
-                
-                paper['summary_zh'] = translated_summary
-                logging.info(f"论文 {i+1}/{len(papers)} (尝试 {attempt+1}): 摘要翻译完成")
-                success = True
-                break
-            else:
-                logging.warning(f"论文 {i+1}/{len(papers)} (尝试 {attempt+1}): 无法获取翻译结果 (API 返回 None 或空字符串)。")
-                if attempt < 1:
-                    logging.info(f"论文 {i+1}/{len(papers)}: 重试翻译...")
-        
-        if not success:
-            logging.error(f"论文 {i+1}/{len(papers)}: 两次尝试均未能成功翻译摘要，保留原文。")
-            # 如果翻译失败，不添加 summary_zh 字段，模板中会显示原文
-    
-    logging.info(f"摘要翻译完成。")
+
+        parsed = extract_json_from_response(ai_response)
+
+        if parsed is None or not isinstance(parsed, list):
+            logging.warning(f"翻译批次 {batch_num} JSON 解析失败，保留原文。原始回复: {ai_response[:200]}...")
+            continue
+
+        # 用 paper_index 匹配翻译结果
+        for result in parsed:
+            if not isinstance(result, dict):
+                continue
+            idx = result.get('paper_index')
+            translation = result.get('translation', '')
+            if idx is None or not isinstance(idx, int) or idx < 0 or idx >= len(batch):
+                continue
+            if translation and translation.strip():
+                _, paper = batch[idx]
+                paper['summary_zh'] = clean_translation(translation)
+
+    translated_count = sum(1 for p in papers if 'summary_zh' in p)
+    logging.info(f"摘要翻译完成，成功 {translated_count}/{len(to_translate)} 篇。")
     return papers
 
 
-# 可以在这里添加一些测试代码
 if __name__ == '__main__':
-    # 确保设置了 OPENROUTER_API_KEY 环境变量才能运行测试
-    if OPENROUTER_API_KEY:
+    if DEEPSEEK_API_KEY:
         test_papers = [
             {
                 'title': 'Deep Reinforcement Learning for Robotic Manipulation',
@@ -292,15 +382,22 @@ if __name__ == '__main__':
             {
                 'title': 'World Models for Sim-to-Real Transfer in Robotics',
                 'summary': 'A novel approach to learning world models that enable effective sim-to-real transfer for robotic control policies.'
-            }
+            },
+            {
+                'title': 'Advances in Pure NLP Tokenization',
+                'summary': 'We present a new tokenization method for natural language processing that improves efficiency on text-only benchmarks.'
+            },
         ]
-        logging.info("\n--- 开始测试 filter_papers_by_topic --- ")
-        filtered = filter_papers_by_topic(test_papers)
-        rated = rate_papers(filtered)
+        logging.info("\n--- 开始测试 filter_and_rate_papers ---")
+        filtered = filter_and_rate_papers(test_papers)
 
-        logging.info("\n--- 过滤后的论文 --- ")
+        logging.info("\n--- 过滤和评分后的论文 ---")
         for paper in filtered:
-            logging.info(f"- {paper['title']}\t{paper.get('overall_priority_score', None)}")
+            logging.info(
+                f"- {paper['title']}\t"
+                f"score={paper.get('overall_priority_score', 'N/A')}\t"
+                f"ai_processed={paper.get('ai_processed', 'N/A')}"
+            )
         logging.info("--- 测试结束 ---")
     else:
-        logging.warning("请设置 OPENROUTER_API_KEY 环境变量以运行测试。")
+        logging.warning("请设置 DEEPSEEK_API_KEY 环境变量以运行测试。")

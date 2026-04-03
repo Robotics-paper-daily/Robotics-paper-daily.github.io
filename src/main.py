@@ -9,7 +9,7 @@ from datetime import date, datetime, timedelta
 # 这通常在运行脚本时自动处理，或者可以通过设置 PYTHONPATH
 # 或者更好的方式是使用相对导入（如果结构允许）或将项目作为包安装
 from scraper import fetch_cv_papers
-from filter import filter_papers_by_topic, rate_papers, translate_summaries
+from filter import filter_and_rate_papers, translate_summaries
 from html_generator import generate_html_from_json
 
 # 配置日志
@@ -129,9 +129,8 @@ def main(target_date: date):
 
         # --- 2. 过滤论文、论文打分、翻译摘要 --- #
         logging.info("步骤 2: 使用 AI 过滤论文并打分 (主题: Robotics, RL, Vision-Language Models, World Models, LLMs, VLA, VLN)...")
-        # 注意：filter_papers_by_topic 依赖 OPENROUTER_API_KEY 环境变量
-        filtered_papers = filter_papers_by_topic(raw_papers, topic="robotics, reinforcement learning, vision-language models, world models, large language models, vision-language-action, or vision-language-navigation")
-        filtered_papers = rate_papers(filtered_papers)
+        # 注意：filter_and_rate_papers 依赖 DEEPSEEK_API_KEY 环境变量
+        filtered_papers = filter_and_rate_papers(raw_papers)
         # 翻译摘要
         logging.info("步骤 2.1: 翻译论文摘要为中文...")
         filtered_papers = translate_summaries(filtered_papers, target_language="中文")
