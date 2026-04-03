@@ -119,7 +119,7 @@ def main(target_date: date):
             logging.info(f"{category} 类别抓取到 {len(papers)} 篇论文，去重后当前总计 {len(raw_papers)} 篇。")
             # 在类别之间等待，避免触发 arXiv 429 限流
             if category != categories[-1]:
-                time.sleep(10)
+                time.sleep(30)
         
         if not raw_papers:
             logging.warning(f"在 {target_date.isoformat()} 未找到论文或抓取失败。")

@@ -46,8 +46,8 @@ def fetch_cv_papers(category: str = 'cs.CV', max_results: int = 2000, specified_
     # 增大 delay 和重试次数以应对 arXiv 429 限流
     client = arxiv.Client(
         page_size=100,
-        delay_seconds=5.0,
-        num_retries=5,
+        delay_seconds=10.0,
+        num_retries=8,
     )
     search = arxiv.Search(
         query=query,

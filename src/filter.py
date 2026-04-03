@@ -13,8 +13,8 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # DeepSeek API 配置
 # 在 GitHub Actions 中，DEEPSEEK_API_KEY 应设置为 Secret
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
-DEEPSEEK_API_URL = "https://models.sjtu.edu.cn/api/v1/chat/completions"
-MODEL_NAME = "minimax-m2.5"
+DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions"
+MODEL_NAME = "deepseek-chat"
 
 
 def extract_json_from_response(text: str) -> Optional[Any]:
@@ -28,7 +28,11 @@ def extract_json_from_response(text: str) -> Optional[Any]:
     if not text or not text.strip():
         return None
 
-    text = text.strip()
+    # 去掉思维链模型的 <think>...</think> 块
+    text = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL).strip()
+
+    if not text:
+        return None
 
     # 策略 1：直接解析
     try:
@@ -58,8 +62,8 @@ def extract_json_from_response(text: str) -> Optional[Any]:
 
 
 def clean_translation(text: str) -> str:
-    """清理翻译结果中可能的代码块标记和多余引号。"""
-    text = text.strip()
+    """清理翻译结果中可能的代码块标记、思维链和多余引号。"""
+    text = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL).strip()
     if text.startswith('```'):
         parts = text.split('```')
         # 取代码块内容（跳过可能的语言标记行）
@@ -106,7 +110,6 @@ def call_llm_api(
             {"role": "user", "content": prompt}
         ],
         "max_tokens": max_tokens,
-        "response_format": {"type": "json_object"},
     }
 
     for attempt in range(max_retries + 1):
@@ -151,11 +154,13 @@ def call_llm_api(
     return None
 
 RATE_PROMPT_TEMPLATE = """
+Do NOT include any thinking process, explanation, or analysis. Output ONLY the JSON object, nothing else.
+
 # Role Setting
 You are an experienced researcher in the field of Artificial Intelligence, skilled at quickly evaluating the potential value of research papers. You must be strict and discriminating in your relevance scoring.
 
 # Task
-For EACH of the following papers, score it across multiple dimensions (1-10 points). Return a JSON array with one object per paper, in the same order as the input.
+Score this paper across multiple dimensions (1-10 points).
 
 # My Research Interests (be strict about these)
 My core interests are: **Robotics** and **Embodied AI**. Specifically:
@@ -175,23 +180,21 @@ My core interests are: **Robotics** and **Embodied AI**. Specifically:
 - Medical imaging, protein folding, drug discovery
 - General LLM/VLM benchmarks, pretraining, or alignment without robotics use
 
-# Papers
-%s
+# Paper
+Title: %s
+Abstract: %s
 
 # Output Format
-Return ONLY a JSON array (no extra text). Each element must have this exact structure:
-[
-  {
-    "paper_index": 0,
-    "tldr": "<1-2 sentence English summary>",
-    "tldr_zh": "<1-2 sentence Chinese summary>",
-    "relevance_score": 8,
-    "novelty_claim_score": 7,
-    "clarity_score": 8,
-    "potential_impact_score": 7,
-    "overall_priority_score": 7
-  }
-]
+Return ONLY a JSON object (no extra text):
+{
+  "tldr": "<1-2 sentence English summary>",
+  "tldr_zh": "<1-2 sentence Chinese summary>",
+  "relevance_score": <1-10>,
+  "novelty_claim_score": <1-10>,
+  "clarity_score": <1-10>,
+  "potential_impact_score": <1-10>,
+  "overall_priority_score": <1-10>
+}
 
 # Scoring Guidelines
 - Relevance (1-10): How directly related is it to my robotics/embodied AI interests above? Be strict: a pure vision or pure NLP paper should score 1-3 even if it uses fancy models. Only score 7+ if the paper explicitly involves robots, embodied agents, or physical control.
@@ -202,15 +205,11 @@ Return ONLY a JSON array (no extra text). Each element must have this exact stru
 """
 
 
-def filter_and_rate_papers(
-    papers: list,
-    batch_size: int = 5,
-) -> list:
-    """批量评分论文。保留所有论文，通过 overall_priority_score 排序区分优先级。
+def filter_and_rate_papers(papers: list) -> list:
+    """逐篇评分论文。保留所有论文，通过 overall_priority_score 排序区分优先级。
 
     Args:
         papers: 包含论文信息的字典列表，每个字典应包含 'title' 和 'summary'。
-        batch_size: 每批处理的论文数量。
 
     Returns:
         评分后的论文列表（保留全部）。API 失败的论文标记 ai_processed=False。
@@ -219,97 +218,45 @@ def filter_and_rate_papers(
         logging.error("未设置 DEEPSEEK_API_KEY 环境变量。无法进行评分。")
         return papers
 
-    logging.info(f"开始批量评分 {len(papers)} 篇论文 (batch_size={batch_size})...")
-    rated_papers = []
+    logging.info(f"开始逐篇评分 {len(papers)} 篇论文...")
 
-    for batch_start in range(0, len(papers), batch_size):
-        batch = papers[batch_start:batch_start + batch_size]
-        batch_num = batch_start // batch_size + 1
-        total_batches = (len(papers) + batch_size - 1) // batch_size
-        logging.info(f"处理批次 {batch_num}/{total_batches} ({len(batch)} 篇论文)...")
+    for i, paper in enumerate(papers):
+        title = paper.get('title', 'N/A')
+        summary = paper.get('summary', 'N/A')
 
-        # 构建批量 prompt
-        papers_text = ""
-        for j, paper in enumerate(batch):
-            title = paper.get('title', 'N/A')
-            summary = paper.get('summary', 'N/A')
-            papers_text += f"Paper {j}:\nTitle: {title}\nAbstract: {summary}\n\n"
-
-        prompt = RATE_PROMPT_TEMPLATE % papers_text.strip()
-        ai_response = call_llm_api(prompt, max_tokens=batch_size * 300)
+        prompt = RATE_PROMPT_TEMPLATE % (title, summary)
+        ai_response = call_llm_api(prompt, max_tokens=300)
 
         if ai_response is None:
-            logging.warning(f"批次 {batch_num} API 调用失败，保留该批次所有论文 (ai_processed=False)")
-            for paper in batch:
-                paper['ai_processed'] = False
-                rated_papers.append(paper)
+            logging.warning(f"论文 {i+1}/{len(papers)}: '{title[:50]}...' API 调用失败 (ai_processed=False)")
+            paper['ai_processed'] = False
             continue
 
         parsed = extract_json_from_response(ai_response)
 
-        if parsed is None or not isinstance(parsed, list):
-            logging.warning(
-                f"批次 {batch_num} JSON 解析失败，保留该批次所有论文 (ai_processed=False)。"
-                f" 原始回复: {ai_response[:200]}..."
-            )
-            for paper in batch:
-                paper['ai_processed'] = False
-                rated_papers.append(paper)
+        if parsed is None or not isinstance(parsed, dict):
+            logging.warning(f"论文 {i+1}/{len(papers)}: '{title[:50]}...' JSON 解析失败 (ai_processed=False)。原始回复: {ai_response[:300]}")
+            paper['ai_processed'] = False
             continue
 
-        # 用 paper_index 匹配结果到论文
-        matched_indices = set()
-        for result in parsed:
-            if not isinstance(result, dict):
-                continue
-            idx = result.get('paper_index')
-            if idx is None or not isinstance(idx, int) or idx < 0 or idx >= len(batch):
-                continue
+        for key in ('tldr', 'tldr_zh', 'relevance_score', 'novelty_claim_score',
+                    'clarity_score', 'potential_impact_score', 'overall_priority_score'):
+            if key in parsed:
+                paper[key] = parsed[key]
+        paper['ai_processed'] = True
+        logging.info(f"论文 {i+1}/{len(papers)}: '{title[:50]}...' - overall={paper.get('overall_priority_score', 'N/A')}")
 
-            matched_indices.add(idx)
-            paper = batch[idx]
-
-            # 更新论文评分数据（保留所有论文，不做过滤）
-            for key in ('tldr', 'tldr_zh', 'relevance_score', 'novelty_claim_score',
-                        'clarity_score', 'potential_impact_score', 'overall_priority_score'):
-                if key in result:
-                    paper[key] = result[key]
-            paper['ai_processed'] = True
-            rated_papers.append(paper)
-
-        # 未被匹配到的论文 → 容错保留
-        for j, paper in enumerate(batch):
-            if j not in matched_indices:
-                logging.warning(f"  论文 '{paper.get('title', '')[:50]}...' 未在 AI 响应中匹配到，保留 (ai_processed=False)")
-                paper['ai_processed'] = False
-                rated_papers.append(paper)
-
-    logging.info(f"评分完成，共 {len(rated_papers)} 篇论文。")
-    return rated_papers
+    rated_count = sum(1 for p in papers if p.get('ai_processed'))
+    logging.info(f"评分完成，成功 {rated_count}/{len(papers)} 篇。")
+    return papers
 
 
-TRANSLATE_PROMPT_TEMPLATE = """请将以下编号的英文论文摘要翻译成%s。
-要求：保持专业术语的准确性，翻译流畅自然，保留原文的技术含义。
-
-返回一个 JSON 数组，每个元素包含 paper_index 和 translation 字段，按输入顺序排列。
-示例格式：
-[
-  {"paper_index": 0, "translation": "翻译内容..."},
-  {"paper_index": 1, "translation": "翻译内容..."}
-]
-
-以下是需要翻译的摘要：
-
-%s"""
-
-
-def translate_summaries(papers: list, target_language: str = "中文", batch_size: int = 5) -> list:
-    """批量翻译论文摘要。翻译失败时保留原文。
+def translate_summaries(papers: list, target_language: str = "中文") -> list:
+    """逐篇翻译论文摘要。翻译失败时保留原文。
 
     Args:
         papers: 包含论文信息的字典列表，每个字典应包含 'summary'。
         target_language: 目标语言，默认为"中文"。
-        batch_size: 每批处理的论文数量。
 
     Returns:
         包含翻译摘要的字典列表，成功的论文包含 'summary_zh' 字段。
@@ -318,53 +265,30 @@ def translate_summaries(papers: list, target_language: str = "中文", batch_siz
         logging.error("未设置 DEEPSEEK_API_KEY 环境变量。无法进行翻译。")
         return papers
 
-    # 筛选出有摘要需要翻译的论文及其原始索引
-    to_translate = []
+    logging.info(f"开始逐篇翻译 {len(papers)} 篇论文的摘要为 {target_language}...")
+
     for i, paper in enumerate(papers):
         summary = paper.get('summary', '')
-        if summary and summary != 'N/A':
-            to_translate.append((i, paper))
-
-    logging.info(f"开始批量翻译 {len(to_translate)} 篇论文的摘要为 {target_language} (batch_size={batch_size})...")
-
-    for batch_start in range(0, len(to_translate), batch_size):
-        batch = to_translate[batch_start:batch_start + batch_size]
-        batch_num = batch_start // batch_size + 1
-        total_batches = (len(to_translate) + batch_size - 1) // batch_size
-        logging.info(f"翻译批次 {batch_num}/{total_batches} ({len(batch)} 篇)...")
-
-        # 构建批量 prompt，用局部 0-based index
-        abstracts_text = ""
-        for j, (_, paper) in enumerate(batch):
-            abstracts_text += f"Paper {j}:\n{paper['summary']}\n\n"
-
-        prompt = TRANSLATE_PROMPT_TEMPLATE % (target_language, abstracts_text.strip())
-        ai_response = call_llm_api(prompt, max_tokens=batch_size * 400)
-
-        if ai_response is None:
-            logging.warning(f"翻译批次 {batch_num} API 调用失败，保留原文。")
+        if not summary or summary == 'N/A':
             continue
 
-        parsed = extract_json_from_response(ai_response)
+        translate_prompt = (
+            f"请将以下英文论文摘要翻译成{target_language}。"
+            "要求：保持专业术语的准确性，翻译流畅自然，保留原文的技术含义。"
+            "只输出翻译结果，不要添加任何思考过程、解释或说明。"
+            f"\n\n摘要：\n{summary}"
+        )
 
-        if parsed is None or not isinstance(parsed, list):
-            logging.warning(f"翻译批次 {batch_num} JSON 解析失败，保留原文。原始回复: {ai_response[:200]}...")
-            continue
+        translated = call_llm_api(translate_prompt, max_tokens=500)
 
-        # 用 paper_index 匹配翻译结果
-        for result in parsed:
-            if not isinstance(result, dict):
-                continue
-            idx = result.get('paper_index')
-            translation = result.get('translation', '')
-            if idx is None or not isinstance(idx, int) or idx < 0 or idx >= len(batch):
-                continue
-            if translation and translation.strip():
-                _, paper = batch[idx]
-                paper['summary_zh'] = clean_translation(translation)
+        if translated and translated.strip():
+            paper['summary_zh'] = clean_translation(translated)
+            logging.info(f"论文 {i+1}/{len(papers)}: 摘要翻译完成")
+        else:
+            logging.warning(f"论文 {i+1}/{len(papers)}: 翻译失败，保留原文。")
 
     translated_count = sum(1 for p in papers if 'summary_zh' in p)
-    logging.info(f"摘要翻译完成，成功 {translated_count}/{len(to_translate)} 篇。")
+    logging.info(f"摘要翻译完成，成功 {translated_count}/{len(papers)} 篇。")
     return papers
 
 
