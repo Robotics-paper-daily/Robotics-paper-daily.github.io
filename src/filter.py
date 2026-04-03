@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # DeepSeek API 配置
 # 在 GitHub Actions 中，DEEPSEEK_API_KEY 应设置为 Secret
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
-DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions"
+DEEPSEEK_API_URL = " https://models.sjtu.edu.cn/api/v1/chat/completions"
 MODEL_NAME = "deepseek-chat"
 
 
