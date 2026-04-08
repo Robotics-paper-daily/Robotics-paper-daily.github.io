@@ -252,6 +252,24 @@
             line-height: 1.4;
         }
 
+        .filtered-item-title-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: color 0.25s ease;
+        }
+
+        .filtered-item-title-link:hover {
+            color: var(--highlight-primary);
+        }
+
+        .filtered-item-title-link i {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
         .filtered-item p {
             margin: 0.25rem 0;
             color: var(--text-muted-color);
@@ -385,7 +403,16 @@
         <div class="filtered-grid">
             {% for paper in filtered_papers %}
             <div class="filtered-item">
+                {% if paper.url %}
+                <h3>
+                    <a href="{{ paper.url }}" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        {{ paper.title }}
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                {% else %}
                 <h3>{{ paper.title }}</h3>
+                {% endif %}
                 {% if paper.authors %}
                 <p><strong>Authors:</strong> {{ paper.authors | join(', ') }}</p>
                 {% endif %}
