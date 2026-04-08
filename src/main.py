@@ -132,17 +132,21 @@ def main(target_date: date):
         # 注意：filter_and_rate_papers 依赖 DEEPSEEK_API_KEY 环境变量
         filtered_papers = filter_and_rate_papers(raw_papers)
         # 翻译摘要
-        logging.info("步骤 2.1: 翻译论文摘要为中文...")
-        filtered_papers = translate_summaries(filtered_papers, target_language="中文")
+        logging.info("步骤 2.1: 翻译论文摘要为中文（仅 overall_priority_score >= 6）...")
+        filtered_papers = translate_summaries(
+            filtered_papers,
+            target_language="中文",
+            min_overall_score=6,
+        )
         # 将filtered_papers按照overall_priority_score降序排序
         filtered_papers.sort(key=lambda x: x.get('overall_priority_score', 0), reverse=True)
         if not filtered_papers:
-            logging.warning("没有论文通过过滤。将创建空的 JSON 文件。")
+            logging.warning("未抓取到可评分论文。将创建空的 JSON 文件。")
             # 创建一个空列表，以便后续保存为空 JSON
             filtered_papers = []
             # 即使没有过滤后的论文，也可能需要生成一个空的报告，或者在这里停止
             # 这里我们选择继续，生成一个可能为空的报告
-        logging.info(f"过滤后剩余 {len(filtered_papers)} 篇论文。")
+        logging.info(f"评分后共保留 {len(filtered_papers)} 篇论文（低分论文将放入页面底部子栏）。")
 
         # --- 3. 保存为 JSON --- #
         logging.info("步骤 3: 将过滤后的论文保存为 JSON 文件...")

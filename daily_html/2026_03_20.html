@@ -32,6 +32,39 @@
             line-height: 1.6;
         }
 
+        .quick-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            align-items: center;
+            width: fit-content;
+            margin: 0.9rem auto 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .quick-nav a {
+            color: var(--highlight-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            background: rgba(255, 255, 255, 0.86);
+            box-shadow: 0 2px 6px var(--shadow-color);
+            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+        }
+
+        .quick-nav a:hover {
+            background-color: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+
         .bento-grid {
             display: grid;
             gap: 1.5rem; /* Tailwind gap-6 */
@@ -186,10 +219,48 @@
             margin-right: 0.125rem; /* Consistent spacing */
         }
 
+        .filtered-section {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .filtered-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--header-color);
+            margin-bottom: 1rem;
+        }
+
+        .filtered-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .filtered-item {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .filtered-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+        }
+
+        .filtered-item p {
+            margin: 0.25rem 0;
+            color: var(--text-muted-color);
+            font-size: 0.88rem;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
-
     <motion.div
         initial="{ opacity: 0, y: -30 }"
         animate="{ opacity: 1, y: 0 }"
@@ -200,6 +271,11 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>March 20, 2026</p>
+        <nav class="quick-nav">
+            <a href="../index.html" target="_top">首页</a>
+            <a href="../list.html" target="_top">报告列表</a>
+            <a href="../search.html" target="_top">论文检索</a>
+        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -10800,2603 +10876,233 @@ SLAM（同时定位与地图构建）和里程计是利用一个或多个传感�
             
         </motion.div>
         
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.5, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">ADMM-Based Distributed MPC with Control Barrier Functions for Safe Multi-Robot Quadrupedal Locomotion</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> This paper proposes a fully decentralized model predictive control (MPC) framework with control barrier function (CBF) constraints for safety-critical trajectory planning in multi-robot legged systems. The incorporation of CBF constraints introduces explicit inter-agent coupling, which prevents direct decomposition of the resulting optimal control problems. To address this challenge, we reformulate the centralized safety-critical MPC problem using a structured distributed optimization framework based on the alternating direction method of multipliers (ADMM). By introducing a novel node-edge splitting formulation with consensus constraints, the proposed approach decomposes the global problem into independent node-local and edge-local quadratic programs that can be solved in parallel using only neighbor-to-neighbor communication. This enables fully decentralized trajectory optimization with symmetric computational load across agents while preserving safety and dynamic feasibility. The proposed framework is integrated into a hierarchical locomotion control architecture for quadrupedal robots, combining high-level distributed trajectory planning, mid-level nonlinear MPC enforcing single rigid body dynamics, and low-level whole-body control enforcing full-order robot dynamics. The effectiveness of the proposed approach is demonstrated through hardware experiments on two Unitree Go2 quadrupedal robots and numerical simulations involving up to four robots navigating uncertain environments with rough terrain and external disturbances. The results show that the proposed distributed formulation achieves performance comparable to centralized MPC while reducing the average per-cycle planning time by up to 51% in the four-agent case, enabling efficient real-time decentralized implementation.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 本文提出了一种完全分散式模型预测控制 (MPC) 框架，该框架具有控制屏障函数 (CBF) 约束，用于多机器人足式系统的安全关键轨迹规划。CBF 约束的引入导致显式的智能体间耦合，这阻止了对所产生的优化控制问题的直接分解。为了解决这一挑战，我们使用基于交替方向乘子法 (ADMM) 的结构化分布式优化框架，重新构建了集中式安全关键 MPC 问题。通过引入一种具有共识约束的新型节点-边分裂公式，所提出的方法将全局问题分解为独立的节点局部和边局部二次规划问题，这些问题能够通过仅使用邻居间的通信并行求解。这实现了完全分散的轨迹优化，并在智能体间实现了对称的计算负载，同时保持了安全性和动态可行性。所提出的框架被集成到用于四足机器人的分层运动控制架构中，该架构结合了高级分布式轨迹规划、中级非线性 MPC (强制执行单刚体动力学) 以及低级全身控制 (强制执行全阶机器人动力学)。通过在两台宇树 Go2 四足机器人上的硬件实验以及涉及多达四台机器人在崎岖地形和外部干扰的不确定环境中导航的数值模拟，验证了所提出方法的有效性。结果表明，所提出的分布式公式实现了与集中式 MPC 相当的性能，同时在四智能体情况下将每个循环的平均规划时间减少了高达 51%，从而实现了高效的实时分散式实施。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents a decentralized MPC framework using ADMM and Control Barrier Functions for safe multi-robot quadrupedal locomotion, achieving performance comparable to centralized MPC with faster planning times, validated by hardware experiments.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种基于ADMM和控制障碍函数的分散式MPC框架，用于安全的多机器人四足运动。该方法在实现与集中式MPC相当的性能的同时，具有更快的规划时间，并通过硬件实验验证了其有效性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.19170v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Yicheng Zeng, Ruturaj S. Sambhus, Basit Muhammad Imran, Jeeseop Kim, Vittorio Pastore, Kaveh Akbari Hamed</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.550000000000001, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Benchmarking Visual Feature Representations for LiDAR-Inertial-Visual Odometry Under Challenging Conditions</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Accurate localization in autonomous driving is critical for successful missions including environmental mapping and survivor searches. In visually challenging environments, including low-light conditions, overexposure, illumination changes, and high parallax, the performance of conventional visual odometry methods significantly degrade undermining robust robotic navigation. Researchers have recently proposed LiDAR-inertial-visual odometry (LIVO) frameworks, that integrate LiDAR, IMU, and camera sensors, to address these challenges. This paper extends the FAST-LIVO2-based framework by introducing a hybrid approach that integrates direct photometric methods with descriptor-based feature matching. For the descriptor-based feature matching, this work proposes pairs of ORB with the Hamming distance, SuperPoint with SuperGlue, SuperPoint with LightGlue, and XFeat with the mutual nearest neighbor. The proposed configurations are benchmarked by accuracy, computational cost, and feature tracking stability, enabling a quantitative comparison of the adaptability and applicability of visual descriptors. The experimental results reveal that the proposed hybrid approach outperforms the conventional sparse-direct method. Although the sparse-direct method often fails to converge in regions where photometric inconsistency arises due to illumination changes, the proposed approach still maintains robust performance under the same conditions. Furthermore, the hybrid approach with learning-based descriptors enables robust and reliable visual state estimation across challenging environments.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 摘要：
-在自动驾驶领域，精确定位对诸如环境地图构建和幸存者搜寻等任务的成功至关重要。在视觉环境具有挑战性的场景中，包括低光照条件、过度曝光、光照变化以及高视差等，传统视觉里程计方法的性能会显著降低，从而削弱机器人导航的鲁棒性。近年来，研究人员提出了集成激光雷达、IMU 和相机传感器的激光雷达-惯性-视觉里程计 (LIVO) 框架，以应对这些挑战。本文通过引入一种混合方法来扩展基于 FAST-LIVO2 的框架，该方法将直接光度法与基于描述子的特征匹配相结合。对于基于描述子的特征匹配，本文提出了 ORB 与汉明距离、SuperPoint 与 SuperGlue、SuperPoint 与 LightGlue 以及 XFeat 与互近邻等配对组合。通过准确性、计算成本和特征跟踪稳定性对所提出的配置进行基准测试，从而能够对视觉描述子的适应性和适用性进行定量比较。实验结果表明，提出的混合方法优于传统的稀疏直接法。尽管稀疏直接法通常在由于光照变化而导致光度不一致的区域无法收敛，但所提出的方法在相同条件下仍能保持稳健的性能。此外，采用基于学习的描述子的混合方法能够在具有挑战性的环境中实现稳健可靠的视觉状态估计。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces and benchmarks a hybrid LiDAR-inertial-visual odometry approach combining direct photometric methods with descriptor-based feature matching, showing improved robustness in challenging visual conditions.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍并评估了一种混合的激光雷达-惯性-视觉里程计方法，该方法结合了直接光度法和基于描述符的特征匹配，在具有挑战性的视觉条件下表现出更好的鲁棒性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18589v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Eunseon Choi, Junwoo Hong, Daehan Lee, Sanghyun Park, Hyunyoung Jo, Sunyoung Kim, Changho Kang, Seongsam Kim, Yonghan Jung, Jungwook Park, Seul Koo, Soohee Han</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.6000000000000005, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">HEP Statistical Inference for UAV Fault Detection: CLs, LRT, and SBI Applied to Blade Damage</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> This paper transfers three statistical methods from particle physics to multirotor propeller fault detection: the likelihood ratio test (LRT) for binary detection, the CLs modified frequentist method for false alarm rate control, and sequential neural posterior estimation (SNPE) for quantitative fault characterization. Operating on spectral features tied to rotor harmonic physics, the system returns three outputs: binary detection, controlled false alarm rates, and calibrated posteriors over fault severity and motor location. On UAV-FD, a hexarotor dataset of 18 real flights with 5% and 10% blade damage, leave-one-flight-out cross-validation gives AUC 0.862 +/- 0.007 (95% CI: 0.849--0.876), outperforming CUSUM (0.708 +/- 0.010), autoencoder (0.753 +/- 0.009), and LSTM autoencoder (0.551). At 5% false alarm rate the system detects 93% of significant and 81% of subtle blade damage. On PADRE, a quadrotor platform, AUC reaches 0.986 after refitting only the generative models. SNPE gives a full posterior over fault severity (90% credible interval coverage 92--100%, MAE 0.012), so the output includes uncertainty rather than just a point estimate or fault flag. Per-flight sequential detection achieves 100% fault detection with 94% overall accuracy.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 本文将粒子物理学中的三种统计方法应用于多旋翼螺旋桨故障检测：用于二元检测的似然比检验(LRT)，用于控制误报率的CLs修正频率论方法，以及用于定量故障表征的序贯神经后验估计(SNPE)。该系统基于与旋翼谐波物理学相关的频谱特征进行操作，并返回三种输出：二元检测、受控的误报率以及关于故障严重程度和电机位置的校准后验分布。在UAV-FD数据集上，一个包含18次真实飞行、分别带有5%和10%叶片损伤的六旋翼数据集，采用留一飞行交叉验证得到的AUC为0.862 +/- 0.007（95%置信区间：0.849--0.876），优于CUSUM (0.708 +/- 0.010)、自编码器 (0.753 +/- 0.009)和LSTM自编码器(0.551)。在5%误报率下，该系统检测到93%的显著叶片损伤和81%的细微叶片损伤。在四旋翼平台PADRE上，仅需重新拟合生成模型即可达到0.986的AUC。SNPE给出了关于故障严重程度的完整后验分布（90%可信区间覆盖率92--100%，MAE 0.012），因此输出包括不确定性，而不仅仅是点估计或故障标志。每次飞行的序贯检测实现了100%的故障检测，总体准确率为94%。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper applies statistical methods from particle physics (LRT, CLs, SNPE) to UAV fault detection (blade damage), achieving high AUC scores and controlled false alarm rates on real flight datasets, outperforming other methods like CUSUM and autoencoders.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文将来自粒子物理的统计方法（LRT、CLs、SNPE）应用于无人机故障检测（叶片损伤），在真实飞行数据集上实现了高 AUC 分数和受控的误报率，优于 CUSUM 和自编码器等其他方法。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18546v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Khushiyant</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.65, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Evaluating Game Difficulty in Tetris Block Puzzle</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Tetris Block Puzzle is a single player stochastic puzzle in which a player places blocks on an 8 x 8 grid to complete lines; its popular variants have amassed tens of millions of downloads. Despite this reach, there is little principled assessment of which rule sets are more difficult. Inspired by prior work that uses AlphaZero as a strong evaluator for chess variants, we study difficulty in this domain using Stochastic Gumbel AlphaZero (SGAZ), a budget-aware planning agent for stochastic environments. We evaluate rule changes including holding block h, preview holding block p, and additional Tetris block variants using metrics such as training reward and convergence iterations. Empirically, increasing h and p reduces difficulty (higher reward and faster convergence), while adding more Tetris block variants increases difficulty, with the T-pentomino producing the largest slowdown. Through analysis, SGAZ delivers strong play under small simulation budgets, enabling efficient, reproducible comparisons across rule sets and providing a reference for future design in stochastic puzzle games.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 俄罗斯方块拼图是一种单人随即益智游戏，玩家在 8x8 的网格上放置方块以完成行；其流行的变体已经累积了数千万次的下载量。尽管受众广泛，但对于哪种规则集更难的评估却很少有基于原则的方法。受到先前使用 AlphaZero 作为象棋变体强大评估者的工作的启发，我们使用随机 Gumbel AlphaZero (SGAZ) 研究该领域中的难度，SGAZ 是一种具有预算意识的用于随机环境的规划智能体。我们评估了规则更改，包括保留方块 h、预览保留方块 p 以及额外的俄罗斯方块变体，使用例如训练奖励和收敛迭代次数等指标。经验表明，增加 h 和 p 会降低难度（更高的奖励和更快的收敛），而添加更多俄罗斯方块变体会增加难度，其中 T 形五格骨牌产生最大的减速。通过分析，SGAZ 在较小的模拟预算下实现了强大的游戏性能，从而能够在不同规则集之间进行高效、可复现的比较，并为随机益智游戏中未来的设计提供参考。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper uses Stochastic Gumbel AlphaZero (SGAZ) to evaluate the difficulty of different rule sets in Tetris Block Puzzle, finding that holding blocks decreases difficulty while adding more block variants increases it.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文使用随机Gumbel AlphaZero (SGAZ) 来评估俄罗斯方块拼图游戏不同规则集的难度，发现持有方块会降低难度，而增加更多方块变体则会增加难度。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18994v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Chun-Jui Wang, Jian-Ting Guo, Hung Guei, Chung-Chin Shih, Ti-Rong Wu, I-Chen Wu</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.7, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Teleological Inference in Structural Causal Models via Intentional Interventions</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Structural causal models (SCMs) were conceived to formulate and answer causal questions. This paper shows that SCMs can also be used to formulate and answer teleological questions, concerning the intentions of a state-aware, goal-directed agent intervening in a causal system. We review limitations of previous approaches to modeling such agents, and then introduce intentional interventions, a new time-agnostic operator that induces a twin SCM we call a structural final model (SFM). SFMs treat observed values as the outcome of intentional interventions and relate them to the counterfactual conditions of those interventions (what would have happened had the agent not intervened). We show how SFMs can be used to empirically detect agents and to discover their intentions.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 结构因果模型（SCMs）最初被设计用于构建和解答因果问题。本文表明，SCMs 同样可以用于构建和解答目的论问题，即关于知晓状态的、目标导向的智能体干预因果系统的意图。我们回顾了先前对这类智能体进行建模的局限性，并提出有意干预，一种新的与时间无关的操作符，它会诱导出一个我们称之为结构最终模型（SFM）的双生 SCM。SFMs 将观测值视为有意干预的结果，并将它们与这些干预的反事实条件（智能体未干预时会发生什么）相关联。我们展示了 SFMs 如何被用于经验性地检测智能体以及发现它们的意图。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper proposes 'intentional interventions' within Structural Causal Models (SCMs) to infer the goals and intentions of agents intervening in causal systems, addressing limitations in existing approaches to modeling such agents.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出在结构因果模型 (SCM) 中使用“意图干预”来推断干预因果系统的 Agent 的目标和意图，旨在解决现有 Agent 建模方法的局限性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18968v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Dario Compagno, Fabio Massimo Zennaro</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.75, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">ClawTrap: A MITM-Based Red-Teaming Framework for Real-World OpenClaw Security Evaluation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Autonomous web agents such as \textbf{OpenClaw} are rapidly moving into high-impact real-world workflows, but their security robustness under live network threats remains insufficiently evaluated. Existing benchmarks mainly focus on static sandbox settings and content-level prompt attacks, which leaves a practical gap for network-layer security testing. In this paper, we present \textbf{ClawTrap}, a \textbf{MITM-based red-teaming framework for real-world OpenClaw security evaluation}. ClawTrap supports diverse and customizable attack forms, including \textit{Static HTML Replacement}, \textit{Iframe Popup Injection}, and \textit{Dynamic Content Modification}, and provides a reproducible pipeline for rule-driven interception, transformation, and auditing. This design lays the foundation for future research to construct richer, customizable MITM attacks and to perform systematic security testing across agent frameworks and model backbones. Our empirical study shows clear model stratification: weaker models are more likely to trust tampered observations and produce unsafe outputs, while stronger models demonstrate better anomaly attribution and safer fallback strategies. These findings indicate that reliable OpenClaw security evaluation should explicitly incorporate dynamic real-world MITM conditions rather than relying only on static sandbox protocols.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 诸如\textbf{OpenClaw}之类的自主Web代理正在迅速进入具有高度影响力的现实世界工作流程，但它们在实时网络威胁下的安全稳健性仍然缺乏充分评估。现有的基准测试主要集中在静态沙箱设置和内容级提示攻击上，这在网络层安全测试方面留下了一个实际的差距。在本文中，我们提出了\textbf{ClawTrap}，一个\textbf{基于MITM（中间人）的红队测试框架，用于对现实世界的OpenClaw进行安全评估}。ClawTrap支持多样化且可定制的攻击形式，包括\textit{静态HTML替换}、\textit{Iframe弹窗注入}和\textit{动态内容修改}，并提供了一个可重现的管道，用于规则驱动的拦截、转换和审计。这种设计为未来的研究奠定了基础，以构建更丰富、可定制的MITM攻击，并跨代理框架和模型主干进行系统的安全测试。我们的实证研究表明了清晰的模型分层：较弱的模型更可能信任被篡改的观测并产生不安全输出，而较强的模型则表现出更好的异常归因和更安全的备选策略。这些发现表明，可靠的OpenClaw安全评估应明确包含动态的现实世界MITM条件，而不是仅依赖于静态沙箱协议。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces ClawTrap, a MITM-based framework for evaluating the security of autonomous web agents (OpenClaw) against network-level attacks, revealing vulnerabilities in weaker models.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一个名为ClawTrap的MITM框架，用于评估自主Web代理(OpenClaw)在网络攻击下的安全性，揭示了较弱模型的漏洞。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18762v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Haochen Zhao, Shaoyang Cui</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.800000000000001, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">SCISSR: Scribble-Conditioned Interactive Surgical Segmentation and Refinement</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Accurate segmentation of tissues and instruments in surgical scenes is annotation-intensive due to irregular shapes, thin structures, specularities, and frequent occlusions. While SAM models support point, box, and mask prompts, points are often too sparse and boxes too coarse to localize such challenging targets. We present SCISSR, a scribble-promptable framework for interactive surgical scene segmentation. It introduces a lightweight Scribble Encoder that converts freehand scribbles into dense prompt embeddings compatible with the mask decoder, enabling iterative refinement for a target object by drawing corrective strokes on error regions. Because all added modules (the Scribble Encoder, Spatial Gated Fusion, and LoRA adapters) interact with the backbone only through its standard embedding interfaces, the framework is not tied to a single model: we build on SAM 2 in this work, yet the same components transfer to other prompt-driven segmentation architectures such as SAM 3 without structural modification. To preserve pre-trained capabilities, we train only these lightweight additions while keeping the remaining backbone frozen. Experiments on EndoVis 2018 demonstrate strong in-domain performance, while evaluation on the out-of-distribution CholecSeg8k further confirms robustness across surgical domains. SCISSR achieves 95.41% Dice on EndoVis 2018 with five interaction rounds and 96.30% Dice on CholecSeg8k with three interaction rounds, outperforming iterative point prompting on both benchmarks.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 手术场景中组织和器械的精确分割是一项标注密集型任务，原因是其不规则形状、纤细结构、镜面反射和频繁遮挡。虽然SAM模型支持点、框和mask提示，但点通常过于稀疏，框则过于粗糙，难以定位这些具有挑战性的目标。我们提出SCISSR，一个基于涂鸦提示的交互式手术场景分割框架。它引入了一个轻量级的涂鸦编码器，可以将手绘涂鸦转换为与mask解码器兼容的密集提示嵌入，从而通过在错误区域绘制修正笔画，实现对目标对象的迭代精细化。由于所有添加的模块（涂鸦编码器、空间门控融合和LoRA适配器）仅通过其标准嵌入接口与骨干网络交互，因此该框架不依赖于单一模型：我们在本文中基于SAM 2构建，但相同的组件无需结构修改即可迁移到其他基于提示驱动的分割架构，如SAM 3。为了保留预训练能力，我们仅训练这些轻量级的附加模块，同时保持剩余的骨干网络冻结。在EndoVis 2018上的实验表明了强大的领域内性能，而在分布外的CholecSeg8k上的评估进一步证实了跨手术领域的鲁棒性。SCISSR在EndoVis 2018上实现了95.41%的Dice系数（经过五轮交互），在CholecSeg8k上实现了96.30%的Dice系数（经过三轮交互），在两个基准测试中均优于迭代点提示。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces SCISSR, a scribble-promptable framework for interactive surgical scene segmentation that builds upon SAM models, achieving high Dice scores on surgical datasets with few interaction rounds.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了 SCISSR，一个基于手绘提示的交互式手术场景分割框架，它构建于 SAM 模型之上，并在手术数据集上以少量交互轮次实现了较高的 Dice 分数。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18544v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Haonan Ping, Jian Jiang, Cheng Yuan, Qizhen Sun, Lv Wu, Yutong Ban</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.8500000000000005, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Access Controlled Website Interaction for Agentic AI with Delegated Critical Tasks</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Recent studies reveal gaps in delegating critical tasks to agentic AI that accesses websites on the user's behalf, primarily due to limited access control mechanisms on websites designed for agentic AI. In response, we propose a design of website-based interaction for AI agents with fine-grained access control for delegated critical tasks. Our approach encompasses a website design and implementation, as well as modifications to the access grant protocols in an open-source authorization service to tailor it to agentic AI, with delegated critical tasks on the website. The evaluation of our approach demonstrates the capabilities of our access-controlled website used by AI agents.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 最近的研究揭示了在将关键任务委派给代表用户访问网站的自主AI时存在的差距，这主要是由于网站上为自主AI设计的访问控制机制有限。针对此问题，我们提出了一种基于网站的AI代理交互设计，该设计针对委派的关键任务具有细粒度的访问控制。我们的方法包括网站的设计和实现，以及对开源授权服务中访问授权协议的修改，使其适应自主AI，以便在网站上执行委派的关键任务。对我们方法的评估表明了AI代理使用我们的访问控制网站的能力。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper addresses the lack of access control mechanisms for AI agents interacting with websites, proposing a website design and modifications to authorization protocols for fine-grained access control, particularly relevant for critical tasks.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文针对AI智能体与网站交互时缺乏访问控制机制的问题，提出了一种网站设计和对授权协议的修改方案，以实现对细粒度访问控制，尤其是在关键任务中。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18197v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Sunyoung Kim, Hokeun Kim</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.9, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Efficient Dense Crowd Trajectory Prediction Via Dynamic Clustering</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Crowd trajectory prediction plays a crucial role in public safety and management, where it can help prevent disasters such as stampedes. Recent works address the problem by predicting individual trajectories and considering surrounding objects based on manually annotated data. However, these approaches tend to overlook dense crowd scenarios, where the challenges of automation become more pronounced due to the massiveness, noisiness, and inaccuracy of the tracking outputs, resulting in high computational costs. To address these challenges, we propose and extensively evaluate a novel cluster-based approach that groups individuals based on similar attributes over time, enabling faster execution through accurate group summarisation. Our plug-and-play method can be combined with existing trajectory predictors by using our output centroid in place of their pedestrian input. We evaluate our proposed method on several challenging dense crowd scenes. We demonstrated that our approach leads to faster processing and lower memory usage when compared with state-of-the-art methods, while maintaining the accuracy</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 人群轨迹预测在公共安全和管理中起着至关重要的作用，它可以帮助预防诸如踩踏事件等灾难。最近的研究通过预测个体轨迹并基于人工标注的数据考虑周围物体来解决这个问题。然而，这些方法往往忽略了密集人群场景，在这些场景中，由于跟踪输出的大量性、噪声和不准确性，自动化面临的挑战变得更加明显，导致高昂的计算成本。为了应对这些挑战，我们提出并广泛评估了一种新颖的基于聚类的方法，该方法根据相似的属性随时间对个体进行分组，从而通过准确的群体概括实现更快的执行速度。我们的即插即用方法可以通过用我们的输出质心代替其行人输入来与现有的轨迹预测器结合使用。我们在几个具有挑战性的密集人群场景中评估了我们提出的方法。我们证明了与最先进的方法相比，我们的方法可以实现更快的处理速度和更低的内存占用，同时保持准确性。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents a cluster-based approach for efficient crowd trajectory prediction in dense scenarios, achieving faster processing and lower memory usage while maintaining accuracy.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种基于聚类的方法，用于在密集场景中进行高效的人群轨迹预测，实现了更快的处理速度和更低的内存使用，同时保持了准确性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18166v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Antonius Bima Murti Wijaya, Paul Henderson, Marwa Mahmoud</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.95, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">EdgeCrafter: Compact ViTs for Edge Dense Prediction via Task-Specialized Distillation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Deploying high-performance dense prediction models on resource-constrained edge devices remains challenging due to strict limits on computation and memory. In practice, lightweight systems for object detection, instance segmentation, and pose estimation are still dominated by CNN-based architectures such as YOLO, while compact Vision Transformers (ViTs) often struggle to achieve similarly strong accuracy efficiency tradeoff, even with large scale pretraining. We argue that this gap is largely due to insufficient task specific representation learning in small scale ViTs, rather than an inherent mismatch between ViTs and edge dense prediction. To address this issue, we introduce EdgeCrafter, a unified compact ViT framework for edge dense prediction centered on ECDet, a detection model built from a distilled compact backbone and an edge-friendly encoder decoder design. On the COCO dataset, ECDet-S achieves 51.7 AP with fewer than 10M parameters using only COCO annotations. For instance segmentation, ECInsSeg achieves performance comparable to RF-DETR while using substantially fewer parameters. For pose estimation, ECPose-X reaches 74.8 AP, significantly outperforming YOLO26Pose-X (71.6 AP) despite the latter's reliance on extensive Objects365 pretraining. These results show that compact ViTs, when paired with task-specialized distillation and edge-aware design, can be a practical and competitive option for edge dense prediction. Code is available at: https://intellindust-ai-lab.github.io/projects/EdgeCrafter/</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 由于计算和内存的严格限制，在资源受限的边缘设备上部署高性能的密集预测模型仍然具有挑战性。在实践中，用于目标检测、实例分割和姿态估计的轻量级系统仍然主要由基于 CNN 的架构（如 YOLO）主导，而紧凑型 Vision Transformer (ViT) 即使经过大规模预训练，也往往难以实现同样强大的精度效率权衡。我们认为，这种差距很大程度上是由于小规模 ViT 中任务特定的表征学习不足，而不是 ViT 与边缘密集预测之间存在固有的不匹配。为了解决这个问题，我们引入了 EdgeCrafter，这是一个统一的紧凑型 ViT 框架，用于边缘密集预测，它以 ECDet 为中心，ECDet 是一个检测模型，由提炼的紧凑型骨干网络和一个边缘友好的编码器-解码器设计构建而成。在 COCO 数据集上，ECDet-S 仅使用 COCO 注释，就能以少于 10M 的参数实现 ​​51.7 AP。对于实例分割，ECInsSeg 实现了与 RF-DETR 相当的性能，同时使用更少的参数。对于姿态估计，ECPose-X 达到 74.8 AP，显著优于 YOLO26Pose-X (71.6 AP)，尽管后者依赖于广泛的 Objects365 预训练。这些结果表明，紧凑型 ViT 与任务特定的知识蒸馏和边缘感知设计相结合，可以成为边缘密集预测的一种实用且具有竞争力的选择。代码可从以下网址获取：https://intellindust-ai-lab.github.io/projects/EdgeCrafter/</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces EdgeCrafter, a framework for compact ViTs designed for efficient and accurate dense prediction tasks (object detection, segmentation, pose estimation) on edge devices, achieving competitive results compared to CNN-based methods and heavily pre-trained models.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了 EdgeCrafter，一个紧凑型ViT框架，专为边缘设备上高效准确的密集预测任务（物体检测、分割、姿态估计）而设计，与基于CNN的方法和大量预训练的模型相比，取得了具有竞争力的结果。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18739v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Longfei Liu, Yongjie Hou, Yang Li, Qirui Wang, Youyang Sha, Yongjun Yu, Yinzhi Wang, Peizhe Ru, Xuanlong Yu, Xi Shen</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.0, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Remedying Target-Domain Astigmatism for Cross-Domain Few-Shot Object Detection</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Cross-domain few-shot object detection (CD-FSOD) aims to adapt pretrained detectors from a source domain to target domains with limited annotations, suffering from severe domain shifts and data scarcity problems. In this work, we find a previously overlooked phenomenon: models exhibit dispersed and unfocused attention in target domains, leading to imprecise localization and redundant predictions, just like a human cannot focus on visual objects. Therefore, we call it the target-domain Astigmatism problem. Analysis on attention distances across transformer layers reveals that regular fine-tuning inherently shows a trend to remedy this problem, but results are still far from satisfactory, which we aim to enhance in this paper. Biologically inspired by the human fovea-style visual system, we enhance the fine-tuning's inherent trend through a center-periphery attention refinement framework, which contains (1) a Positive Pattern Refinement module to reshape attention toward semantic objects using class-specific prototypes, simulating the visual center region; (2) a Negative Context Modulation module to enhance boundary discrimination by modeling background context, simulating the visual periphery region; and (3) a Textual Semantic Alignment module to strengthen center-periphery distinction through cross-modal cues. Our bio-inspired approach transforms astigmatic attention into focused patterns, substantially improving adaptation to target domains. Experiments on six challenging CD-FSOD benchmarks consistently demonstrate improved detection accuracy and establish new state-of-the-art results.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 跨域小样本目标检测（CD-FSOD）旨在将预训练的检测器从源域适应到标注数据有限的目标域，面临着严重的域偏移和数据稀缺问题。在这项工作中，我们发现了一个先前被忽视的现象：模型在目标域中表现出分散且不集中的注意力，导致不精确定位和冗余预测，就像人类无法聚焦于视觉对象一样。因此，我们将其称为目标域散光问题。对Transformer层间注意力距离的分析表明，常规微调本身就呈现出一种补救这一问题的趋势，但结果仍然远不能令人满意，而这正是我们要在本文中加以改进的地方。受人类中央凹式视觉系统的生物学启发，我们通过一个中心-边缘注意力精细化框架来增强微调的内在趋势。该框架包含：（1）一个正模式精细化模块，利用类别特定的原型来重塑注意力，使其聚焦于语义对象，模拟视觉中心区域；（2）一个负上下文调制模块，通过对背景上下文进行建模来增强边界区分，模拟视觉周边区域；以及（3）一个文本语义对齐模块，通过跨模态线索来加强中心-边缘的区分。我们受生物学启发的方案将散光型注意力转化为聚焦模式，从而显著提高对目标域的适应性。在六个具有挑战性的CD-FSOD基准测试上的实验一致表明，检测精度得到了提高，并建立了新的最先进水平。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper addresses the 'target-domain Astigmatism' problem in cross-domain few-shot object detection by proposing a bio-inspired, center-periphery attention refinement framework, achieving state-of-the-art results on multiple benchmarks.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文通过提出一个受生物学启发的中心-外围注意力细化框架，解决了跨域少样本目标检测中的“目标域散光”问题，并在多个基准测试中取得了最先进的结果。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18541v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Yongwei Jiang, Yixiong Zou, Yuhua Li, Ruixuan Li</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.050000000000001, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Inst4DGS: Instance-Decomposed 4D Gaussian Splatting with Multi-Video Label Permutation Learning</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> We present Inst4DGS, an instance-decomposed 4D Gaussian Splatting (4DGS) approach with long-horizon per-Gaussian trajectories. While dynamic 4DGS has advanced rapidly, instance-decomposed 4DGS remains underexplored, largely due to the difficulty of associating inconsistent instance labels across independently segmented multi-view videos. We address this challenge by introducing per-video label-permutation latents that learn cross-video instance matches through a differentiable Sinkhorn layer, enabling direct multi-view supervision with consistent identity preservation. This explicit label alignment yields sharp decision boundaries and temporally stable identities without identity drift. To further improve efficiency, we propose instance-decomposed motion scaffolds that provide low-dimensional motion bases per object for long-horizon trajectory optimization. Experiments on Panoptic Studio and Neural3DV show that Inst4DGS jointly supports tracking and instance decomposition while achieving state-of-the-art rendering and segmentation quality. On the Panoptic Studio dataset, Inst4DGS improves PSNR from 26.10 to 28.36, and instance mIoU from 0.6310 to 0.9129, over the strongest baseline.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 我们提出了Inst4DGS，一种实例分解的4D高斯溅射(4DGS)方法，具有长时程的基于高斯分布的轨迹。虽然动态4DGS取得了快速进展，但实例分解的4DGS仍未被充分探索，主要原因是难以关联独立分割的多视角视频中不一致的实例标签。为了解决这个挑战，我们引入了基于视频的标签置换潜变量，通过可微分的Sinkhorn层学习跨视频的实例匹配，从而实现具有一致身份保持的直接多视角监督。这种显式的标签对齐产生了清晰的决策边界和时间上稳定的身份，消除了身份漂移。为了进一步提高效率，我们提出了实例分解的运动骨架，为每个对象的长时程轨迹优化提供低维运动基。在Panoptic Studio和Neural3DV上的实验表明，Inst4DGS可以联合支持跟踪和实例分解，同时实现最先进的渲染和分割质量。在Panoptic Studio数据集上，Inst4DGS相对于最强的基线，将PSNR从26.10提高到28.36，实例mIoU从0.6310提高到0.9129。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: Inst4DGS introduces an instance-decomposed 4D Gaussian Splatting approach that tackles the challenge of inconsistent instance labels across multi-view videos by learning cross-video instance matches, leading to improved rendering and segmentation quality.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: Inst4DGS 提出了一种实例分解的 4D 高斯溅射方法，通过学习跨视频实例匹配来解决多视图视频中不一致的实例标签问题，从而提高了渲染和分割质量。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18402v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Yonghan Lee, Dinesh Manocha</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.1000000000000005, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Cyber-Resilient Digital Twins: Discriminating Attacks for Safe Critical Infrastructure Control</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Industrial Cyber-Physical Systems (ICPS) face growing threats from cyber-attacks that exploit sensor and control vulnerabilities. Digital Twin (DT) technology can detect anomalies via predictive modelling, but current methods cannot distinguish attack types and often rely on costly full-system shutdowns. This paper presents i-SDT (intelligent Self-Defending DT), combining hydraulically-regularized predictive modelling, multi-class attack discrimination, and adaptive resilient control. Temporal Convolutional Networks (TCNs) with differentiable conservation constraints capture nominal dynamics and improve robustness to adversarial manipulations. A recurrent residual encoder with Maximum Mean Discrepancy (MMD) separates normal operation from single- and multi-stage attacks in latent space. When attacks are confirmed, Model Predictive Control (MPC) uses uncertainty-aware DT predictions to keep operations safe without shutdown. Evaluation on SWaT and WADI datasets shows major gains in detection accuracy, 44.1% fewer false alarms, and 56.3% lower operational costs in simulation-in-the-loop evaluation. with sub-second inference latency confirming real-time feasibility on plant-level workstations, i-SDT advances autonomous cyber-physical defense while maintaining operational resilience.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 工业信息物理系统 (ICPS) 面临着来自网络攻击日益增长的威胁，这些攻击利用传感器和控制系统的漏洞。数字孪生 (DT) 技术可以通过预测建模检测异常，但当前方法无法区分攻击类型，并且通常依赖于成本高昂的系统全面停机。本文提出 i-SDT（智能自防御 DT），结合液压正则化预测建模、多类别攻击辨别和自适应弹性控制。具有可微守恒约束的时间卷积网络 (TCN) 捕捉标称动态，并提高对抗性操纵的鲁棒性。具有最大均值差异 (MMD) 的循环残差编码器在潜在空间中区分正常运行与单阶段和多阶段攻击。当攻击被确认时，模型预测控制 (MPC)  利用具有不确定性意识的 DT 预测，在不关机的情况下保持运行安全。在 SWaT 和 WADI 数据集上的评估表明，检测准确率显著提高，误报减少 44.1%，在循环仿真评估中运营成本降低 56.3%。凭借亚秒级的推理延迟，确认了工厂级工作站上的实时可行性，i-SDT 推进了自主信息物理防御，同时保持了运营弹性。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces i-SDT, a digital twin framework for detecting and discriminating cyberattacks in industrial control systems using TCNs, MMD, and MPC, achieving improved detection accuracy and reduced operational costs compared to existing methods.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了i-SDT，一个数字孪生框架，用于检测和区分工业控制系统中的网络攻击，使用TCNs、MMD和MPC，与现有方法相比，实现了更高的检测精度和更低的运营成本。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18613v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Mohammadhossein Homaei, Iman Khazrak, Rubén Molano, Andrés Caro, Mar Ávila</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.15, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">SINDy-KANs: Sparse identification of non-linear dynamics through Kolmogorov-Arnold networks</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Kolmogorov-Arnold networks (KANs) have arisen as a potential way to enhance the interpretability of machine learning. However, solutions learned by KANs are not necessarily interpretable, in the sense of being sparse or parsimonious. Sparse identification of nonlinear dynamics (SINDy) is a complementary approach that allows for learning sparse equations for dynamical systems from data; however, learned equations are limited by the library. In this work, we present SINDy-KANs, which simultaneously train a KAN and a SINDy-like representation to increase interpretability of KAN representations with SINDy applied at the level of each activation function, while maintaining the function compositions possible through deep KANs. We apply our method to a number of symbolic regression tasks, including dynamical systems, to show accurate equation discovery across a range of systems.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 柯尔莫哥洛夫-阿诺德网络（KANs）已经成为一种潜在的增强机器学习可解释性的方法。然而，KANs学习到的解不一定具有可解释性，即稀疏性或简约性。非线性动力学稀疏辨识（SINDy）是一种互补的方法，允许从数据中学习动力系统的稀疏方程。然而，学习到的方程受限于函数库。在这项工作中，我们提出了SINDy-KANs，它同时训练一个KAN和一个类SINDy的表示，以提高KAN表示的可解释性，其中SINDy应用于每个激活函数层面，同时保持深度KANs可能实现的函数组合。我们将我们的方法应用于诸多符号回归任务，包括动力系统，以展示该方法在各种系统中准确的方程发现能力。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces SINDy-KANs, a method that combines Kolmogorov-Arnold Networks (KANs) with Sparse Identification of Nonlinear Dynamics (SINDy) to improve the interpretability of KAN representations, specifically for discovering equations in dynamical systems.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了SINDy-KANs，一种结合Kolmogorov-Arnold网络(KANs)和稀疏非线性动态识别(SINDy)的方法，旨在提高KAN表示的可解释性，特别是用于发现动力学系统中的方程。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18548v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Amanda A. Howard, Nicholas Zolman, Bruno Jacob, Steven L. Brunton, Panos Stinis</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.2, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">iSatCR: Graph-Empowered Joint Onboard Computing and Routing for LEO Data Delivery</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Sending massive Earth observation data produced by low Earth orbit (LEO) satellites back to the ground for processing consumes a large amount of on-orbit bandwidth and exacerbates the space-to-ground link bottleneck. Most prior work has concentrated on optimizing the routing of raw data within the constellation, yet cannot cope with the surge in data volume. Recently, advances in onboard computing have made it possible to process data in situ, thus significantly reducing the data volume to be transmitted. In this paper, we present iSatCR, a distributed graph-based approach that jointly optimizes onboard computing and routing to boost transmission efficiency. Within iSatCR, we design a novel graph embedding utilizing shifted feature aggregation and distributed message passing to capture satellite states, and then propose a distributed graph-based deep reinforcement learning algorithm that derives joint computing-routing strategies under constrained on-board storage to handle the complexity and dynamics of LEO networks. Extensive experiments show iSatCR outperforms baselines, particularly under high load.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 将低地球轨道（LEO）卫星产生的大量地球观测数据传输回地面进行处理会消耗大量的在轨带宽，并加剧空间-地面链路的瓶颈。过去的大部分工作都集中在优化星座内原始数据的路由，但无法应对数据量的激增。最近，星上计算技术的进步使得在原位处理数据成为可能，从而显著减少了需要传输的数据量。在本文中，我们提出了iSatCR，一种基于分布式图的方法，它联合优化星上计算和路由以提高传输效率。在iSatCR中，我们设计了一种新颖的图嵌入，利用移位特征聚合和分布式消息传递来捕获卫星状态，然后提出了一种基于分布式图的深度强化学习算法，该算法导出在受限的星上存储条件下联合的计算-路由策略，以处理LEO网络的复杂性和动态性。大量的实验表明，iSatCR优于基准方案，尤其是在高负载情况下。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces iSatCR, a graph-based deep reinforcement learning approach for jointly optimizing onboard computing and data routing in LEO satellites to reduce data transmission volume and improve efficiency, demonstrating superior performance under high load.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了iSatCR，一种基于图的深度强化学习方法，用于联合优化LEO卫星上的板载计算和数据路由，以减少数据传输量并提高效率，并在高负载下表现出卓越的性能。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18539v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Jiangtao Luo, Bingbing Xu, Shaohua Xia, Yongyi Ran</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.25, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Tendon-Actuated Robots with a Tapered, Flexible Polymer Backbone: Design, Fabrication, and Modeling</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> This paper presents the design, modeling, and fabrication of 3D-printed, tendon-actuated continuum robots featuring a flexible, tapered backbone constructed from thermoplastic polyurethane (TPU). Our scalable design incorporates an integrated electronics base housing that enables direct tendon tension control and sensing via actuators and compression load cells. Unlike many continuum robots that are single-purpose and costly, the proposed design prioritizes customizability, rapid assembly, and low cost while enabling high curvature and enhanced distal compliance through geometric tapering, thereby supporting a broad range of compliant robotic inspection and manipulation tasks. We develop a generalized forward kinetostatic model of the tapered backbone based on Cosserat rod theory using a Newtonian approach, extending existing tendon-actuated Cosserat rod formulations to explicitly account for spatially varying backbone cross-sectional geometry. The model captures the graded stiffness profile induced by the tapering and enables systematic exploration of the configuration space as a function of the geometric design parameters. Specifically, we analyze how the backbone taper angle influences the robot's configuration space and manipulability. The model is validated against motion capture data, achieving centimeter-level shape prediction accuracy after calibrating Young's modulus via a line search that minimizes modeling error. We further demonstrate teleoperated grasping using an endoscopic gripper routed along the continuum robot, mounted on a 6-DoF robotic arm. Parameterized iLogic/CAD scripts are provided for rapid geometry generation and scaling. The presented framework establishes a simple, rapid, and reproducible pathway from parametric design to controlled tendon actuation for tapered, tendon-driven continuum robots manufactured using fused deposition modeling 3D printers.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 本文介绍了一种3D打印、肌腱驱动的连续体机器人的设计、建模和制造，该机器人具有由热塑性聚氨酯（TPU）制成的柔性锥形骨干。我们的可扩展设计集成了一个电子元件基座，该基座通过执行器和压缩力传感器实现肌腱张力的直接控制和感应。与许多用途单一且成本高昂的连续体机器人不同，所提出的设计优先考虑定制化、快速组装和低成本，同时通过几何锥化实现高曲率和增强的末端顺应性，从而支持广泛的柔性机器人检测和操作任务。我们基于Cosserat杆理论，采用牛顿方法，开发了一个通用的锥形骨干正向动静力学模型，该模型扩展了现有的肌腱驱动Cosserat杆公式，以明确考虑空间变化的骨干横截面几何形状。该模型捕捉了由锥形引起的梯度刚度分布，并能够根据几何设计参数系统化地探索配置空间。具体而言，我们分析了骨干锥角如何影响机器人的配置空间和可操作性。通过使用线搜索来最小化建模误差，校准杨氏模量后，该模型针对运动捕捉数据进行验证，实现了厘米级的形状预测精度。我们进一步演示了使用内窥镜夹持器进行远程操作抓取，该夹持器沿连续体机器人布线，并安装在6自由度机械臂上。提供了参数化的iLogic/CAD脚本，用于快速的几何生成和缩放。所提出的框架为使用熔融沉积建模3D打印机制造的锥形、肌腱驱动连续体机器人建立了一条从参数化设计到受控肌腱驱动的简单、快速且可重现的途径。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents a low-cost, customizable, 3D-printed, tendon-actuated continuum robot with a tapered backbone, along with a validated kinetostatic model for predicting its behavior.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种低成本、可定制的 3D 打印肌腱驱动连续体机器人，该机器人具有锥形主干，以及用于预测其行为的经过验证的动静力学模型。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.19124v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Harald Minde Hansen, Nandita Gallacher, Nicholas B. Andrews, Kristin Y. Pettersen, Jan Tommy Gravdahl, Mario di Castro</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.300000000000001, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">A Passive Elastic-Folding Mechanism for Stackable Airdrop Sensors</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Air-dispersed sensor networks deployed from aerial robotic systems (e.g., UAVs) provide a low-cost approach to wide-area environmental monitoring. However, existing methods often rely on active actuators for mid-air shape or trajectory control, increasing both power consumption and system cost. Here, we introduce a passive elastic-folding hinge mechanism that transforms sensors from a flat, stackable form into a three-dimensional structure upon release. Hinges are fabricated by laminating commercial sheet materials with rigid printed circuit boards (PCBs) and programming fold angles through a single oven-heating step, enabling scalable production without specialized equipment. Our geometric model links laminate geometry, hinge mechanics, and resulting fold angle, providing a predictive design methodology for target configurations. Laboratory tests confirmed fold angles between 10 degrees and 100 degrees, with a standard deviation of 4 degrees and high repeatability. Field trials further demonstrated reliable data collection and LoRa transmission during dispersion, while the Horizontal Wind Model (HWM)-based trajectory simulations indicated strong potential for wide-area sensing exceeding 10 km.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 从空中机器人系统（如无人机）部署的空中散布式传感器网络，为广域环境监测提供了一种低成本的途径。然而，现有方法通常依赖于主动执行器来进行空中形状或轨迹控制，从而增加了功耗和系统成本。在此，我们介绍一种被动弹性折叠铰链机制，该机制能够在释放后将传感器从扁平的可堆叠形式转换为三维结构。铰链通过层压商业板材和刚性印刷电路板（PCB）制造而成，并通过单步烘箱加热来编程折叠角度，从而实现可扩展的生产，而无需专用设备。我们的几何模型将层压板几何形状、铰链力学和最终折叠角度联系起来，为目标配置提供了一种预测性的设计方法。实验室测试证实，折叠角度在10度到100度之间，标准偏差为4度，且具有很高的重复性。现场试验进一步证明了分散过程中可靠的数据采集和LoRa传输，同时基于水平风模型（HWM）的轨迹仿真表明，广域传感具有超过10公里的强大潜力。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces a passive elastic-folding hinge mechanism for stackable airdrop sensors, enabling low-cost, wide-area environmental monitoring with UAVs. It details the fabrication process, a geometric model for hinge design, and successful lab and field trials.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种用于可堆叠空投传感器的被动弹性折叠铰链机构，通过无人机实现低成本的广域环境监测。论文详细介绍了制造过程、铰链设计的几何模型，以及成功的实验室和现场试验。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18861v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Damyon Kim, Yuichi Honjo, Tatsuya Iizuka, Naomi Okubo, Naoto Endo, Hiroshi Matsubara, Yoshihiro Kawahara, Naoto Morita, Takuya Sasatani</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.3500000000000005, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">"You've got a friend in me": Co-Designing a Peer Social Robot for Young Newcomers' Language and Cultural Learning</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Community literacy programs supporting young newcomer children in Canada face limited staffing and scarce one-to-one time, which constrains personalized English and cultural learning support. This paper reports on a co-design study with United for Literacy tutors that informed Maple, a table-top, peer-like Socially Assistive Robot (SAR) designed as a practice partner within tutor-mediated sessions. From shadowing and co-design interviews, we derived newcomer-specific requirements and added them in an integrated prototype that uses short story-based activities, multi-modal scaffolding (speech, facial feedback, gesture), and embedded quizzes that support attention while producing tutor-actionable formative signals. We contribute system design implications for tutor-in-the-loop SARs supporting language socialization in community settings and outline directions for child-centered evaluation in authentic programs.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 在加拿大，支持年轻新移民儿童的社区扫盲项目面临人员配置有限和一对一指导时间不足的问题，这制约了个性化的英语和文化学习支持。本文报告了一项与 United for Literacy 导师共同设计的合作设计研究，该研究为 Maple 提供了信息。Maple 是一款桌面型的、类同伴的社交辅助机器人 (SAR)，旨在作为导师辅导课程中的练习伙伴。通过观察和合作设计访谈，我们获得了新移民特定需求，并将它们添加到一个集成的原型中，该原型使用基于短篇故事的活动、多模态支架（语音、面部反馈、手势）和嵌入式小测验，从而支持注意力，同时产生可供导师采取行动的形成性信号。我们贡献了导师在环社交辅助机器人 (SAR) 在社区环境中支持语言社会化的系统设计启示，并概述了在真实项目中进行以儿童为中心的评估的方向。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper presents a co-designed socially assistive robot (SAR) named Maple aimed at supporting language and cultural learning for young newcomer children by acting as a practice partner in tutor-mediated sessions, incorporating multimodal scaffolding and formative assessments.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种共同设计的社交辅助机器人（SAR）Maple，旨在通过在导师指导的课程中充当练习伙伴，来支持年轻新移民儿童的语言和文化学习，其融合了多模态支架和形成性评估。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18804v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Neil Fernandes, Cheng Tang, Tehniyat Shahbaz, Alex Hauschildt, Emily Davies-Robinson, Yue Hu, Kerstin Dautenhahn</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.4, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Inductance-Based Force Self-Sensing in Fiber-Reinforced Pneumatic Twisted-and-Coiled Actuators</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Fiber-reinforced pneumatic twisted-and-coiled actuators (FR-PTCAs) offer high power density and compliance but their strong hysteresis and lack of intrinsic proprioception limit effective closed-loop control. This paper presents a self-sensing FR-PTCA integrated with a conductive nickel wire that enables intrinsic force estimation and indirect displacement inference via inductance feedback. Experimental characterization reveals that the inductance of the actuator exhibits a deterministic, low-hysteresis inductance-force relationship at constant pressures, in contrast to the strongly hysteretic inductance-length behavior. Leveraging this property, this paper develops a parametric self-sensing model and a nonlinear hybrid observer that integrates an Extended Kalman Filter (EKF) with constrained optimization to resolve the ambiguity in the inductance-force mapping and estimate actuator states. Experimental results demonstrate that the proposed approach achieves force estimation accuracy comparable to that of external load cells and maintains robust performance under varying load conditions.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 纤维增强气动扭曲盘绕执行器(FR-PTCA)具有高功率密度和顺应性，但其强烈的滞后性和缺乏内在本体感受限制了有效的闭环控制。本文提出了一种集成了导电镍线的自感知型FR-PTCA，该镍线能够通过电感反馈实现内在力估计和间接位移推断。实验表明，在恒定压力下，执行器的电感呈现出确定性的、低滞后的电感-力关系，这与高滞后的电感-长度行为形成对比。利用这一特性，本文开发了一个参数化自感知模型和一个非线性混合观测器，该观测器将扩展卡尔曼滤波(EKF)与约束优化相结合，以解决电感-力映射中的模糊性并估计执行器状态。实验结果表明，所提出的方法实现了与外部测力计相当的力估计精度，并在不同的负载条件下保持了稳健的性能。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper presents a self-sensing fiber-reinforced pneumatic actuator with integrated inductance feedback for accurate force estimation and state inference, using an Extended Kalman Filter and constrained optimization to address hysteresis.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种自感知纤维增强气动执行器，集成了电感反馈，通过扩展卡尔曼滤波器和约束优化来解决磁滞问题，从而实现精确的力估计和状态推断。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18555v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Yunsong Zhang, Tianlin Li, Mingyang Yang, Feitian Zhang</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.45, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Multi-material Direct Ink Writing and Embroidery for Stretchable Wearable Sensors</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> The development of wearable sensing systems for sports performance tracking, rehabilitation, and injury prevention has driven growing demand for smart garments that combine comfort, durability, and accurate motion detection. This paper presents a textile-compatible fabrication workflow that integrates multi-material direct ink writing with automated embroidery to create stretchable strain sensors directly embedded into garments. The process combines sequential multi-material printing of a silicone-carbon grease-silicone stack with automated embroidery that provides both mechanical fixation and electrical interfacing in a single step. The resulting hybrid sensor demonstrates stretchability up to 120% strain while maintaining electrical continuity, with approximately linear behaviour up to 60% strain (R^2 = 0.99), a gauge factor of 31.4, and hysteresis of 22.9%. Repeated loading-unloading tests over 80 cycles show baseline and peak drift of 0.135% and 0.236% per cycle, respectively, indicating moderate cycle-to-cycle stability. Mechanical testing further confirms that the silicone-fabric interface remains intact under large deformation, with failure occurring in the textile rather than at the stitched boundary. As a preliminary proof of concept, the sensor was integrated into wearable elbow and knee sleeves for joint angle monitoring, showing a clear correlation between normalised resistance change and bending angle. By addressing both mechanical fixation and electrical interfacing through embroidery-based integration, this approach provides a reproducible and scalable pathway for incorporating printed stretchable electronics into textile systems for motion capture and soft robotic applications.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 用于运动表现追踪、康复和损伤预防的可穿戴传感系统的发展，推动了对兼具舒适性、耐用性和精确运动检测的智能服装日益增长的需求。本文提出了一种与纺织品兼容的制造流程，该流程结合多材料直接墨水书写技术和自动化刺绣技术，以在服装中直接嵌入可拉伸应变传感器。该工艺结合了硅酮-碳脂-硅酮堆叠层的顺序多材料打印，以及自动化刺绣技术，该技术在一步之内同时提供机械固定和电气接口。所得混合传感器表现出高达120%应变的拉伸性，同时保持电气连续性，在高达60%应变范围内具有近似线性行为（R^2 = 0.99），应变系数为31.4，滞后为22.9%。超过80个循环的重复加载-卸载测试显示，每个循环的基线和峰值漂移分别为0.135%和0.236%，表明循环间的稳定性适中。机械测试进一步证实，硅酮-织物界面在大形变下保持完整，失效发生在纺织品内部，而不是在缝合边界处。作为初步的概念验证，该传感器被集成到可穿戴的肘部和膝部袖套中，用于关节角度监测，显示出归一化电阻变化与弯曲角度之间的明显相关性。通过刺绣集成解决机械固定和电气接口问题，这种方法为将印刷可拉伸电子器件集成到纺织品系统中，用于运动捕捉和软机器人应用提供了一条可重复且可扩展的途径。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents a method for creating stretchable strain sensors directly embedded into garments using multi-material direct ink writing and automated embroidery, demonstrating their potential for wearable motion tracking applications.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种将多材料直接墨水书写与自动刺绣相结合的方法，用于创建直接嵌入服装中的可拉伸应变传感器，展示了其在可穿戴运动跟踪应用中的潜力。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18354v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Lukas Cha, Ryman Hashem, Ria Prakash, Tanguy Declety, Wenze Zhang, Liang He</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.5, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">FedTrident: Resilient Road Condition Classification Against Poisoning Attacks in Federated Learning</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> FL has emerged as a transformative paradigm for ITS, notably camera-based Road Condition Classification (RCC). However, by enabling collaboration, FL-based RCC exposes the system to adversarial participants launching Targeted Label-Flipping Attacks (TLFAs). Malicious clients (vehicles) can relabel their local training data (e.g., from an actual uneven road to a wrong smooth road), consequently compromising global model predictions and jeopardizing transportation safety. Existing countermeasures against such poisoning attacks fail to maintain resilient model performance near the necessary attack-free levels in various attack scenarios due to: 1) not tailoring poisoned local model detection to TLFAs, 2) not excluding malicious vehicular clients based on historical behavior, and 3) not remedying the already-corrupted global model after exclusion. To close this research gap, we propose FedTrident, which introduces: 1) neuron-wise analysis for local model misbehavior detection (notably including attack goal identification, critical feature extraction, and GMM-based model clustering and filtering); 2) adaptive client rating for client exclusion according to the local model detection results in each FL round; and 3) machine unlearning for corrupted global model remediation once malicious clients are excluded during FL. Extensive evaluation across diverse FL-RCC models, tasks, and configurations demonstrates that FedTrident can effectively thwart TLFAs, achieving performance comparable to that in attack-free scenarios and outperforming eight baseline countermeasures by 9.49% and 4.47% for the two most critical metrics. Moreover, FedTrident is resilient to various malicious client rates, data heterogeneity levels, complicated multi-task, and dynamic attacks.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 联邦学习作为一种变革性的模式已应用于智能交通系统（ITS），尤其是在基于摄像头的道路状况分类（RCC）领域。然而，通过实现协作，基于联邦学习的道路状况分类会使系统暴露于发起目标标签翻转攻击（TLFA）的对抗参与者之下。恶意客户端（车辆）可以重新标记其本地训练数据（例如，将实际不平整的道路标记为错误的平坦道路），从而损害全局模型预测并危及交通安全。由于以下原因，现有的针对此类投毒攻击的对策无法在各种攻击场景中保持接近必要无攻击水平的稳健模型性能：1）未针对目标标签翻转攻击量身定制受污染的本地模型检测；2）未基于历史行为排除恶意车辆客户端；3）未在排除恶意客户端后修复已损坏的全局模型。为了弥合这一研究空白，我们提出了FedTrident，它引入了：1）神经元级别的分析，用于本地模型误行为检测（尤其包括攻击目标识别、关键特征提取以及基于高斯混合模型(GMM)的模型聚类和过滤）；2）自适应客户端评分，用于根据每个联邦学习轮次中的本地模型检测结果进行客户端排除；以及3）机器学习遗忘，用于在联邦学习期间排除恶意客户端后修复受损的全局模型。跨越各种联邦学习道路状况分类模型、任务和配置的大量评估表明，FedTrident可以有效地阻止目标标签翻转攻击，实现与无攻击场景相当的性能，并在两个最关键的指标上分别优于八个基线对策9.49%和4.47%。此外，FedTrident对各种恶意客户端比例、数据异构性水平、复杂的多任务和动态攻击都具有弹性。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces FedTrident, a novel federated learning framework resilient to targeted label-flipping attacks in road condition classification, using neuron-wise analysis, adaptive client rating, and machine unlearning for global model remediation.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了 FedTrident，一种新型联邦学习框架，通过神经元分析、自适应客户端评分和全球模型修复的机器学习，能够抵御道路状况分类中目标标签翻转攻击。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.19101v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Sheng Liu, Panos Papadimitratos</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.550000000000001, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">RadioDiff-FS: Physics-Informed Manifold Alignment in Few-Shot Diffusion Models for High-Fidelity Radio Map Construction</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Radio maps (RMs) provide spatially continuous propagation characterizations essential for 6G network planning, but high-fidelity RM construction remains challenging. Rigorous electromagnetic solvers incur prohibitive computational latency, while data-driven models demand massive labeled datasets and generalize poorly from simplified simulations to complex multipath environments. This paper proposes RadioDiff-FS, a few-shot diffusion framework that adapts a pre-trained main-path generator to multipath-rich target domains with only a small number of high-fidelity samples. The adaptation is grounded in a theoretical decomposition of the multipath RM into a dominant main-path component and a directionally sparse residual. This decomposition shows that the cross-domain shift corresponds to a bounded and geometrically structured feature translation rather than an arbitrary distribution change. A Direction-Consistency Loss (DCL) is then introduced to constrain diffusion score updates along physically plausible propagation directions, suppressing phase-inconsistent artifacts that arise in the low-data regime. Experiments show that RadioDiff-FS reduces NMSE by 59.5% on static RMs and by 74.0% on dynamic RMs relative to the vanilla diffusion baseline, achieving an SSIM of 0.9752 and a PSNR of 36.37 dB under severely limited supervision.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 无线电地图 (RM) 提供了空间上连续的传播特性，对于 6G 网络规划至关重要，但高保真 RM 的构建仍然具有挑战性。严格的电磁求解器会产生过高的计算延迟，而数据驱动模型则需要大量的标记数据集，并且从简化的仿真到复杂的多径环境的泛化能力较差。本文提出 RadioDiff-FS，一种少样本扩散框架，仅需少量高保真样本即可将预训练的主路径生成器适配到多径丰富的目标域。该适配基于将多径 RM 理论分解为主要的主路径分量和方向上稀疏的残差。这种分解表明，跨域偏移对应于一个有界且几何结构化的特征转换，而不是任意的分布变化。然后引入方向一致性损失 (DCL)，以约束扩散得分沿物理上合理的传播方向的更新，从而抑制在低数据状态下出现的相位不一致伪影。实验表明，相对于原始扩散基线，RadioDiff-FS 在静态 RM 上将 NMSE 降低了 59.5%，在动态 RM 上降低了 74.0%，在严重受限的监督下实现了 0.9752 的 SSIM 和 36.37 dB 的 PSNR。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: RadioDiff-FS is a few-shot diffusion framework that constructs high-fidelity radio maps by adapting a pre-trained generator with a small number of high-fidelity samples, leveraging physics-informed manifold alignment and a direction-consistency loss.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: RadioDiff-FS是一种小样本扩散框架，它通过使用少量的真实样本来调整预训练的生成器，利用物理信息流形对齐和方向一致性损失来构建高保真无线电地图。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18865v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Xiucheng Wang, Zixuan Guo, Nan Cheng</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.6000000000000005, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Data-driven construction of machine-learning-based interatomic potentials for gas-surface scattering dynamics: the case of NO on graphite</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Accurate atomistic simulations of gas-surface scattering require potential energy surfaces that remain reliable over broad configurational and energetic ranges while retaining the efficiency needed for extensive trajectory sampling. Here, we develop a data-driven workflow for constructing a machine-learning interatomic potential (MLIP) tailored to gas-surface scattering dynamics, using nitric oxide (NO) scattering from highly oriented pyrolytic graphite (HOPG) as a benchmark system. Starting from an initial ab initio molecular dynamics (AIMD) dataset, local atomic environments are described by SOAP descriptors and analyzed in a reduced feature space obtained through principal component analysis. Farthest point sampling is then used to build a compact training set, and the resulting Deep Potential model is refined through a query-by-committee active-learning strategy using additional configurations extracted from molecular dynamics simulations over extended ranges of incident energies and surface temperatures. The final MLIP reproduces reference energies and forces with high fidelity and enables large-scale molecular dynamics simulations of NO scattering from graphite at a computational cost far below that of AIMD. The simulations provide detailed insight into adsorption energetics, trapping versus direct scattering probabilities, translational energy loss, angular distributions, and rotational excitation. Overall, the results reproduce the main experimental trends and demonstrate that descriptor-guided sampling combined with active learning offers an efficient and transferable strategy for constructing MLIPs for gas-surface interactions.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 燃气-表面散射的精确原子级模拟需要势能面在广泛的构型和能量范围内保持可靠性，同时保留大规模轨迹采样的效率。在这里，我们开发了一种数据驱动的工作流程，用于构建定制于燃气-表面散射动力学的机器学习原子间势（MLIP），以高定向热解石墨（HOPG）的氧化氮（NO）散射作为一个基准系统。从最初的从头算分子动力学（AIMD）数据集开始，通过SOAP描述符描述局部原子环境，并在通过主成分分析获得的降维特征空间中对其进行分析。然后，使用最远点抽样来构建一个紧凑的训练集，并通过使用从分子动力学模拟中提取的在高入射能量和表面温度扩展范围内的额外构型的query-by-committee主动学习策略来优化得到的深度势模型。最终的MLIP以高保真度重现参考能量和力，并能够以远低于AIMD的计算成本进行氧化氮在石墨上的散射的大规模分子动力学模拟。该模拟提供了对吸附能量学、捕获与直接散射概率、平动能损失、角度分布和旋转激发等方面的详细见解。总的来说，结果重现了主要的实验趋势，并表明描述符引导的抽样与主动学习相结合，为构建燃气-表面相互作用的MLIP提供了一种高效且可迁移的策略。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents a data-driven workflow for constructing a machine-learning interatomic potential (MLIP) for gas-surface scattering dynamics, specifically NO scattering on graphite, demonstrating efficient and transferable potential construction via descriptor-guided sampling and active learning.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文提出了一个数据驱动的工作流程，用于构建气体-表面散射动力学的机器学习原子间势（MLIP），以石墨上的NO散射为例，展示了通过描述符引导采样和主动学习实现高效且可转移的势构建。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18864v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Samuel Del Fré, Gilberto A. Alou Angulo, Maurice Monnerville, Alejandro Rivero Santamaría</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.65, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Evaluating Model-Free Policy Optimization in Masked-Action Environments via an Exact Blackjack Oracle</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Infinite-shoe casino blackjack provides a rigorous, exactly verifiable benchmark for discrete stochastic control under dynamically masked actions. Under a fixed Vegas-style ruleset (S17, 3:2 payout, dealer peek, double on any two, double after split, resplit to four), an exact dynamic programming (DP) oracle was derived over 4,600 canonical decision cells. This oracle yielded ground-truth action values, optimal policy labels, and a theoretical expected value (EV) of -0.00161 per hand. To evaluate sample-efficient policy recovery, three model-free optimizers were trained via simulated interaction: masked REINFORCE with a per-cell exponential moving average baseline, simultaneous perturbation stochastic approximation (SPSA), and the cross-entropy method (CEM). REINFORCE was the most sample-efficient, achieving a 46.37% action-match rate and an EV of -0.04688 after 10^6 hands, outperforming CEM (39.46%, 7.5x10^6 evaluations) and SPSA (38.63%, 4.8x10^6 evaluations). However, all methods exhibited substantial cell-conditional regret, indicating persistent policy-level errors despite smooth reward convergence. This gap shows that tabular environments with severe state-visitation sparsity and dynamic action masking remain challenging, while aggregate reward curves can obscure critical local failures. As a negative control, it was proven and empirically confirmed that under i.i.d. draws without counting, optimal bet sizing collapses to the table minimum. In addition, larger wagers strictly increased volatility and ruin without improving expectation. These results highlight the need for exact oracles and negative controls to avoid mistaking stochastic variability for genuine algorithmic performance.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 无限牌赌场二十一点为动态掩蔽行为下的离散随机控制提供了一个严格、可精确验证的基准。在固定的拉斯维加斯式规则（S17, 3:2赔率, 庄家偷看底牌, 任何两张牌可加倍, 分牌后可加倍, 最多重分四次）下，一个精确的动态规划（DP）预言机被推导出来，它基于4600个规范决策单元。这个预言机产生了真实的行动价值、最优策略标签，以及每手牌-0.00161的理论期望值（EV）。为了评估样本高效的策略恢复，三种无模型优化器通过模拟交互进行训练：带有每个单元指数移动平均基线的掩蔽REINFORCE、同步扰动随机逼近（SPSA）和交叉熵方法（CEM）。REINFORCE是最样本高效的，在10^6手牌后，达到了46.37%的行动匹配率和-0.04688的EV，优于CEM（39.46%，7.5x10^6次评估）和SPSA（38.63%，4.8x10^6次评估）。然而，所有方法都表现出显著的单元条件后悔，表明尽管奖励收敛平稳，仍然存在持续的策略层面的错误。这个差距表明，具有严重状态访问稀疏性和动态行动掩蔽的表格环境仍然具有挑战性，而聚合奖励曲线可能会掩盖关键的局部失败。作为一个负控制，已经证明并通过经验证实，在没有算牌的独立同分布（i.i.d.）抽牌下，最优投注规模会降至桌面最小值。此外，更大的赌注严格地增加了波动性和破产风险，而没有提高期望值。这些结果强调了需要精确的预言机和负控制，以避免将随机变异误认为是真正的算法性能。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper presents an exact Blackjack oracle as a benchmark for model-free policy optimization in environments with masked actions, finding that even simple methods struggle with state sparsity and dynamic action masking despite good reward convergence.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一个精确的21点预言机，作为在具有掩码动作的环境中进行无模型策略优化的基准。研究发现，尽管奖励收敛良好，但即使是简单的方法也在状态稀疏和动态动作掩码方面遇到困难。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18642v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Kevin Song</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.7, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">ALIGN: Adversarial Learning for Generalizable Speech Neuroprosthesis</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Intracortical brain-computer interfaces (BCIs) can decode speech from neural activity with high accuracy when trained on data pooled across recording sessions. In realistic deployment, however, models must generalize to new sessions without labeled data, and performance often degrades due to cross-session nonstationarities (e.g., electrode shifts, neural turnover, and changes in user strategy). In this paper, we propose ALIGN, a session-invariant learning framework based on multi-domain adversarial neural networks for semi-supervised cross-session adaptation. ALIGN trains a feature encoder jointly with a phoneme classifier and a domain classifier operating on the latent representation. Through adversarial optimization, the encoder is encouraged to preserve task-relevant information while suppressing session-specific cues. We evaluate ALIGN on intracortical speech decoding and find that it generalizes consistently better to previously unseen sessions, improving both phoneme error rate and word error rate relative to baselines. These results indicate that adversarial domain alignment is an effective approach for mitigating session-level distribution shift and enabling robust longitudinal BCI decoding.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 皮层内脑机接口(BCI)在基于跨会话数据训练时，能够以高精度从神经活动中解码语音。然而，在实际部署中，模型必须能够泛化到没有标签数据的新会话，且性能通常会因跨会话非平稳性（例如，电极位移、神经元更替以及用户策略变化）而下降。在本文中，我们提出ALIGN，一个基于多域对抗神经网络的会话不变学习框架，用于半监督跨会话自适应。ALIGN联合训练一个特征编码器、一个音素分类器和一个作用于潜在表示域的域分类器。通过对抗优化，编码器被鼓励保留任务相关信息，同时抑制会话特定线索。我们评估了ALIGN在皮层内语音解码中的表现，发现它对先前未见过的会话泛化能力显著提升，相对于基线方法而言，音素错误率和词错误率均有所降低。这些结果表明对抗性域对齐是缓解会话级别分布偏移并实现稳健的纵向BCI解码的有效方法。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces ALIGN, an adversarial learning framework for improving the generalization of speech neuroprosthesis across different recording sessions by mitigating session-level distribution shifts.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种名为 ALIGN 的对抗学习框架，通过减轻会话级别的分布偏移，从而提高语音神经修复在不同记录会话中的泛化能力。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18299v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Zhanqi Zhang, Shun Li, Bernardo L. Sabatini, Mikio Aoi, Gal Mishne</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.75, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Lightweight Model Predictive Control for Spacecraft Rendezvous Attitude Synchronization</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> This work introduces two lightweight model predictive control (MPC) approaches for attitude tracking with reaction wheels during spacecraft rendezvous synchronization. Both approaches are based on a novel attitude deviation formulation, which enables the use of inherently linear constraints on angular velocity. We develop a single-loop and a dual-loop MPC; the latter embeds a stabilizing feedback controller within the inner loop, yielding a linear time-invariant system. Both controllers are implemented with CasADi - including automatic code generation - evaluated across various solvers, and validated within the Basilisk astrodynamics simulation framework. The experimental results demonstrate improved tracking accuracy alongside reductions in computational effort and memory consumption. Finally, embedded delivery to an ARM Cortex-M7 - representative of commercial off-the-shelf devices used in New Space platforms - confirms the real-time feasibility of these approaches and highlights their suitability for onboard attitude control in resource-constrained spacecraft rendezvous missions.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 本文介绍了两种轻量级的模型预测控制（MPC）方法，用于航天器交会对接同步期间借助反作用轮进行姿态跟踪。这两种方法都基于一种新颖的姿态偏差公式，该公式使得可以使用角速度的固有线性约束。我们开发了一种单环MPC和一种双环MPC；后者在内环中嵌入了一个稳定反馈控制器，从而产生一个线性时不变系统。两种控制器都使用CasADi实现（包括自动代码生成），并在各种求解器上进行评估，并在Basilisk天体动力学仿真框架内进行验证。实验结果表明，在降低计算量和内存消耗的同时，跟踪精度得到了提高。最后，在ARM Cortex-M7（代表新航天平台中使用的商用现成设备）上的嵌入式部署证实了这些方法的实时可行性，并突出了它们在资源受限的航天器交会对接任务中进行星上姿态控制的适用性。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces lightweight MPC approaches for spacecraft rendezvous attitude synchronization, validated in simulation and on an ARM Cortex-M7, demonstrating improved accuracy and reduced computational cost.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了用于航天器交会对接姿态同步的轻量级模型预测控制（MPC）方法，并在仿真和ARM Cortex-M7上进行了验证，证明了其更高的精度和更低的计算成本。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18921v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Peter Stadler, Alexander Meinert, Niklas Baldauf, Alen Turnwald</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.800000000000001, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">TiBCLaG: A Trigger-induced Bistable Compliant Laparoscopic Grasper</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Industrial laparoscopic graspers use multi-link rigid mechanisms manufactured to tight tolerances, resulting in high manufacturing and assembly costs. This work presents the design and proof-of-concept validation of a monolithic, fully compliant, bistable, laparoscopic grasper that eliminates the need for multiple rigid links, thereby reducing part count. The device integrates a compliant trigger and a compliant gripper end-effector, coupled via a control push-rod, to achieve stable grasping without continuous user input. The trigger mechanism is synthesized using a Two-Element Beam Constraint Model as a design framework to control the deformation and stiffness of V-beam-like elements. This technique enables elastic energy storage while preventing snap-through instability. The end-effector is designed as a compliant gripper to achieve adaptive grasping through elastic deformation. Jaws' opening-and-closing performance is demonstrated using nonlinear finite element analysis. The laparoscopic design presented here is fabricated using fused deposition 3D printing. The fabricated prototype demonstrates reliable bistable actuation, confirming the feasibility of such compliant laparoscopic grasper architectures.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 工业腹腔镜抓钳通常使用以严格公差制造的多连杆刚性机构，导致较高的制造成本和组装成本。本工作介绍了一种单片式、全柔性、双稳态腹腔镜抓钳的设计和概念验证，该设计消除了对多个刚性连杆的需求，从而减少了零件数量。该装置集成了柔性扳机和柔性夹持器末端执行器，通过控制推杆耦合，无需持续的用户输入即可实现稳定的抓取。扳机机构采用双元梁约束模型作为设计框架进行综合，以控制V型梁状元件的变形和刚度。该技术能够实现弹性势能储存，同时防止屈曲失稳。末端执行器被设计为柔性夹持器，以通过弹性变形实现自适应抓取。使用非线性有限元分析证明了钳口的开合性能。本文提出的腹腔镜设计采用熔融沉积3D打印技术进行制造。制造的原型验证了可靠的双稳态驱动，证实了这种柔性腹腔镜抓钳架构的可行性。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces a 3D-printed, fully compliant, bistable laparoscopic grasper to reduce manufacturing costs by eliminating rigid links and enabling stable grasping without continuous input.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种3D打印的，完全柔性的，双稳态的腹腔镜抓取器，通过消除刚性连接并实现无需连续输入即可稳定抓取，从而降低制造成本。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.18559v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Joel J Nellikkunnel, Prabhat Kumar</p>
-            
-        </motion.div>
-        
     </div>
 
+    <section class="filtered-section">
+        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <h3>ADMM-Based Distributed MPC with Control Barrier Functions for Safe Multi-Robot Quadrupedal Locomotion</h3>
+                
+                <p><strong>Authors:</strong> Yicheng Zeng, Ruturaj S. Sambhus, Basit Muhammad Imran, Jeeseop Kim, Vittorio Pastore, Kaveh Akbari Hamed</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种基于ADMM和控制障碍函数的分散式MPC框架，用于安全的多机器人四足运动。该方法在实现与集中式MPC相当的性能的同时，具有更快的规划时间，并通过硬件实验验证了其有效性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Benchmarking Visual Feature Representations for LiDAR-Inertial-Visual Odometry Under Challenging Conditions</h3>
+                
+                <p><strong>Authors:</strong> Eunseon Choi, Junwoo Hong, Daehan Lee, Sanghyun Park, Hyunyoung Jo, Sunyoung Kim, Changho Kang, Seongsam Kim, Yonghan Jung, Jungwook Park, Seul Koo, Soohee Han</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍并评估了一种混合的激光雷达-惯性-视觉里程计方法，该方法结合了直接光度法和基于描述符的特征匹配，在具有挑战性的视觉条件下表现出更好的鲁棒性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>HEP Statistical Inference for UAV Fault Detection: CLs, LRT, and SBI Applied to Blade Damage</h3>
+                
+                <p><strong>Authors:</strong> Khushiyant</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文将来自粒子物理的统计方法（LRT、CLs、SNPE）应用于无人机故障检测（叶片损伤），在真实飞行数据集上实现了高 AUC 分数和受控的误报率，优于 CUSUM 和自编码器等其他方法。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Evaluating Game Difficulty in Tetris Block Puzzle</h3>
+                
+                <p><strong>Authors:</strong> Chun-Jui Wang, Jian-Ting Guo, Hung Guei, Chung-Chin Shih, Ti-Rong Wu, I-Chen Wu</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文使用随机Gumbel AlphaZero (SGAZ) 来评估俄罗斯方块拼图游戏不同规则集的难度，发现持有方块会降低难度，而增加更多方块变体则会增加难度。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Teleological Inference in Structural Causal Models via Intentional Interventions</h3>
+                
+                <p><strong>Authors:</strong> Dario Compagno, Fabio Massimo Zennaro</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出在结构因果模型 (SCM) 中使用“意图干预”来推断干预因果系统的 Agent 的目标和意图，旨在解决现有 Agent 建模方法的局限性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>ClawTrap: A MITM-Based Red-Teaming Framework for Real-World OpenClaw Security Evaluation</h3>
+                
+                <p><strong>Authors:</strong> Haochen Zhao, Shaoyang Cui</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了一个名为ClawTrap的MITM框架，用于评估自主Web代理(OpenClaw)在网络攻击下的安全性，揭示了较弱模型的漏洞。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>SCISSR: Scribble-Conditioned Interactive Surgical Segmentation and Refinement</h3>
+                
+                <p><strong>Authors:</strong> Haonan Ping, Jian Jiang, Cheng Yuan, Qizhen Sun, Lv Wu, Yutong Ban</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了 SCISSR，一个基于手绘提示的交互式手术场景分割框架，它构建于 SAM 模型之上，并在手术数据集上以少量交互轮次实现了较高的 Dice 分数。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Access Controlled Website Interaction for Agentic AI with Delegated Critical Tasks</h3>
+                
+                <p><strong>Authors:</strong> Sunyoung Kim, Hokeun Kim</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文针对AI智能体与网站交互时缺乏访问控制机制的问题，提出了一种网站设计和对授权协议的修改方案，以实现对细粒度访问控制，尤其是在关键任务中。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Efficient Dense Crowd Trajectory Prediction Via Dynamic Clustering</h3>
+                
+                <p><strong>Authors:</strong> Antonius Bima Murti Wijaya, Paul Henderson, Marwa Mahmoud</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种基于聚类的方法，用于在密集场景中进行高效的人群轨迹预测，实现了更快的处理速度和更低的内存使用，同时保持了准确性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>EdgeCrafter: Compact ViTs for Edge Dense Prediction via Task-Specialized Distillation</h3>
+                
+                <p><strong>Authors:</strong> Longfei Liu, Yongjie Hou, Yang Li, Qirui Wang, Youyang Sha, Yongjun Yu, Yinzhi Wang, Peizhe Ru, Xuanlong Yu, Xi Shen</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了 EdgeCrafter，一个紧凑型ViT框架，专为边缘设备上高效准确的密集预测任务（物体检测、分割、姿态估计）而设计，与基于CNN的方法和大量预训练的模型相比，取得了具有竞争力的结果。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Remedying Target-Domain Astigmatism for Cross-Domain Few-Shot Object Detection</h3>
+                
+                <p><strong>Authors:</strong> Yongwei Jiang, Yixiong Zou, Yuhua Li, Ruixuan Li</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文通过提出一个受生物学启发的中心-外围注意力细化框架，解决了跨域少样本目标检测中的“目标域散光”问题，并在多个基准测试中取得了最先进的结果。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Inst4DGS: Instance-Decomposed 4D Gaussian Splatting with Multi-Video Label Permutation Learning</h3>
+                
+                <p><strong>Authors:</strong> Yonghan Lee, Dinesh Manocha</p>
+                
+                <p><strong>TLDR-CN:</strong> Inst4DGS 提出了一种实例分解的 4D 高斯溅射方法，通过学习跨视频实例匹配来解决多视图视频中不一致的实例标签问题，从而提高了渲染和分割质量。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Cyber-Resilient Digital Twins: Discriminating Attacks for Safe Critical Infrastructure Control</h3>
+                
+                <p><strong>Authors:</strong> Mohammadhossein Homaei, Iman Khazrak, Rubén Molano, Andrés Caro, Mar Ávila</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了i-SDT，一个数字孪生框架，用于检测和区分工业控制系统中的网络攻击，使用TCNs、MMD和MPC，与现有方法相比，实现了更高的检测精度和更低的运营成本。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>SINDy-KANs: Sparse identification of non-linear dynamics through Kolmogorov-Arnold networks</h3>
+                
+                <p><strong>Authors:</strong> Amanda A. Howard, Nicholas Zolman, Bruno Jacob, Steven L. Brunton, Panos Stinis</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了SINDy-KANs，一种结合Kolmogorov-Arnold网络(KANs)和稀疏非线性动态识别(SINDy)的方法，旨在提高KAN表示的可解释性，特别是用于发现动力学系统中的方程。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>iSatCR: Graph-Empowered Joint Onboard Computing and Routing for LEO Data Delivery</h3>
+                
+                <p><strong>Authors:</strong> Jiangtao Luo, Bingbing Xu, Shaohua Xia, Yongyi Ran</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了iSatCR，一种基于图的深度强化学习方法，用于联合优化LEO卫星上的板载计算和数据路由，以减少数据传输量并提高效率，并在高负载下表现出卓越的性能。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Tendon-Actuated Robots with a Tapered, Flexible Polymer Backbone: Design, Fabrication, and Modeling</h3>
+                
+                <p><strong>Authors:</strong> Harald Minde Hansen, Nandita Gallacher, Nicholas B. Andrews, Kristin Y. Pettersen, Jan Tommy Gravdahl, Mario di Castro</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了一种低成本、可定制的 3D 打印肌腱驱动连续体机器人，该机器人具有锥形主干，以及用于预测其行为的经过验证的动静力学模型。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>A Passive Elastic-Folding Mechanism for Stackable Airdrop Sensors</h3>
+                
+                <p><strong>Authors:</strong> Damyon Kim, Yuichi Honjo, Tatsuya Iizuka, Naomi Okubo, Naoto Endo, Hiroshi Matsubara, Yoshihiro Kawahara, Naoto Morita, Takuya Sasatani</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了一种用于可堆叠空投传感器的被动弹性折叠铰链机构，通过无人机实现低成本的广域环境监测。论文详细介绍了制造过程、铰链设计的几何模型，以及成功的实验室和现场试验。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>"You've got a friend in me": Co-Designing a Peer Social Robot for Young Newcomers' Language and Cultural Learning</h3>
+                
+                <p><strong>Authors:</strong> Neil Fernandes, Cheng Tang, Tehniyat Shahbaz, Alex Hauschildt, Emily Davies-Robinson, Yue Hu, Kerstin Dautenhahn</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了一种共同设计的社交辅助机器人（SAR）Maple，旨在通过在导师指导的课程中充当练习伙伴，来支持年轻新移民儿童的语言和文化学习，其融合了多模态支架和形成性评估。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Inductance-Based Force Self-Sensing in Fiber-Reinforced Pneumatic Twisted-and-Coiled Actuators</h3>
+                
+                <p><strong>Authors:</strong> Yunsong Zhang, Tianlin Li, Mingyang Yang, Feitian Zhang</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种自感知纤维增强气动执行器，集成了电感反馈，通过扩展卡尔曼滤波器和约束优化来解决磁滞问题，从而实现精确的力估计和状态推断。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Multi-material Direct Ink Writing and Embroidery for Stretchable Wearable Sensors</h3>
+                
+                <p><strong>Authors:</strong> Lukas Cha, Ryman Hashem, Ria Prakash, Tanguy Declety, Wenze Zhang, Liang He</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种将多材料直接墨水书写与自动刺绣相结合的方法，用于创建直接嵌入服装中的可拉伸应变传感器，展示了其在可穿戴运动跟踪应用中的潜力。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>FedTrident: Resilient Road Condition Classification Against Poisoning Attacks in Federated Learning</h3>
+                
+                <p><strong>Authors:</strong> Sheng Liu, Panos Papadimitratos</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了 FedTrident，一种新型联邦学习框架，通过神经元分析、自适应客户端评分和全球模型修复的机器学习，能够抵御道路状况分类中目标标签翻转攻击。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>RadioDiff-FS: Physics-Informed Manifold Alignment in Few-Shot Diffusion Models for High-Fidelity Radio Map Construction</h3>
+                
+                <p><strong>Authors:</strong> Xiucheng Wang, Zixuan Guo, Nan Cheng</p>
+                
+                <p><strong>TLDR-CN:</strong> RadioDiff-FS是一种小样本扩散框架，它通过使用少量的真实样本来调整预训练的生成器，利用物理信息流形对齐和方向一致性损失来构建高保真无线电地图。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Data-driven construction of machine-learning-based interatomic potentials for gas-surface scattering dynamics: the case of NO on graphite</h3>
+                
+                <p><strong>Authors:</strong> Samuel Del Fré, Gilberto A. Alou Angulo, Maurice Monnerville, Alejandro Rivero Santamaría</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文提出了一个数据驱动的工作流程，用于构建气体-表面散射动力学的机器学习原子间势（MLIP），以石墨上的NO散射为例，展示了通过描述符引导采样和主动学习实现高效且可转移的势构建。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Evaluating Model-Free Policy Optimization in Masked-Action Environments via an Exact Blackjack Oracle</h3>
+                
+                <p><strong>Authors:</strong> Kevin Song</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一个精确的21点预言机，作为在具有掩码动作的环境中进行无模型策略优化的基准。研究发现，尽管奖励收敛良好，但即使是简单的方法也在状态稀疏和动态动作掩码方面遇到困难。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>ALIGN: Adversarial Learning for Generalizable Speech Neuroprosthesis</h3>
+                
+                <p><strong>Authors:</strong> Zhanqi Zhang, Shun Li, Bernardo L. Sabatini, Mikio Aoi, Gal Mishne</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了一种名为 ALIGN 的对抗学习框架，通过减轻会话级别的分布偏移，从而提高语音神经修复在不同记录会话中的泛化能力。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Lightweight Model Predictive Control for Spacecraft Rendezvous Attitude Synchronization</h3>
+                
+                <p><strong>Authors:</strong> Peter Stadler, Alexander Meinert, Niklas Baldauf, Alen Turnwald</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了用于航天器交会对接姿态同步的轻量级模型预测控制（MPC）方法，并在仿真和ARM Cortex-M7上进行了验证，证明了其更高的精度和更低的计算成本。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>TiBCLaG: A Trigger-induced Bistable Compliant Laparoscopic Grasper</h3>
+                
+                <p><strong>Authors:</strong> Joel J Nellikkunnel, Prabhat Kumar</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了一种3D打印的，完全柔性的，双稳态的腹腔镜抓取器，通过消除刚性连接并实现无需连续输入即可稳定抓取，从而降低制造成本。</p>
+            </div>
+            
+        </div>
+    </section>
+
     <footer class="footer">
-        Generated on 2026-03-21 02:19:17 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-08 07:22:53 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
 </body>

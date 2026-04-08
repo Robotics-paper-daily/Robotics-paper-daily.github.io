@@ -32,6 +32,39 @@
             line-height: 1.6;
         }
 
+        .quick-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            align-items: center;
+            width: fit-content;
+            margin: 0.9rem auto 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .quick-nav a {
+            color: var(--highlight-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            background: rgba(255, 255, 255, 0.86);
+            box-shadow: 0 2px 6px var(--shadow-color);
+            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+        }
+
+        .quick-nav a:hover {
+            background-color: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+
         .bento-grid {
             display: grid;
             gap: 1.5rem; /* Tailwind gap-6 */
@@ -186,10 +219,48 @@
             margin-right: 0.125rem; /* Consistent spacing */
         }
 
+        .filtered-section {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .filtered-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--header-color);
+            margin-bottom: 1rem;
+        }
+
+        .filtered-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .filtered-item {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .filtered-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+        }
+
+        .filtered-item p {
+            margin: 0.25rem 0;
+            color: var(--text-muted-color);
+            font-size: 0.88rem;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
-
     <motion.div
         initial="{ opacity: 0, y: -30 }"
         animate="{ opacity: 1, y: 0 }"
@@ -200,6 +271,11 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>January 30, 2026</p>
+        <nav class="quick-nav">
+            <a href="../index.html" target="_top">首页</a>
+            <a href="../list.html" target="_top">报告列表</a>
+            <a href="../search.html" target="_top">论文检索</a>
+        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -10301,2796 +10377,249 @@ KAPSO着眼于编码代理中常见的长时程失败问题，包括实验状态
             
         </motion.div>
         
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.25, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Multi-Modular MANTA-RAY: A Modular Soft Surface Platform for Distributed Multi-Object Manipulation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Manipulation surfaces control objects by actively deforming their shape rather than directly grasping them. While dense actuator arrays can generate complex deformations, they also introduce high degrees of freedom (DOF), increasing system complexity and limiting scalability. The MANTA-RAY (Manipulation with Adaptive Non-rigid Textile Actuation with Reduced Actuation densitY) platform addresses these challenges by leveraging a soft, fabric-based surface with reduced actuator density to manipulate fragile and heterogeneous objects. Previous studies focused on single-module implementations supported by four actuators, whereas the feasibility and benefits of a scalable, multi-module configuration remain unexplored. In this work, we present a distributed, modular, and scalable variant of the MANTA-RAY platform that maintains manipulation performance with a reduced actuator density. The proposed multi-module MANTA-RAY platform and control strategy employs object passing between modules and a geometric transformation driven PID controller that directly maps tilt-angle control outputs to actuator commands, eliminating the need for extensive data-driven or black-box training. We evaluate system performance in simulation across surface configurations of varying modules (3x3 and 4x4) and validate its feasibility through experiments on a physical 2x2 hardware prototype. The system successfully manipulates objects with diverse geometries, masses, and textures including fragile items such as eggs and apples as well as enabling parallel manipulation. The results demonstrate that the multi-module MANTA-RAY improves scalability and enables coordinated manipulation of multiple objects across larger areas, highlighting its potential for practical, real-world applications.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 操纵表面通过主动变形其形状来控制物体，而不是直接抓取它们。虽然密集驱动器阵列可以产生复杂的形变，但它们也引入了高自由度 (DOF)，增加了系统复杂性并限制了可扩展性。MANTA-RAY (基于自适应非刚性纺织品驱动的低驱动器密度操纵平台) 通过利用具有降低的驱动器密度的柔软的、基于织物的表面来操纵脆弱和异构物体，从而应对这些挑战。先前的研究侧重于由四个驱动器支持的单模块实现，而可扩展的多模块配置的可行性和益处仍未被探索。在这项工作中，我们提出了一种分布式、模块化和可扩展的 MANTA-RAY 平台变体，该平台在降低驱动器密度的同时保持了操纵性能。所提出的多模块 MANTA-RAY 平台和控制策略采用模块间物体传递以及几何变换驱动的 PID 控制器，该控制器直接将倾斜角控制输出映射到驱动器命令，从而消除了对大量数据驱动或黑盒训练的需求。我们在不同模块（3x3 和 4x4）的表面配置上对系统性能进行仿真评估，并通过物理 2x2 硬件原型上的实验验证了其可行性。该系统成功地操纵了具有不同几何形状、质量和纹理的物体，包括鸡蛋和苹果等易碎物品，并实现了并行操纵。结果表明，多模块 MANTA-RAY 提高了可扩展性，并实现了跨更大区域的多个物体的协同操纵，突显了其在实际应用中的潜力。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper presents a scalable, multi-module soft surface platform called MANTA-RAY for distributed multi-object manipulation, leveraging a fabric-based surface with reduced actuator density and a geometric transformation driven PID controller, validated in simulation and a physical prototype.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一种可扩展的多模块软表面平台 MANTA-RAY，用于分布式多对象操作。该平台利用具有降低的驱动器密度的织物表面和一个几何变换驱动的 PID 控制器，并在仿真和物理原型中进行了验证。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21884v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Pratik Ingle, Jørn Lambertsen, Kasper Støy, Andres Faina</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.300000000000001, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Flocking behavior for dynamic and complex swarm structures</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Maintaining the formation of complex structures with multiple UAVs and achieving complex trajectories remains a major challenge. This work presents an algorithm for implementing the flocking behavior of UAVs based on the concept of Virtual Centroid to easily develop a structure for the flock. The approach builds on the classical virtual-based behavior, providing a theoretical framework for incorporating enhancements to dynamically control both the number of agents and the formation of the structure. Simulation tests and real-world experiments were conducted, demonstrating its simplicity even with complex formations and complex trajectories.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 维持多无人机复杂结构的编队，并实现复杂轨迹，仍然是一项重大挑战。本研究提出一种基于虚拟质心概念的无人机集群行为算法，以方便地构建集群结构。该方法建立在经典的基于虚拟的行为之上，提供了一个理论框架，用于整合增强功能，以动态控制智能体的数量和结构的形成。仿真测试和实际飞行实验表明，即使面对复杂的编队和复杂的轨迹，该方法也具有简洁性。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces a virtual centroid-based flocking algorithm for UAVs, enabling dynamic control of swarm size and complex formations, demonstrated through simulations and real-world experiments.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种基于虚拟质心的无人机蜂拥算法，能够动态控制蜂群规模和复杂编队，并通过仿真和实际实验进行了演示。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21772v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Carmen D. R. Pita-Romero, Pedro Arias-Perez, Miguel Fernandez-Cortizas, Rafael Perez-Segui, Pascual Campoy</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.3500000000000005, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Don't double it: Efficient Agent Prediction in Occlusions</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Occluded traffic agents pose a significant challenge for autonomous vehicles, as hidden pedestrians or vehicles can appear unexpectedly, yet this problem remains understudied. Existing learning-based methods, while capable of inferring the presence of hidden agents, often produce redundant occupancy predictions where a single agent is identified multiple times. This issue complicates downstream planning and increases computational load. To address this, we introduce MatchInformer, a novel transformer-based approach that builds on the state-of-the-art SceneInformer architecture. Our method improves upon prior work by integrating Hungarian Matching, a state-of-the-art object matching algorithm from object detection, into the training process to enforce a one-to-one correspondence between predictions and ground truth, thereby reducing redundancy. We further refine trajectory forecasts by decoupling an agent's heading from its motion, a strategy that improves the accuracy and interpretability of predicted paths. To better handle class imbalances, we propose using the Matthews Correlation Coefficient (MCC) to evaluate occupancy predictions. By considering all entries in the confusion matrix, MCC provides a robust measure even in sparse or imbalanced scenarios. Experiments on the Waymo Open Motion Dataset demonstrate that our approach improves reasoning about occluded regions and produces more accurate trajectory forecasts than prior methods.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 被遮挡的交通参与者对自动驾驶车辆构成重大挑战，因为隐藏的行人或车辆可能会意外出现，然而这个问题仍然未被充分研究。现有的基于学习的方法，虽然能够推断隐藏参与者的存在，但经常产生冗余的占用预测，即单个参与者被多次识别。这个问题使下游规划复杂化，并增加了计算负载。为了解决这个问题，我们引入了 MatchInformer，这是一种新颖的基于 Transformer 的方法，它构建于最先进的 SceneInformer 架构之上。我们的方法通过将匈牙利匹配（一种来自目标检测的最先进的目标匹配算法）集成到训练过程中，来强化预测和真实值之间的一对一对应关系，从而减少冗余，改进了先前的工作。我们通过将交通参与者的航向与其运动解耦，进一步细化了轨迹预测，这种策略提高了预测路径的准确性和可解释性。为了更好地处理类别不平衡问题，我们建议使用马修斯相关系数 (MCC) 来评估占用预测。通过考虑混淆矩阵中的所有条目，即使在稀疏或不平衡的情况下，MCC 也能提供一种稳健的度量标准。在 Waymo Open Motion Dataset 上的实验表明，我们的方法改进了对遮挡区域的推理，并产生比先前方法更准确的轨迹预测。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces MatchInformer, a transformer-based method using Hungarian Matching and decoupled heading prediction to improve agent prediction in occluded scenarios, reducing redundancy and improving trajectory accuracy.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了 MatchInformer，一种基于 Transformer 的方法，它使用匈牙利匹配和解耦的标题预测来改进遮挡场景中的智能体预测，从而减少冗余并提高轨迹准确性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21504v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Anna Rothenhäusler, Markus Mazzola, Andreas Look, Raghu Rajan, Joschka Bödecker</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.4, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">HPTune: Hierarchical Proactive Tuning for Collision-Free Model Predictive Control</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Parameter tuning is a powerful approach to enhance adaptability in model predictive control (MPC) motion planners. However, existing methods typically operate in a myopic fashion that only evaluates executed actions, leading to inefficient parameter updates due to the sparsity of failure events (e.g., obstacle nearness or collision). To cope with this issue, we propose to extend evaluation from executed to non-executed actions, yielding a hierarchical proactive tuning (HPTune) framework that combines both a fast-level tuning and a slow-level tuning. The fast one adopts risk indicators of predictive closing speed and predictive proximity distance, and the slow one leverages an extended evaluation loss for closed-loop backpropagation. Additionally, we integrate HPTune with the Doppler LiDAR that provides obstacle velocities apart from position-only measurements for enhanced motion predictions, thus facilitating the implementation of HPTune. Extensive experiments on high-fidelity simulator demonstrate that HPTune achieves efficient MPC tuning and outperforms various baseline schemes in complex environments. It is found that HPTune enables situation-tailored motion planning by formulating a safe, agile collision avoidance strategy.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 参数调优是增强模型预测控制(MPC)运动规划器适应性的有效方法。然而，现有方法通常以短视的方式运行，仅评估已执行的动作，导致由于失败事件（如，障碍物接近或碰撞）的稀疏性而造成的低效参数更新。为了解决这个问题，我们提出将评估范围从已执行动作扩展到未执行动作，从而产生一个分层前瞻调优（HPTune）框架，该框架结合了快速调优和慢速调优。快速调优采用预测闭合速度和预测接近距离的风险指标，而慢速调优则利用扩展的评估损失进行闭环反向传播。此外，我们将HPTune与多普勒激光雷达集成，多普勒激光雷达除了提供仅位置测量之外还提供障碍物速度，从而增强了运动预测，从而有利于HPTune的实施。在高保真模拟器上进行的大量实验表明，HPTune实现了高效的MPC调优，并在复杂环境中优于各种基线方案。研究发现，HPTune通过制定安全、敏捷的避撞策略，实现了情境定制的运动规划。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces HPTune, a hierarchical proactive tuning framework for MPC that enhances adaptability by evaluating both executed and non-executed actions, leading to more efficient parameter updates and improved collision avoidance.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一种名为HPTune的分层主动调优框架，用于模型预测控制（MPC）。该框架通过评估已执行和未执行的动作来增强适应性，从而实现更有效的参数更新和改进的避障能力。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21346v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Wei Zuo, Chengyang Li, Yikun Wang, Bingyang Cheng, Zeyi Ren, Shuai Wang, Derrick Wing Kwan Ng, Yik-Chung Wu</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.45, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Quick Heuristic Validation of Edges in Dynamic Roadmap Graphs</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> In this paper we tackle the problem of adjusting roadmap graphs for robot motion planning to non-static environments. We introduce the "Red-Green-Gray" paradigm, a modification of the SPITE method, capable of classifying the validity status of nodes and edges using cheap heuristic checks, allowing fast semi-lazy roadmap updates. Given a roadmap, we use simple computational geometry methods to approximate the swept volumes of robots and perform lazy collision checks, and label a subset of the edges as invalid (red), valid (green), or unknown (gray). We present preliminary experimental results comparing our method to the well-established technique of Leven and Hutchinson, and showing increased accuracy as well as the ability to correctly label edges as invalid while maintaining comparable update runtimes.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 本文针对在非静态环境中调整机器人运动规划路线图的问题展开研究。我们引入了“红-绿-灰”范式，它是SPITE方法的一种改进，能够使用廉价的启发式检查来分类节点和边的有效性状态，从而实现快速的半惰性路线图更新。给定一个路线图，我们使用简单的计算几何方法来近似机器人的扫掠体积，并执行惰性碰撞检查，并将一部分边标记为无效（红）、有效（绿）或未知（灰）。我们展示了初步的实验结果，将我们的方法与成熟的Leven和Hutchinson技术进行比较，结果表明在保持可比更新运行时间的同时，我们的方法具有更高的准确性以及正确标记无效边的能力。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces a novel, semi-lazy method (Red-Green-Gray paradigm) for quickly updating robot motion planning roadmap graphs in dynamic environments using heuristic collision checks, showing improved accuracy and comparable runtimes compared to existing techniques.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种新的半惰性方法（红-绿-灰范式），利用启发式碰撞检测快速更新动态环境中机器人运动规划的路线图，与现有技术相比，该方法提高了准确性并保持了相当的运行时间。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.20968v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Yulie Arad, Stav Ashur, Nancy M. Amato</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.5, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Vidmento: Creating Video Stories Through Context-Aware Expansion With Generative Video</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Video storytelling is often constrained by available material, limiting creative expression and leaving undesired narrative gaps. Generative video offers a new way to address these limitations by augmenting captured media with tailored visuals. To explore this potential, we interviewed eight video creators to identify opportunities and challenges in integrating generative video into their workflows. Building on these insights and established filmmaking principles, we developed Vidmento, a tool for authoring hybrid video stories that combine captured and generated media through context-aware expansion. Vidmento surfaces opportunities for story development, generates clips that blend stylistically and narratively with surrounding media, and provides controls for refinement. In a study with 12 creators, Vidmento supported narrative development and exploration by systematically expanding initial materials with generative media, enabling expressive video storytelling aligned with creative intent. We highlight how creators bridge story gaps with generative content and where they find this blending capability most valuable.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 视频叙事常常受到现有素材的限制，从而约束了创造性表达并留下不希望出现的叙事空白。生成式视频提供了一种新的途径来解决这些限制，它可以通过定制的视觉效果来增强捕获到的媒体。为了探索这种潜力，我们采访了八位视频创作者，以识别将生成式视频集成到他们工作流程中的机遇和挑战。基于这些见解和已建立的电影制作原则，我们开发了 Vidmento，一个用于创作混合视频故事的工具，它通过上下文感知的扩展来结合捕获和生成的媒体。Vidmento 能够发现故事发展的机会，生成在风格和叙事上与周围媒体融合的片段，并提供用于精细化调整的控制。在一个包含12位创作者的实验中，Vidmento 通过系统地使用生成式媒体扩展初始素材，从而支持了叙事发展和探索，实现了符合创作意图的表现性视频叙事。我们重点研究了创作者如何使用生成式内容弥合故事中的空白，以及他们认为这种融合能力最有价值的地方。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces Vidmento, a tool that assists video creators in generating supplemental video content to fill narrative gaps and enhance storytelling through context-aware expansion using generative video models, and evaluates its effectiveness with a user study.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一个名为 Vidmento 的工具，该工具通过使用生成视频模型进行上下文感知的扩展，帮助视频创作者生成补充视频内容以填补叙事空白并增强故事讲述，并通过用户研究评估了其有效性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.22013v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Catherine Yeh, Anh Truong, Mira Dontcheva, Bryan Wang</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.550000000000001, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Liquid Interfaces: A Dynamic Ontology for the Interoperability of Autonomous Systems</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Contemporary software architectures struggle to support autonomous agents whose reasoning is adaptive, probabilistic, and context-dependent, while system integration remains dominated by static interfaces and deterministic contracts. This paper introduces Liquid Interfaces, a coordination paradigm in which interfaces are not persistent technical artifacts, but ephemeral relational events that emerge through intention articulation and semantic negotiation at runtime.We formalize this model and present the Liquid Interface Protocol (LIP),which governs intention-driven interaction, negotiated execution, and enforce ephemerality under semantic uncertainty. We further discuss the governance implications of this approach and describe a reference architecture that demonstrates practical feasibility. Liquid Interfaces provide a principled foundation for adaptive coordination in agent-based systems</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 当代软件架构难以支持其推理具有自适应性、概率性和上下文依赖性的自主Agent，而系统集成仍然由静态接口和确定性契约主导。本文介绍了一种名为“液体接口”的协同范式，其中接口不再是持久的技术构件，而是通过运行时意图表达和语义协商而涌现的短暂关系事件。我们形式化了这个模型，并提出了液体接口协议（LIP），该协议管理意图驱动的交互、协商执行并在语义不确定性下强制实现短暂性。我们进一步讨论了这种方法的治理影响，并描述了一个展示其实际可行性的参考架构。液体接口为基于Agent的系统中自适应协同提供了一个原则性的基础。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces "Liquid Interfaces", a novel coordination paradigm for autonomous systems that uses runtime negotiation and semantic understanding to create adaptable interfaces, potentially improving flexibility and integration in complex agent systems.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了“液体接口”，一种新颖的自主系统协调范式，它使用运行时协商和语义理解来创建可适应的接口，从而可能提高复杂代理系统中的灵活性和集成性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21993v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Dhiogo de Sá, Carlos Schmiedel, Carlos Pereira Lopes</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.6000000000000005, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">PILD: Physics-Informed Learning via Diffusion</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Diffusion models have emerged as powerful generative tools for modeling complex data distributions, yet their purely data-driven nature limits applicability in practical engineering and scientific problems where physical laws need to be followed. This paper proposes Physics-Informed Learning via Diffusion (PILD), a framework that unifies diffusion modeling and first-principles physical constraints by introducing a virtual residual observation sampled from a Laplace distribution to supervise generation during training. To further integrate physical laws, a conditional embedding module is incorporated to inject physical information into the denoising network at multiple layers, ensuring consistent guidance throughout the diffusion process. The proposed PILD framework is concise, modular, and broadly applicable to problems governed by ordinary differential equations, partial differential equations, as well as algebraic equations or inequality constraints. Extensive experiments across engineering and scientific tasks including estimating vehicle trajectories, tire forces, Darcy flow and plasma dynamics, demonstrate that our PILD substantially improves accuracy, stability, and generalization over existing physics-informed and diffusion-based baselines.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 扩散模型已成为对复杂数据分布进行建模的强大生成工具，然而，其纯粹的数据驱动特性限制了在需要遵循物理定律的实际工程和科学问题中的应用。本文提出了一种基于扩散的物理信息学习（PILD）框架，该框架通过引入一个从拉普拉斯分布中采样的虚拟残差观测值来监督训练期间的生成，从而统一了扩散模型和第一性原理物理约束。为了进一步整合物理定律，我们引入了一个条件嵌入模块，将物理信息注入到去噪网络的多层，确保在整个扩散过程中保持一致的指导。所提出的PILD框架简洁、模块化且广泛适用于受常微分方程、偏微分方程以及代数方程或不等式约束控制的问题。在包括车辆轨迹估计、轮胎力估计、达西流动和等离子体动力学等工程和科学任务中的大量实验表明，与现有的基于物理信息和扩散的基线相比，我们的PILD在精度、稳定性和泛化性方面都有显著提高。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces PILD, a physics-informed diffusion framework that integrates physical constraints into diffusion models using a virtual residual observation and a conditional embedding module, demonstrating improved accuracy and generalization across various scientific and engineering tasks.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 这篇论文介绍了PILD，一个基于物理信息的扩散框架，通过使用虚拟残差观测和条件嵌入模块将物理约束集成到扩散模型中，并在各种科学和工程任务中展示了更高的准确性和泛化能力。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21284v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Tianyi Zeng, Tianyi Wang, Jiaru Zhang, Zimo Zeng, Feiyang Zhang, Yiming Xu, Sikai Chen, Yajie Zou, Yangyang Wang, Junfeng Jiao, Christian Claudel, Xinbo Chen</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.65, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Log2Motion: Biomechanical Motion Synthesis from Touch Logs</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Touch data from mobile devices are collected at scale but reveal little about the interactions that produce them. While biomechanical simulations can illuminate motor control processes, they have not yet been developed for touch interactions. To close this gap, we propose a novel computational problem: synthesizing plausible motion directly from logs. Our key insight is a reinforcement learning-driven musculoskeletal forward simulation that generates biomechanically plausible motion sequences consistent with events recorded in touch logs. We achieve this by integrating a software emulator into a physics simulator, allowing biomechanical models to manipulate real applications in real-time. Log2Motion produces rich syntheses of user movements from touch logs, including estimates of motion, speed, accuracy, and effort. We assess the plausibility of generated movements by comparing against human data from a motion capture study and prior findings, and demonstrate Log2Motion in a large-scale dataset. Biomechanical motion synthesis provides a new way to understand log data, illuminating the ergonomics and motor control underlying touch interactions.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 来自移动设备的触摸数据虽能大规模收集，但很少揭示产生这些数据的交互行为。虽然生物力学仿真可以阐明运动控制过程，但尚未将其应用于触摸交互。为了弥补这一差距，我们提出了一个新颖的计算问题：直接从日志中合成合理的运动。我们的核心见解是：一种由强化学习驱动的肌肉骨骼前向模拟，该模拟产生与触摸日志中记录的事件一致，并具有生物力学合理性的运动序列。我们通过将软件模拟器集成到物理模拟器中来实现这一点，从而允许生物力学模型实时操纵真实应用程序。 Log2Motion能够从触摸日志中产生丰富的用户运动合成结果，包括对运动、速度、准确性和努力程度的估计。我们通过与来自运动捕捉研究和先前发现的人类数据进行比较，来评估生成运动的合理性，并在一个大规模数据集中演示了Log2Motion。生物力学运动合成提供了一种理解日志数据的新方法，从而揭示了触摸交互背后的工效学和运动控制。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces Log2Motion, a reinforcement learning-driven framework that synthesizes biomechanically plausible motion from touch logs, enabling insights into user motor control and ergonomics during touch interactions.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了Log2Motion，一个使用强化学习的框架，可以从触摸日志中合成仿生力学合理的运动，从而深入了解用户在触摸交互过程中的运动控制和人体工程学。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21043v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Michał Patryk Miazga, Hannah Bussmann, Antti Oulasvirta, Patrick Ebel</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.7, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">A New Dataset and Framework for Robust Road Surface Classification via Camera-IMU Fusion</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Road surface classification (RSC) is a key enabler for environment-aware predictive maintenance systems. However, existing RSC techniques often fail to generalize beyond narrow operational conditions due to limited sensing modalities and datasets that lack environmental diversity. This work addresses these limitations by introducing a multimodal framework that fuses images and inertial measurements using a lightweight bidirectional cross-attention module followed by an adaptive gating layer that adjusts modality contributions under domain shifts. Given the limitations of current benchmarks, especially regarding lack of variability, we introduce ROAD, a new dataset composed of three complementary subsets: (i) real-world multimodal recordings with RGB-IMU streams synchronized using a gold-standard industry datalogger, captured across diverse lighting, weather, and surface conditions; (ii) a large vision-only subset designed to assess robustness under adverse illumination and heterogeneous capture setups; and (iii) a synthetic subset generated to study out-of-distribution generalization in scenarios difficult to obtain in practice. Experiments show that our method achieves a +1.4 pp improvement over the previous state-of-the-art on the PVS benchmark and an +11.6 pp improvement on our multimodal ROAD subset, with consistently higher F1-scores on minority classes. The framework also demonstrates stable performance across challenging visual conditions, including nighttime, heavy rain, and mixed-surface transitions. These findings indicate that combining affordable camera and IMU sensors with multimodal attention mechanisms provides a scalable, robust foundation for road surface understanding, particularly relevant for regions where environmental variability and cost constraints limit the adoption of high-end sensing suites.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 道路表面分类（RSC）是环境感知预测性维护系统的关键使能技术。然而，由于感知模态的局限性以及缺乏环境多样性的数据集，现有的RSC技术通常无法在狭窄的操作条件下实现泛化。为了解决这些限制，本文提出了一种多模态框架，该框架融合了图像和惯性测量数据，采用轻量级的双向交叉注意力模块，然后通过自适应门控层来调整模态在领域偏移下的贡献。鉴于当前基准测试的局限性，特别是缺乏多样性，我们引入了ROAD，这是一个由三个互补子集组成的新数据集：（i）真实世界的多模态记录，包含使用黄金标准行业数据记录器同步的RGB-IMU数据流，涵盖了不同的光照、天气和表面条件；（ii）一个大型的仅视觉子集，旨在评估在不利光照和异构捕获设置下的鲁棒性；以及（iii）一个合成子集，用于研究在实践中难以获得的场景中的域外泛化。实验结果表明，我们的方法在PVS基准测试上比之前的最先进方法提高了+1.4个百分点，在我们的多模态ROAD子集上提高了+11.6个百分点，并且在少数类上的F1分数始终较高。该框架还在具有挑战性的视觉条件下（包括夜间、大雨和混合表面过渡）表现出稳定的性能。这些发现表明，将经济实惠的相机和IMU传感器与多模态注意力机制相结合，为道路表面理解提供了一个可扩展、鲁棒的基础，这对于环境变异性和成本约束限制高端传感套件使用的地区尤其重要。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces a new multimodal framework and dataset (ROAD) for robust road surface classification using camera-IMU fusion, showing significant improvements over existing methods, particularly under diverse environmental conditions.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种新的多模态框架和数据集 (ROAD)，用于通过摄像头-IMU融合进行稳健的路面分类，与现有方法相比，尤其是在不同的环境条件下，显示出显著的改进。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.20847v2" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Willams de Lima Costa, Thifany Ketuli Silva de Souza, Jonas Ferreira Silva, Carlos Gabriel Bezerra Pereira, Bruno Reis Vila Nova, Leonardo Silvino Brito, Rafael Raider Leoni, Juliano Silva Filho, Valter Ferreira, Sibele Miguel Soares Neto, Samantha Uehara, Daniel Giacometti Amaral, João Marcelo Teixeira, Veronica Teichrieb, Cristiano Coelho de Araújo</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.75, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Towards Geometry-Aware and Motion-Guided Video Human Mesh Recovery</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Existing video-based 3D Human Mesh Recovery (HMR) methods often produce physically implausible results, stemming from their reliance on flawed intermediate 3D pose anchors and their inability to effectively model complex spatiotemporal dynamics. To overcome these deep-rooted architectural problems, we introduce HMRMamba, a new paradigm for HMR that pioneers the use of Structured State Space Models (SSMs) for their efficiency and long-range modeling prowess. Our framework is distinguished by two core contributions. First, the Geometry-Aware Lifting Module, featuring a novel dual-scan Mamba architecture, creates a robust foundation for reconstruction. It directly grounds the 2D-to-3D pose lifting process with geometric cues from image features, producing a highly reliable 3D pose sequence that serves as a stable anchor. Second, the Motion-guided Reconstruction Network leverages this anchor to explicitly process kinematic patterns over time. By injecting this crucial temporal awareness, it significantly enhances the final mesh's coherence and robustness, particularly under occlusion and motion blur. Comprehensive evaluations on 3DPW, MPI-INF-3DHP, and Human3.6M benchmarks confirm that HMRMamba sets a new state-of-the-art, outperforming existing methods in both reconstruction accuracy and temporal consistency while offering superior computational efficiency.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 现有的基于视频的三维人体网格重建(HMR)方法常常产生物理上不合理的重建结果，这源于它们对有缺陷的中间三维姿态锚点的依赖，以及它们无法有效地建模复杂的时空动态。为了克服这些根深蒂固的架构问题，我们引入了HMRMamba，一种HMR的新范式，它率先使用结构化状态空间模型(SSM)以充分利用其效率和长程建模能力。我们的框架以两个核心贡献为特色。首先，几何感知提升模块，采用一种新颖的双扫描Mamba架构，为重建创建了一个强大的基础。它利用来自图像特征的几何线索直接进行二维到三维姿态提升，产生高度可靠的三维姿态序列，作为稳定的锚点。其次，运动引导的重建网络利用此锚点来显式地处理随时间变化的运动模式。通过注入这种关键的时间感知，它显著提高了最终网格的连贯性和鲁棒性，特别是在遮挡和运动模糊的情况下。在3DPW、MPI-INF-3DHP和Human3.6M基准上的全面评估证实，HMRMamba树立了新的最先进水平，在重建精度和时间一致性方面均优于现有方法，同时提供卓越的计算效率。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: HMRMamba introduces a new video-based 3D human mesh recovery framework utilizing Structured State Space Models (SSMs) and geometry-aware lifting to improve accuracy, temporal consistency, and computational efficiency.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: HMRMamba 引入了一种新的基于视频的 3D 人体网格重建框架，该框架利用结构化状态空间模型 (SSM) 和几何感知提升来提高准确性、时间一致性和计算效率。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21376v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Hongjun Chen, Huan Zheng, Wencheng Han, Jianbing Shen</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.800000000000001, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">An AI Framework for Microanastomosis Motion Assessment</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Proficiency in microanastomosis is a fundamental competency across multiple microsurgical disciplines. These procedures demand exceptional precision and refined technical skills, making effective, standardized assessment methods essential. Traditionally, the evaluation of microsurgical techniques has relied heavily on the subjective judgment of expert raters. They are inherently constrained by limitations such as inter-rater variability, lack of standardized evaluation criteria, susceptibility to cognitive bias, and the time-intensive nature of manual review. These shortcomings underscore the urgent need for an objective, reliable, and automated system capable of assessing microsurgical performance with consistency and scalability. To bridge this gap, we propose a novel AI framework for the automated assessment of microanastomosis instrument handling skills. The system integrates four core components: (1) an instrument detection module based on the You Only Look Once (YOLO) architecture; (2) an instrument tracking module developed from Deep Simple Online and Realtime Tracking (DeepSORT); (3) an instrument tip localization module employing shape descriptors; and (4) a supervised classification module trained on expert-labeled data to evaluate instrument handling proficiency. Experimental results demonstrate the effectiveness of the framework, achieving an instrument detection precision of 97%, with a mean Average Precision (mAP) of 96%, measured by Intersection over Union (IoU) thresholds ranging from 50% to 95% (mAP50-95).</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 微血管吻合术的熟练程度是多个显微外科领域的一项基本能力。这些手术需要极高的精度和精湛的技术，使得有效且标准化的评估方法至关重要。传统上，显微外科技术的评估在很大程度上依赖于专家评估者的主观判断。它们固然受到诸多限制，例如评估者间的差异、缺乏标准化的评估标准、易受认知偏差的影响以及人工审查的耗时性。这些缺陷突显了对客观、可靠和自动化的系统迫切需求，该系统能够以一致性和可扩展性评估显微外科手术表现。为了弥补这一差距，我们提出了一种新型人工智能框架，用于自动评估微血管吻合术的器械操作技能。该系统集成了四个核心组件：（1）基于You Only Look Once (YOLO) 架构的器械检测模块；（2）基于Deep Simple Online and Realtime Tracking (DeepSORT) 开发的器械跟踪模块；（3）采用形状描述子的器械尖端定位模块；以及（4）经过专家标注数据训练的监督分类模块，用于评估器械操作的熟练程度。实验结果表明该框架的有效性，其器械检测精度达到97%，平均精度均值 (mAP) 为 96%，通过交并比 (IoU) 阈值范围从 50% 到 95% (mAP50-95) 测量得出。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces an AI framework utilizing object detection, tracking and classification to automate the assessment of microanastomosis instrument handling, potentially overcoming the limitations of subjective expert evaluations.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一个AI框架，该框架利用目标检测、跟踪和分类来自动评估显微吻合术的器械操作，从而可能克服主观专家评估的局限性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21120v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Yan Meng, Eduardo J. Torres-Rodríguez, Marcelle Altshuler, Nishanth Gowda, Arhum Naeem, Recai Yilmaz, Omar Arnaout, Daniel A. Donoho</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.8500000000000005, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">VSE: Variational state estimation of complex model-free process</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> We design a variational state estimation (VSE) method that provides a closed-form Gaussian posterior of an underlying complex dynamical process from (noisy) nonlinear measurements. The complex process is model-free. That is, we do not have a suitable physics-based model characterizing the temporal evolution of the process state. The closed-form Gaussian posterior is provided by a recurrent neural network (RNN). The use of RNN is computationally simple in the inference phase. For learning the RNN, an additional RNN is used in the learning phase. Both RNNs help each other learn better based on variational inference principles. The VSE is demonstrated for a tracking application - state estimation of a stochastic Lorenz system (a benchmark process) using a 2-D camera measurement model. The VSE is shown to be competitive against a particle filter that knows the Lorenz system model and a recently proposed data-driven state estimation method that does not know the Lorenz system model.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 我们设计了一种变分状态估计（VSE）方法，该方法能够从（带噪声的）非线性测量中提供底层复杂动力学过程的闭式高斯后验分布。该复杂过程是无模型的，即我们没有合适的基于物理的模型来描述过程状态的时间演化。闭式高斯后验分布由循环神经网络（RNN）提供。 在推断阶段，使用 RNN 在计算上很简单。为了学习 RNN，在学习阶段使用另一个 RNN。 基于变分推断原理，这两个 RNN 互相帮助以更好地学习。 我们在一个跟踪应用中演示了 VSE 的性能——使用二维相机测量模型对随机 Lorenz 系统（一个基准过程）进行状态估计。VSE 被证明可以与知道 Lorenz 系统模型的粒子滤波器以及最近提出的不知道 Lorenz 系统模型的数据驱动状态估计方法相媲美。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces a Variational State Estimation (VSE) method that uses RNNs to provide a closed-form Gaussian posterior for complex, model-free dynamical processes, demonstrating its effectiveness on a stochastic Lorenz system tracking application.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一种变分状态估计（VSE）方法，该方法使用RNN为复杂的、无模型的动力过程提供封闭形式的高斯后验，并在随机Lorenz系统跟踪应用中展示了其有效性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21887v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Gustav Norén, Anubhab Ghosh, Fredrik Cumlin, Saikat Chatterjee</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.9, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Managing Solution Stability in Decision-Focused Learning with Cost Regularization</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Decision-focused learning integrates predictive modeling and combinatorial optimization by training models to directly improve decision quality rather than prediction accuracy alone. Differentiating through combinatorial optimization problems represents a central challenge, and recent approaches tackle this difficulty by introducing perturbation-based approximations. In this work, we focus on estimating the objective function coefficients of a combinatorial optimization problem. Our study demonstrates that fluctuations in perturbation intensity occurring during the learning phase can lead to ineffective training, by establishing a theoretical link to the notion of solution stability in combinatorial optimization. We propose addressing this issue by introducing a regularization of the estimated cost vectors which improves the robustness and reliability of the learning process, as demonstrated by extensive numerical experiments.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 决策导向学习通过训练模型以直接提升决策质量，而非仅关注预测准确率，来整合预测建模和组合优化。在组合优化问题中进行微分运算是一个核心挑战，而最近的方法通过引入基于扰动的近似来解决这一难题。在这项工作中，我们专注于估计组合优化问题的目标函数系数。我们的研究表明，学习阶段中扰动强度的波动可能导致无效训练，这可以通过建立与组合优化中解的稳定性概念的理论联系来解释。 我们提出通过对估计的成本向量进行正则化来解决这个问题，这可以提高学习过程的鲁棒性和可靠性，并通过大量的数值实验得到验证。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper addresses instability in decision-focused learning caused by perturbation intensity fluctuations and proposes a cost regularization method to improve robustness. The application domain is combinatorial optimization.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文解决了决策导向学习中由扰动强度波动引起的不稳定性问题，并提出了一种成本正则化方法来提高鲁棒性。应用领域是组合优化。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21883v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Victor Spitzer, Francois Sanson</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 5.95, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Differentiable Knapsack and Top-k Operators via Dynamic Programming</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Knapsack and Top-k operators are useful for selecting discrete subsets of variables. However, their integration into neural networks is challenging as they are piecewise constant, yielding gradients that are zero almost everywhere. In this paper, we propose a unified framework casting these operators as dynamic programs, and derive differentiable relaxations by smoothing the underlying recursions. On the algorithmic side, we develop efficient parallel algorithms supporting both deterministic and stochastic forward passes, and vector-Jacobian products for the backward pass. On the theoretical side, we prove that Shannon entropy is the unique regularization choice yielding permutation-equivariant operators, and characterize regularizers inducing sparse selections. Finally, on the experimental side, we demonstrate our framework on a decision-focused learning benchmark, a constrained dynamic assortment RL problem, and an extension of discrete VAEs.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 背包和前k个算子对于选择变量的离散子集非常有用。然而，由于它们是分段常数函数，导致几乎处处梯度为零，因此将它们集成到神经网络中具有挑战性。在本文中，我们提出了一个统一的框架，将这些算子建模为动态规划，并通过平滑底层递归来推导可微的松弛表示。在算法方面，我们开发了高效的并行算法，支持确定性和随机的前向传播，以及用于反向传播的向量-雅可比积。在理论方面，我们证明了香农熵是产生置换等变算子的唯一正则化选择，并刻画了诱导稀疏选择的正则化项。最后，在实验方面，我们在一个以决策为中心的学习基准、一个约束动态分类强化学习问题以及离散VAE的扩展上展示了我们的框架。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces differentiable relaxations of Knapsack and Top-k operators using dynamic programming, enabling their integration into neural networks and demonstrating applications in decision-focused learning, constrained RL, and discrete VAEs.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种使用动态规划实现Knapsack和Top-k算子的可微松弛方法，使其能够集成到神经网络中，并在决策导向学习、约束强化学习和离散VAE等领域展示了应用。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21775v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Germain Vivier-Ardisson, Michaël E. Sander, Axel Parmentier, Mathieu Blondel</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.0, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Mixed-Precision Training and Compilation for RRAM-based Computing-in-Memory Accelerators</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Computing-in-Memory (CIM) accelerators are a promising solution for accelerating Machine Learning (ML) workloads, as they perform Matrix-Vector Multiplications (MVMs) on crossbar arrays directly in memory. Although the bit widths of the crossbar inputs and cells are very limited, most CIM compilers do not support quantization below 8 bit. As a result, a single MVM requires many compute cycles, and weights cannot be efficiently stored in a single crossbar cell. To address this problem, we propose a mixed-precision training and compilation framework for CIM architectures. The biggest challenge is the massive search space, that makes it difficult to find good quantization parameters. This is why we introduce a reinforcement learning-based strategy to find suitable quantization configurations that balance latency and accuracy. In the best case, our approach achieves up to a 2.48x speedup over existing state-of-the-art solutions, with an accuracy loss of only 0.086 %.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 存储器内计算(CIM)加速器是一种很有前景的机器学习(ML)工作负载加速解决方案，因为它们直接在内存中的交叉开关阵列上执行矩阵-向量乘法(MVM)。尽管交叉开关输入和单元的位宽非常有限，但大多数CIM编译器不支持低于8位的量化。因此，单个MVM需要许多计算周期，并且权重无法有效地存储在单个交叉开关单元中。为了解决这个问题，我们提出了一种针对CIM架构的混合精度训练和编译框架。最大的挑战是庞大的搜索空间，这使得找到良好的量化参数变得困难。因此，我们引入了一种基于强化学习的策略来寻找适合的量化配置，从而平衡延迟和准确性。在最佳情况下，我们的方法比现有的最先进解决方案实现了高达2.48倍的加速，而准确度损失仅为0.086％。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents a reinforcement learning-based mixed-precision training and compilation framework for Computing-in-Memory (CIM) accelerators, achieving significant speedups with minimal accuracy loss.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种基于强化学习的混合精度训练和编译框架，用于内存计算（CIM）加速器，实现了显著的加速效果，同时保持了极低的精度损失。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21737v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Rebecca Pelke, Joel Klein, Jose Cubero-Cascante, Nils Bosbach, Jan Moritz Joseph, Rainer Leupers</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.050000000000001, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Reinforcement Learning for Adaptive Composition of Quantum Circuit Optimisation Passes</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Many quantum software development kits provide a suite of circuit optimisation passes. These passes have been highly optimised and tested in isolation. However, the order in which they are applied is left to the user, or else defined in general-purpose default pass sequences. While general-purpose sequences miss opportunities for optimisation which are particular to individual circuits, designing pass sequences bespoke to particular circuits requires exceptional knowledge about quantum circuit design and optimisation. Here we propose and demonstrate training a reinforcement learning agent to compose optimisation-pass sequences. In particular the agent's action space consists of passes for two-qubit gate count reduction used in default PyTKET pass sequences. For the circuits in our diverse test set, the (mean, median) fraction of two-qubit gates removed by the agent is $(57.7\%, \ 56.7 \%)$, compared to $(41.8 \%, \ 50.0 \%)$ for the next best default pass sequence.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 许多量子软件开发工具包提供了一套电路优化流程。这些流程经过高度优化，并在隔离环境中进行了测试。然而，它们的应用顺序通常留给用户自行选择，或者在通用的默认流程序列中定义。虽然通用序列会错过针对特定电路的优化机会，但为特定电路设计定制的流程序列需要量子电路设计和优化方面的专业知识。在此，我们提出并演示训练一个强化学习代理来组合优化流程序列。特别地，该代理的动作空间由PyTKET默认流程序列中使用的用于减少双量子比特门数量的流程组成。对于我们多样化的测试集中的电路，该代理移除的双量子比特门的(平均值，中位数)百分比为 $(57.7\%, \ 56.7 \%)$，而次优的默认流程序列的对应值为 $(41.8 \%, \ 50.0\%)$。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper uses reinforcement learning to create custom sequences of quantum circuit optimization passes, achieving better two-qubit gate reduction than default methods.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文使用强化学习来创建定制的量子电路优化序列，实现了比默认方法更好的双量子比特门减少效果。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21629v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Daniel Mills, Ifan Williams, Jacob Swain, Gabriel Matos, Enrico Rinaldi, Alexander Koziell-Pipe</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.1000000000000005, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Cascaded Transfer: Learning Many Tasks under Budget Constraints</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Many-Task Learning refers to the setting where a large number of related tasks need to be learned, the exact relationships between tasks are not known. We introduce the Cascaded Transfer Learning, a novel many-task transfer learning paradigm where information (e.g. model parameters) cascades hierarchically through tasks that are learned by individual models of the same class, while respecting given budget constraints. The cascade is organized as a rooted tree that specifies the order in which tasks are learned and refined. We design a cascaded transfer mechanism deployed over a minimum spanning tree structure that connects the tasks according to a suitable distance measure, and allocates the available training budget along its branches. Experiments on synthetic and real many-task settings show that the resulting method enables more accurate and cost effective adaptation across large task collections compared to alternative approaches.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 多任务学习指的是一种需要学习大量相关任务的设定，但任务之间的确切关系未知。我们引入了级联迁移学习，这是一种新颖的多任务迁移学习范式，其中信息（例如模型参数）在相同类别各个模型学习的任务之间以分层方式级联传递，同时遵守给定的预算约束。该级联被组织成一个有根树，该树指定了任务的学习和精炼顺序。我们设计了一种部署在最小生成树结构上的级联传递机制，该结构根据合适的距离度量标准连接任务，并沿其分支分配可用的训练预算。在合成和真实多任务设置下的实验表明，与替代方法相比，该方法能够在大规模任务集合中实现更准确且更具成本效益的自适应。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces Cascaded Transfer Learning, a novel approach for many-task learning under budget constraints, using a hierarchical tree structure to transfer information between tasks. Experiments show improved accuracy and cost-effectiveness compared to other methods.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一种名为级联迁移学习的新方法，用于在预算约束下进行多任务学习，使用分层树结构在任务之间传输信息。实验表明，与其它方法相比，该方法提高了准确性和成本效益。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21513v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Eloi Campagne, Yvenn Amara-Ouali, Yannig Goude, Mathilde Mougeot, Argyris Kalogeratos</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.15, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Learning to Optimize Job Shop Scheduling Under Structural Uncertainty</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> The Job-Shop Scheduling Problem (JSSP), under various forms of manufacturing uncertainty, has recently attracted considerable research attention. Most existing studies focus on parameter uncertainty, such as variable processing times, and typically adopt the actor-critic framework. In this paper, we explore a different but prevalent form of uncertainty in JSSP: structural uncertainty. Structural uncertainty arises when a job may follow one of several routing paths, and the selection is determined not by policy, but by situational factors (e.g., the quality of intermediate products) that cannot be known in advance. Existing methods struggle to address this challenge due to incorrect credit assignment: a high-quality action may be unfairly penalized if it is followed by a time-consuming path. To address this problem, we propose a novel method named UP-AAC. In contrast to conventional actor-critic methods, UP-AAC employs an asymmetric architecture. While its actor receives a standard stochastic state, the critic is crucially provided with a deterministic state reconstructed in hindsight. This design allows the critic to learn a more accurate value function, which in turn provides a lower-variance policy gradient to the actor, leading to more stable learning. In addition, we design an attention-based Uncertainty Perception Model (UPM) to enhance the actor's scheduling decisions. Extensive experiments demonstrate that our method outperforms existing approaches in reducing makespan on benchmark instances.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 在各种制造不确定性的形式下，车间调度问题（JSSP）最近引起了相当多的研究关注。大多数现有研究集中于参数不确定性，例如可变的处理时间，并且通常采用 Actor-Critic 框架。在本文中，我们探讨了 JSSP 中一种不同但普遍存在的不确定性形式：结构不确定性。当作业可能遵循多个路由路径之一时，就会出现结构不确定性，并且选择不是由策略决定，而是由情境因素（例如，中间产品的质量）决定，这些因素无法提前知晓。现有的方法难以应对这一挑战，因为错误的信用分配：如果一个高质量的动作后跟一条耗时的路径，它可能会受到不公平的惩罚。为了解决这个问题，我们提出了一种名为 UP-AAC 的新方法。与传统的 Actor-Critic 方法相比，UP-AAC 采用了一种非对称架构。虽然其 Actor 接收标准的随机状态，但至关重要的是，Critic 被提供了事后重建的确定性状态。这种设计使 Critic 能够学习更准确的价值函数，进而为 Actor 提供更低方差的策略梯度，从而实现更稳定的学习。此外，我们设计了一个基于注意力机制的不确定性感知模型（UPM），以增强 Actor 的调度决策。大量的实验表明，我们的方法在基准实例上减少完工时间方面优于现有方法。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper proposes a novel asymmetric actor-critic method (UP-AAC) with an uncertainty perception model (UPM) to address job-shop scheduling problems under structural uncertainty, outperforming existing approaches in reducing makespan.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文提出了一种新颖的非对称Actor-Critic方法（UP-AAC），带有不确定性感知模型（UPM），旨在解决结构不确定性下的Job-Shop调度问题，并在缩短完工时间方面优于现有方法。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21389v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Rui Zhang, Jianwei Niu, Xuefeng Liu, Shaojie Tang, Jing Yuan</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.2, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Expected Improvement via Gradient Norms</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Bayesian Optimization (BO) is a principled approach for optimizing expensive black-box functions, with Expected Improvement (EI) being one of the most widely used acquisition functions. Despite its empirical success, EI is known to be overly exploitative and can converge to suboptimal stationary points. We propose Expected Improvement via Gradient Norms (EI-GN), a novel acquisition function that applies the improvement principle to a gradient-aware auxiliary objective, thereby promoting sampling in regions that are both high-performing and approaching first-order stationarity. EI-GN relies on gradient observations used to learn gradient-enhanced surrogate models that enable principled gradient inference from function evaluations. We derive a tractable closed-form expression for EI-GN that allows efficient optimization and show that the proposed acquisition is consistent with the improvement-based acquisition framework. Empirical evaluations on standard BO benchmarks demonstrate that EI-GN yields consistent improvements against standard baselines. We further demonstrate applicability of EI-GN to control policy learning problems.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 以下是翻译结果：
-
-贝叶斯优化 (BO) 是一种优化昂贵的黑盒函数的原则性方法，其中期望改善 (EI) 是最广泛使用的采集函数之一。尽管 EI 在实践中取得了成功，但已知其过度利用，并且可能收敛到次优驻点。 我们提出基于梯度范数的期望改善 (EI-GN)，这是一种新颖的采集函数，它将改善原则应用于感知梯度的辅助目标，从而促进在高性能且接近一阶平稳区域中的采样。EI-GN 依赖于用于学习梯度增强代理模型的梯度观测，从而能够从函数评估中进行基于原则的梯度推断。我们推导出了 EI-GN 的易处理的闭式表达式，从而可以进行高效优化，并表明所提出的采集与基于改善的采集框架一致。 在标准 BO 基准上的经验评估表明，EI-GN 针对标准基线产生了一致的改进。 我们进一步证明了 EI-GN 在控制策略学习问题中的适用性。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper proposes Expected Improvement via Gradient Norms (EI-GN), a novel Bayesian Optimization acquisition function that uses gradient information to improve exploration and avoid suboptimal solutions. It demonstrates improvements over standard BO benchmarks and control policy learning.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文提出了一种名为梯度范数期望提升 (EI-GN) 的新型贝叶斯优化采集函数，该函数利用梯度信息来改善探索并避免次优解。结果表明，它在标准 BO 基准和控制策略学习方面有所改进。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21357v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Joshua Hang Sai Ip, Georgios Makrygiorgos, Ali Mesbah</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.25, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">PHDME: Physics-Informed Diffusion Models without Explicit Governing Equations</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Diffusion models provide expressive priors for forecasting trajectories of dynamical systems, but are typically unreliable in the sparse data regime. Physics-informed machine learning (PIML) improves reliability in such settings; however, most methods require \emph{explicit governing equations} during training, which are often only partially known due to complex and nonlinear dynamics. We introduce \textbf{PHDME}, a port-Hamiltonian diffusion framework designed for \emph{sparse observations} and \emph{incomplete physics}. PHDME leverages port-Hamiltonian structural prior but does not require full knowledge of the closed-form governing equations. Our approach first trains a Gaussian process distributed Port-Hamiltonian system (GP-dPHS) on limited observations to capture an energy-based representation of the dynamics. The GP-dPHS is then used to generate a physically consistent artificial dataset for diffusion training, and to inform the diffusion model with a structured physics residual loss. After training, the diffusion model acts as an amortized sampler and forecaster for fast trajectory generation. Finally, we apply split conformal calibration to provide uncertainty statements for the generated predictions. Experiments on PDE benchmarks and a real-world spring system show improved accuracy and physical consistency under data scarcity.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 扩散模型为动力系统轨迹预测提供了富有表现力的先验，但通常在稀疏数据情况下不可靠。物理信息机器学习 (PIML) 改善了此类场景中的可靠性；然而，大多数方法需要在训练期间使用\emph{显式控制方程}，而由于复杂和非线性动力学，这些方程通常只是部分已知。我们引入了 \textbf{PHDME}，一个为\emph{稀疏观测}和\emph{不完整物理}设计的端口-哈密顿扩散框架。 PHDME 利用端口-哈密顿结构先验，但不需要完全了解闭式控制方程。我们的方法首先在有限的观测数据上训练一个高斯过程分布式端口-哈密顿系统 (GP-dPHS)，以捕获动力学的基于能量的表示。然后，GP-dPHS 用于生成一个物理一致的人工数据集，用于扩散训练，并使用结构化的物理残差损失来通知扩散模型。训练后，扩散模型充当摊销采样器和预测器，用于快速轨迹生成。最后，我们应用分裂共形校准，为生成的预测提供不确定性声明。在偏微分方程基准和真实世界的弹簧系统上的实验表明，在数据稀缺的情况下，准确性和物理一致性均得到了改善。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces PHDME, a physics-informed diffusion model that leverages a port-Hamiltonian structural prior without requiring explicit governing equations, improving trajectory forecasting accuracy and physical consistency in sparse data regimes.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了PHDME，一种物理信息扩散模型，它利用port-Hamiltonian结构先验，无需显式控制方程，从而提高了稀疏数据情况下轨迹预测的准确性和物理一致性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21234v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Kaiyuan Tan, Kendra Givens, Peilun Li, Thomas Beckers</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.300000000000001, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Macro-Scale Electrostatic Origami Motor</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Foldable robots have been an active area of robotics research due to their high volume-to-mass ratio, easy packability, and shape adaptability. For locomotion, previously developed foldable robots have either embedded linear actuators in, or attached non-folding rotary motors to, their structure. Further, those actuators directly embedded in the structure of the folding medium all contributed to linear or folding motion, not to continuous rotary motion. On the macro-scale there has not yet been a folding continuous rotary actuator. This paper details the development and testing of the first macro-scale origami rotary motor that can be folded flat, and then unfurled to operate. Using corona discharge for torque production, the prototype motor achieved an expansion ratio of 2.5:1, reached a top speed of 1440 rpm when driven at -29 kV, and exhibited a maximum output torque over 0.15 mN m with an active component torque density of 0.04 Nm/kg.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 可折叠机器人因其高体积质量比、易于包装和形状适应性，一直是机器人研究的热点领域。在运动方面，此前开发的可折叠机器人要么在其结构中嵌入线性致动器，要么在其结构上连接非折叠旋转电机。而且，那些直接嵌入折叠介质结构中的致动器都用于产生线性或折叠运动，而不是连续旋转运动。在宏观尺度上，尚未出现可折叠的连续旋转致动器。本文详细介绍了首个宏观尺度折纸旋转电机的开发和测试，该电机可以折叠成扁平状，然后展开以运行。该原型电机利用电晕放电产生扭矩，实现了2.5:1的膨胀比，在-29 kV的电压下达到最高1440 rpm的转速，并表现出超过0.15 mN m的最大输出扭矩，其有源部件扭矩密度为0.04 Nm/kg。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces a novel macro-scale, foldable origami rotary motor powered by corona discharge, capable of continuous rotation, unlike previous foldable robots with linear or non-folding rotary actuators.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种新型的宏观尺度可折叠折纸旋转电机，该电机由电晕放电驱动，能够连续旋转。与之前采用线性或非折叠旋转执行器的可折叠机器人不同，该电机具有创新性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21976v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Alex S. Miller, Leo McElroy, Jeffrey H. Lang</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.3500000000000005, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">GAZELOAD A Multimodal Eye-Tracking Dataset for Mental Workload in Industrial Human-Robot Collaboration</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> This article describes GAZELOAD, a multimodal dataset for mental workload estimation in industrial human-robot collaboration. The data were collected in a laboratory assembly testbed where 26 participants interacted with two collaborative robots (UR5 and Franka Emika Panda) while wearing Meta ARIA smart glasses. The dataset time-synchronizes eye-tracking signals (pupil diameter, fixations, saccades, eye gaze, gaze transition entropy, fixation dispersion index) with environmental real-time and continuous measurements (illuminance) and task and robot context (bench, task block, induced faults), under controlled manipulations of task difficulty and ambient conditions. For each participant and workload-graded task block, we provide CSV files with ocular metrics aggregated into 250 ms windows, environmental logs, and self-reported mental workload ratings on a 1-10 Likert scale, organized in participant-specific folders alongside documentation. These data can be used to develop and benchmark algorithms for mental workload estimation, feature extraction, and temporal modeling in realistic industrial HRC scenarios, and to investigate the influence of environmental factors such as lighting on eye-based workload markers.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 本文描述了 GAZELOAD，一个用于工业人机协作中精神负荷估计的多模态数据集。数据收集于一个实验室装配测试平台，其中 26 名参与者佩戴 Meta ARIA 智能眼镜与两台协作机器人（UR5 和 Franka Emika Panda）进行交互。该数据集对眼动追踪信号（瞳孔直径、注视、扫视、眼睛注视、注视转移熵、注视离散度指数）与环境实时和连续测量值（照度）以及任务和机器人上下文（工作台、任务块、诱发故障）进行时间同步，并对任务难度和环境条件进行受控操作。对于每位参与者和工作负荷分级的任务块，我们提供 CSV 文件，其中包含汇总到 250 毫秒窗口中的眼部指标、环境日志以及关于 1-10 Likert 量表的自我报告的精神负荷评级，这些数据组织在参与者特定的文件夹中，并附带文档。这些数据可用于开发和评估用于在现实工业 HRC 场景中进行精神负荷估计、特征提取和时间建模的算法，并用于研究照明等环境因素对基于眼睛的工作负荷指标的影响。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces GAZELOAD, a multimodal eye-tracking dataset for mental workload estimation in human-robot collaboration, incorporating eye-tracking, environmental data, and task context.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了GAZELOAD，一个用于人机协作中精神负荷估计的多模态眼动追踪数据集，包含眼动追踪、环境数据和任务背景。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21829v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Bsher Karbouj, Baha Eddin Gaaloul, Jorg Kruger</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.4, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Singularity-Free Lie Group Integration and Geometrically Consistent Evaluation of Multibody System Models Described in Terms of Standard Absolute Coordinates</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> A classical approach to the multibody systems (MBS) modeling is to use absolute coordinates, i.e., a set of (possibly redundant) coordinates that describe the absolute position and orientation of the individual bodies with respect to an inertial frame (IFR). A well-known problem for the time integration of the equations of motion (EOM) is the lack of a singularity-free parameterization of spatial motions, which is usually tackled by using unit quaternions. Lie group integration methods were proposed as an alternative approach to the singularity-free time integration. At the same time, Lie group formulations of EOM naturally respect the geometry of spatial motions during integration. Lie group integration methods, operating directly on the configuration space Lie group, are incompatible with standard formulations of the EOM, and cannot be implemented in existing MBS simulation codes without a major restructuring. The contribution of this paper is twofold: (1) A framework for interfacing Lie group integrators to standard EOM formulations is presented. It allows describing MBS in terms of various absolute coordinates and at the same using Lie group integration schemes. (2) A method for consistently incorporating the geometry of rigid body motions into the evaluation of EOM in absolute coordinates integrated with standard vector space integration schemes. The direct product group and the semidirect product group SO(3)xR3 and the semidirect product group SE(3) are used for representing rigid body motions. The key element is the local-global transitions (LGT) transition map, which facilitates the update of (global) absolute coordinates in terms of the (local) coordinates on the Lie group. This LGT map is specific to the absolute coordinates, the local coordinates on the Lie group, and the Lie group used to represent rigid body configurations.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 多体系统(MBS)建模的经典方法是使用绝对坐标，即一组（可能是冗余的）坐标，用于描述各个刚体相对于惯性坐标系（IFR）的绝对位置和姿态。运动方程（EOM）进行时间积分的一个众所周知的问题是缺乏空间运动的无奇异参数化，通常通过使用单位四元数来解决。李群积分方法被提出作为无奇异时间积分的替代方法。同时，EOM的李群公式在积分过程中自然地尊重空间运动的几何结构。直接在位形空间李群上运算的李群积分方法与EOM的标准公式不兼容，并且如果不进行重大的重构，就无法在现有的MBS模拟代码中实现。本文的贡献有两方面：（1）提出了一种将李群积分器连接到标准EOM公式的框架。它允许使用各种绝对坐标来描述MBS，同时使用李群积分方案。(2)提出了一种将刚体运动的几何结构一致地纳入到绝对坐标下EOM评估的方法，该方法使用标准向量空间积分方案进行积分。直接积群和半直积群SO(3)xR3以及半直积群SE(3)用于表示刚体运动。关键要素是局部-全局转换（LGT）过渡映射，它有助于根据李群上的（局部）坐标更新（全局）绝对坐标。此LGT映射特定于绝对坐标，李群上的局部坐标以及用于表示刚体位形的李群。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces a framework for Lie group integration in multibody system modeling using absolute coordinates, enabling singularity-free and geometrically consistent simulations without major code restructuring. It also provides a method for incorporating rigid body motion geometry into standard vector space integration schemes.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一个在多体系统建模中使用绝对坐标的李群积分框架，实现了无奇异且几何一致的仿真，无需进行重大代码重构。它还提供了一种将刚体运动几何结构纳入标准向量空间积分方案的方法。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21413v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Andreas Mueller</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.45, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Disturbance-Aware Flight Control of Robotic Gliding Blimp via Moving Mass Actuation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Robotic blimps, as lighter-than-air (LTA) aerial systems, offer long endurance and inherently safe operation but remain highly susceptible to wind disturbances. Building on recent advances in moving mass actuation, this paper addresses the lack of disturbance-aware control frameworks for LTA platforms by explicitly modeling and compensating for wind-induced effects. A moving horizon estimator (MHE) infers real-time wind perturbations and provides these estimates to a model predictive controller (MPC), enabling robust trajectory and heading regulation under varying wind conditions. The proposed approach leverages a two-degree-of-freedom (2-DoF) moving-mass mechanism to generate both inertial and aerodynamic moments for attitude and heading control, thereby enhancing flight stability in disturbance-prone environments. Extensive flight experiments under headwind and crosswind conditions show that the integrated MHE-MPC framework significantly outperforms baseline PID control, demonstrating its effectiveness for disturbance-aware LTA flight.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 机器人飞艇作为一种轻于空气（LTA）的空中系统，具有续航时间长和固有的安全操作等优点，但仍然极易受到风力干扰。本文基于移动质量驱动器的最新进展，通过显式地建模和补偿风力诱导效应，旨在解决LTA平台缺乏具有干扰感知能力的控制框架的问题。本文采用移动视界估计器（MHE）来推断实时风力扰动，并将这些估计值提供给模型预测控制器（MPC），从而实现在不同风力条件下鲁棒的轨迹和航向控制。所提出的方法利用一个两自由度（2-自由度）的移动质量机制，产生惯性力矩和气动动量，用于姿态和航向控制，从而增强了扰动敏感环境下的飞行稳定性。在顶风和侧风条件下进行的大量飞行实验表明，集成的MHE-MPC框架明显优于基线PID控制，证明了其在具有干扰感知能力的LTA飞行中的有效性。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents a disturbance-aware control framework for robotic blimps using moving mass actuation, combining Moving Horizon Estimation (MHE) for wind disturbance estimation and Model Predictive Control (MPC) for robust flight control, validated through flight experiments.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种基于移动质量驱动的机器人飞艇抗扰控制框架，结合移动水平估计 (MHE) 进行风扰动估计和模型预测控制 (MPC) 实现鲁棒飞行控制，并通过飞行实验验证。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21188v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Hao Cheng, Feitian Zhang</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.5, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">The Energy Impact of Domain Model Design in Classical Planning</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> AI research has traditionally prioritised algorithmic performance, such as optimising accuracy in machine learning or runtime in automated planning. The emerging paradigm of Green AI challenges this by recognising energy consumption as a critical performance dimension. Despite the high computational demands of automated planning, its energy efficiency has received little attention. This gap is particularly salient given the modular planning structure, in which domain models are specified independently of algorithms. On the other hand, this separation also enables systematic analysis of energy usage through domain model design. We empirically investigate how domain model characteristics affect the energy consumption of classical planners. We introduce a domain model configuration framework that enables controlled variation of features, such as element ordering, action arity, and dead-end states. Using five benchmark domains and five state-of-the-art planners, we analyse energy and runtime impacts across 32 domain variants per benchmark. Results demonstrate that domain-level modifications produce measurable energy differences across planners, with energy consumption not always correlating with runtime.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 人工智能研究传统上优先考虑算法性能，例如优化机器学习中的准确性或自动化规划中的运行时间。新兴的绿色人工智能范式对此提出了挑战，它将能源消耗视为一个关键的性能维度。尽管自动化规划对计算要求很高，但其能源效率却鲜少受到关注。鉴于模块化的规划结构，即领域模型独立于算法进行指定，这一差距尤为突出。另一方面，这种分离也使得通过领域模型设计对能源使用进行系统分析成为可能。我们实证研究了领域模型特征如何影响经典规划器的能源消耗。我们引入了一个领域模型配置框架，该框架能够对诸如元素排序、动作元数和死胡同状态等特征进行受控变化。使用五个基准领域和五个最先进的规划器，我们分析了每个基准领域32个领域变体的能源和运行时间影响。结果表明，领域层面的修改会在规划器之间产生可测量的能源差异，且能源消耗并不总是与运行时间相关。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper investigates the impact of domain model design on the energy consumption of classical planning algorithms, revealing that domain-level modifications can produce measurable energy differences across planners, which don't always correlate with runtime.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文研究了领域模型设计对经典规划算法能耗的影响，揭示了领域层面的修改可以显著改变规划器的能耗，且能耗并不总是与运行时间相关。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21967v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Ilche Georgievski, Serhat Tekin, Marco Aiello</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.550000000000001, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Synthetic-to-Real Domain Bridging for Single-View 3D Reconstruction of Ships for Maritime Monitoring</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Three-dimensional (3D) reconstruction of ships is an important part of maritime monitoring, allowing improved visualization, inspection, and decision-making in real-world monitoring environments. However, most state-ofthe-art 3D reconstruction methods require multi-view supervision, annotated 3D ground truth, or are computationally intensive, making them impractical for real-time maritime deployment. In this work, we present an efficient pipeline for single-view 3D reconstruction of real ships by training entirely on synthetic data and requiring only a single view at inference. Our approach uses the Splatter Image network, which represents objects as sparse sets of 3D Gaussians for rapid and accurate reconstruction from single images. The model is first fine-tuned on synthetic ShapeNet vessels and further refined with a diverse custom dataset of 3D ships, bridging the domain gap between synthetic and real-world imagery. We integrate a state-of-the-art segmentation module based on YOLOv8 and custom preprocessing to ensure compatibility with the reconstruction network. Postprocessing steps include real-world scaling, centering, and orientation alignment, followed by georeferenced placement on an interactive web map using AIS metadata and homography-based mapping. Quantitative evaluation on synthetic validation data demonstrates strong reconstruction fidelity, while qualitative results on real maritime images from the ShipSG dataset confirm the potential for transfer to operational maritime settings. The final system provides interactive 3D inspection of real ships without requiring real-world 3D annotations. This pipeline provides an efficient, scalable solution for maritime monitoring and highlights a path toward real-time 3D ship visualization in practical applications. Interactive demo: https://dlr-mi.github.io/ship3d-demo/.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 船舶的三维(3D)重建是海事监控的重要组成部分，能够在实际监控环境中改进可视化、检查和决策。然而，大多数最先进的3D重建方法需要多视角监督、标注的3D真实数据或计算密集型操作，使其在实时海事部署中不切实际。在这项工作中，我们提出了一种高效的单视角真实船舶3D重建流程，完全基于合成数据进行训练，并且在推理时仅需要单视角。我们的方法使用了 Splatter Image 网络，该网络将物体表示为3D高斯的稀疏集合，从而实现从单张图像快速而精确的重建。该模型首先在合成的ShapeNet船舶上进行微调，然后使用多样化的定制3D船舶数据集进一步优化，从而弥合了合成图像和真实世界图像之间的领域差距。我们集成了一个基于YOLOv8的最先进的分割模块和定制的预处理步骤，以确保与重建网络的兼容性。后处理步骤包括真实比例缩放、中心化和方向对齐，然后使用AIS元数据和基于单应性的映射将地理参考位置放置在交互式web地图上。在合成验证数据上的定量评估表明重建保真度良好，而来自 ShipSG 数据集的真实海事图像的定性结果证实了转移到操作性海事环境的潜力。最终系统提供了真实船舶的交互式3D检查，而无需真实世界的3D标注。该流程为海事监控提供了一个高效、可扩展的解决方案，并突出了在实际应用中实现实时3D船舶可视化的途径。交互式演示：https://dlr-mi.github.io/ship3d-demo/。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents a synthetic-to-real domain bridging approach for single-view 3D reconstruction of ships using Splatter Image networks, demonstrating potential for interactive maritime monitoring without real-world 3D annotations.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种合成到真实的域桥接方法，使用 Splatter Image 网络从单视图进行船舶的 3D 重建，展示了在无需真实世界 3D 注释的情况下进行交互式海上监控的潜力。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.21786v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Borja Carrillo-Perez, Felix Sattler, Angel Bueno Rodriguez, Maurice Stephan, Sarah Barnes</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.6000000000000005, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">The Epistemic Planning Domain Definition Language: Official Guideline</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Epistemic planning extends (multi-agent) automated planning by making agents' knowledge and beliefs first-class aspects of the planning formalism. One of the most well-known frameworks for epistemic planning is Dynamic Epistemic Logic (DEL), which offers an rich and natural semantics for modelling problems in this setting. The high expressive power provided by DEL make DEL-based epistemic planning a challenging problem to tackle both theoretically, and in practical implementations. As a result, existing epistemic planners often target different DEL fragments, and typically rely on ad hoc languages to represent benchmarks, and sometimes no language at all. This fragmentation hampers comparison, reuse, and systematic benchmark development. We address these issues by introducing the Epistemic Planning Domain Definition Language (EPDDL). EPDDL provides a unique PDDL-like representation that captures the entire DEL semantics, enabling uniform specification of epistemic planning tasks. Our contributions are threefold: 1. A formal development of abstract event models, a novel representation for epistemic actions used to define the semantics of our language; 2. A formal specification of EPDDL's syntax and semantics grounded in DEL with abstract event models; 3. A demonstration of EPDDL's practical applicability: we identify useful fragments amenable to current planners and show how they can be represented in EPDDL. Through examples of representative benchmarks, we illustrate how EPDDL facilitates interoperability, reproducible evaluation, and future advances in epistemic planning.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 知识规划通过将智能体的知识和信念作为规划形式体系中的一等公民，扩展了（多智能体）自动规划。 动态认知逻辑 (DEL) 是最著名的知识规划框架之一，它为建模此类问题提供了丰富而自然的语义。DEL 提供的高度表达能力使得基于 DEL 的知识规划在理论上和实际实现上都是一个极具挑战性的问题。 因此，现有的知识规划器通常针对不同的 DEL 片段，并且通常依赖于特定的临时语言来表示基准，有时甚至根本没有语言。 这种碎片化阻碍了比较、重用和系统基准开发。 我们通过引入知识规划领域定义语言 (EPDDL) 来解决这些问题。 EPDDL 提供了一种独特的类似 PDDL 的表示方法，它捕捉了整个 DEL 语义，从而能够统一地指定知识规划任务。 我们的贡献有三个方面：1. 抽象事件模型的正式开发，这是一种用于定义我们语言语义的知识动作的新颖表示；2. 基于带有抽象事件模型的 DEL 的 EPDDL 语法和语义的正式规范；3. EPDDL 实际适用性的演示：我们识别出适用于当前规划器的有用片段，并展示如何在 EPDDL 中表示它们。 通过代表性基准的示例，我们说明了 EPDDL 如何促进互操作性、可重复的评估以及知识规划的未来发展。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces the Epistemic Planning Domain Definition Language (EPDDL) to standardize the representation of epistemic planning tasks, aiming to improve comparison, reuse, and benchmark development within the Dynamic Epistemic Logic framework.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了知识规划领域定义语言（EPDDL），旨在标准化知识规划任务的表示，从而改进动态知识逻辑框架内的比较、重用和基准开发。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.20969v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Alessandro Burigana, Francesco Fabiano</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 6.65, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Urban Neural Surface Reconstruction from Constrained Sparse Aerial Imagery with 3D SAR Fusion</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Neural surface reconstruction (NSR) has recently shown strong potential for urban 3D reconstruction from multi-view aerial imagery. However, existing NSR methods often suffer from geometric ambiguity and instability, particularly under sparse-view conditions. This issue is critical in large-scale urban remote sensing, where aerial image acquisition is limited by flight paths, terrain, and cost. To address this challenge, we present the first urban NSR framework that fuses 3D synthetic aperture radar (SAR) point clouds with aerial imagery for high-fidelity reconstruction under constrained, sparse-view settings. 3D SAR can efficiently capture large-scale geometry even from a single side-looking flight path, providing robust priors that complement photometric cues from images. Our framework integrates radar-derived spatial constraints into an SDF-based NSR backbone, guiding structure-aware ray selection and adaptive sampling for stable and efficient optimization. We also construct the first benchmark dataset with co-registered 3D SAR point clouds and aerial imagery, facilitating systematic evaluation of cross-modal 3D reconstruction. Extensive experiments show that incorporating 3D SAR markedly enhances reconstruction accuracy, completeness, and robustness compared with single-modality baselines under highly sparse and oblique-view conditions, highlighting a viable route toward scalable high-fidelity urban reconstruction with advanced airborne and spaceborne optical-SAR sensing.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 神经表面重建（NSR）近来在基于多视点航空影像的城市三维重建中展现出强大的潜力。然而，现有的NSR方法常常遭受几何模糊性和不稳定的困扰，尤其是在稀疏视点条件下。这个问题在大型城市遥感中至关重要，因为航空影像的获取受到飞行路径、地形和成本的限制。为了应对这一挑战，我们提出了第一个城市NSR框架，该框架融合了三维合成孔径雷达（SAR）点云和航空影像，从而在受限的稀疏视点设置下实现高保真重建。三维SAR能够即使从单侧视飞行路径也能高效地捕捉大规模几何结构，提供稳健的先验信息，补充图像的光度线索。我们的框架将雷达导出的空间约束集成到基于SDF的NSR主干网络中，引导结构感知的光线选择和自适应采样，从而实现稳定而高效的优化。我们还构建了首个具有共配准三维SAR点云和航空影像的基准数据集，为跨模态三维重建的系统评估提供了便利。大量实验表明，在高度稀疏和倾斜视角的条件下，与单模态基线方法相比，结合三维SAR显著提高了重建的精度、完整性和鲁棒性，突显了一条利用先进的机载和星载光学-SAR传感实现可扩展的高保真城市重建的可行途径。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces a novel neural surface reconstruction framework that fuses 3D SAR point clouds with aerial imagery to improve urban 3D reconstruction, especially in sparse-view scenarios, and provides a new benchmark dataset.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文提出了一种新的神经表面重建框架，该框架融合了3D SAR点云和航空影像，以提高城市3D重建的质量，尤其是在稀疏视图场景下，并提供了一个新的基准数据集。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.22045v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Da Li, Chen Yao, Tong Mao, Jiacheng Bao, Houjun Sun</p>
-            
-        </motion.div>
-        
     </div>
 
+    <section class="filtered-section">
+        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <h3>Multi-Modular MANTA-RAY: A Modular Soft Surface Platform for Distributed Multi-Object Manipulation</h3>
+                
+                <p><strong>Authors:</strong> Pratik Ingle, Jørn Lambertsen, Kasper Støy, Andres Faina</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了一种可扩展的多模块软表面平台 MANTA-RAY，用于分布式多对象操作。该平台利用具有降低的驱动器密度的织物表面和一个几何变换驱动的 PID 控制器，并在仿真和物理原型中进行了验证。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Flocking behavior for dynamic and complex swarm structures</h3>
+                
+                <p><strong>Authors:</strong> Carmen D. R. Pita-Romero, Pedro Arias-Perez, Miguel Fernandez-Cortizas, Rafael Perez-Segui, Pascual Campoy</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种基于虚拟质心的无人机蜂拥算法，能够动态控制蜂群规模和复杂编队，并通过仿真和实际实验进行了演示。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Don't double it: Efficient Agent Prediction in Occlusions</h3>
+                
+                <p><strong>Authors:</strong> Anna Rothenhäusler, Markus Mazzola, Andreas Look, Raghu Rajan, Joschka Bödecker</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了 MatchInformer，一种基于 Transformer 的方法，它使用匈牙利匹配和解耦的标题预测来改进遮挡场景中的智能体预测，从而减少冗余并提高轨迹准确性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>HPTune: Hierarchical Proactive Tuning for Collision-Free Model Predictive Control</h3>
+                
+                <p><strong>Authors:</strong> Wei Zuo, Chengyang Li, Yikun Wang, Bingyang Cheng, Zeyi Ren, Shuai Wang, Derrick Wing Kwan Ng, Yik-Chung Wu</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了一种名为HPTune的分层主动调优框架，用于模型预测控制（MPC）。该框架通过评估已执行和未执行的动作来增强适应性，从而实现更有效的参数更新和改进的避障能力。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Quick Heuristic Validation of Edges in Dynamic Roadmap Graphs</h3>
+                
+                <p><strong>Authors:</strong> Yulie Arad, Stav Ashur, Nancy M. Amato</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种新的半惰性方法（红-绿-灰范式），利用启发式碰撞检测快速更新动态环境中机器人运动规划的路线图，与现有技术相比，该方法提高了准确性并保持了相当的运行时间。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Vidmento: Creating Video Stories Through Context-Aware Expansion With Generative Video</h3>
+                
+                <p><strong>Authors:</strong> Catherine Yeh, Anh Truong, Mira Dontcheva, Bryan Wang</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了一个名为 Vidmento 的工具，该工具通过使用生成视频模型进行上下文感知的扩展，帮助视频创作者生成补充视频内容以填补叙事空白并增强故事讲述，并通过用户研究评估了其有效性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Liquid Interfaces: A Dynamic Ontology for the Interoperability of Autonomous Systems</h3>
+                
+                <p><strong>Authors:</strong> Dhiogo de Sá, Carlos Schmiedel, Carlos Pereira Lopes</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了“液体接口”，一种新颖的自主系统协调范式，它使用运行时协商和语义理解来创建可适应的接口，从而可能提高复杂代理系统中的灵活性和集成性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>PILD: Physics-Informed Learning via Diffusion</h3>
+                
+                <p><strong>Authors:</strong> Tianyi Zeng, Tianyi Wang, Jiaru Zhang, Zimo Zeng, Feiyang Zhang, Yiming Xu, Sikai Chen, Yajie Zou, Yangyang Wang, Junfeng Jiao, Christian Claudel, Xinbo Chen</p>
+                
+                <p><strong>TLDR-CN:</strong> 这篇论文介绍了PILD，一个基于物理信息的扩散框架，通过使用虚拟残差观测和条件嵌入模块将物理约束集成到扩散模型中，并在各种科学和工程任务中展示了更高的准确性和泛化能力。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Log2Motion: Biomechanical Motion Synthesis from Touch Logs</h3>
+                
+                <p><strong>Authors:</strong> Michał Patryk Miazga, Hannah Bussmann, Antti Oulasvirta, Patrick Ebel</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了Log2Motion，一个使用强化学习的框架，可以从触摸日志中合成仿生力学合理的运动，从而深入了解用户在触摸交互过程中的运动控制和人体工程学。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>A New Dataset and Framework for Robust Road Surface Classification via Camera-IMU Fusion</h3>
+                
+                <p><strong>Authors:</strong> Willams de Lima Costa, Thifany Ketuli Silva de Souza, Jonas Ferreira Silva, Carlos Gabriel Bezerra Pereira, Bruno Reis Vila Nova, Leonardo Silvino Brito, Rafael Raider Leoni, Juliano Silva Filho, Valter Ferreira, Sibele Miguel Soares Neto, Samantha Uehara, Daniel Giacometti Amaral, João Marcelo Teixeira, Veronica Teichrieb, Cristiano Coelho de Araújo</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了一种新的多模态框架和数据集 (ROAD)，用于通过摄像头-IMU融合进行稳健的路面分类，与现有方法相比，尤其是在不同的环境条件下，显示出显著的改进。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Towards Geometry-Aware and Motion-Guided Video Human Mesh Recovery</h3>
+                
+                <p><strong>Authors:</strong> Hongjun Chen, Huan Zheng, Wencheng Han, Jianbing Shen</p>
+                
+                <p><strong>TLDR-CN:</strong> HMRMamba 引入了一种新的基于视频的 3D 人体网格重建框架，该框架利用结构化状态空间模型 (SSM) 和几何感知提升来提高准确性、时间一致性和计算效率。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>An AI Framework for Microanastomosis Motion Assessment</h3>
+                
+                <p><strong>Authors:</strong> Yan Meng, Eduardo J. Torres-Rodríguez, Marcelle Altshuler, Nishanth Gowda, Arhum Naeem, Recai Yilmaz, Omar Arnaout, Daniel A. Donoho</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了一个AI框架，该框架利用目标检测、跟踪和分类来自动评估显微吻合术的器械操作，从而可能克服主观专家评估的局限性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>VSE: Variational state estimation of complex model-free process</h3>
+                
+                <p><strong>Authors:</strong> Gustav Norén, Anubhab Ghosh, Fredrik Cumlin, Saikat Chatterjee</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了一种变分状态估计（VSE）方法，该方法使用RNN为复杂的、无模型的动力过程提供封闭形式的高斯后验，并在随机Lorenz系统跟踪应用中展示了其有效性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Managing Solution Stability in Decision-Focused Learning with Cost Regularization</h3>
+                
+                <p><strong>Authors:</strong> Victor Spitzer, Francois Sanson</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文解决了决策导向学习中由扰动强度波动引起的不稳定性问题，并提出了一种成本正则化方法来提高鲁棒性。应用领域是组合优化。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Differentiable Knapsack and Top-k Operators via Dynamic Programming</h3>
+                
+                <p><strong>Authors:</strong> Germain Vivier-Ardisson, Michaël E. Sander, Axel Parmentier, Mathieu Blondel</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种使用动态规划实现Knapsack和Top-k算子的可微松弛方法，使其能够集成到神经网络中，并在决策导向学习、约束强化学习和离散VAE等领域展示了应用。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Mixed-Precision Training and Compilation for RRAM-based Computing-in-Memory Accelerators</h3>
+                
+                <p><strong>Authors:</strong> Rebecca Pelke, Joel Klein, Jose Cubero-Cascante, Nils Bosbach, Jan Moritz Joseph, Rainer Leupers</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种基于强化学习的混合精度训练和编译框架，用于内存计算（CIM）加速器，实现了显著的加速效果，同时保持了极低的精度损失。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Reinforcement Learning for Adaptive Composition of Quantum Circuit Optimisation Passes</h3>
+                
+                <p><strong>Authors:</strong> Daniel Mills, Ifan Williams, Jacob Swain, Gabriel Matos, Enrico Rinaldi, Alexander Koziell-Pipe</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文使用强化学习来创建定制的量子电路优化序列，实现了比默认方法更好的双量子比特门减少效果。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Cascaded Transfer: Learning Many Tasks under Budget Constraints</h3>
+                
+                <p><strong>Authors:</strong> Eloi Campagne, Yvenn Amara-Ouali, Yannig Goude, Mathilde Mougeot, Argyris Kalogeratos</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了一种名为级联迁移学习的新方法，用于在预算约束下进行多任务学习，使用分层树结构在任务之间传输信息。实验表明，与其它方法相比，该方法提高了准确性和成本效益。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Learning to Optimize Job Shop Scheduling Under Structural Uncertainty</h3>
+                
+                <p><strong>Authors:</strong> Rui Zhang, Jianwei Niu, Xuefeng Liu, Shaojie Tang, Jing Yuan</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文提出了一种新颖的非对称Actor-Critic方法（UP-AAC），带有不确定性感知模型（UPM），旨在解决结构不确定性下的Job-Shop调度问题，并在缩短完工时间方面优于现有方法。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Expected Improvement via Gradient Norms</h3>
+                
+                <p><strong>Authors:</strong> Joshua Hang Sai Ip, Georgios Makrygiorgos, Ali Mesbah</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文提出了一种名为梯度范数期望提升 (EI-GN) 的新型贝叶斯优化采集函数，该函数利用梯度信息来改善探索并避免次优解。结果表明，它在标准 BO 基准和控制策略学习方面有所改进。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>PHDME: Physics-Informed Diffusion Models without Explicit Governing Equations</h3>
+                
+                <p><strong>Authors:</strong> Kaiyuan Tan, Kendra Givens, Peilun Li, Thomas Beckers</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了PHDME，一种物理信息扩散模型，它利用port-Hamiltonian结构先验，无需显式控制方程，从而提高了稀疏数据情况下轨迹预测的准确性和物理一致性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Macro-Scale Electrostatic Origami Motor</h3>
+                
+                <p><strong>Authors:</strong> Alex S. Miller, Leo McElroy, Jeffrey H. Lang</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了一种新型的宏观尺度可折叠折纸旋转电机，该电机由电晕放电驱动，能够连续旋转。与之前采用线性或非折叠旋转执行器的可折叠机器人不同，该电机具有创新性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>GAZELOAD A Multimodal Eye-Tracking Dataset for Mental Workload in Industrial Human-Robot Collaboration</h3>
+                
+                <p><strong>Authors:</strong> Bsher Karbouj, Baha Eddin Gaaloul, Jorg Kruger</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了GAZELOAD，一个用于人机协作中精神负荷估计的多模态眼动追踪数据集，包含眼动追踪、环境数据和任务背景。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Singularity-Free Lie Group Integration and Geometrically Consistent Evaluation of Multibody System Models Described in Terms of Standard Absolute Coordinates</h3>
+                
+                <p><strong>Authors:</strong> Andreas Mueller</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了一个在多体系统建模中使用绝对坐标的李群积分框架，实现了无奇异且几何一致的仿真，无需进行重大代码重构。它还提供了一种将刚体运动几何结构纳入标准向量空间积分方案的方法。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Disturbance-Aware Flight Control of Robotic Gliding Blimp via Moving Mass Actuation</h3>
+                
+                <p><strong>Authors:</strong> Hao Cheng, Feitian Zhang</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种基于移动质量驱动的机器人飞艇抗扰控制框架，结合移动水平估计 (MHE) 进行风扰动估计和模型预测控制 (MPC) 实现鲁棒飞行控制，并通过飞行实验验证。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>The Energy Impact of Domain Model Design in Classical Planning</h3>
+                
+                <p><strong>Authors:</strong> Ilche Georgievski, Serhat Tekin, Marco Aiello</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文研究了领域模型设计对经典规划算法能耗的影响，揭示了领域层面的修改可以显著改变规划器的能耗，且能耗并不总是与运行时间相关。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Synthetic-to-Real Domain Bridging for Single-View 3D Reconstruction of Ships for Maritime Monitoring</h3>
+                
+                <p><strong>Authors:</strong> Borja Carrillo-Perez, Felix Sattler, Angel Bueno Rodriguez, Maurice Stephan, Sarah Barnes</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种合成到真实的域桥接方法，使用 Splatter Image 网络从单视图进行船舶的 3D 重建，展示了在无需真实世界 3D 注释的情况下进行交互式海上监控的潜力。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>The Epistemic Planning Domain Definition Language: Official Guideline</h3>
+                
+                <p><strong>Authors:</strong> Alessandro Burigana, Francesco Fabiano</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了知识规划领域定义语言（EPDDL），旨在标准化知识规划任务的表示，从而改进动态知识逻辑框架内的比较、重用和基准开发。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Urban Neural Surface Reconstruction from Constrained Sparse Aerial Imagery with 3D SAR Fusion</h3>
+                
+                <p><strong>Authors:</strong> Da Li, Chen Yao, Tong Mao, Jiacheng Bao, Houjun Sun</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文提出了一种新的神经表面重建框架，该框架融合了3D SAR点云和航空影像，以提高城市3D重建的质量，尤其是在稀疏视图场景下，并提供了一个新的基准数据集。</p>
+            </div>
+            
+        </div>
+    </section>
+
     <footer class="footer">
-        Generated on 2026-02-01 02:42:51 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-08 07:22:49 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
 </body>

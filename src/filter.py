@@ -251,12 +251,17 @@ def filter_and_rate_papers(papers: list) -> list:
     return papers
 
 
-def translate_summaries(papers: list, target_language: str = "中文") -> list:
-    """逐篇翻译论文摘要。翻译失败时保留原文。
+def translate_summaries(
+    papers: list,
+    target_language: str = "中文",
+    min_overall_score: float = 6.0,
+) -> list:
+    """逐篇翻译论文摘要。仅翻译 overall_priority_score 达到阈值的论文。
 
     Args:
         papers: 包含论文信息的字典列表，每个字典应包含 'summary'。
         target_language: 目标语言，默认为"中文"。
+        min_overall_score: 仅翻译 overall_priority_score >= 该值的论文。
 
     Returns:
         包含翻译摘要的字典列表，成功的论文包含 'summary_zh' 字段。
@@ -265,9 +270,23 @@ def translate_summaries(papers: list, target_language: str = "中文") -> list:
         logging.error("未设置 DEEPSEEK_API_KEY 环境变量。无法进行翻译。")
         return papers
 
-    logging.info(f"开始逐篇翻译 {len(papers)} 篇论文的摘要为 {target_language}...")
+    logging.info(
+        f"开始翻译摘要（目标语言: {target_language}，仅 overall_priority_score >= {min_overall_score}）..."
+    )
 
+    eligible_count = 0
+    translated_count = 0
     for i, paper in enumerate(papers):
+        overall_score = paper.get('overall_priority_score')
+        try:
+            overall_score = float(overall_score) if overall_score is not None else None
+        except (TypeError, ValueError):
+            overall_score = None
+
+        if overall_score is None or overall_score < min_overall_score:
+            continue
+
+        eligible_count += 1
         summary = paper.get('summary', '')
         if not summary or summary == 'N/A':
             continue
@@ -283,12 +302,14 @@ def translate_summaries(papers: list, target_language: str = "中文") -> list:
 
         if translated and translated.strip():
             paper['summary_zh'] = clean_translation(translated)
+            translated_count += 1
             logging.info(f"论文 {i+1}/{len(papers)}: 摘要翻译完成")
         else:
             logging.warning(f"论文 {i+1}/{len(papers)}: 翻译失败，保留原文。")
 
-    translated_count = sum(1 for p in papers if 'summary_zh' in p)
-    logging.info(f"摘要翻译完成，成功 {translated_count}/{len(papers)} 篇。")
+    logging.info(
+        f"摘要翻译完成，成功 {translated_count}/{eligible_count} 篇（符合阈值），总论文数 {len(papers)}。"
+    )
     return papers
 
 

@@ -62,6 +62,9 @@ python src/main.py --backfill
 
 # (Optional) Limit the number of dates to backfill per run (default: 5)
 python src/main.py --backfill --backfill-limit 3
+
+# (Optional) Rebuild all HTML from existing daily_json (no re-fetch needed)
+python src/rebuild_html.py
 ```
 
 After successful execution:
@@ -92,6 +95,7 @@ The project is configured to display results via GitHub Pages. Please visit your
 ├── .github/workflows/daily_arxiv.yml  # GitHub Actions configuration file
 ├── src/                     # Python script directory
 │   ├── main.py              # Main execution script
+│   ├── rebuild_html.py      # Rebuild all HTML from existing JSON files
 │   ├── scraper.py           # ArXiv scraper module
 │   ├── filter.py            # OpenRouter filter module (robotics topics)
 │   └── html_generator.py    # HTML generator module

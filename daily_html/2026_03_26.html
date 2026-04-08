@@ -32,6 +32,39 @@
             line-height: 1.6;
         }
 
+        .quick-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            align-items: center;
+            width: fit-content;
+            margin: 0.9rem auto 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .quick-nav a {
+            color: var(--highlight-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            background: rgba(255, 255, 255, 0.86);
+            box-shadow: 0 2px 6px var(--shadow-color);
+            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+        }
+
+        .quick-nav a:hover {
+            background-color: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+
         .bento-grid {
             display: grid;
             gap: 1.5rem; /* Tailwind gap-6 */
@@ -186,10 +219,48 @@
             margin-right: 0.125rem; /* Consistent spacing */
         }
 
+        .filtered-section {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .filtered-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--header-color);
+            margin-bottom: 1rem;
+        }
+
+        .filtered-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .filtered-item {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .filtered-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+        }
+
+        .filtered-item p {
+            margin: 0.25rem 0;
+            color: var(--text-muted-color);
+            font-size: 0.88rem;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
-
     <motion.div
         initial="{ opacity: 0, y: -30 }"
         animate="{ opacity: 1, y: 0 }"
@@ -200,6 +271,11 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>March 26, 2026</p>
+        <nav class="quick-nav">
+            <a href="../index.html" target="_top">首页</a>
+            <a href="../list.html" target="_top">报告列表</a>
+            <a href="../search.html" target="_top">论文检索</a>
+        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -2229,778 +2305,81 @@
             
         </motion.div>
         
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 1.05, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">CoordLight: Learning Decentralized Coordination for Network-Wide Traffic Signal Control</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Adaptive traffic signal control (ATSC) is crucial in alleviating congestion, maximizing throughput and promoting sustainable mobility in ever-expanding cities. Multi-Agent Reinforcement Learning (MARL) has recently shown significant potential in addressing complex traffic dynamics, but the intricacies of partial observability and coordination in decentralized environments still remain key challenges in formulating scalable and efficient control strategies. To address these challenges, we present CoordLight, a MARL-based framework designed to improve intra-neighborhood traffic by enhancing decision-making at individual junctions (agents), as well as coordination with neighboring agents, thereby scaling up to network-level traffic optimization. Specifically, we introduce the Queue Dynamic State Encoding (QDSE), a novel state representation based on vehicle queuing models, which strengthens the agents' capability to analyze, predict, and respond to local traffic dynamics. We further propose an advanced MARL algorithm, named Neighbor-aware Policy Optimization (NAPO). It integrates an attention mechanism that discerns the state and action dependencies among adjacent agents, aiming to facilitate more coordinated decision-making, and to improve policy learning updates through robust advantage calculation. This enables agents to identify and prioritize crucial interactions with influential neighbors, thus enhancing the targeted coordination and collaboration among agents. Through comprehensive evaluations against state-of-the-art traffic signal control methods over three real-world traffic datasets composed of up to 196 intersections, we empirically show that CoordLight consistently exhibits superior performance across diverse traffic networks with varying traffic flows. The code is available at https://github.com/marmotlab/CoordLight</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 自适应交通信号控制（ATSC）对于缓解拥堵、最大化通行能力以及在不断扩张的城市中促进可持续出行至关重要。近年来，多智能体强化学习（MARL）在应对复杂的交通动态方面展现出巨大的潜力，但分散式环境中部分可观测性和协调性的复杂性仍然是制定可扩展且高效的控制策略的关键挑战。为了应对这些挑战，我们提出了CoordLight，一个基于MARL的框架，旨在通过增强单个交叉口（智能体）的决策制定以及与相邻智能体的协调，从而改善邻域内部的交通状况，进而扩展到网络级别的交通优化。具体而言，我们引入了一种基于车辆排队模型的创新状态表示，即队列动态状态编码（QDSE），它增强了智能体分析、预测和响应本地交通动态的能力。我们进一步提出了一种先进的MARL算法，名为邻居感知策略优化（NAPO）。它集成了一种注意力机制，可以辨别相邻智能体之间的状态和行动依赖关系，旨在促进更协调的决策制定，并通过稳健的优势计算来改进策略学习更新。这使得智能体能够识别并优先考虑与具有影响力的邻居的关键互动，从而增强智能体之间的有针对性的协调和协作。通过在由多达196个交叉口组成的三个真实世界交通数据集上，针对最先进的交通信号控制方法进行全面评估，我们通过实验表明，CoordLight在具有不同交通流量的各种交通网络中始终表现出卓越的性能。代码可在https://github.com/marmotlab/CoordLight获得。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces CoordLight, a MARL-based framework with Queue Dynamic State Encoding (QDSE) and Neighbor-aware Policy Optimization (NAPO) for decentralized traffic signal control, demonstrating superior performance on real-world datasets.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了CoordLight，一个基于MARL的框架，具有队列动态状态编码（QDSE）和邻居感知策略优化（NAPO），用于分散式交通信号控制，并在真实世界数据集中表现出卓越的性能。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.24366v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Yifeng Zhang, Harsh Goel, Peizhuo Li, Mehul Damani, Sandeep Chinchali, Guillaume Sartoretti</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 1.1, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Attack Assessment and Augmented Identity Recognition for Human Skeleton Data</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Machine learning models trained on small data sets for security applications are especially vulnerable to adversarial attacks. Person identification from LiDAR based skeleton data requires time consuming and expensive data acquisition for each subject identity. Recently, Assessment and Augmented Identity Recognition for Skeletons (AAIRS) has been used to train Hierarchical Co-occurrence Networks for Person Identification (HCN-ID) with small LiDAR based skeleton data sets. However, AAIRS does not evaluate robustness of HCN-ID to adversarial attacks or inoculate the model to defend against such attacks. Popular perturbation-based approaches to generating adversarial attacks are constrained to targeted perturbations added to real training samples, which is not ideal for inoculating models with small training sets. Thus, we propose Attack-AAIRS, a novel addition to the AAIRS framework. Attack-AAIRS leverages a small real data set and a GAN generated synthetic data set to assess and improve model robustness against unseen adversarial attacks. Rather than being constrained to perturbations of limited real training samples, the GAN learns the distribution of adversarial attack samples that exploit weaknesses in HCN-ID. Attack samples drawn from this distribution augment training for inoculation of the HCN-ID to improve robustness. Ten-fold cross validation of Attack-AAIRS yields increased robustness to unseen attacks- including FGSM, PGD, Additive Gaussian Noise, MI-FGSM, and BIM. The HCN-ID Synthetic Data Quality Score for Attack-AAIRS indicates that generated attack samples are of similar quality to the original benign synthetic samples generated by AAIRS. Furthermore, inoculated models show consistent final test accuracy with the original model trained on real data, demonstrating that our method improves robustness to adversarial attacks without reducing test performance on real data.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 使用小数据集训练的安全应用机器学习模型尤其容易受到对抗攻击。从基于激光雷达的骨骼数据进行人员识别，需要为每个个体身份进行耗时且昂贵的数据采集。最近，骨骼评估和增强身份识别（AAIRS）已被用于训练分层共现网络进行人员识别（HCN-ID），使用基于激光雷达的小型骨骼数据集。然而，AAIRS并未评估HCN-ID对对抗攻击的鲁棒性，也未接种模型以防御此类攻击。流行的基于扰动的对抗攻击生成方法仅限于添加到真实训练样本的有针对性的扰动，这对于使用小型训练集接种模型而言并不理想。因此，我们提出了Attack-AAIRS，这是对AAIRS框架的新颖补充。Attack-AAIRS利用小型真实数据集和GAN生成的合成数据集来评估和提高模型对未见对抗攻击的鲁棒性。GAN不再局限于对有限的真实训练样本进行扰动，而是学习利用HCN-ID弱点的对抗攻击样本分布。从该分布中提取的攻击样本增加了训练，用于HCN-ID的接种，从而提高鲁棒性。Attack-AAIRS的十折交叉验证提高了对未见攻击的鲁棒性，包括FGSM、PGD、加性高斯噪声、MI-FGSM和BIM。Attack-AAIRS的HCN-ID合成数据质量评分表明，生成的攻击样本与AAIRS生成的原始良性合成样本具有相似的质量。此外，接种后的模型显示出与在真实数据上训练的原始模型一致的最终测试准确率，表明我们的方法提高了对抗攻击的鲁棒性，而不会降低真实数据的测试性能。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces Attack-AAIRS, a novel framework that uses GAN-generated adversarial examples to improve the robustness of LiDAR-based skeleton identification systems against various attacks without sacrificing performance on real data.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一种名为 Attack-AAIRS 的新框架，该框架使用 GAN 生成的对抗样本来提高基于 LiDAR 的骨骼识别系统对各种攻击的鲁棒性，同时不牺牲在真实数据上的性能。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.24232v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Joseph G. Zalameda, Megan A. Witherow, Alexander M. Glandon, Jose Aguilera, Khan M. Iftekharuddin</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 1.1500000000000001, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">How unconstrained machine-learning models learn physical symmetries</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> The requirement of generating predictions that exactly fulfill the fundamental symmetry of the corresponding physical quantities has profoundly shaped the development of machine-learning models for physical simulations. In many cases, models are built using constrained mathematical forms that ensure that symmetries are enforced exactly. However, unconstrained models that do not obey rotational symmetries are often found to have competitive performance, and to be able to \emph{learn} to a high level of accuracy an approximate equivariant behavior with a simple data augmentation strategy. In this paper, we introduce rigorous metrics to measure the symmetry content of the learned representations in such models, and assess the accuracy by which the outputs fulfill the equivariant condition. We apply these metrics to two unconstrained, transformer-based models operating on decorated point clouds (a graph neural network for atomistic simulations and a PointNet-style architecture for particle physics) to investigate how symmetry information is processed across architectural layers and is learned during training. Based on these insights, we establish a rigorous framework for diagnosing spectral failure modes in ML models. Enabled by this analysis, we demonstrate that one can achieve superior stability and accuracy by strategically injecting the minimum required inductive biases, preserving the high expressivity and scalability of unconstrained architectures while guaranteeing physical fidelity.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 对预测结果精确满足物理量基本对称性的要求深刻地影响了用于物理模拟的机器学习模型的发展。在许多情况下，模型是使用受约束的数学形式构建的，以确保严格执行对称性。然而，未受约束的、不遵守旋转对称性的模型通常具有竞争性的性能，并且可以通过简单的数据增强策略\emph{学习}到高精度的近似等变行为。在本文中，我们引入了严格的指标来衡量此类模型中习得表征的对称性含量，并评估输出满足等变条件的准确性。我们将这些指标应用于两个在带装饰的点云上运行的、基于Transformer的未受约束模型（用于原子模拟的图神经网络和用于粒子物理的PointNet风格架构），以研究对称性信息如何在架构层中处理并在训练期间学习。基于这些见解，我们建立了一个严格的框架，用于诊断机器学习模型中的谱失效模式。通过这种分析，我们证明可以通过策略性地注入所需的最少归纳偏置，同时保留未受约束架构的高表达性和可扩展性，并保证物理保真度，从而实现卓越的稳定性和准确性。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper analyzes how unconstrained machine learning models learn physical symmetries, introduces metrics to measure the symmetry content in learned representations, and demonstrates improved stability and accuracy by injecting minimal inductive biases.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 这篇文章分析了无约束机器学习模型如何学习物理对称性，引入了衡量学习表征中对称性内容的指标，并通过注入最少的归纳偏置，展示了更高的稳定性和准确性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.24638v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Michelangelo Domina, Joseph William Abbott, Paolo Pegolo, Filippo Bigi, Michele Ceriotti</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 1.2000000000000002, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Wireless communication empowers online scheduling of partially-observable transportation multi-robot systems in a smart factory</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Achieving agile and reconfigurable production flows in smart factories depends on online multi-robot task assignment (MRTA), which requires online collision-free and congestion-free route scheduling of transportation multi-robot systems (T-MRS), e.g., collaborative automatic guided vehicles (AGVs). Due to the real-time operational requirements and dynamic interactions between T-MRS and production MRS, online scheduling under partial observability in dynamic factory environments remains a significant and under-explored challenge. This paper proposes a novel communication-enabled online scheduling framework that explicitly couples wireless machine-to-machine (M2M) networking with route scheduling, enabling AGVs to exchange intention information, e.g., planned routes, to overcome partial observations and assist complex computation of online scheduling. Specifically, we determine intelligent AGVs' intention and sensor data as new M2M traffic and tailor the retransmission-free multi-link transmission networking to meet real-time operation demands. This scheduling-oriented networking is then integrated with a simulated annealing-based MRTA scheme and a congestion-aware A*-based route scheduling method. The integrated communication and scheduling scheme allows AGVs to dynamically adjust collision-free and congestion-free routes with reduced computational overhead. Numerical experiments shows the impacts from wireless communication on the performance of T-MRS and suggest that the proposed integrated scheme significantly enhances scheduling efficiency compared to other baselines, even under high AGV load conditions and limited channel resources. Moreover, the results reveal that the scheduling-oriented wireless M2M communication design fundamentally differs from human-to-human communications, implying new technological opportunities in a wireless networked smart factory.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 在智能工厂中实现敏捷且可重构的生产流程依赖于在线多机器人任务分配（MRTA），这需要对运输多机器人系统（T-MRS）进行在线无碰撞、无拥塞的路径规划，例如协作式自动引导车辆（AGV）。由于实时运行要求以及 T-MRS 和生产 MRS 之间的动态交互，在动态工厂环境中，基于部分可观测性的在线调度仍然是一个重大且未被充分探索的挑战。本文提出了一种新型的基于通信的在线调度框架，该框架将无线机器对机器（M2M）网络与路径规划显式耦合，使 AGV 能够交换意图信息（例如，计划路径），以克服部分观测并辅助在线调度的复杂计算。具体而言，我们将智能 AGV 的意图和传感器数据确定为新的 M2M 流量，并定制了免重传的多链路传输网络，以满足实时运行需求。然后，将这种面向调度的网络与基于模拟退火的 MRTA 方案以及基于 A* 算法的拥塞感知路径规划方法集成。集成的通信和调度方案使 AGV 能够动态调整无碰撞、无拥塞的路径，同时降低计算开销。数值实验表明了无线通信对 T-MRS 性能的影响，并表明与其它基线方法相比，即使在高 AGV 负载条件和有限信道资源下，所提出的集成方案也能显著提高调度效率。此外，结果表明，面向调度的无线 M2M 通信设计与人际通信有着根本区别，这预示着无线网络智能工厂中新的技术机遇。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper proposes a communication-enabled online scheduling framework for transportation multi-robot systems (T-MRS) in smart factories, integrating wireless machine-to-machine (M2M) networking with route scheduling to improve efficiency under partial observability.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种用于智能工厂中运输多机器人系统 (T-MRS) 的通信使能在线调度框架，该框架将无线机器对机器 (M2M) 网络与路径调度相结合，以提高在部分可观测性下的效率。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.23967v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Yaxin Liao, Qimei Cui, Kwang-Cheng Chen, Xiong Li, Jinlian Chen, Xiyu Zhao, Xiaofeng Tao, Ping Zhang</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 1.25, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Energy-Efficient Hierarchical Federated Anomaly Detection for the Internet of Underwater Things via Selective Cooperative Aggregation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Anomaly detection is a core service in the Internet of Underwater Things, yet training accurate distributed models underwater is difficult because acoustic links are low-bandwidth, energy-intensive, and often unable to support direct sensor-to-surface communication. Standard flat federated learning therefore faces two coupled limitations in underwater deployments: expensive long-range transmissions and reduced participation when only a subset of sensors can reach the gateway. This paper proposes an energy-efficient hierarchical federated learning framework for underwater anomaly detection based on three components: feasibility-aware sensor-to-fog association, compressed model-update transmission, and selective cooperative aggregation among fog nodes. The proposed three-tier architecture localises most communication within short-range clusters while activating fog-to-fog exchange only when smaller clusters can benefit from nearby larger neighbours. A physics-grounded underwater acoustic model is used to evaluate detection quality, communication energy, and network participation jointly. In large synthetic deployments, only about 48% of sensors can directly reach the gateway in the 200-sensor case, whereas hierarchical learning preserves full participation through feasible fog paths. Selective cooperation matches the detection accuracy of always-on inter-fog exchange while reducing its energy by 31-33%, and compressed uploads reduce total energy by 71-95% in matched sensitivity tests. Experiments on three real benchmarks further show that low-overhead hierarchical methods remain competitive in detection quality, while flat federated learning defines the minimum-energy operating point. These results provide practical design guidance for underwater deployments operating under severe acoustic communication constraints.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 异常检测是水下物联网中的一项核心服务，然而，训练准确的水下分布式模型非常困难，因为声学链路带宽低、能源密集，且通常无法支持直接的传感器到水面通信。因此，标准扁平联邦学习在水下部署中面临着两个相关的限制：昂贵的远距离传输，以及只有一部分传感器能到达网关时导致的参与度降低。本文提出了一种用于水下异常检测的节能分层联邦学习框架，该框架基于三个组成部分：可行性感知的传感器到雾节点关联、压缩的模型更新传输，以及雾节点之间的选择性协同聚合。所提出的三层架构将大部分通信本地化在短距离集群内，仅当较小的集群可以从附近较大的邻居中受益时，才激活雾节点之间的交换。使用一个基于物理的水下声学模型来联合评估检测质量、通信能量和网络参与度。在大型合成部署中，在200个传感器的情况下，只有约48%的传感器可以直接到达网关，而分层学习通过可行的雾节点路径保留了完全的参与度。选择性协同能够在达到常开雾节点间交换的检测准确度的同时，将其能量降低31-33%，并且在匹配的灵敏度测试中，压缩上传可以将总能量降低71-95%。在三个真实基准上的实验进一步表明，低开销的分层方法在检测质量上仍然具有竞争力，而扁平联邦学习定义了最小能量操作点。这些结果为在严苛声学通信约束下运行的水下部署提供了实用的设计指导。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents an energy-efficient hierarchical federated learning framework for anomaly detection in the Internet of Underwater Things, addressing communication constraints and limited sensor participation.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种针对水下物联网中异常检测的节能分层联邦学习框架，旨在解决通信约束和有限的传感器参与问题。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.24648v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Kenechi Omeke, Michael Mollel, Lei Zhang, Qammer H. Abbasi, Muhammad Ali Imran</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 1.3, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Learning Response-Statistic Shifts and Parametric Roll Episodes from Wave--Vessel Time Series via LSTM Functional Models</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Parametric roll is a rare but high-consequence instability that can trigger abrupt regime changes in ship response, including pronounced shifts in roll statistics and tail risk. This paper develops a data-driven surrogate that learns the nonlinear, causal functional mapping from incident wave--motion time series to vessel motions, and demonstrates that the surrogate reproduces both (i) parametric roll episodes and (ii) the associated statistical shifts in the response. Crucially, the learning framework is data-source agnostic: the paired wave--motion time series can be obtained from controlled experiments (e.g., towing-tank or basin tests with wave probes and motion tracking) when a hull exists, or from high-fidelity simulations during design when experiments are not yet available. To provide a controlled severe-sea demonstration, we generate training data with a URANS numerical wave tank, using long-crested irregular seas synthesized from a modified Pierson--Moskowitz spectrum. The demonstration dataset comprises 49 random-phase realizations for each of three sea states, simulated at a fixed forward speed selected to yield encounter conditions under which parametric-roll episodes can occur. A stacked LSTM surrogate is trained on wave-elevation time series and evaluated on held-out realizations using time-domain accuracy and distributional fidelity metrics. In the most severe case, the model tracks the onset and growth of large-amplitude roll consistent with parametric excitation, and captures the corresponding changes in roll probability density functions (PDFs). We further compare loss-function choices (MSE, relative-entropy-based objectives, and amplitude-weighted variants) and show how they trade average error for improved tail fidelity relevant to operability and risk assessment.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 参数横摇是一种罕见但后果严重的失稳现象，会导致船舶响应的突发性状态改变，包括横摇统计数据的显著变化和尾部风险。本文开发了一种数据驱动的替代模型，用于学习从入射波-运动时间序列到船体运动的非线性、因果函数映射，并证明该替代模型既能重现（i）参数横摇事件，又能重现（ii）响应中相关的统计变化。至关重要的是，该学习框架对数据源具有不可知性：成对的波-运动时间序列可以从受控实验中获得（例如，存在船体的拖曳水池或水池测试，使用波高仪和运动跟踪），或者在设计阶段实验尚未可用时，可以从高精度仿真中获得。为了提供一个受控的恶劣海况演示，我们使用基于修正Pierson-Moskowitz谱合成的长峰不规则波，通过URANS数值水池生成训练数据。演示数据集包含三种海况下的49个随机相位实现，均以固定的前向速度进行模拟，该速度的选择旨在产生能够发生参数横摇事件的遭遇条件。一个堆叠LSTM替代模型在波高时间序列上进行训练，并使用时域精度和分布保真度指标在保留的实现上进行评估。在最恶劣的情况下，该模型能够跟踪与参数激励一致的大幅度横摇的开始和增长，并捕获横摇概率密度函数（PDF）的相应变化。我们进一步比较了损失函数的选择（MSE、基于相对熵的目标函数以及幅度加权变体），并展示了它们如何权衡平均误差与改进的尾部保真度，后者对于可操作性和风险评估至关重要。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents an LSTM-based surrogate model for predicting parametric roll in ships from wave data, demonstrating its ability to capture both roll episodes and statistical shifts. The model is data-source agnostic, allowing training from experiments or high-fidelity simulations.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种基于LSTM的代理模型，用于从波浪数据中预测船舶的参数横摇，展示了其捕捉横摇事件和统计变化的能力。该模型具有数据源无关性，允许从实验或高保真模拟中进行训练。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.24431v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Jose del Aguila Ferrandis</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 1.35, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Hierarchical Spatial-Temporal Graph-Enhanced Model for Map-Matching</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> The integration of GNSS data into portable devices has led to the generation of vast amounts of trajectory data, which is crucial for applications such as map-matching. To tackle the limitations of rule-based methods, recent works in deep learning for trajectory-related tasks occur. However, existing models remain challenging due to issues such as the difficulty of large-scale data labeling, ineffective modeling of spatial-temporal relationships, and discrepancies between training and test data distributions. To tackle these challenges, we propose HSTGMatch, a novel model designed to enhance map-matching performance. Our approach involves a two-stage process: hierarchical self-supervised learning and spatial-temporal supervised learning. We introduce a hierarchical trajectory representation, leveraging both grid cells and geographic tuples to capture moving patterns effectively. The model constructs an Adaptive Trajectory Adjacency Graph to dynamically capture spatial relationships, optimizing GATs for improved efficiency. Furthermore, we incorporate a Spatial-Temporal Factor to extract relevant features and employ a decay coefficient to address variations in trajectory length. Our extensive experiments demonstrate the model's superior performance, module effectiveness, and robustness, providing a promising solution for overcoming the existing limitations in map-matching applications. The source code of HSTGMatch is publicly available on GitHub at https://github.com/Nerooo-g/HSTGMatch.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 将GNSS数据集成到便携式设备中产生了大量的轨迹数据，这对于地图匹配等应用至关重要。为了克服基于规则方法的局限性，近年来涌现出许多用于轨迹相关任务的深度学习方法。然而，由于大规模数据标注的困难、时空关系建模的低效以及训练和测试数据分布的差异等问题，现有模型仍然面临挑战。为了应对这些挑战，我们提出了一种新颖的模型HSTGMatch，旨在提高地图匹配性能。我们的方法包括两个阶段：分层自监督学习和时空监督学习。我们引入了一种分层轨迹表示，利用网格单元和地理元组来有效地捕捉移动模式。该模型构建一个自适应轨迹邻接图来动态捕捉空间关系，并优化GAT以提高效率。此外，我们结合了一个时空因子来提取相关特征，并采用衰减系数来解决轨迹长度的变化问题。我们的大量实验证明了该模型的优越性能、模块有效性和鲁棒性，为克服地图匹配应用中现有的局限性提供了一种有前景的解决方案。HSTGMatch的源代码已在GitHub上公开发布，地址为https://github.com/Nerooo-g/HSTGMatch。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces HSTGMatch, a novel hierarchical spatial-temporal graph-enhanced model for map-matching that uses self-supervised and supervised learning to improve performance and robustness by addressing limitations in existing methods.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一种名为HSTGMatch的新型分层时空图增强地图匹配模型，该模型利用自监督和监督学习来提高性能和鲁棒性，解决了现有方法的局限性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.24054v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Anjun Gao, Zhenglin Wan, Pingfu Chao, Shunyu Yao</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 1.4000000000000001, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">The impact of sensor placement on graph-neural-network-based leakage detection</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Sensor placement for leakage detection in water distribution networks is an important and practical challenge for water utilities. Recent work has shown that graph neural networks can estimate and predict pressures and detect leaks, but their performance strongly depends on the available sensor measurements and configurations. In this paper, we investigate how sensor placement influences the performance of GNN-based leakage detection. We propose a novel PageRank-Centrality-based sensor placement method and demonstrate that it substantially impacts reconstruction, prediction, and leakage detection on the EPANET Net1.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 用于配水管网泄漏检测的传感器布置是供水企业面临的一项重要且具有实践意义的挑战。最近的研究表明，图神经网络可以估计和预测压力并检测泄漏，但其性能在很大程度上取决于可用的传感器测量数据和配置。在本文中，我们研究了传感器布置如何影响基于GNN的泄漏检测的性能。我们提出了一种新颖的基于PageRank中心性的传感器布置方法，并证明了它对EPANET Net1上的重建、预测和泄漏检测产生了显著影响。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper explores the impact of sensor placement strategies on the performance of graph neural networks for leakage detection in water distribution networks, proposing a PageRank-Centrality-based method for improved performance.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文研究了传感器放置策略对图神经网络在供水网络泄漏检测中的性能影响，并提出了一种基于网页排名中心性的方法以提高性能。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.24076v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: J. J. H. van Gemert, V. Breschi, D. R. Yntema, K. J. Keesman, M. Lazar</p>
-            
-        </motion.div>
-        
     </div>
 
+    <section class="filtered-section">
+        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <h3>CoordLight: Learning Decentralized Coordination for Network-Wide Traffic Signal Control</h3>
+                
+                <p><strong>Authors:</strong> Yifeng Zhang, Harsh Goel, Peizhuo Li, Mehul Damani, Sandeep Chinchali, Guillaume Sartoretti</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了CoordLight，一个基于MARL的框架，具有队列动态状态编码（QDSE）和邻居感知策略优化（NAPO），用于分散式交通信号控制，并在真实世界数据集中表现出卓越的性能。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Attack Assessment and Augmented Identity Recognition for Human Skeleton Data</h3>
+                
+                <p><strong>Authors:</strong> Joseph G. Zalameda, Megan A. Witherow, Alexander M. Glandon, Jose Aguilera, Khan M. Iftekharuddin</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了一种名为 Attack-AAIRS 的新框架，该框架使用 GAN 生成的对抗样本来提高基于 LiDAR 的骨骼识别系统对各种攻击的鲁棒性，同时不牺牲在真实数据上的性能。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>How unconstrained machine-learning models learn physical symmetries</h3>
+                
+                <p><strong>Authors:</strong> Michelangelo Domina, Joseph William Abbott, Paolo Pegolo, Filippo Bigi, Michele Ceriotti</p>
+                
+                <p><strong>TLDR-CN:</strong> 这篇文章分析了无约束机器学习模型如何学习物理对称性，引入了衡量学习表征中对称性内容的指标，并通过注入最少的归纳偏置，展示了更高的稳定性和准确性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Wireless communication empowers online scheduling of partially-observable transportation multi-robot systems in a smart factory</h3>
+                
+                <p><strong>Authors:</strong> Yaxin Liao, Qimei Cui, Kwang-Cheng Chen, Xiong Li, Jinlian Chen, Xiyu Zhao, Xiaofeng Tao, Ping Zhang</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种用于智能工厂中运输多机器人系统 (T-MRS) 的通信使能在线调度框架，该框架将无线机器对机器 (M2M) 网络与路径调度相结合，以提高在部分可观测性下的效率。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Energy-Efficient Hierarchical Federated Anomaly Detection for the Internet of Underwater Things via Selective Cooperative Aggregation</h3>
+                
+                <p><strong>Authors:</strong> Kenechi Omeke, Michael Mollel, Lei Zhang, Qammer H. Abbasi, Muhammad Ali Imran</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种针对水下物联网中异常检测的节能分层联邦学习框架，旨在解决通信约束和有限的传感器参与问题。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Learning Response-Statistic Shifts and Parametric Roll Episodes from Wave--Vessel Time Series via LSTM Functional Models</h3>
+                
+                <p><strong>Authors:</strong> Jose del Aguila Ferrandis</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种基于LSTM的代理模型，用于从波浪数据中预测船舶的参数横摇，展示了其捕捉横摇事件和统计变化的能力。该模型具有数据源无关性，允许从实验或高保真模拟中进行训练。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Hierarchical Spatial-Temporal Graph-Enhanced Model for Map-Matching</h3>
+                
+                <p><strong>Authors:</strong> Anjun Gao, Zhenglin Wan, Pingfu Chao, Shunyu Yao</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了一种名为HSTGMatch的新型分层时空图增强地图匹配模型，该模型利用自监督和监督学习来提高性能和鲁棒性，解决了现有方法的局限性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>The impact of sensor placement on graph-neural-network-based leakage detection</h3>
+                
+                <p><strong>Authors:</strong> J. J. H. van Gemert, V. Breschi, D. R. Yntema, K. J. Keesman, M. Lazar</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文研究了传感器放置策略对图神经网络在供水网络泄漏检测中的性能影响，并提出了一种基于网页排名中心性的方法以提高性能。</p>
+            </div>
+            
+        </div>
+    </section>
+
     <footer class="footer">
-        Generated on 2026-03-27 02:48:50 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-08 07:22:54 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
 </body>

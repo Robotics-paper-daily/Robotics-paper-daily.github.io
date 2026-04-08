@@ -32,6 +32,39 @@
             line-height: 1.6;
         }
 
+        .quick-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            align-items: center;
+            width: fit-content;
+            margin: 0.9rem auto 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .quick-nav a {
+            color: var(--highlight-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            background: rgba(255, 255, 255, 0.86);
+            box-shadow: 0 2px 6px var(--shadow-color);
+            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+        }
+
+        .quick-nav a:hover {
+            background-color: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+
         .bento-grid {
             display: grid;
             gap: 1.5rem; /* Tailwind gap-6 */
@@ -186,10 +219,48 @@
             margin-right: 0.125rem; /* Consistent spacing */
         }
 
+        .filtered-section {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .filtered-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--header-color);
+            margin-bottom: 1rem;
+        }
+
+        .filtered-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .filtered-item {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .filtered-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+        }
+
+        .filtered-item p {
+            margin: 0.25rem 0;
+            color: var(--text-muted-color);
+            font-size: 0.88rem;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
-
     <motion.div
         initial="{ opacity: 0, y: -30 }"
         animate="{ opacity: 1, y: 0 }"
@@ -200,6 +271,11 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>March 07, 2026</p>
+        <nav class="quick-nav">
+            <a href="../index.html" target="_top">首页</a>
+            <a href="../list.html" target="_top">报告列表</a>
+            <a href="../search.html" target="_top">论文检索</a>
+        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -1069,298 +1145,41 @@
             
         </motion.div>
         
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 0.45, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Residual RL--MPC for Robust Microrobotic Cell Pushing Under Time-Varying Flow</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Contact-rich micromanipulation in microfluidic flow is challenging because small disturbances can break pushing contact and induce large lateral drift. We study planar cell pushing with a magnetic rolling microrobot that tracks a waypoint-sampled reference curve under time-varying Poiseuille flow. We propose a hybrid controller that augments a nominal MPC with a learned residual policy trained by SAC. The policy outputs a bounded 2D velocity correction that is contact-gated, so residual actions are applied only during robot--cell contact, preserving reliable approach behavior and stabilizing learning. All methods share the same actuation interface and speed envelope for fair comparisons. Experiments show improved robustness and tracking accuracy over pure MPC and PID under nonstationary flow, with generalization from a clover training curve to unseen circle and square trajectories. A residual-bound sweep identifies an intermediate correction limit as the best trade-off, which we use in all benchmarks.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 微流体流动中富接触的微操作极具挑战性，因为微小的扰动就可能破坏推力接触并引起较大的横向漂移。我们研究了利用磁力滚动微型机器人进行平面细胞推动，该机器人会跟踪时变泊肃叶流下的航路点采样参考曲线。我们提出了一种混合控制器，它用SAC训练的学习残差策略来增强标称MPC。该策略输出一个有界的二维速度修正量，该修正量由接触门控，因此残差动作仅在机器人与细胞接触期间应用，从而保持可靠的接近行为并稳定学习。所有方法共享相同的驱动接口和速度包络以进行公平的比较。实验表明，在非平稳流下，相比纯MPC和PID，本文提出的方法在稳健性和跟踪精度方面都有所提高，并且从三叶草训练曲线推广到未见的圆形和正方形轨迹。 残差边界扫描确定了一个中间修正限制作为最佳权衡，我们在所有基准测试中使用该限制。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper presents a hybrid RL-MPC controller for robust microrobotic cell pushing under time-varying flow, demonstrating improved tracking accuracy and robustness compared to pure MPC and PID controllers.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文提出了一种混合RL-MPC控制器，用于在时变流条件下实现鲁棒的微型机器人细胞推动，并证明了与纯MPC和PID控制器相比，其具有更高的跟踪精度和鲁棒性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.05448v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Yanda Yang, Sambeeta Das</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 0.5, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">EdgeDAM: Real-time Object Tracking for Mobile Devices</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Single-object tracking (SOT) on edge devices is a critical computer vision task, requiring accurate and continuous target localization across video frames under occlusion, distractor interference, and fast motion. However, recent state-of-the-art distractor-aware memory mechanisms are largely built on segmentation-based trackers and rely on mask prediction and attention-driven memory updates, which introduce substantial computational overhead and limit real-time deployment on resource-constrained hardware; meanwhile, lightweight trackers sustain high throughput but are prone to drift when visually similar distractors appear. To address these challenges, we propose EdgeDAM, a lightweight detection-guided tracking framework that reformulates distractor-aware memory for bounding-box tracking under strict edge constraints. EdgeDAM introduces two key strategies: (1) Dual-Buffer Distractor-Aware Memory (DAM), which integrates a Recent-Aware Memory to preserve temporally consistent target hypotheses and a Distractor-Resolving Memory to explicitly store hard negative candidates and penalize their re-selection during recovery; and (2) Confidence-Driven Switching with Held-Box Stabilization, where tracker reliability and temporal consistency criteria adaptively activate detection and memory-guided re-identification during occlusion, while a held-box mechanism temporarily freezes and expands the estimate to suppress distractor contamination. Extensive experiments on five benchmarks, including the distractor-focused DiDi dataset, demonstrate improved robustness under occlusion and fast motion while maintaining real-time performance on mobile devices, achieving 88.2% accuracy on DiDi and 25 FPS on an iPhone 15. Code will be released.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 边缘设备上的单目标跟踪（SOT）是一项关键的计算机视觉任务，需要在遮挡、干扰物干扰和快速运动的情况下，对视频帧中的目标进行准确且连续的定位。然而，目前最先进的干扰物感知记忆机制主要构建于基于分割的跟踪器之上，并依赖于掩码预测和注意力驱动的记忆更新，这引入了大量的计算开销，限制了其在资源受限的硬件上的实时部署；与此同时，轻量级跟踪器保持了高吞吐量，但在视觉上相似的干扰物出现时容易发生漂移。为了应对这些挑战，我们提出 EdgeDAM，一种轻量级的检测引导跟踪框架，该框架在严格的边缘约束下重塑了用于边界框跟踪的干扰物感知记忆。EdgeDAM 引入了两个关键策略：（1）双缓冲干扰物感知记忆（DAM），它集成了一个近期感知记忆来保留时间上一致的目标假设，以及一个干扰物消解记忆来显式存储难负样本候选并惩罚其在恢复期间的重新选择；（2）置信度驱动的切换与保持框稳定，其中跟踪器可靠性和时间一致性标准自适应地激活遮挡期间的检测和记忆引导的重识别，而保持框机制暂时冻结并扩展估计，以抑制干扰物污染。在五个基准数据集（包括专注于干扰物的 DiDi 数据集）上的大量实验表明，在遮挡和快速运动下提高了鲁棒性，同时在移动设备上保持了实时性能，在 DiDi 上实现了 88.2% 的精度，在 iPhone 15 上实现了 25 FPS。 代码即将发布。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: EdgeDAM proposes a lightweight detection-guided object tracking framework for edge devices with a novel dual-buffer memory system and confidence-driven switching to improve robustness and real-time performance, achieving 88.2% accuracy on DiDi and 25 FPS on iPhone 15.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: EdgeDAM提出了一种轻量级的检测引导目标跟踪框架，用于边缘设备。它采用了一种新颖的双缓冲内存系统和置信度驱动的切换机制，提高了鲁棒性和实时性能，在DiDi数据集上实现了88.2%的准确率，并在iPhone 15上达到了25 FPS。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.05463v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Syed Muhammad Raza, Syed Murtaza Hussain Abidi, Khawar Islam, Muhammad Ibrahim, Ajmal Saeed Mian</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 0.55, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Towards 3D Scene Understanding of Gas Plumes in LWIR Hyperspectral Images Using Neural Radiance Fields</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Hyperspectral images (HSI) have many applications, ranging from environmental monitoring to national security, and can be used for material detection and identification. Longwave infrared (LWIR) HSI can be used for gas plume detection and analysis. Oftentimes, only a few images of a scene of interest are available and are analyzed individually. The ability to combine information from multiple images into a single, cohesive representation could enhance analysis by providing more context on the scene's geometry and spectral properties. Neural radiance fields (NeRFs) create a latent neural representation of volumetric scene properties that enable novel-view rendering and geometry reconstruction, offering a promising avenue for hyperspectral 3D scene reconstruction. We explore the possibility of using NeRFs to create 3D scene reconstructions from LWIR HSI and demonstrate that the model can be used for the basic downstream analysis task of gas plume detection. The physics-based DIRSIG software suite was used to generate a synthetic multi-view LWIR HSI dataset of a simple facility with a strong sulfur hexafluoride gas plume. Our method, built on the standard Mip-NeRF architecture, combines state-of-the-art methods for hyperspectral NeRFs and sparse-view NeRFs, along with a novel adaptive weighted MSE loss. Our final NeRF method requires around 50% fewer training images than the standard Mip-NeRF and achieves an average PSNR of 39.8 dB with as few as 30 training images. Gas plume detection applied to NeRF-rendered test images using the adaptive coherence estimator achieves an average AUC of 0.821 when compared with detection masks generated from ground-truth test images.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 高光谱图像（HSI）具有广泛的应用，涵盖从环境监测到国家安全等领域，可用于材料检测和识别。长波红外（LWIR）HSI 可用于气体羽流检测和分析。通常，只有少量感兴趣场景的图像可用，并单独进行分析。将来自多个图像的信息组合成单一、连贯的表示，可以通过提供更多关于场景几何结构和光谱特性的上下文来增强分析能力。神经辐射场（NeRFs）创建了体积场景属性的潜在神经表示，从而实现新视角渲染和几何重建，为高光谱 3D 场景重建提供了一条有希望的途径。我们探索了使用 NeRFs 从 LWIR HSI 创建 3D 场景重建的可能性，并证明该模型可用于气体羽流检测等基本下游分析任务。基于物理的 DIRSIG 软件套件用于生成一个简单的设施合成多视角 LWIR HSI 数据集，其中包含强烈的六氟化硫气体羽流。我们的方法建立在标准的 Mip-NeRF 架构之上，结合了用于高光谱 NeRFs 和稀疏视角 NeRFs 的最先进方法，以及一种新的自适应加权 MSE 损失。最终的 NeRF 方法所需的训练图像比标准 Mip-NeRF 少大约 50%，并且仅使用 30 张训练图像即可实现平均 PSNR 为 39.8 dB。将自适应相干估计器应用于 NeRF 渲染的测试图像进行气体羽流检测，与从真实测试图像生成的检测掩模相比，实现了平均 AUC 为 0.821。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper explores using NeRFs for 3D reconstruction of LWIR hyperspectral images, specifically for gas plume detection, demonstrating good performance with a novel adaptive loss and fewer training images.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文探讨了使用NeRFs进行LWIR高光谱图像的三维重建，特别是用于气体羽流检测，并展示了使用一种新的自适应损失函数和更少的训练图像所获得的良好性能。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.05473v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Scout Jarman, Zigfried Hampel-Arias, Adra Carr, Kevin R. Moon</p>
-            
-        </motion.div>
-        
     </div>
 
+    <section class="filtered-section">
+        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <h3>Residual RL--MPC for Robust Microrobotic Cell Pushing Under Time-Varying Flow</h3>
+                
+                <p><strong>Authors:</strong> Yanda Yang, Sambeeta Das</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文提出了一种混合RL-MPC控制器，用于在时变流条件下实现鲁棒的微型机器人细胞推动，并证明了与纯MPC和PID控制器相比，其具有更高的跟踪精度和鲁棒性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>EdgeDAM: Real-time Object Tracking for Mobile Devices</h3>
+                
+                <p><strong>Authors:</strong> Syed Muhammad Raza, Syed Murtaza Hussain Abidi, Khawar Islam, Muhammad Ibrahim, Ajmal Saeed Mian</p>
+                
+                <p><strong>TLDR-CN:</strong> EdgeDAM提出了一种轻量级的检测引导目标跟踪框架，用于边缘设备。它采用了一种新颖的双缓冲内存系统和置信度驱动的切换机制，提高了鲁棒性和实时性能，在DiDi数据集上实现了88.2%的准确率，并在iPhone 15上达到了25 FPS。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Towards 3D Scene Understanding of Gas Plumes in LWIR Hyperspectral Images Using Neural Radiance Fields</h3>
+                
+                <p><strong>Authors:</strong> Scout Jarman, Zigfried Hampel-Arias, Adra Carr, Kevin R. Moon</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文探讨了使用NeRFs进行LWIR高光谱图像的三维重建，特别是用于气体羽流检测，并展示了使用一种新的自适应损失函数和更少的训练图像所获得的良好性能。</p>
+            </div>
+            
+        </div>
+    </section>
+
     <footer class="footer">
-        Generated on 2026-03-08 02:13:12 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-08 07:22:52 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
 </body>

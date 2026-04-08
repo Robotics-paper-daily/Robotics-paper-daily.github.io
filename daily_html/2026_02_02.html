@@ -32,6 +32,39 @@
             line-height: 1.6;
         }
 
+        .quick-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            align-items: center;
+            width: fit-content;
+            margin: 0.9rem auto 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .quick-nav a {
+            color: var(--highlight-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            background: rgba(255, 255, 255, 0.86);
+            box-shadow: 0 2px 6px var(--shadow-color);
+            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+        }
+
+        .quick-nav a:hover {
+            background-color: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+
         .bento-grid {
             display: grid;
             gap: 1.5rem; /* Tailwind gap-6 */
@@ -186,10 +219,48 @@
             margin-right: 0.125rem; /* Consistent spacing */
         }
 
+        .filtered-section {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .filtered-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--header-color);
+            margin-bottom: 1rem;
+        }
+
+        .filtered-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .filtered-item {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .filtered-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+        }
+
+        .filtered-item p {
+            margin: 0.25rem 0;
+            color: var(--text-muted-color);
+            font-size: 0.88rem;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
-
     <motion.div
         initial="{ opacity: 0, y: -30 }"
         animate="{ opacity: 1, y: 0 }"
@@ -200,6 +271,11 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>February 02, 2026</p>
+        <nav class="quick-nav">
+            <a href="../index.html" target="_top">首页</a>
+            <a href="../list.html" target="_top">报告列表</a>
+            <a href="../search.html" target="_top">论文检索</a>
+        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -5681,1067 +5757,105 @@
             
         </motion.div>
         
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.85, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Estimating Force Interactions of Deformable Linear Objects from their Shapes</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> This work introduces an analytical approach for detecting and estimating external forces acting on deformable linear objects (DLOs) using only their observed shapes. In many robot-wire interaction tasks, contact occurs not at the end-effector but at other points along the robot's body. Such scenarios arise when robots manipulate wires indirectly (e.g., by nudging) or when wires act as passive obstacles in the environment. Accurately identifying these interactions is crucial for safe and efficient trajectory planning, helping to prevent wire damage, avoid restricted robot motions, and mitigate potential hazards. Existing approaches often rely on expensive external force-torque sensor or that contacts occur at the end-effector for accurate force estimation. Using wire shape information acquired from a depth camera and under the assumption that the wire is in or near its static equilibrium, our method estimates both the location and magnitude of external forces without additional prior knowledge. This is achieved by exploiting derived consistency conditions and solving a system of linear equations based on force-torque balance along the wire. The approach was validated through simulation, where it achieved high accuracy, and through real-world experiments, where accurate estimation was demonstrated in selected interaction scenarios.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 本文提出了一种分析方法，仅利用可变形线性物体(DLO)的观测形状来检测和估计作用在其上的外部力。在许多机器人-线缆交互任务中，接触并非发生在末端执行器上，而是发生在机器人本体沿线的其他点。当机器人间接操作线缆（例如，通过轻推）或线缆充当环境中的被动障碍物时，就会出现这种情况。准确识别这些交互对于安全高效的轨迹规划至关重要，有助于防止线缆损坏、避免受限的机器人运动并减轻潜在的危险。现有的方法通常依赖于昂贵的外部力/力矩传感器，或者假设接触发生在末端执行器上，以实现精确的力估计。我们的方法利用从深度相机获取的线缆形状信息，并在假设线缆处于或接近其静态平衡状态的前提下，无需额外的先验知识，即可估计外部力的位置和大小。这通过利用推导出的相容性条件并求解基于线缆沿线力-力矩平衡的线性方程组来实现。该方法已通过仿真验证，实现了高精度，并通过真实世界实验验证，在选定的交互场景中证明了其准确的估计能力。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper presents an analytical method for estimating external forces acting on deformable linear objects based on their observed shapes, validated through simulations and real-world experiments, addressing the challenge of force estimation in robot-wire interaction tasks when contact occurs away from the end-effector.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文提出了一种基于可变形线性物体形状来估计其受到的外力的分析方法，通过仿真和实际实验验证了其有效性，旨在解决机器人-导线交互任务中，当接触点不在末端执行器时，力估计的难题。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2602.01085v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Qi Jing Chen, Shilin Shan, Timothy Bretl, Quang-Cuong Pham</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.9000000000000004, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Minimal Footprint Grasping Inspired by Ants</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Ants are highly capable of grasping objects in clutter, and we have recently observed that this involves substantial use of their forelegs. The forelegs, more specifically the tarsi, have high friction microstructures (setal pads), are covered in hairs, and have a flexible under-actuated tip. Here we abstract these features to test their functional advantages for a novel low-cost gripper design, suitable for bin-picking applications. In our implementation, the gripper legs are long and slim, with high friction gripping pads, low friction hairs and single-segment tarsus-like structure to mimic the insect's setal pads, hairs, and the tarsi's interactive compliance. Experimental evaluation shows this design is highly robust for grasping a wide variety of individual consumer objects, with all grasp attempts successful. In addition, we demonstrate this design is effective for picking single objects from dense clutter, a task at which ants also show high competence. The work advances grasping technology and shed new light on the mechanical importance of hairy structures and tarsal flexibility in insects.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 蚂蚁在杂乱环境中抓取物体能力极强，我们最近观察到这涉及对其前腿的大量使用。更具体地说，前腿（尤其是跗节）拥有高摩擦的微结构（刚毛垫），覆盖着毛发，并具有灵活的欠驱动尖端。本文中，我们抽象出这些特征，以测试其在一种新型低成本夹爪设计中的功能优势，该夹爪适用于料箱拣选应用。在我们的实现中，夹爪腿部细长，具有高摩擦抓握垫，低摩擦的毛发和单节跗节状结构，以模仿昆虫的刚毛垫、毛发和跗节的交互顺应性。实验评估表明，这种设计在抓取各种消费品时非常稳健，所有抓取尝试都成功了。此外，我们还证明了这种设计能够有效地从密集杂乱中拣选单个物体，这是一项蚂蚁也表现出高能力的任务。这项工作推进了抓取技术，并阐明了昆虫毛状结构和跗节柔韧性的机械重要性。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents a novel, low-cost gripper design inspired by ant forelegs, demonstrating robust grasping capabilities for individual objects and effective single-object picking from clutter.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种受蚂蚁前腿启发的新型低成本夹爪设计，展示了对单个物体的强大抓取能力和从杂乱环境中有效拾取单个物体的能力。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2602.00935v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Mohamed Sorour, Barbara Webb</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.95, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Multi-Agent Causal Reasoning System for Error Pattern Rule Automation in Vehicles</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Modern vehicles generate thousands of different discrete events known as Diagnostic Trouble Codes (DTCs). Automotive manufacturers use Boolean combinations of these codes, called error patterns (EPs), to characterize system faults and ensure vehicle safety. Yet, EP rules are still manually handcrafted by domain experts, a process that is expensive and prone to errors as vehicle complexity grows. This paper introduces CAREP (Causal Automated Reasoning for Error Patterns), a multi-agent system that automatizes the generation of EP rules from high-dimensional event sequences of DTCs. CAREP combines a causal discovery agent that identifies potential DTC-EP relations, a contextual information agent that integrates metadata and descriptions, and an orchestrator agent that synthesizes candidate boolean rules together with interpretable reasoning traces. Evaluation on a large-scale automotive dataset with over 29,100 unique DTCs and 474 error patterns demonstrates that CAREP can automatically and accurately discover the unknown EP rules, outperforming LLM-only baselines while providing transparent causal explanations. By uniting practical causal discovery and agent-based reasoning, CAREP represents a step toward fully automated fault diagnostics, enabling scalable, interpretable, and cost-efficient vehicle maintenance.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 现代汽车产生数千种不同的离散事件，称为诊断故障码（DTCs）。汽车制造商使用这些代码的布尔组合，称为错误模式（EPs），来表征系统故障并确保车辆安全。然而，EP规则仍然由领域专家手工制定，随着车辆复杂性的增加，这个过程既昂贵又容易出错。本文介绍CAREP（用于错误模式的因果自动推理），一个多智能体系统，可以自动从 DTCs 的高维事件序列中生成 EP 规则。CAREP 结合了一个因果发现智能体（识别潜在的 DTC-EP 关系）、一个上下文信息智能体（整合元数据和描述）以及一个协调智能体（合成候选布尔规则以及可解释的推理轨迹）。在一个包含超过 29,100 个唯一 DTCs 和 474 个错误模式的大规模汽车数据集上的评估表明，CAREP 能够自动、准确地发现未知的 EP 规则，优于仅使用 LLM 的基线模型，同时提供透明的因果解释。通过结合实用的因果发现和基于智能体的推理，CAREP 代表了迈向完全自动化故障诊断的一步，从而实现可扩展、可解释且具有成本效益的车辆维护。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces CAREP, a multi-agent system that automates the generation of error pattern rules for vehicle fault diagnostics using causal discovery and interpretable reasoning, outperforming LLM-only baselines.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种多智能体系统 CAREP，该系统使用因果发现和可解释推理自动生成车辆故障诊断的错误模式规则，性能优于仅使用大型语言模型的基线方法。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2602.01155v2" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Hugo Math, Julian Lorenz, Stefan Oelsner, Rainer Lienhart</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.0, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">R-HTN: Rebellious Online HTN Planning for Safety and Game AI</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> We introduce online Hierarchical Task Network (HTN) agents whose behaviors are governed by a set of built-in directives \D. Like other agents that are capable of rebellion (i.e., {\it intelligent disobedience}), our agents will, under some conditions, not perform a user-assigned task and instead act in ways that do not meet a user's expectations. Our work combines three concepts: HTN planning, online planning, and the directives \D, which must be considered when performing user-assigned tasks. We investigate two agent variants: (1) a Nonadaptive agent that stops execution if it finds itself in violation of \D~ and (2) an Adaptive agent that, in the same situation, instead modifies its HTN plan to search for alternative ways to achieve its given task. We present R-HTN (for: Rebellious-HTN), a general algorithm for online HTN planning under directives \D. We evaluate R-HTN in two task domains where the agent must not violate some directives for safety reasons or as dictated by their personality traits. We found that R-HTN agents never violate directives, and aim to achieve the user-given goals if feasible though not necessarily as the user expected.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 我们引入了在线分层任务网络 (HTN) 智能体，其行为受一组内置指令 \D 控制。与其他具有反抗能力的智能体（即，{\it 智能抗命}）类似，我们的智能体在某些情况下将不会执行用户分配的任务，而是采取不符合用户期望的行动。我们的工作结合了三个概念：HTN 规划、在线规划以及执行用户分配任务时必须考虑的指令 \D。我们研究了两种智能体变体：（1）非自适应智能体，如果在发现自身违反 \D 时停止执行；（2）自适应智能体，在相同情况下，会修改其 HTN 计划，从而寻找替代方法来实现给定的任务。我们提出了 R-HTN（意为：反叛-HTN），一种在指令 \D 下进行在线 HTN 规划的通用算法。我们在两个任务领域对 R-HTN 进行了评估，在这两个领域中，智能体不得违反某些指令，因为它们与安全性有关或由其人格特质决定。我们发现 R-HTN 智能体从未违反指令，并在可行的情况下努力实现用户设定的目标，即使不一定按照用户期望的方式实现。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces R-HTN, an online Hierarchical Task Network planning algorithm that allows agents to intelligently disobey user-assigned tasks based on pre-defined directives, aiming for safety and personality adherence. The algorithm is evaluated in two task domains, demonstrating the agent's ability to avoid directive violations while still pursuing user goals.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 这篇论文介绍了一种在线分层任务网络规划算法R-HTN，该算法允许智能体根据预定义的指令智能地不服从用户分配的任务，以确保安全和个性化。该算法在两个任务领域进行了评估，展示了智能体避免违反指令，同时追求用户目标的能力。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2602.00951v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Hector Munoz-Avila, David W. Aha, Paola Rizzo</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.0500000000000003, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Interacted Planes Reveal 3D Line Mapping</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> 3D line mapping from multi-view RGB images provides a compact and structured visual representation of scenes. We study the problem from a physical and topological perspective: a 3D line most naturally emerges as the edge of a finite 3D planar patch. We present LiP-Map, a line-plane joint optimization framework that explicitly models learnable line and planar primitives. This coupling enables accurate and detailed 3D line mapping while maintaining strong efficiency (typically completing a reconstruction in 3 to 5 minutes per scene). LiP-Map pioneers the integration of planar topology into 3D line mapping, not by imposing pairwise coplanarity constraints but by explicitly constructing interactions between plane and line primitives, thus offering a principled route toward structured reconstruction in man-made environments. On more than 100 scenes from ScanNetV2, ScanNet++, Hypersim, 7Scenes, and Tanks\&Temple, LiP-Map improves both accuracy and completeness over state-of-the-art methods. Beyond line mapping quality, LiP-Map significantly advances line-assisted visual localization, establishing strong performance on 7Scenes. Our code is released at https://github.com/calmke/LiPMAP for reproducible research.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 从多视角RGB图像进行3D线映射提供了一种紧凑且结构化的场景视觉表示。我们从物理和拓扑的角度研究这个问题：一条3D线最自然地产生于一个有限3D平面片的边缘。我们提出了LiP-Map，一个明确地建模可学习的线和平面基元的线-面联合优化框架。这种耦合实现了精确和细致的3D线映射，同时保持了强大的效率（通常完成一个场景的重建需要3到5分钟）。LiP-Map率先将平面拓扑集成到3D线映射中，并非通过施加成对共面约束，而是通过显式地构建平面和线基元之间的交互，从而为在人造环境中进行结构化重建提供了一条原则性的途径。在来自ScanNetV2、ScanNet++、Hypersim、7Scenes和Tanks\&Temple的100多个场景中，LiP-Map在准确性和完整性方面都优于最先进的方法。除了线映射质量，LiP-Map显著提升了线辅助视觉定位，在7Scenes上建立了强大的性能。我们的代码已在https://github.com/calmke/LiPMAP上发布，以便进行可重复的研究。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces LiP-Map, a novel framework for 3D line mapping from multi-view images that explicitly models the interactions between learnable line and planar primitives, improving accuracy, completeness, and visual localization performance. The code is released for reproducibility.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了 LiP-Map，一个用于多视图图像三维线映射的新框架，它显式地建模了可学习的线和平面图元之间的交互作用，从而提高了精度、完整性和视觉定位性能，并发布可复现的代码。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2602.01296v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Zeran Ke, Bin Tan, Gui-Song Xia, Yujun Shen, Nan Xue</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.1, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">FUSE-Flow: Scalable Real-Time Multi-View Point Cloud Reconstruction Using Confidence</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Real-time multi-view point cloud reconstruction is a core problem in 3D vision and immersive perception, with wide applications in VR, AR, robotic navigation, digital twins, and computer interaction. Despite advances in multi-camera systems and high-resolution depth sensors, fusing large-scale multi-view depth observations into high-quality point clouds under strict real-time constraints remains challenging. Existing methods relying on voxel-based fusion, temporal accumulation, or global optimization suffer from high computational complexity, excessive memory usage, and limited scalability, failing to simultaneously achieve real-time performance, reconstruction quality, and multi-camera extensibility. We propose FUSE-Flow, a frame-wise, stateless, and linearly scalable point cloud streaming reconstruction framework. Each frame independently generates point cloud fragments, fused via two weights, measurement confidence and 3D distance consistency to suppress noise while preserving geometric details. For large-scale multi-camera efficiency, we introduce an adaptive spatial hashing-based weighted aggregation method: 3D space is adaptively partitioned by local point cloud density, representative points are selected per cell, and weighted fusion is performed to handle both sparse and dense regions. With GPU parallelization, FUSE-Flow achieves high-throughput, low-latency point cloud generation and fusion with linear complexity. Experiments demonstrate that the framework improves reconstruction stability and geometric fidelity in overlapping, depth-discontinuous, and dynamic scenes, while maintaining real-time frame rates on modern GPUs, verifying its effectiveness, robustness, and scalability.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 实时多视角点云重建是三维视觉和沉浸式感知领域的核心问题，在虚拟现实、增强现实、机器人导航、数字孪生以及计算机交互等领域有着广泛的应用。尽管多相机系统和高分辨率深度传感器取得了进展，但在严格的实时约束下，将大规模多视角深度观测融合为高质量点云仍然具有挑战性。现有方法依赖于体素融合、时序累积或全局优化，但存在计算复杂度高、内存占用过多以及可扩展性有限等问题，无法同时实现实时性能、重建质量和多相机可扩展性。我们提出了FUSE-Flow，一个逐帧、无状态且线性可扩展的点云流式重建框架。每帧独立生成点云片段，通过测量置信度和3D距离一致性这两个权重融合，以抑制噪声并保留几何细节。为了实现大规模多相机效率，我们引入了一种基于自适应空间哈希的加权聚合方法：3D空间根据局部点云密度进行自适应划分，每个单元格选择代表点，并执行加权融合以处理稀疏和密集区域。通过GPU并行化，FUSE-Flow以线性复杂度实现了高吞吐量、低延迟的点云生成和融合。实验表明，该框架提高了在重叠、深度不连续和动态场景中的重建稳定性和几何保真度，同时在现代GPU上保持了实时帧率，验证了其有效性、鲁棒性和可扩展性。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents FUSE-Flow, a scalable real-time multi-view point cloud reconstruction framework that uses confidence and adaptive spatial hashing for efficient and high-quality fusion of depth observations.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了FUSE-Flow，一个可扩展的实时多视角点云重建框架，它利用置信度和自适应空间哈希来实现高效且高质量的深度观测融合。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2602.01035v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Chentian Sun</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.1500000000000004, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">TRACE: Scalable Amortized Causal Discovery from Single Sequences via Autoregressive Density Estimation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> We study causal discovery from a single observed sequence of discrete events generated by a stochastic process, as encountered in vehicle logs, manufacturing systems, or patient trajectories. This regime is particularly challenging due to the absence of repeated samples, high dimensionality, and long-range temporal dependencies of the single observation during inference. We introduce TRACE, a scalable framework that repurposes autoregressive models as pretrained density estimators for conditional mutual information estimation. TRACE infers the summary causal graph between event types in a sequence, scaling linearly with the event vocabulary and supporting delayed causal effects, while being fully parallel on GPUs. We establish its theoretical identifiability under imperfect autoregressive models. Experiments demonstrate robust performance across different baselines and varying vocabulary sizes including an application to root-cause analysis in vehicle diagnostics with over 29,100 event types.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 我们研究从由随机过程生成的离散事件的单一观测序列中进行因果发现，这种序列常见于车辆日志、制造系统或患者轨迹中。由于缺乏重复样本、高维度以及推断期间单次观测的长程时间依赖性，因此该场景极具挑战性。我们提出TRACE，一个可扩展的框架，它将自回归模型重新用作条件互信息估计的预训练密度估计器。TRACE推断序列中事件类型之间的概括因果图，随事件词汇量线性扩展，并支持延迟因果效应，同时能在GPU上完全并行化。我们证明了其在不完美的自回归模型下的理论可识别性。实验表明，与不同的基线和不同词汇量相比，TRACE表现出稳健的性能，其中包括一个在具有超过29,100种事件类型的车辆诊断中进行根本原因分析的应用。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: TRACE introduces a scalable framework for causal discovery from single event sequences using autoregressive models for conditional mutual information estimation, demonstrated on vehicle diagnostics with a large event vocabulary.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: TRACE 提出了一个可扩展的框架，用于从单个事件序列中进行因果发现，该框架使用自回归模型进行条件互信息估计，并在具有大量事件词汇的车辆诊断中得到验证。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2602.01135v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Hugo Math, Rainer Lienhart</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.2, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Optimal Decision-Making Based on Prediction Sets</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Prediction sets can wrap around any ML model to cover unknown test outcomes with a guaranteed probability. Yet, it remains unclear how to use them optimally for downstream decision-making. Here, we propose a decision-theoretic framework that seeks to minimize the expected loss (risk) against a worst-case distribution consistent with the prediction set's coverage guarantee. We first characterize the minimax optimal policy for a fixed prediction set, showing that it balances the worst-case loss inside the set with a penalty for potential losses outside the set. Building on this, we derive the optimal prediction set construction that minimizes the resulting robust risk subject to a coverage constraint. Finally, we introduce Risk-Optimal Conformal Prediction (ROCP), a practical algorithm that targets these risk-minimizing sets while maintaining finite-sample distribution-free marginal coverage. Empirical evaluations on medical diagnosis and safety-critical decision-making tasks demonstrate that ROCP reduces critical mistakes compared to baselines, particularly when out-of-set errors are costly.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 预测集可以包裹任何机器学习模型，以保证的概率覆盖未知的测试结果。然而，如何以最佳方式将其用于下游决策仍然不明确。在此，我们提出了一个决策理论框架，旨在最小化预期损失（风险），该损失是针对与预测集的覆盖保证相一致的最坏情况分布而言的。我们首先针对固定的预测集表征了极小极大最优策略，表明它平衡了集合内部的最坏情况损失与集合外部潜在损失的惩罚。在此基础上，我们推导了最优预测集构建方法，该方法在满足覆盖约束的条件下，最小化所产生的鲁棒风险。最后，我们引入了风险最优共形预测（ROCP），这是一种实用算法，旨在寻找这些风险最小化的集合，同时保持有限样本的无分布边际覆盖率。在医疗诊断和安全关键决策任务上的实证评估表明，与基线方法相比，ROCP减少了关键错误，尤其是在集合外错误代价高昂时。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents a decision-theoretic framework for constructing prediction sets that minimize the worst-case expected loss, along with a practical algorithm, ROCP, which shows promising results in medical diagnosis and safety-critical decision-making.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一个决策理论框架，用于构建最小化最坏情况下预期损失的预测集，并提出了一个实用的算法ROCP，在医疗诊断和安全关键决策任务中显示出有希望的结果。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2602.00989v2" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Tao Wang, Edgar Dobriban</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.25, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Meanshift Shape Formation Control Using Discrete Mass Distribution</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> The density-distribution method has recently become a promising paradigm owing to its adaptability to variations in swarm size. However, existing studies face practical challenges in achieving complex shape representation and decentralized implementation. This motivates us to develop a fully decentralized, distribution-based control strategy with the dual capability of forming complex shapes and adapting to swarm-size variations. Specifically, we first propose a discrete mass-distribution function defined over a set of sample points to model swarm formation. In contrast to the continuous density-distribution method, our model eliminates the requirement for defining continuous density functions-a task that is difficult for complex shapes. Second, we design a decentralized meanshift control law to coordinate the swarm's global distribution to fit the sample-point distribution by feeding back mass estimates. The mass estimates for all sample points are achieved by the robots in a decentralized manner via the designed mass estimator. It is shown that the mass estimates of the sample points can asymptotically converge to the true global values. To validate the proposed strategy, we conduct comprehensive simulations and real-world experiments to evaluate the efficiency of complex shape formation and adaptability to swarm-size variations.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 密度分布方法由于其对群体规模变化的适应性，最近成为一种有前景的范式。然而，现有的研究在实现复杂形状表示和去中心化实施方面面临着实际挑战。这促使我们开发一种完全去中心化的、基于分布的控制策略，该策略同时具备形成复杂形状和适应群体规模变化的能力。具体而言，我们首先提出一种定义在样本点集合上的离散质量分布函数来建模群体队形。与连续密度分布方法相比，我们的模型消除了定义连续密度函数的需求，而对于复杂形状来说，这项任务是困难的。其次，我们设计了一种去中心化的均值漂移控制律，通过反馈质量估计值来协调群体的全局分布以适应样本点分布。所有样本点的质量估计值由机器人通过设计的质量估计器以去中心化的方式实现。结果表明，样本点的质量估计值可以渐近收敛到真实的全局值。为了验证所提出的策略，我们进行了全面的仿真和真实环境实验，以评估复杂形状形成和群体规模变化的适应性效率。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents a decentralized meanshift control strategy using discrete mass distribution for robot swarms to form complex shapes and adapt to swarm size variations, validated through simulations and real-world experiments.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种使用离散质量分布的去中心化均值漂移控制策略，用于机器人集群形成复杂形状并适应集群规模变化，并通过仿真和实际实验验证了其有效性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2602.00980v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Yichen Cai, Yuan Gao, Pengpeng Li, Wei Wang, Guibin Sun, Jinhu Lü</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.3000000000000003, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Transforming Vehicle Diagnostics: A Multimodal Approach to Error Patterns Prediction</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Accurately diagnosing and predicting vehicle malfunctions is crucial for maintenance and safety in the automotive industry. While modern diagnostic systems primarily rely on sequences of vehicular Diagnostic Trouble Codes (DTCs) registered in On-Board Diagnostic (OBD) systems, they often overlook valuable contextual information such as raw sensory data (e.g., temperature, humidity, and pressure). This contextual data, crucial for domain experts to classify vehicle failures, introduces unique challenges due to its complexity and the noisy nature of real-world data. This paper presents BiCarFormer: the first multimodal approach to multi-label sequence classification of error codes into error patterns that integrates DTC sequences and environmental conditions. BiCarFormer is a bidirectional Transformer model tailored for vehicle event sequences, employing embedding fusions and a co-attention mechanism to capture the relationships between diagnostic codes and environmental data. Experimental results on a challenging real-world automotive dataset with 22,137 error codes and 360 error patterns demonstrate that our approach significantly improves classification performance compared to models that rely solely on DTC sequences and traditional sequence models. This work highlights the importance of incorporating contextual environmental information for more accurate and robust vehicle diagnostics, hence reducing maintenance costs and enhancing automation processes in the automotive industry.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 准确诊断和预测车辆故障对于汽车行业的维护和安全至关重要。虽然现代诊断系统主要依赖于车载诊断（OBD）系统中记录的车辆诊断故障码（DTC）序列，但它们往往忽略了宝贵的上下文信息，例如原始传感器数据（例如，温度、湿度和压力）。这种上下文数据对于领域专家对车辆故障进行分类至关重要，但由于其复杂性和真实世界数据的噪声性质，带来了独特的挑战。本文提出了BiCarFormer：第一个将DTC序列和环境条件相结合，用于将错误代码多标签序列分类为错误模式的多模态方法。 BiCarFormer是为车辆事件序列量身定制的双向Transformer模型，采用嵌入融合和协同注意力机制来捕获诊断代码和环境数据之间的关系。在具有22,137个错误代码和360个错误模式的具有挑战性的真实世界汽车数据集上的实验结果表明，与仅依赖于DTC序列和传统序列模型的模型相比，我们的方法显著提高了分类性能。这项工作强调了结合上下文环境信息对于更准确和稳健的车辆诊断的重要性，从而降低了维护成本并加强了汽车行业的自动化流程。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces BiCarFormer, a multimodal bidirectional Transformer model that integrates DTC sequences and environmental data for enhanced vehicle error pattern prediction, demonstrating significant improvement over DTC-only and traditional sequence models.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了BiCarFormer，一种多模态双向Transformer模型，它整合了DTC序列和环境数据，以增强车辆错误模式的预测。实验表明，该模型比仅使用DTC的模型和传统序列模型有显著改进。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2602.01109v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Hugo Math, Rainer Lienhart</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.35, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">TF-Lane: Traffic Flow Module for Robust Lane Perception</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Autonomous driving systems require robust lane perception capabilities, yet existing vision-based detection methods suffer significant performance degradation when visual sensors provide insufficient cues, such as in occluded or lane-missing scenarios. While some approaches incorporate high-definition maps as supplementary information, these solutions face challenges of high subscription costs and limited real-time performance. To address these limitations, we explore an innovative information source: traffic flow, which offers real-time capabilities without additional costs. This paper proposes a TrafficFlow-aware Lane perception Module (TFM) that effectively extracts real-time traffic flow features and seamlessly integrates them with existing lane perception algorithms. This solution originated from real-world autonomous driving conditions and was subsequently validated on open-source algorithms and datasets. Extensive experiments on four mainstream models and two public datasets (Nuscenes and OpenLaneV2) using standard evaluation metrics show that TFM consistently improves performance, achieving up to +4.1% mAP gain on the Nuscenes dataset.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 摘要：
-自动驾驶系统需要强大的车道感知能力，然而，现有的基于视觉的检测方法在视觉传感器提供的信息不足时，例如在遮挡或车道缺失的场景中，性能会显著下降。虽然一些方法整合了高精度地图作为补充信息，但这些解决方案面临订阅成本高和实时性能有限的挑战。为了解决这些局限性，我们探索了一种创新的信息来源：交通流，它提供了实时能力且无需额外成本。本文提出了一种交通流感知车道感知模块（TFM），该模块有效地提取实时交通流特征，并将其与现有的车道感知算法无缝集成。该解决方案源于真实的自动驾驶条件，并在开源算法和数据集上进行了验证。使用标准评估指标，在四种主流模型和两个公共数据集（Nuscenes和OpenLaneV2）上进行的大量实验表明，TFM能够持续改进性能，在Nuscenes数据集上实现了高达+4.1%的mAP增益。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces a traffic flow-aware module (TFM) to improve lane perception in autonomous driving systems by leveraging real-time traffic flow information, achieving better performance than existing vision-based methods without relying on expensive HD maps. They demonstrated improved mAP on Nuscenes and OpenLaneV2 datasets.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一个交通流量感知模块 (TFM)，通过利用实时交通流量信息来改进自动驾驶系统中的车道感知，与现有的基于视觉的方法相比，实现了更好的性能，并且不依赖于昂贵的高清地图。他们在 Nuscenes 和 OpenLaneV2 数据集上展示了改进的 mAP。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2602.01277v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Yihan Xie, Han Xia, Zhen Yang</p>
-            
-        </motion.div>
-        
     </div>
 
+    <section class="filtered-section">
+        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <h3>Estimating Force Interactions of Deformable Linear Objects from their Shapes</h3>
+                
+                <p><strong>Authors:</strong> Qi Jing Chen, Shilin Shan, Timothy Bretl, Quang-Cuong Pham</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文提出了一种基于可变形线性物体形状来估计其受到的外力的分析方法，通过仿真和实际实验验证了其有效性，旨在解决机器人-导线交互任务中，当接触点不在末端执行器时，力估计的难题。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Minimal Footprint Grasping Inspired by Ants</h3>
+                
+                <p><strong>Authors:</strong> Mohamed Sorour, Barbara Webb</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种受蚂蚁前腿启发的新型低成本夹爪设计，展示了对单个物体的强大抓取能力和从杂乱环境中有效拾取单个物体的能力。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Multi-Agent Causal Reasoning System for Error Pattern Rule Automation in Vehicles</h3>
+                
+                <p><strong>Authors:</strong> Hugo Math, Julian Lorenz, Stefan Oelsner, Rainer Lienhart</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了一种多智能体系统 CAREP，该系统使用因果发现和可解释推理自动生成车辆故障诊断的错误模式规则，性能优于仅使用大型语言模型的基线方法。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>R-HTN: Rebellious Online HTN Planning for Safety and Game AI</h3>
+                
+                <p><strong>Authors:</strong> Hector Munoz-Avila, David W. Aha, Paola Rizzo</p>
+                
+                <p><strong>TLDR-CN:</strong> 这篇论文介绍了一种在线分层任务网络规划算法R-HTN，该算法允许智能体根据预定义的指令智能地不服从用户分配的任务，以确保安全和个性化。该算法在两个任务领域进行了评估，展示了智能体避免违反指令，同时追求用户目标的能力。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Interacted Planes Reveal 3D Line Mapping</h3>
+                
+                <p><strong>Authors:</strong> Zeran Ke, Bin Tan, Gui-Song Xia, Yujun Shen, Nan Xue</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了 LiP-Map，一个用于多视图图像三维线映射的新框架，它显式地建模了可学习的线和平面图元之间的交互作用，从而提高了精度、完整性和视觉定位性能，并发布可复现的代码。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>FUSE-Flow: Scalable Real-Time Multi-View Point Cloud Reconstruction Using Confidence</h3>
+                
+                <p><strong>Authors:</strong> Chentian Sun</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了FUSE-Flow，一个可扩展的实时多视角点云重建框架，它利用置信度和自适应空间哈希来实现高效且高质量的深度观测融合。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>TRACE: Scalable Amortized Causal Discovery from Single Sequences via Autoregressive Density Estimation</h3>
+                
+                <p><strong>Authors:</strong> Hugo Math, Rainer Lienhart</p>
+                
+                <p><strong>TLDR-CN:</strong> TRACE 提出了一个可扩展的框架，用于从单个事件序列中进行因果发现，该框架使用自回归模型进行条件互信息估计，并在具有大量事件词汇的车辆诊断中得到验证。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Optimal Decision-Making Based on Prediction Sets</h3>
+                
+                <p><strong>Authors:</strong> Tao Wang, Edgar Dobriban</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一个决策理论框架，用于构建最小化最坏情况下预期损失的预测集，并提出了一个实用的算法ROCP，在医疗诊断和安全关键决策任务中显示出有希望的结果。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Meanshift Shape Formation Control Using Discrete Mass Distribution</h3>
+                
+                <p><strong>Authors:</strong> Yichen Cai, Yuan Gao, Pengpeng Li, Wei Wang, Guibin Sun, Jinhu Lü</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种使用离散质量分布的去中心化均值漂移控制策略，用于机器人集群形成复杂形状并适应集群规模变化，并通过仿真和实际实验验证了其有效性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Transforming Vehicle Diagnostics: A Multimodal Approach to Error Patterns Prediction</h3>
+                
+                <p><strong>Authors:</strong> Hugo Math, Rainer Lienhart</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了BiCarFormer，一种多模态双向Transformer模型，它整合了DTC序列和环境数据，以增强车辆错误模式的预测。实验表明，该模型比仅使用DTC的模型和传统序列模型有显著改进。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>TF-Lane: Traffic Flow Module for Robust Lane Perception</h3>
+                
+                <p><strong>Authors:</strong> Yihan Xie, Han Xia, Zhen Yang</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了一个交通流量感知模块 (TFM)，通过利用实时交通流量信息来改进自动驾驶系统中的车道感知，与现有的基于视觉的方法相比，实现了更好的性能，并且不依赖于昂贵的高清地图。他们在 Nuscenes 和 OpenLaneV2 数据集上展示了改进的 mAP。</p>
+            </div>
+            
+        </div>
+    </section>
+
     <footer class="footer">
-        Generated on 2026-02-04 02:14:36 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-08 07:22:50 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
 </body>

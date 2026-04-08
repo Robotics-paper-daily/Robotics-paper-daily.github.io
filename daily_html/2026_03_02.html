@@ -32,6 +32,39 @@
             line-height: 1.6;
         }
 
+        .quick-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            align-items: center;
+            width: fit-content;
+            margin: 0.9rem auto 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .quick-nav a {
+            color: var(--highlight-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            background: rgba(255, 255, 255, 0.86);
+            box-shadow: 0 2px 6px var(--shadow-color);
+            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+        }
+
+        .quick-nav a:hover {
+            background-color: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+
         .bento-grid {
             display: grid;
             gap: 1.5rem; /* Tailwind gap-6 */
@@ -186,10 +219,48 @@
             margin-right: 0.125rem; /* Consistent spacing */
         }
 
+        .filtered-section {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .filtered-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--header-color);
+            margin-bottom: 1rem;
+        }
+
+        .filtered-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .filtered-item {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .filtered-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+        }
+
+        .filtered-item p {
+            margin: 0.25rem 0;
+            color: var(--text-muted-color);
+            font-size: 0.88rem;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
-
     <motion.div
         initial="{ opacity: 0, y: -30 }"
         animate="{ opacity: 1, y: 0 }"
@@ -200,6 +271,11 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>March 02, 2026</p>
+        <nav class="quick-nav">
+            <a href="../index.html" target="_top">首页</a>
+            <a href="../list.html" target="_top">报告列表</a>
+            <a href="../search.html" target="_top">论文检索</a>
+        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -1267,490 +1343,57 @@
             
         </motion.div>
         
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 0.55, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">QANTIS: A Hardware-Validated Quantum Platform for POMDP Planning and Multi-Target Data Association</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Autonomous navigation under uncertainty requires solving partially observable Markov decision processes (POMDPs) for planning and assigning sensor measurements to tracked targets--a task known as multi-target data association (MTDA). Both problems become computationally demanding at scale: belief conditioning costs $\mathcal{O}(P(e)^{-1})$ per node under rare evidence, while MTDA is NP-hard. Quantum amplitude amplification can quadratically reduce the belief-update query cost to $\mathcal{O}(P(e)^{-1/2})$, while QUBO reformulations expose MTDA to quantum and quantum-inspired optimisation heuristics. We present QANTIS, a modular platform that integrates quantum belief update (Grover amplitude amplification and BIQAE), QUBO-based data association via FPC-QAOA, and composable error mitigation, and we report a 45-experiment hardware study on three IBM Heron backends. On hardware, a single Grover iterate applied to a Tiger belief oracle amplifies a rare observation probability from $0.179$ to $0.907$ ($5.1\times$; ISA 18) while preserving the Bayesian posterior (Hellinger $0.0015$), increasing usable-shot yield from 1,463 to 7,429. We interpret this as a hardware validation of the quadratic query-complexity mechanism at $k=1$ with posterior preservation, rather than a wall-clock advantage claim. We further demonstrate, to our knowledge, the first closed-loop hybrid quantum-classical Tiger POMDP on superconducting hardware ($T=8$, max Hellinger below $0.015$), and empirically characterise NISQ feasibility boundaries: ZNE-based error mitigation is beneficial below ISA $\approx 100$ and harmful above ISA $\gtrsim 1{,}000$; FPC-QAOA is meaningful at $\leq 15$ QUBO variables (ISA $\lesssim 450$). These results characterise practical operating regimes on current superconducting hardware rather than wall-clock quantum advantage at today's problem scales.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 在不确定性条件下的自主导航需要求解部分可观测马尔可夫决策过程（POMDPs）来进行规划，并将传感器测量值分配给被跟踪目标——此任务称为多目标数据关联（MTDA）。这两个问题在大规模情况下在计算上都变得要求严苛：在稀有证据下，信念更新代价在每个节点是$\mathcal{O}(P(e)^{-1})$，而MTDA是NP难的。量子幅度放大可以将信念更新查询代价二次降低到$\mathcal{O}(P(e)^{-1/2})$，而QUBO重构使MTDA能够利用量子和量子启发式优化方法。我们提出了QANTIS，一个集成了量子信念更新（Grover幅度放大和BIQAE）、基于QUBO的数据关联（通过FPC-QAOA）和可组合错误缓解的模块化平台，并报告了在三个IBM Heron后端上进行的包含45个实验的硬件研究。 在硬件上，应用于老虎（Tiger）信念预言机的单个Grover迭代将稀有观测概率从$0.179$放大到$0.907$（$5.1\times$；ISA 18），同时保留了贝叶斯后验（Hellinger $0.0015$），将可用样本产量从1,463增加到7,429。我们将此解释为在$k=1$时，二次查询复杂度机制的硬件验证，并保留了后验，而不是声称有实际运行时间优势。我们进一步展示了，据我们所知，第一个在超导硬件上的闭环混合量子-经典老虎（Tiger）POMDP（$T=8$，最大Hellinger低于$0.015$），并根据经验描述了NISQ可行性边界：基于ZNE的错误缓解在低于ISA $\approx 100$时有益，而在高于ISA $\gtrsim 1{,}000$时有害；FPC-QAOA在$\leq 15$ QUBO变量（ISA $\lesssim 450$）时有意义。这些结果描述了当前超导硬件上的实际操作范围，而不是在当前问题规模下获得实际运行时间的量子优势。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper presents QANTIS, a hardware-validated quantum platform for solving POMDP planning and multi-target data association problems, demonstrating initial results on IBM Heron backends and characterizing NISQ feasibility boundaries.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文提出了QANTIS，一个经过硬件验证的量子平台，用于解决POMDP规划和多目标数据关联问题，并在IBM Heron后端展示了初步结果，并表征了NISQ可行性边界。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.00785v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Bayram Yüksel Eker, Suayb S. Arslan, Özgür Nazlı, Mustafa Serhat Demirgil, Furkan Deligöz</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 0.6000000000000001, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">UD-SfPNet: An Underwater Descattering Shape-from-Polarization Network for 3D Normal Reconstruction</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Underwater optical imaging is severely hindered by scattering, but polarization imaging offers the unique dual advantages of descattering and shape-from-polarization (SfP) 3D reconstruction. To exploit these advantages, this paper proposes UD-SfPNet, an underwater descattering shape-from-polarization network that leverages polarization cues for improved 3D surface normal prediction. The framework jointly models polarization-based image descattering and SfP normal estimation in a unified pipeline, avoiding error accumulation from sequential processing and enabling global optimization across both tasks. UD-SfPNet further incorporates a novel color embedding module to enhance geometric consistency by exploiting the relationship between color encodings and surface orientation. A detail enhancement convolution module is also included to better preserve high-frequency geometric details that are lost under scattering. Experiments on the MuS-Polar3D dataset show that the proposed method significantly improves reconstruction accuracy, achieving a mean surface normal angular error of 15.12$^\circ$ (the lowest among compared methods). These results confirm the efficacy of combining descattering with polarization-based shape inference, and highlight the practical significance and potential applications of UD-SfPNet for optical 3D imaging in challenging underwater environments. The code is available at https://github.com/WangPuyun/UD-SfPNet.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 水下光学成像受到散射的严重阻碍，但偏振成像具有独特的双重优势，即去散射和基于偏振的形状恢复（SfP）3D重建。为了利用这些优势，本文提出了一种水下去散射形状恢复网络UD-SfPNet，该网络利用偏振线索来改进3D表面法线预测。该框架在一个统一的流程中联合建模了基于偏振的图像去散射和SfP法线估计，避免了序列处理中的误差累积，并实现了跨越两个任务的全局优化。UD-SfPNet进一步结合了一个新颖的颜色嵌入模块，通过利用颜色编码和表面朝向之间的关系来增强几何一致性。此外，还包含一个细节增强卷积模块，以更好地保留在高散射下损失的高频几何细节。在MuS-Polar3D数据集上的实验表明，所提出的方法显著提高了重建精度，实现了15.12$^\circ$的平均表面法线角度误差（在比较方法中最低）。这些结果证实了将去散射与基于偏振的形状推断相结合的有效性，并突出了UD-SfPNet在具有挑战性的水下环境中进行光学3D成像的实际意义和潜在应用。代码可在 https://github.com/WangPuyun/UD-SfPNet 获取。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces UD-SfPNet, a neural network for underwater 3D surface normal reconstruction using polarization cues to overcome scattering, achieving state-of-the-art results on the MuS-Polar3D dataset.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了UD-SfPNet，一个使用偏振线索克服散射的水下3D表面法线重建神经网络，在MuS-Polar3D数据集上取得了最先进的结果。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.00908v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Puyun Wang, Kaimin Yu, Huayang He, Feng Huang, Xianyu Wu, Yating Chen</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 0.65, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">A Novel Reconfigurable Dexterous Hand Based on Triple-Symmetric Bricard Parallel Mechanism</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> This paper introduces a novel design for a robotic hand based on parallel mechanisms. The proposed hand uses a triple-symmetric Bricard linkage as its reconfigurable palm, enhancing adaptability to objects of varying shapes and sizes. Through topological and dimensional synthesis, the mechanism achieves a well-balanced degree of freedom and link configuration suitable for reconfigurable palm motion, balancing dexterity, stability, and load capacity. Furthermore, kinematic analysis is performed using screw theory and closed-loop constraints, and performance is evaluated based on workspace, stiffness, and motion/force transmission efficiency. Finally, a prototype is developed and tested through a series of grasping experiments, demonstrating the ability to perform stable and efficient manipulation across a wide range of objects. The results validate the effectiveness of the design in improving grasping versatility and operational precision, offering a promising solution for advanced robotic manipulation tasks.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 本文提出了一种基于并联机构的机器人手的新颖设计。该机械手采用三重对称的Bricard连杆作为其可重构手掌，增强了对不同形状和尺寸物体的适应性。通过拓扑和尺寸综合，该机构实现了自由度和连杆配置之间的良好平衡，适合于可重构手掌运动，从而平衡了灵巧性、稳定性和负载能力。此外，利用螺旋理论和闭环约束进行了运动学分析，并基于工作空间、刚度和运动/力传递效率评估了性能。最后，开发了一个原型并通过一系列抓取实验进行了测试，证明了其在各种物体上执行稳定和高效操作的能力。结果验证了该设计在提高抓取通用性和操作精度方面的有效性，为先进的机器人操作任务提供了一个有前景的解决方案。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents a novel reconfigurable robotic hand based on a triple-symmetric Bricard parallel mechanism for enhanced grasping versatility, validated through prototyping and grasping experiments.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种基于三重对称Bricard并联机构的新型可重构机器人手，以增强抓取的多功能性，并通过原型设计和抓取实验进行了验证。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.00892v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Chunxu Tian, Zhichao Huang, Hongzeng Li, Bo Wang, Jinghao Jia, Yirui Sun, Dan Zhang</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 0.7000000000000001, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Neural Latent Arbitrary Lagrangian-Eulerian Grids for Fluid-Solid Interaction</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Fluid-solid interaction (FSI) problems are fundamental in many scientific and engineering applications, yet effectively capturing the highly nonlinear two-way interactions remains a significant challenge. Most existing deep learning methods are limited to simplified one-way FSI scenarios, often assuming rigid and static solid to reduce complexity. Even in two-way setups, prevailing approaches struggle to capture dynamic, heterogeneous interactions due to the lack of cross-domain awareness. In this paper, we introduce \textbf{Fisale}, a data-driven framework for handling complex two-way \textbf{FSI} problems. It is inspired by classical numerical methods, namely the Arbitrary Lagrangian-Eulerian (\textbf{ALE}) method and the partitioned coupling algorithm. Fisale explicitly models the coupling interface as a distinct component and leverages multiscale latent ALE grids to provide unified, geometry-aware embeddings across domains. A partitioned coupling module (PCM) further decomposes the problem into structured substeps, enabling progressive modeling of nonlinear interdependencies. Compared to existing models, Fisale introduces a more flexible framework that iteratively handles complex dynamics of solid, fluid and their coupling interface on a unified representation, and enables scalable learning of complex two-way FSI behaviors. Experimentally, Fisale excels in three reality-related challenging FSI scenarios, covering 2D, 3D and various tasks. The code is available at \href{https://github.com/therontau0054/Fisale}.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 流固耦合（FSI）问题是许多科学和工程应用的基础，然而，有效捕捉高度非线性的双向耦合相互作用仍然是一个巨大的挑战。大多数现有的深度学习方法都局限于简化的单向FSI场景，通常假设固体是刚性的和静态的以降低复杂性。即使在双向设置中，由于缺乏跨域感知，流行的方法也难以捕捉动态的、异构的相互作用。在本文中，我们介绍了一种数据驱动框架\textbf{Fisale}，用于处理复杂的双向\textbf{FSI}问题。它的灵感来源于经典的数值方法，即任意拉格朗日-欧拉（\textbf{ALE}）方法和分区耦合算法。Fisale显式地将耦合界面建模为一个独立的组件，并利用多尺度潜在ALE网格来提供跨域统一的、几何感知的嵌入。一个分区耦合模块（PCM）进一步将问题分解为结构化的子步骤，从而能够逐步建模非线性相互依赖关系。与现有模型相比，Fisale引入了一个更灵活的框架，它在一个统一的表示上迭代地处理固体、流体及其耦合界面的复杂动力学，并能够对复杂的双向FSI行为进行可扩展的学习。实验表明，Fisale在三个与现实相关的具有挑战性的FSI场景中表现出色，涵盖了2D、3D和各种任务。代码可在\href{https://github.com/therontau0054/Fisale}获得。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces Fisale, a neural framework leveraging latent ALE grids and partitioned coupling to model complex two-way fluid-solid interaction, demonstrating improved performance in several realistic scenarios.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了Fisale，一个利用潜在ALE网格和分区耦合的神经框架，用于模拟复杂的双向流固耦合，并在几个现实场景中展示了改进的性能。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.00792v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Shilong Tao, Zhe Feng, Shaohan Chen, Weichen Zhang, Zhanxing Zhu, Yunhuai Liu</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 0.75, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">MMTA: Multi Membership Temporal Attention for Fine-Grained Stroke Rehabilitation Assessment</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> To empower the iterative assessments involved during a person's rehabilitation, automated assessment of a person's abilities during daily activities requires temporally precise segmentation of fine-grained actions in therapy videos. Existing temporal action segmentation (TAS) models struggle to capture sub-second micro-movements while retaining exercise context, blurring rapid phase transitions and limiting reliable downstream assessment of motor recovery. We introduce Multi-Membership Temporal Attention (MMTA), a high-resolution temporal transformer for fine-grained rehabilitation assessment. Unlike standard temporal attention, which assigns each frame a single attention context per layer, MMTA lets each frame attend to multiple locally normalized temporal attention windows within the same layer. We fuse these concurrent temporal views via feature-space overlap resolution, preserving competing local contexts near transitions while enabling longer-range reasoning through layer-wise propagation. This increases boundary sensitivity without additional depth or multi-stage refinement. MMTA supports both video and wearable IMU inputs within a unified single-stage architecture, making it applicable to both clinical and home settings. MMTA consistently improves over the Global Attention transformer, boosting Edit Score by +1.3 (Video) and +1.6 (IMU) on StrokeRehab while further improving 50Salads by +3.3. Ablations confirm that performance gains stem from multi-membership temporal views rather than architectural complexity, offering a practical solution for resource-constrained rehabilitation assessment.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 为了支持康复过程中涉及的迭代评估，对日常活动中个人能力的自动化评估需要在治疗视频中对细粒度动作进行时间上的精确分割。现有的时间动作分割（TAS）模型难以捕捉亚秒级的微小动作，同时保持运动上下文，模糊了快速的阶段转换，并限制了对运动恢复的可靠下游评估。我们引入了多成员时间注意力（MMTA），这是一种用于细粒度康复评估的高分辨率时间Transformer。与标准时间注意力为每一帧的每一层分配单个注意力上下文不同，MMTA允许每一帧在同一层内关注多个局部归一化的时间注意力窗口。我们通过特征空间重叠解析融合这些并发的时间视点，在转换附近保留竞争性局部上下文，同时通过逐层传播实现更长程的推理。这提高了边界敏感性，而无需额外的深度或多阶段细化。MMTA在统一的单阶段架构中支持视频和可穿戴IMU输入，使其适用于临床和家庭环境。MMTA始终优于全局注意力Transformer，在StrokeRehab数据集上，编辑得分提升+1.3（视频）和+1.6（IMU），并且在50Salads数据集上进一步提升+3.3。消融实验证实，性能提升源于多成员时间视点，而非架构复杂性，从而为资源受限的康复评估提供了一种实用解决方案。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces Multi-Membership Temporal Attention (MMTA), a novel temporal transformer for fine-grained action segmentation in rehabilitation assessment, achieving improved performance on benchmark datasets.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了多成员时间注意力 (MMTA)，这是一种用于康复评估中细粒度动作分割的新型时间 Transformer，在基准数据集上实现了改进的性能。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.00878v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Halil Ismail Helvaci, Justin Huber, Jihye Bae, Sen-ching Samson Cheung</p>
-            
-        </motion.div>
-        
     </div>
 
+    <section class="filtered-section">
+        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <h3>QANTIS: A Hardware-Validated Quantum Platform for POMDP Planning and Multi-Target Data Association</h3>
+                
+                <p><strong>Authors:</strong> Bayram Yüksel Eker, Suayb S. Arslan, Özgür Nazlı, Mustafa Serhat Demirgil, Furkan Deligöz</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文提出了QANTIS，一个经过硬件验证的量子平台，用于解决POMDP规划和多目标数据关联问题，并在IBM Heron后端展示了初步结果，并表征了NISQ可行性边界。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>UD-SfPNet: An Underwater Descattering Shape-from-Polarization Network for 3D Normal Reconstruction</h3>
+                
+                <p><strong>Authors:</strong> Puyun Wang, Kaimin Yu, Huayang He, Feng Huang, Xianyu Wu, Yating Chen</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了UD-SfPNet，一个使用偏振线索克服散射的水下3D表面法线重建神经网络，在MuS-Polar3D数据集上取得了最先进的结果。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>A Novel Reconfigurable Dexterous Hand Based on Triple-Symmetric Bricard Parallel Mechanism</h3>
+                
+                <p><strong>Authors:</strong> Chunxu Tian, Zhichao Huang, Hongzeng Li, Bo Wang, Jinghao Jia, Yirui Sun, Dan Zhang</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了一种基于三重对称Bricard并联机构的新型可重构机器人手，以增强抓取的多功能性，并通过原型设计和抓取实验进行了验证。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Neural Latent Arbitrary Lagrangian-Eulerian Grids for Fluid-Solid Interaction</h3>
+                
+                <p><strong>Authors:</strong> Shilong Tao, Zhe Feng, Shaohan Chen, Weichen Zhang, Zhanxing Zhu, Yunhuai Liu</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了Fisale，一个利用潜在ALE网格和分区耦合的神经框架，用于模拟复杂的双向流固耦合，并在几个现实场景中展示了改进的性能。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>MMTA: Multi Membership Temporal Attention for Fine-Grained Stroke Rehabilitation Assessment</h3>
+                
+                <p><strong>Authors:</strong> Halil Ismail Helvaci, Justin Huber, Jihye Bae, Sen-ching Samson Cheung</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了多成员时间注意力 (MMTA)，这是一种用于康复评估中细粒度动作分割的新型时间 Transformer，在基准数据集上实现了改进的性能。</p>
+            </div>
+            
+        </div>
+    </section>
+
     <footer class="footer">
-        Generated on 2026-03-03 02:14:15 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-08 07:22:52 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
 </body>

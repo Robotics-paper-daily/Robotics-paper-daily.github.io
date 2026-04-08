@@ -32,6 +32,39 @@
             line-height: 1.6;
         }
 
+        .quick-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            align-items: center;
+            width: fit-content;
+            margin: 0.9rem auto 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .quick-nav a {
+            color: var(--highlight-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            background: rgba(255, 255, 255, 0.86);
+            box-shadow: 0 2px 6px var(--shadow-color);
+            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+        }
+
+        .quick-nav a:hover {
+            background-color: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+
         .bento-grid {
             display: grid;
             gap: 1.5rem; /* Tailwind gap-6 */
@@ -186,10 +219,48 @@
             margin-right: 0.125rem; /* Consistent spacing */
         }
 
+        .filtered-section {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .filtered-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--header-color);
+            margin-bottom: 1rem;
+        }
+
+        .filtered-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .filtered-item {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .filtered-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+        }
+
+        .filtered-item p {
+            margin: 0.25rem 0;
+            color: var(--text-muted-color);
+            font-size: 0.88rem;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
-
     <motion.div
         initial="{ opacity: 0, y: -30 }"
         animate="{ opacity: 1, y: 0 }"
@@ -200,6 +271,11 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>January 23, 2026</p>
+        <nav class="quick-nav">
+            <a href="../index.html" target="_top">首页</a>
+            <a href="../list.html" target="_top">报告列表</a>
+            <a href="../search.html" target="_top">论文检索</a>
+        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -4526,1749 +4602,161 @@
             
         </motion.div>
         
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.25, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Accurate Calibration and Robust LiDAR-Inertial Odometry for Spinning Actuated LiDAR Systems</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Accurate calibration and robust localization are fundamental for downstream tasks in spinning actuated LiDAR applications. Existing methods, however, require parameterizing extrinsic parameters based on different mounting configurations, limiting their generalizability. Additionally, spinning actuated LiDAR inevitably scans featureless regions, which complicates the balance between scanning coverage and localization robustness. To address these challenges, this letter presents a targetless LiDAR-motor calibration (LM-Calibr) on the basis of the Denavit-Hartenberg convention and an environmental adaptive LiDAR-inertial odometry (EVA-LIO). LM-Calibr supports calibration of LiDAR-motor systems with various mounting configurations. Extensive experiments demonstrate its accuracy and convergence across different scenarios, mounting angles, and initial values. Additionally, EVA-LIO adaptively selects downsample rates and map resolutions according to spatial scale. This adaptivity enables the actuator to operate at maximum speed, thereby enhancing scanning completeness while ensuring robust localization, even when LiDAR briefly scans featureless areas. The source code and hardware design are available on GitHub: \textcolor{blue}{\href{https://github.com/zijiechenrobotics/lm_calibr}{github.com/zijiechenrobotics/lm\_calibr}}. The video is available at \textcolor{blue}{\href{https://youtu.be/cZyyrkmeoSk}{youtu.be/cZyyrkmeoSk}}</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 精确的标定和鲁棒的定位是旋转驱动激光雷达应用中下游任务的基础。然而，现有方法需要基于不同的安装配置来参数化外部参数，限制了它们的通用性。此外，旋转驱动激光雷达不可避免地会扫描到缺乏特征的区域，这使得扫描覆盖率和定位鲁棒性之间的平衡变得复杂。为了解决这些挑战，本文提出了一种基于Denavit-Hartenberg 规范的无需目标的激光雷达-电机标定方法 (LM-Calibr) 以及一种环境自适应的激光雷达惯性里程计 (EVA-LIO)。LM-Calibr 支持对具有各种安装配置的激光雷达-电机系统进行标定。大量实验证明了其在不同场景、安装角度和初始值下的准确性和收敛性。此外，EVA-LIO 根据空间尺度自适应地选择降采样率和地图分辨率。这种自适应性使得驱动器能够以最大速度运行，从而提高扫描的完整性，同时确保鲁棒的定位，即使在激光雷达短暂扫描到缺乏特征的区域时也能保证。源代码和硬件设计可在 GitHub 上获取：\textcolor{blue}{\href{https://github.com/zijiechenrobotics/lm_calibr}{github.com/zijiechenrobotics/lm\_calibr}}。视频可在 \textcolor{blue}{\href{https://youtu.be/cZyyrkmeoSk}{youtu.be/cZyyrkmeoSk}} 上观看。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents a novel LiDAR-motor calibration method (LM-Calibr) and an environment-adaptive LiDAR-inertial odometry (EVA-LIO) for spinning actuated LiDAR systems, addressing challenges in accuracy, generalizability, and robustness in featureless environments. The code and hardware design are available.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文提出了一种新颖的激光雷达-电机校准方法 (LM-Calibr) 和一种环境自适应的激光雷达惯性里程计 (EVA-LIO)，用于旋转驱动激光雷达系统，解决了在无特征环境中准确性、泛化性和鲁棒性方面的挑战。代码和硬件设计均已提供。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.15946v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Zijie Chen, Xiaowei Liu, Yong Xu, Shenghai Yuan, Jianping Li, Lihua Xie</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.3000000000000003, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">A Beacon Based Solution for Autonomous UUVs GNSS-Denied Stealthy Navigation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Autonomous Unmanned Underwater Vehicles (UUVs) enable military and civilian covert operations in coastal areas without relying on support vessels or Global Navigation Satellite Systems (GNSS). Such operations are critical when surface access is not possible and stealthy navigation is required in restricted environments such as protected zones or dangerous areas under access ban. GNSS denied navigation is then essential to maintaining concealment as surfacing could expose UUVs to detection. To ensure a precise fleet positioning a constellation of beacons deployed by aerial or surface drones establish a synthetic landmark network that will guide the fleet of UUVs along an optimized path from the continental shelf to the goal on the shore. These beacons either submerged or floating emit acoustic signals for UUV localisation and navigation. A hierarchical planner generates an adaptive route for the drones executing primitive actions while continuously monitoring and replanning as needed to maintain trajectory accuracy.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 摘要：
-自主式无人水下航行器(UUV)能够在沿海地区执行军事和民用隐蔽行动，无需依赖支援船只或全球导航卫星系统（GNSS）。当水面进入不可行，并且需要在受限环境中进行隐蔽导航（例如保护区或禁入危险区域）时，此类行动至关重要。GNSS拒止环境下的导航对于保持隐蔽性至关重要，因为上浮可能会使UUV暴露于探测之下。为了确保精确的编队定位，由空中或水面无人机部署的信标群建立一个合成地标网络，该网络将引导UUV编队沿着从大陆架到海岸目标的优化路径前进。这些信标，无论是水下还是漂浮式，都会发射声学信号，用于UUV的定位和导航。一个分层规划器为无人机生成自适应路线，执行原始动作，同时持续监控并根据需要重新规划，以保持轨迹精度。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper proposes a beacon-based navigation system for autonomous UUVs in GNSS-denied environments, utilizing a drone-deployed landmark network and hierarchical path planning.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文提出了一种基于信标的自主水下航行器（UUV）在无全球导航卫星系统（GNSS）环境中的导航系统，该系统利用无人机部署的地标网络和分层路径规划。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.15802v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Alexandre Albore, Humbert Fiorino, Damien Pellier</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.35, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Glove2UAV: A Wearable IMU-Based Glove for Intuitive Control of UAV</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> This paper presents Glove2UAV, a wearable IMU-glove interface for intuitive UAV control through hand and finger gestures, augmented with vibrotactile warnings for exceeding predefined speed thresholds. To promote safer and more predictable interaction in dynamic flight, Glove2UAV is designed as a lightweight and easily deployable wearable interface intended for real-time operation. Glove2UAV streams inertial measurements in real time and estimates palm and finger orientations using a compact processing pipeline that combines median-based outlier suppression with Madgwick-based orientation estimation. The resulting motion estimations are mapped to a small set of control primitives for directional flight (forward/backward and lateral motion) and, when supported by the platform, to object-interaction commands. Vibrotactile feedback is triggered when flight speed exceeds predefined threshold values, providing an additional alert channel during operation. We validate real-time feasibility by synchronizing glove signals with UAV telemetry in both simulation and real-world flights. The results show fast gesture-based command execution, stable coupling between gesture dynamics and platform motion, correct operation of the core command set in our trials, and timely delivery of vibratile warning cues.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 本文介绍 Glove2UAV，一种可穿戴的 IMU 手套界面，通过手和手指的姿势实现直观的无人机控制，并借助触觉振动警告来提示超出预定义的速率阈值。为了促进动态飞行中更安全、更可预测的交互，Glove2UAV 被设计为一个轻量级且易于部署的可穿戴界面，旨在进行实时操作。Glove2UAV 实时传输惯性测量数据，并使用紧凑的处理流程估计手掌和手指的姿态，该流程结合了基于中值的离群值抑制和基于 Madgwick 的姿态估计。得到的运动估计被映射到一小组控制原语，用于定向飞行（前进/后退和横向运动），以及在平台支持时，映射到对象交互命令。当飞行速度超过预定义的阈值时，会触发触觉振动反馈，从而在操作过程中提供额外的警报通道。我们在仿真和真实飞行中，通过将手套信号与无人机遥测数据同步，验证了实时可行性。结果显示，基于手势的命令执行速度快，手势动态与平台运动之间耦合稳定，核心命令集在我们的试验中运行正确，并且触觉警告提示及时送达。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper presents Glove2UAV, an IMU-based glove interface for intuitive UAV control with gesture recognition and vibrotactile warnings, validated through simulations and real-world flights.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种基于IMU的手套界面 Glove2UAV，用于通过手势识别直观地控制无人机，并具有振动触觉警告，通过模拟和实际飞行进行了验证。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.15775v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Amir Habel, Ivan Snegirev, Elizaveta Semenyakina, Miguel Altamirano Cabrera, Jeffrin Sam, Fawad Mehboob, Roohan Ahmed Khan, Muhammad Ahsan Mustafa, Dzmitry Tsetserukou</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.4000000000000004, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Airflow Source Seeking on Small Quadrotors Using a Single Flow Sensor</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> As environmental disasters happen more frequently and severely, seeking the source of pollutants or harmful particulates using plume tracking becomes even more important. Plume tracking on small quadrotors would allow these systems to operate around humans and fly in more confined spaces, but can be challenging due to poor sensitivity and long response times from gas sensors that fit on small quadrotors. In this work, we present an approach to complement chemical plume tracking with airflow source-seeking behavior using a custom flow sensor that can sense both airflow magnitude and direction on small quadrotors < 100 g. We use this sensor to implement a modified version of the `Cast and Surge' algorithm that takes advantage of flow direction sensing to find and navigate towards flow sources. A series of characterization experiments verified that the system can detect airflow while in flight and reorient the quadrotor toward the airflow. Several trials with random starting locations and orientations were used to show that our source-seeking algorithm can reliably find a flow source. This work aims to provide a foundation for future platforms that can use flow sensors in concert with other sensors to enable richer plume tracking data collection and source-seeking.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 随着环境灾难发生频率和严重程度的增加，利用羽流追踪技术寻找污染物或有害颗粒物的来源变得愈发重要。在小型四旋翼飞行器上进行羽流追踪，将使其能够在人类周围操作并在更狭窄的空间内飞行，但由于小型四旋翼飞行器上安装的气体传感器的灵敏度低且响应时间长，这可能具有挑战性。在这项工作中，我们提出了一种方法，利用定制的流量传感器来补充化学羽流追踪，该传感器能够感知小于100克的四旋翼飞行器上的气流大小和方向。我们利用该传感器实现了一种改进的“搜索与突进”（Cast and Surge）算法，该算法利用气流方向感知来寻找并导航至气流源。一系列特征化实验验证了该系统能够在飞行中检测气流并将四旋翼飞行器重新定向至气流方向。通过多次从随机起始位置和方向进行的试验表明，我们的寻源算法能够可靠地找到气流源。这项工作旨在为未来能够将流量传感器与其他传感器协同使用的平台奠定基础，从而实现更丰富的羽流追踪数据采集和寻源。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents a novel airflow source-seeking algorithm for small quadrotors using a custom flow sensor, enabling them to navigate towards airflow sources, potentially aiding in plume tracking for environmental monitoring.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种使用定制流量传感器的小型四旋翼飞行器的气流源搜索算法，使其能够导航至气流源，可能有助于环境监测中的羽流跟踪。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.15607v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Lenworth Thomas, Tjaden Bridges, Sarah Bergbreiter</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.45, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Neural Collision Detection for Multi-arm Laparoscopy Surgical Robots Through Learning-from-Simulation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> This study presents an integrated framework for enhancing the safety and operational efficiency of robotic arms in laparoscopic surgery by addressing key challenges in collision detection and minimum distance estimation. By combining analytical modeling, real-time simulation, and machine learning, the framework offers a robust solution for ensuring safe robotic operations. An analytical model was developed to estimate the minimum distances between robotic arms based on their joint configurations, offering precise theoretical calculations that serve as both a validation tool and a benchmark. To complement this, a 3D simulation environment was created to model two 7-DOF Kinova robotic arms, generating a diverse dataset of configurations for collision detection and distance estimation. Using these insights, a deep neural network model was trained with joint actuators of robot arms and relative positions as inputs, achieving a mean absolute error of 282.2 mm and an R-squared value of 0.85. The close alignment between predicted and actual distances highlights the network's accuracy and its ability to generalize spatial relationships. This work demonstrates the effectiveness of combining analytical precision with machine learning algorithms to enhance the precision and reliability of robotic systems.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 本研究提出了一个综合框架，旨在通过解决碰撞检测和最小距离估计的关键挑战，来提高腹腔镜手术中机械臂的安全性和操作效率。该框架结合了分析建模、实时仿真和机器学习，为确保安全机器人操作提供了一个稳健的解决方案。 我们开发了一个分析模型，以基于机械臂的关节配置来估计它们之间的最小距离，提供精确的理论计算，既可以作为验证工具，也可以作为基准。 为了补充这一点，我们创建了一个3D仿真环境，模拟两个7自由度Kinova机械臂，生成用于碰撞检测和距离估计的各种配置数据集。 利用这些信息，我们训练了一个深度神经网络模型，以机械臂的关节驱动器和相对位置作为输入，实现了282.2毫米的平均绝对误差和0.85的R平方值。 预测距离和实际距离之间的紧密一致性凸显了网络的准确性及其推广空间关系的能力。这项工作展示了将分析精度与机器学习算法相结合以提高机器人系统精度和可靠性的有效性。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper proposes a framework combining analytical modeling, real-time simulation, and machine learning to improve collision detection and distance estimation for multi-arm surgical robots, achieving promising results with a deep neural network.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种结合分析建模、实时仿真和机器学习的框架，用于改进多臂手术机器人的碰撞检测和距离估计，并通过深度神经网络取得了有希望的结果。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.15459v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Sarvin Ghiasi, Majid Roshanfar, Jake Barralet, Liane S. Feldman, Amir Hooshiar</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.5, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">StreetDesignAI: A Multi-Persona Evaluation System for Inclusive Infrastructure Design</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Designing inclusive cycling infrastructure requires balancing competing needs of diverse user groups, yet designers often struggle to anticipate how different cyclists experience the same street. We investigate how persona-based multi-agent evaluation can support inclusive design by making experiential conflicts explicit. We present StreetDesignAI, an interactive system that enables designers to (1) ground evaluation in street context through imagery and map data, (2) receive parallel feedback from cyclist personas spanning confident to cautious users, and (3) iteratively modify designs while surfacing conflicts across perspectives. A within-subjects study with 26 transportation professionals demonstrates that structured multi-perspective feedback significantly improves designers' understanding of diverse user perspectives, ability to identify persona needs, and confidence in translating them into design decisions, with higher satisfaction and stronger intention for professional adoption. Qualitative findings reveal how conflict surfacing transforms design exploration from single-perspective optimization toward deliberate trade-off reasoning. We discuss implications for AI tools that scaffold inclusive design through disagreement as an interaction primitive.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 设计包容性的自行车基础设施需要平衡不同用户群体相互竞争的需求，然而设计师们常常难以预见不同的骑行者如何体验同一条街道。我们研究了基于角色的多主体评估如何通过明确体验冲突来支持包容性设计。我们展示了StreetDesignAI，一个交互式系统，它使得设计师能够：(1) 通过图像和地图数据将评估植根于街道环境；(2) 接收来自骑行者角色的并行反馈，这些角色涵盖从自信到谨慎的用户；(3) 迭代地修改设计，同时浮现不同视角下的冲突。一项针对26名交通专业人士的组内研究表明，结构化的多视角反馈显著提高了设计师对不同用户视角的理解、识别角色需求的能力以及将这些需求转化为设计决策的信心，并提高了专业人士的满意度和更强的专业采用意愿。定性研究结果揭示了冲突浮现如何将设计探索从单视角优化转变为深思熟虑的权衡推理。我们讨论了通过将分歧作为一种交互原语来支持包容性设计的AI工具的意义。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: StreetDesignAI is an interactive system leveraging persona-based multi-agent evaluation to support inclusive cycling infrastructure design by surfacing conflicts across diverse user perspectives, improving designers' understanding and decision-making. A user study validates its effectiveness.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: StreetDesignAI是一个交互系统，利用基于角色的多智能体评估来支持包容性自行车基础设施设计，通过揭示不同用户视角的冲突来提高设计师的理解和决策能力。一项用户研究验证了其有效性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.15671v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Ziyi Wang, Yilong Dai, Duanya Lyu, Mateo Nader, Sihan Chen, Wanghao Ye, Zjian Ding, Xiang Yan</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.5500000000000003, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">A Multi-View Pipeline and Benchmark Dataset for 3D Hand Pose Estimation in Surgery</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Purpose: Accurate 3D hand pose estimation supports surgical applications such as skill assessment, robot-assisted interventions, and geometry-aware workflow analysis. However, surgical environments pose severe challenges, including intense and localized lighting, frequent occlusions by instruments or staff, and uniform hand appearance due to gloves, combined with a scarcity of annotated datasets for reliable model training.
-  Method: We propose a robust multi-view pipeline for 3D hand pose estimation in surgical contexts that requires no domain-specific fine-tuning and relies solely on off-the-shelf pretrained models. The pipeline integrates reliable person detection, whole-body pose estimation, and state-of-the-art 2D hand keypoint prediction on tracked hand crops, followed by a constrained 3D optimization. In addition, we introduce a novel surgical benchmark dataset comprising over 68,000 frames and 3,000 manually annotated 2D hand poses with triangulated 3D ground truth, recorded in a replica operating room under varying levels of scene complexity.
-  Results: Quantitative experiments demonstrate that our method consistently outperforms baselines, achieving a 31% reduction in 2D mean joint error and a 76% reduction in 3D mean per-joint position error.
-  Conclusion: Our work establishes a strong baseline for 3D hand pose estimation in surgery, providing both a training-free pipeline and a comprehensive annotated dataset to facilitate future research in surgical computer vision.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 目的：精确的三维手部姿态估计支持诸如技能评估、机器人辅助干预和几何感知的工作流程分析等外科应用。然而，外科环境带来了严峻的挑战，包括强烈且局部的照明，器械或人员造成的频繁遮挡，以及手套造成的统一手部外观，再加上用于可靠模型训练的带标注数据集的稀缺性。
-
-方法：我们提出了一种稳健的多视角流水线，用于外科环境下的三维手部姿态估计，该流水线无需针对特定领域进行微调，并且仅依赖于现成的预训练模型。该流水线集成了可靠的人员检测、全身姿态估计和最先进的二维手部关键点预测（基于跟踪的手部裁剪图像），然后进行约束的三维优化。此外，我们引入了一个新的外科基准数据集，包含超过 68,000 帧和 3,000 个手动标注的二维手部姿态，并具有三角化的三维真实值，这些数据是在模拟手术室中，于不同程度的场景复杂度下记录的。
-
-结果：定量实验表明，我们的方法始终优于基线方法，在二维平均关节误差方面减少了 31%，在三维平均单关节位置误差方面减少了 76%。
-
-结论：我们的工作为外科手术中的三维手部姿态估计建立了一个强大的基线，提供了一个免训练的流水线和一个全面的带标注数据集，以促进未来在外科计算机视觉方面的研究。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces a multi-view pipeline and a new surgical dataset for 3D hand pose estimation, achieving significant error reduction compared to baselines without domain-specific fine-tuning.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种多视角管道和一个新的手术数据集，用于3D手部姿势估计，与基线相比，实现了显著的误差减少，且无需特定领域的微调。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.15918v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Valery Fischer, Alan Magdaleno, Anna-Katharina Calek, Nicola Cavalcanti, Nathan Hoffman, Christoph Germann, Joschua Wüthrich, Max Krähenmann, Mazda Farshad, Philipp Fürnstahl, Lilian Calvet</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.6, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">DeltaDorsal: Enhancing Hand Pose Estimation with Dorsal Features in Egocentric Views</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> The proliferation of XR devices has made egocentric hand pose estimation a vital task, yet this perspective is inherently challenged by frequent finger occlusions. To address this, we propose a novel approach that leverages the rich information in dorsal hand skin deformation, unlocked by recent advances in dense visual featurizers. We introduce a dual-stream delta encoder that learns pose by contrasting features from a dynamic hand with a baseline relaxed position. Our evaluation demonstrates that, using only cropped dorsal images, our method reduces the Mean Per Joint Angle Error (MPJAE) by 18% in self-occluded scenarios (fingers >=50% occluded) compared to state-of-the-art techniques that depend on the whole hand's geometry and large model backbones. Consequently, our method not only enhances the reliability of downstream tasks like index finger pinch and tap estimation in occluded scenarios but also unlocks new interaction paradigms, such as detecting isometric force for a surface "click" without visible movement while minimizing model size.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> XR设备日益普及，使得以自我为中心的手部姿态估计成为一项至关重要的任务，然而，频繁的手指遮挡天然地为此带来了挑战。为了解决这个问题，我们提出了一种新颖的方法，利用 dorsal 手部皮肤形变中蕴含的丰富信息，这得益于近期在密集视觉特征提取器方面的进展。我们引入了一种双流 delta 编码器，通过对比动态手部与基线放松姿势的特征来学习姿态。评估表明，仅使用裁剪后的 dorsal 图像，我们的方法在自遮挡场景（手指 >=50% 遮挡）中，相较于依赖整个手部几何结构和大型模型骨干网络的现有技术，将平均关节角度误差（MPJAE）降低了 18%。因此，我们的方法不仅提高了诸如遮挡场景中食指捏合和敲击估计等下游任务的可靠性，还开启了新的交互范式，例如检测表面的等距力以实现无可见移动的表面“点击”，同时最大限度地减少了模型大小。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces a dorsal hand pose estimation method (DeltaDorsal) that uses dorsal hand skin deformation to improve accuracy in self-occluded scenarios, achieving superior results compared to state-of-the-art methods with smaller model size.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种手背姿态估计方法 (DeltaDorsal)，该方法利用手背皮肤形变来提高在自遮挡场景中的准确性，与具有较大模型尺寸的现有技术相比，取得了更好的效果。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.15516v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: William Huang, Siyou Pei, Leyi Zou, Eric J. Gonzalez, Ishan Chatterjee, Yang Zhang</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.6500000000000004, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Seeing through Light and Darkness: Sensor-Physics Grounded Deblurring HDR NeRF from Single-Exposure Images and Events</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Novel view synthesis from low dynamic range (LDR) blurry images, which are common in the wild, struggles to recover high dynamic range (HDR) and sharp 3D representations in extreme lighting conditions. Although existing methods employ event data to address this issue, they ignore the sensor-physics mismatches between the camera output and physical world radiance, resulting in suboptimal HDR and deblurring results. To cope with this problem, we propose a unified sensor-physics grounded NeRF framework for sharp HDR novel view synthesis from single-exposure blurry LDR images and corresponding events. We employ NeRF to directly represent the actual radiance of the 3D scene in the HDR domain and model raw HDR scene rays hitting the sensor pixels as in the physical world. A pixel-wise RGB mapping field is introduced to align the above rendered pixel values with the sensor-recorded LDR pixel values of the input images. A novel event mapping field is also designed to bridge the physical scene dynamics and actual event sensor output. The two mapping fields are jointly optimized with the NeRF network, leveraging the spatial and temporal dynamic information in events to enhance the sharp HDR 3D representation learning. Experiments on the collected and public datasets demonstrate that our method can achieve state-of-the-art deblurring HDR novel view synthesis results with single-exposure blurry LDR images and corresponding events.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 从低动态范围 (LDR) 模糊图像进行新视角合成在实际场景中很常见，但难以在极端光照条件下恢复高动态范围 (HDR) 和清晰的 3D 表达。尽管现有方法利用事件数据来解决这个问题，但它们忽略了相机输出与真实世界辐射之间的传感器物理不匹配，导致次优的 HDR 和去模糊效果。 为解决此问题，我们提出了一种统一的、基于传感器物理的 NeRF 框架，用于从单次曝光模糊 LDR 图像和相应事件中合成清晰的 HDR 新视角。我们采用 NeRF 直接在 HDR 域中表示 3D 场景的实际辐射，并将击中传感器像素的原始 HDR 场景光线模拟为真实世界中的情况。 引入了一个像素级的 RGB 映射场，以将上述渲染的像素值与输入图像的传感器记录的 LDR 像素值对齐。 还设计了一种新的事件映射场，以桥接物理场景动态和实际事件传感器输出。 这两个映射场与 NeRF 网络联合优化，利用事件中的空间和时间动态信息来增强清晰的 HDR 3D 表达学习。 在收集的和公开的数据集上的实验表明，我们的方法可以使用单次曝光模糊 LDR 图像和相应事件实现最先进的去模糊 HDR 新视角合成效果。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces a sensor-physics grounded NeRF framework to generate sharp HDR novel views from single-exposure blurry LDR images and event data, addressing sensor mismatches for improved HDR and deblurring. It presents a new method for aligning sensor-recorded LDR pixel values and event data with the physical HDR world.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种基于传感器物理的 NeRF 框架, 用于从单次曝光的模糊 LDR 图像和事件数据中生成清晰的 HDR 新视角。该框架解决了传感器不匹配问题，从而改进了 HDR 效果和去模糊效果。它提出了一种将传感器记录的 LDR 像素值和事件数据与物理 HDR 世界对齐的新方法。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.15475v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Yunshan Qi, Lin Zhu, Nan Bao, Yifan Zhao, Jia Li</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.7, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">AgriPINN: A Process-Informed Neural Network for Interpretable and Scalable Crop Biomass Prediction Under Water Stress</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Accurate prediction of crop above-ground biomass (AGB) under water stress is critical for monitoring crop productivity, guiding irrigation, and supporting climate-resilient agriculture. Data-driven models scale well but often lack interpretability and degrade under distribution shift, whereas process-based crop models (e.g. DSSAT, APSIM, LINTUL5) require extensive calibration and are difficult to deploy over large spatial domains. To address these limitations, we propose AgriPINN, a process-informed neural network that integrates a biophysical crop-growth differential equation as a differentiable constraint within a deep learning backbone. This design encourages physiologically consistent biomass dynamics under water-stress conditions while preserving model scalability for spatially distributed AGB prediction. AgriPINN recovers latent physiological variables, including leaf area index (LAI), absorbed photosynthetically active radiation (PAR), radiation use efficiency (RUE), and water-stress factors, without requiring direct supervision. We pretrain AgriPINN on 60 years of historical data across 397 regions in Germany and fine-tune it on three years of field experiments under controlled water treatments. Results show that AgriPINN consistently outperforms state-of-the-art deep-learning baselines (ConvLSTM-ViT, SLTF, CNN-Transformer) and the process-based LINTUL5 model in terms of accuracy (RMSE reductions up to $43\%$) and computational efficiency. By combining the scalability of deep learning with the biophysical rigor of process-based modeling, AgriPINN provides a robust and interpretable framework for spatio-temporal AGB prediction, offering practical value for planning of irrigation infrastructure, yield forecasting, and climate-adaptation planning.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 准确预测水分胁迫下作物地上生物量 (AGB) 对于监测作物生产力、指导灌溉以及支持气候适应型农业至关重要。数据驱动模型具有良好的可扩展性，但通常缺乏可解释性，并且在分布偏移下性能下降，而基于过程的作物模型（例如 DSSAT、APSIM、LINTUL5）需要广泛的校准，并且难以在大空间范围内部署。为了解决这些限制，我们提出 AgriPINN，一种过程 informed 神经网络，它将生物物理作物生长微分方程作为可微分约束集成到深度学习主干网络中。这种设计鼓励在水分胁迫条件下生理上一致的生物量动态变化，同时保留模型的可扩展性，用于空间分布式AGB预测。AgriPINN 恢复潜在的生理变量，包括叶面积指数 (LAI)，吸收的光合有效辐射 (PAR)，辐射利用效率 (RUE) 和水分胁迫因子，而无需直接监督。我们首先在德国397个地区的60年历史数据上预训练 AgriPINN，然后在受控水分处理下的三年田间试验中对其进行微调。结果表明，在准确性（RMSE降低高达$43\%$）和计算效率方面，AgriPINN始终优于最先进的深度学习基线（ConvLSTM-ViT、SLTF、CNN-Transformer）和基于过程的LINTUL5模型。通过将深度学习的可扩展性与基于过程建模的生物物理严谨性相结合，AgriPINN 为时空AGB预测提供了一个稳健且可解释的框架，为灌溉基础设施规划、产量预测和气候适应计划提供实际价值。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: AgriPINN is a process-informed neural network that combines deep learning with biophysical modeling for accurate and interpretable crop biomass prediction under water stress, outperforming existing methods in accuracy and efficiency.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: AgriPINN是一种过程信息神经网络，它结合了深度学习和生物物理建模，用于在水分胁迫下进行准确且可解释的作物生物量预测，在准确性和效率方面优于现有方法。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.16045v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Yue Shi, Liangxiu Han, Xin Zhang, Tam Sobeih, Thomas Gaiser, Nguyen Huu Thuy, Dominik Behrend, Amit Kumar Srivastava, Krishnagopal Halder, Frank Ewert</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.75, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">PF-D2M: A Pose-free Diffusion Model for Universal Dance-to-Music Generation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Dance-to-music generation aims to generate music that is aligned with dance movements. Existing approaches typically rely on body motion features extracted from a single human dancer and limited dance-to-music datasets, which restrict their performance and applicability to real-world scenarios involving multiple dancers and non-human dancers. In this paper, we propose PF-D2M, a universal diffusion-based dance-to-music generation model that incorporates visual features extracted from dance videos. PF-D2M is trained with a progressive training strategy that effectively addresses data scarcity and generalization challenges. Both objective and subjective evaluations show that PF-D2M achieves state-of-the-art performance in dance-music alignment and music quality.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 舞蹈音乐生成旨在生成与舞蹈动作相协调的音乐。现有方法通常依赖于从单个人类舞者提取的身体运动特征以及有限的舞蹈音乐数据集，这限制了其性能和在涉及多名舞者和非人类舞者的真实场景中的适用性。在本文中，我们提出了一种基于扩散的通用舞蹈音乐生成模型PF-D2M，该模型融合了从舞蹈视频中提取的视觉特征。PF-D2M采用渐进式训练策略进行训练，有效解决了数据稀缺和泛化挑战。客观和主观评估均表明，PF-D2M在舞蹈音乐对齐和音乐质量方面均达到了最先进的水平。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces PF-D2M, a pose-free diffusion model for generating music aligned with dance videos, addressing limitations of existing methods by incorporating visual features and a progressive training strategy.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了PF-D2M，一种基于扩散模型的pose-free方法，用于生成与舞蹈视频对齐的音乐。该方法通过结合视觉特征和渐进式训练策略，解决了现有方法的局限性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.15872v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Jaekwon Im, Natalia Polouliakh, Taketo Akama</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.8000000000000003, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">TinySense: Effective CSI Compression for Scalable and Accurate Wi-Fi Sensing</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> With the growing demand for device-free and privacy-preserving sensing solutions, Wi-Fi sensing has emerged as a promising approach for human pose estimation (HPE). However, existing methods often process vast amounts of channel state information (CSI) data directly, ultimately straining networking resources. This paper introduces TinySense, an efficient compression framework that enhances the scalability of Wi-Fi-based human sensing. Our approach is based on a new vector quantization-based generative adversarial network (VQGAN). Specifically, by leveraging a VQGAN-learned codebook, TinySense significantly reduces CSI data while maintaining the accuracy required for reliable HPE. To optimize compression, we employ the K-means algorithm to dynamically adjust compression bitrates to cluster a large-scale pre-trained codebook into smaller subsets. Furthermore, a Transformer model is incorporated to mitigate bitrate loss, enhancing robustness in unreliable networking conditions. We prototype TinySense on an experimental testbed using Jetson Nano and Raspberry Pi to measure latency and network resource use. Extensive results demonstrate that TinySense significantly outperforms state-of-the-art compression schemes, achieving up to 1.5x higher HPE accuracy score (PCK20) under the same compression rate. It also reduces latency and networking overhead, respectively, by up to 5x and 2.5x. The code repository is available online at here.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 随着对免设备和保护隐私的传感解决方案的需求日益增长，Wi-Fi传感已成为一种有前景的人体姿态估计（HPE）方法。然而，现有方法通常直接处理大量的信道状态信息（CSI）数据，最终给网络资源带来压力。本文介绍了一种高效的压缩框架TinySense，旨在增强基于Wi-Fi的人体传感的可扩展性。我们的方法基于一种新型的基于矢量量化的生成对抗网络（VQGAN）。具体而言，通过利用 VQGAN 学习到的码本，TinySense 显著减少了 CSI 数据量，同时保持了可靠 HPE 所需的准确性。为了优化压缩，我们采用 K-means 算法来动态调整压缩比特率，将大规模预训练的码本聚类成更小的子集。此外，还引入了一个 Transformer 模型来减轻比特率损失，从而增强在不可靠网络条件下的鲁棒性。我们在一个使用 Jetson Nano 和 Raspberry Pi 的实验测试床上原型化了 TinySense，以测量延迟和网络资源使用情况。大量结果表明，TinySense 显著优于最先进的压缩方案，在相同压缩率下，HPE 准确度评分 (PCK20) 提高高达 1.5 倍。同时，它还分别将延迟和网络开销降低了高达 5 倍和 2.5 倍。代码仓库可在以下网址在线获取。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: TinySense introduces a VQGAN-based compression framework for Wi-Fi CSI data, improving the scalability and accuracy of human pose estimation while reducing network resource usage and latency.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: TinySense 提出了一种基于 VQGAN 的 Wi-Fi CSI 数据压缩框架，提高了人体姿态估计的可扩展性和准确性，同时降低了网络资源占用和延迟。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.15838v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Toan Gian, Dung T. Tran, Viet Quoc Pham, Francesco Restuccia, Van-Dinh Nguyen</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.85, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">SplatBus: A Gaussian Splatting Viewer Framework via GPU Interprocess Communication</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Radiance field-based rendering methods have attracted significant interest from the computer vision and computer graphics communities. They enable high-fidelity rendering with complex real-world lighting effects, but at the cost of high rendering time. 3D Gaussian Splatting solves this issue with a rasterisation-based approach for real-time rendering, enabling applications such as autonomous driving, robotics, virtual reality, and extended reality. However, current 3DGS implementations are difficult to integrate into traditional mesh-based rendering pipelines, which is a common use case for interactive applications and artistic exploration. To address this limitation, this software solution uses Nvidia's interprocess communication (IPC) APIs to easily integrate into implementations and allow the results to be viewed in external clients such as Unity, Blender, Unreal Engine, and OpenGL viewers. The code is available at https://github.com/RockyXu66/splatbus.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 基于辐射场的渲染方法已经引起计算机视觉和计算机图形学界的广泛关注。它们能够实现高保真的渲染效果，具备复杂的真实世界光照效果，但代价是渲染时间较长。3D高斯溅射通过一种基于光栅化的方法解决了这个问题，实现了实时渲染，从而支持自动驾驶、机器人、虚拟现实和扩展现实等应用。然而，目前的3DGS实现方案难以集成到传统的基于网格的渲染管线中，而这对于交互式应用和艺术探索来说是一种常见的用例。为了解决这一局限性，本软件解决方案使用Nvidia的进程间通信（IPC）API，以便轻松集成到各种实现方案中，并允许在诸如Unity、Blender、Unreal Engine和OpenGL查看器等外部客户端中查看结果。代码可在https://github.com/RockyXu66/splatbus获取。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces SplatBus, a software solution that uses Nvidia's interprocess communication (IPC) APIs to integrate 3D Gaussian Splatting into traditional mesh-based rendering pipelines and view results in external clients like Unity and Blender.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍SplatBus，一个使用英伟达的进程间通信（IPC）API的软件解决方案，用于将3D高斯溅射集成到传统的基于网格的渲染管道中，并在Unity和Blender等外部客户端中查看结果。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.15431v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Yinghan Xu, Théo Morales, John Dingliana</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.9000000000000004, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">An Empirical Study on Ensemble-Based Transfer Learning Bayesian Optimisation with Mixed Variable Types</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Bayesian optimisation is a sample efficient method for finding a global optimum of expensive black-box objective functions. Historic datasets from related problems can be exploited to help improve performance of Bayesian optimisation by adapting transfer learning methods to various components of the Bayesian optimisation pipeline. In this study we perform an empirical analysis of various ensemble-based transfer learning Bayesian optimisation methods and pipeline components. We expand on previous work in the literature by contributing some specific pipeline components, and three new real-time transfer learning Bayesian optimisation benchmarks. In particular we propose to use a weighting strategy for ensemble surrogate model predictions based on regularised regression with weights constrained to be positive, and a related component for handling the case when transfer learning is not improving Bayesian optimisation performance. We find that in general, two components that help improve transfer learning Bayesian optimisation performance are warm start initialisation and constraining weights used with ensemble surrogate model to be positive.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 贝叶斯优化是一种样本高效的方法，用于寻找昂贵的黑盒目标函数的全局最优解。来自相关问题的历史数据集可以通过将迁移学习方法应用于贝叶斯优化流程的各个组件，从而帮助提高贝叶斯优化的性能。在本研究中，我们对各种基于集成的迁移学习贝叶斯优化方法和流程组件进行了实证分析。 我们通过贡献一些特定的流程组件和三个新的实时迁移学习贝叶斯优化基准，扩展了之前文献中的工作。 特别是，我们提出使用一种加权策略，基于带有正约束权重的正则化回归来用于集成代理模型的预测，以及一个相关的组件来处理迁移学习未能改善贝叶斯优化性能的情况。 我们发现，通常来说，有助于提高迁移学习贝叶斯优化性能的两个组件是热启动初始化和约束与集成代理模型一起使用的权重为正。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper empirically analyzes ensemble-based transfer learning Bayesian optimization methods, contributing pipeline components and new benchmarks, with a focus on weighting strategies and performance improvements from warm start initialization and constrained surrogate model weights.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文对基于集成的迁移学习贝叶斯优化方法进行了实证分析，贡献了管道组件和新的基准，重点关注加权策略以及来自热启动初始化和约束代理模型权重的性能改进。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.15640v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Natasha Trinkle, Huong Ha, Jeffrey Chan</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 2.95, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Improve the autonomy of the SE2(3) group based Extended Kalman Filter for Integrated Navigation: Application</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> One of the core advantages of SE2(3) Lie group framework for navigation modeling lies in the autonomy of error propagation. In the previous paper, the theoretical analysis of autonomy property of navigation model in inertial, earth and world frames was given. A construction method for SE2(3) group navigation model is proposed to improve the non-inertial navigation model toward full autonomy. This paper serves as a counterpart to previous paper and conducts the real-world strapdown inertial navigation system (SINS)/odometer(ODO) experiments as well as Monte-Carlo simulations to demonstrate the performance of improved SE2(3) group based high-precision navigation models.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> SE2(3)李群框架用于导航建模的核心优势之一在于误差传播的自主性。在前一篇论文中，我们给出了惯性系、地球系和世界系中导航模型自主性特性的理论分析。提出了一种SE2(3)群导航模型的构建方法，旨在提升非惯性导航模型的全自主性。本文作为前一篇论文的对应部分，通过实地捷联惯性导航系统(SINS)/里程计(ODO)实验以及蒙特卡洛仿真，展示了改进的基于SE2(3)群的高精度导航模型的性能。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents real-world experiments and Monte-Carlo simulations validating a previously proposed SE2(3) group-based navigation model to improve the autonomy of SINS/ODO integrated navigation systems.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了实地试验和蒙特卡洛模拟，验证了先前提出的基于SE2(3)群的导航模型，以提高SINS/ODO集成导航系统的自主性。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.16078v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Jiarui Cui, Maosong Wang, Wenqi Wu, Peiqi Li, Xianfei Pan</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.0, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Improve the autonomy of the SE2(3) group based Extended Kalman Filter for Integrated Navigation: Theoretical Analysis</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> One of core advantages of the SE2(3) Lie group framework for navigation modeling lies in the autonomy of error propagation. Current research on Lie group based extended Kalman filters has demonstrated that error propagation autonomy holds in low-precision applications, such as in micro electromechanical system (MEMS) based integrated navigation without considering earth rotation and inertial device biases. However, in high-precision navigation state estimation, maintaining autonomy is extremely difficult when considering with earth rotation and inertial device biases. This paper presents the theoretical analysis on the autonomy of SE2(3) group based high-precision navigation models under inertial, earth and world frame respectively. Through theoretical analysis, we find that the limitation of the traditional, trivial SE2(3) group navigation modeling method is that the presence of Coriolis force terms introduced by velocity in non-inertial frame. Therefore, a construction method for SE2(3) group navigation models is proposed, which brings the navigation models closer to full autonomy.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 基于SE2(3)李群框架的导航建模的核心优势之一在于误差传播的自主性。当前基于李群的扩展卡尔曼滤波研究表明，误差传播自主性在低精度应用中成立，例如在不考虑地球自转和惯性器件偏差的情况下，基于微机电系统（MEMS）的集成导航中。然而，在高精度导航状态估计中，当考虑地球自转和惯性器件偏差时，保持自主性极其困难。本文分别在惯性坐标系、地球坐标系和世界坐标系下，对基于SE2(3)群的高精度导航模型的自主性进行了理论分析。通过理论分析，我们发现传统的、简单的SE2(3)群导航建模方法的局限性在于非惯性系中速度引入的科里奥利力项的存在。因此，提出了一种SE2(3)群导航模型的构建方法，该方法使导航模型更接近完全自主性。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper analyzes the autonomy of SE2(3) group-based high-precision navigation models and proposes a method to improve autonomy by addressing Coriolis force limitations in non-inertial frames.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文分析了基于SE2(3)群的高精度导航模型的自主性，并提出了一种通过解决非惯性系中科里奥利力限制来提高自主性的方法。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.16062v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Jiarui Cui, Maosong Wang, Wenqi Wu, Peiqi Li, Xianfei Pan</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.0500000000000003, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Investigation of the Generalisation Ability of Genetic Programming-evolved Scheduling Rules in Dynamic Flexible Job Shop Scheduling</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Dynamic Flexible Job Shop Scheduling (DFJSS) is a complex combinatorial optimisation problem that requires simultaneous machine assignment and operation sequencing decisions in dynamic production environments. Genetic Programming (GP) has been widely applied to automatically evolve scheduling rules for DFJSS. However, existing studies typically train and test GP-evolved rules on DFJSS instances of the same type, which differ only by random seeds rather than by structural characteristics, leaving their cross-type generalisation ability largely unexplored. To address this gap, this paper systematically investigates the generalisation ability of GP-evolved scheduling rules under diverse DFJSS conditions. A series of experiments are conducted across multiple dimensions, including problem scale (i.e., the number of machines and jobs), key job shop parameters (e.g., utilisation level), and data distributions, to analyse how these factors influence GP performance on unseen instance types. The results show that good generalisation occurs when the training instances contain more jobs than the test instances while keeping the number of machines fixed, and when both training and test instances have similar scales or job shop parameters. Further analysis reveals that the number and distribution of decision points in DFJSS instances play a crucial role in explaining these performance differences. Similar decision point distributions lead to better generalisation, whereas significant discrepancies result in a marked degradation of performance. Overall, this study provides new insights into the generalisation ability of GP in DFJSS and highlights the necessity of evolving more generalisable GP rules capable of handling heterogeneous DFJSS instances effectively.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 动态柔性作业车间调度（DFJSS）是一个复杂的组合优化问题，需要在动态生产环境中同时进行机器分配和工序排序决策。遗传编程（GP）已被广泛应用于自动进化DFJSS的调度规则。然而，现有研究通常在相同类型的DFJSS实例上训练和测试GP进化的规则，这些实例仅因随机种子而非结构特征而不同，使其跨类型泛化能力在很大程度上未被探索。为了弥补这一差距，本文系统地研究了GP进化调度规则在不同DFJSS条件下的泛化能力。通过多个维度进行了一系列实验，包括问题规模（即机器和作业的数量）、关键作业车间参数（例如利用率）和数据分布，以分析这些因素如何影响GP在未见实例类型上的性能。结果表明，当训练实例包含比测试实例更多的作业，同时保持机器数量不变时，以及当训练和测试实例具有相似的规模或作业车间参数时，会产生良好的泛化效果。进一步分析表明，DFJSS实例中决策点的数量和分布在解释这些性能差异中起着至关重要的作用。相似的决策点分布可以带来更好的泛化效果，而显著的差异会导致性能的显著下降。总而言之，这项研究为GP在DFJSS中的泛化能力提供了新的见解，并强调了进化出能够有效处理异构DFJSS实例的更具泛化能力的GP规则的必要性。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper investigates the generalization ability of Genetic Programming-evolved scheduling rules in dynamic flexible job shop scheduling (DFJSS) across different instance types, finding that similarity in decision point distributions is key for good generalization.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文研究了动态柔性作业车间调度 (DFJSS) 中遗传规划进化调度规则在不同实例类型中的泛化能力，发现决策点分布的相似性是良好泛化的关键。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.15717v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Luyao Zhu, Fangfang Zhang, Yi Mei, Mengjie Zhang</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.1, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">An IoT-Based Smart Plant Monitoring and Irrigation System with Real-Time Environmental Sensing, Automated Alerts, and Cloud Analytics</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> The increasing global demand for sustainable agriculture necessitates intelligent monitoring systems that optimize resource utilization and plant health management. Traditional farming methods rely on manual observation and periodic watering, often leading to water wastage, inconsistent plant growth, and delayed response to environmental changes. This paper presents a comprehensive IoT-based smart plant monitoring system that integrates multiple environmental sensors with automated irrigation and cloud analytics. The proposed system utilizes an ESP32 microcontroller to collect real-time data from DHT22 (temperature/humidity), HC-SR04 (water level), and soil moisture sensors, with visual feedback through an OLED display and auditory alerts via a buzzer. All sensor data is wirelessly transmitted to the ThingSpeak cloud platform for remote monitoring, historical analysis, and automated alert generation. Experimental results demonstrate the system's effectiveness in maintaining optimal soil moisture levels (with 92\% accuracy), providing real-time environmental monitoring, and reducing water consumption by approximately 40\% compared to conventional irrigation methods. The integrated web dashboard offers comprehensive visualization of plant health parameters, making it suitable for both small-scale gardening and commercial agriculture applications. With a total implementation cost of \$45.20, this system provides an affordable, scalable solution for precision agriculture and smart farming.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 摘要：
-全球对可持续农业日益增长的需求促使智能监控系统的发展，以优化资源利用和植物健康管理。传统耕作方法依赖于人工观察和周期性浇水，通常导致水资源浪费、植物生长不一致以及对环境变化的响应滞后。本文提出了一种基于物联网的综合智能植物监控系统，该系统集成了多个环境传感器与自动化灌溉和云分析。该系统采用ESP32微控制器从DHT22(温湿度)、HC-SR04(水位)和土壤湿度传感器收集实时数据，并通过OLED显示屏提供视觉反馈，以及通过蜂鸣器提供听觉警报。所有传感器数据无线传输到ThingSpeak云平台，用于远程监控、历史分析和自动警报生成。实验结果表明，该系统在维持最佳土壤湿度水平(精度为92%)、提供实时环境监测以及与传统灌溉方法相比减少约40%的用水量方面具有有效性。集成的Web仪表盘提供了植物健康参数的全面可视化，使其适用于小型园艺和商业农业应用。该系统的总实施成本为45.20美元，为精准农业和智慧农业提供了一种经济实惠、可扩展的解决方案。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents an IoT-based smart plant monitoring and irrigation system using an ESP32 microcontroller, various sensors, and cloud analytics to optimize resource utilization and plant health, achieving a 40% reduction in water consumption.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种基于物联网的智能植物监测和灌溉系统，该系统使用ESP32微控制器、各种传感器和云分析来优化资源利用和植物健康，实现了40%的节水。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(1/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2601.15830v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Abdul Hasib, A. S. M. Ahsanul Sarkar Akib</p>
-            
-        </motion.div>
-        
     </div>
 
+    <section class="filtered-section">
+        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <h3>Accurate Calibration and Robust LiDAR-Inertial Odometry for Spinning Actuated LiDAR Systems</h3>
+                
+                <p><strong>Authors:</strong> Zijie Chen, Xiaowei Liu, Yong Xu, Shenghai Yuan, Jianping Li, Lihua Xie</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文提出了一种新颖的激光雷达-电机校准方法 (LM-Calibr) 和一种环境自适应的激光雷达惯性里程计 (EVA-LIO)，用于旋转驱动激光雷达系统，解决了在无特征环境中准确性、泛化性和鲁棒性方面的挑战。代码和硬件设计均已提供。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>A Beacon Based Solution for Autonomous UUVs GNSS-Denied Stealthy Navigation</h3>
+                
+                <p><strong>Authors:</strong> Alexandre Albore, Humbert Fiorino, Damien Pellier</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文提出了一种基于信标的自主水下航行器（UUV）在无全球导航卫星系统（GNSS）环境中的导航系统，该系统利用无人机部署的地标网络和分层路径规划。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Glove2UAV: A Wearable IMU-Based Glove for Intuitive Control of UAV</h3>
+                
+                <p><strong>Authors:</strong> Amir Habel, Ivan Snegirev, Elizaveta Semenyakina, Miguel Altamirano Cabrera, Jeffrin Sam, Fawad Mehboob, Roohan Ahmed Khan, Muhammad Ahsan Mustafa, Dzmitry Tsetserukou</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了一种基于IMU的手套界面 Glove2UAV，用于通过手势识别直观地控制无人机，并具有振动触觉警告，通过模拟和实际飞行进行了验证。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Airflow Source Seeking on Small Quadrotors Using a Single Flow Sensor</h3>
+                
+                <p><strong>Authors:</strong> Lenworth Thomas, Tjaden Bridges, Sarah Bergbreiter</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了一种使用定制流量传感器的小型四旋翼飞行器的气流源搜索算法，使其能够导航至气流源，可能有助于环境监测中的羽流跟踪。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Neural Collision Detection for Multi-arm Laparoscopy Surgical Robots Through Learning-from-Simulation</h3>
+                
+                <p><strong>Authors:</strong> Sarvin Ghiasi, Majid Roshanfar, Jake Barralet, Liane S. Feldman, Amir Hooshiar</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种结合分析建模、实时仿真和机器学习的框架，用于改进多臂手术机器人的碰撞检测和距离估计，并通过深度神经网络取得了有希望的结果。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>StreetDesignAI: A Multi-Persona Evaluation System for Inclusive Infrastructure Design</h3>
+                
+                <p><strong>Authors:</strong> Ziyi Wang, Yilong Dai, Duanya Lyu, Mateo Nader, Sihan Chen, Wanghao Ye, Zjian Ding, Xiang Yan</p>
+                
+                <p><strong>TLDR-CN:</strong> StreetDesignAI是一个交互系统，利用基于角色的多智能体评估来支持包容性自行车基础设施设计，通过揭示不同用户视角的冲突来提高设计师的理解和决策能力。一项用户研究验证了其有效性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>A Multi-View Pipeline and Benchmark Dataset for 3D Hand Pose Estimation in Surgery</h3>
+                
+                <p><strong>Authors:</strong> Valery Fischer, Alan Magdaleno, Anna-Katharina Calek, Nicola Cavalcanti, Nathan Hoffman, Christoph Germann, Joschua Wüthrich, Max Krähenmann, Mazda Farshad, Philipp Fürnstahl, Lilian Calvet</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了一种多视角管道和一个新的手术数据集，用于3D手部姿势估计，与基线相比，实现了显著的误差减少，且无需特定领域的微调。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>DeltaDorsal: Enhancing Hand Pose Estimation with Dorsal Features in Egocentric Views</h3>
+                
+                <p><strong>Authors:</strong> William Huang, Siyou Pei, Leyi Zou, Eric J. Gonzalez, Ishan Chatterjee, Yang Zhang</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了一种手背姿态估计方法 (DeltaDorsal)，该方法利用手背皮肤形变来提高在自遮挡场景中的准确性，与具有较大模型尺寸的现有技术相比，取得了更好的效果。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Seeing through Light and Darkness: Sensor-Physics Grounded Deblurring HDR NeRF from Single-Exposure Images and Events</h3>
+                
+                <p><strong>Authors:</strong> Yunshan Qi, Lin Zhu, Nan Bao, Yifan Zhao, Jia Li</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种基于传感器物理的 NeRF 框架, 用于从单次曝光的模糊 LDR 图像和事件数据中生成清晰的 HDR 新视角。该框架解决了传感器不匹配问题，从而改进了 HDR 效果和去模糊效果。它提出了一种将传感器记录的 LDR 像素值和事件数据与物理 HDR 世界对齐的新方法。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>AgriPINN: A Process-Informed Neural Network for Interpretable and Scalable Crop Biomass Prediction Under Water Stress</h3>
+                
+                <p><strong>Authors:</strong> Yue Shi, Liangxiu Han, Xin Zhang, Tam Sobeih, Thomas Gaiser, Nguyen Huu Thuy, Dominik Behrend, Amit Kumar Srivastava, Krishnagopal Halder, Frank Ewert</p>
+                
+                <p><strong>TLDR-CN:</strong> AgriPINN是一种过程信息神经网络，它结合了深度学习和生物物理建模，用于在水分胁迫下进行准确且可解释的作物生物量预测，在准确性和效率方面优于现有方法。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>PF-D2M: A Pose-free Diffusion Model for Universal Dance-to-Music Generation</h3>
+                
+                <p><strong>Authors:</strong> Jaekwon Im, Natalia Polouliakh, Taketo Akama</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了PF-D2M，一种基于扩散模型的pose-free方法，用于生成与舞蹈视频对齐的音乐。该方法通过结合视觉特征和渐进式训练策略，解决了现有方法的局限性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>TinySense: Effective CSI Compression for Scalable and Accurate Wi-Fi Sensing</h3>
+                
+                <p><strong>Authors:</strong> Toan Gian, Dung T. Tran, Viet Quoc Pham, Francesco Restuccia, Van-Dinh Nguyen</p>
+                
+                <p><strong>TLDR-CN:</strong> TinySense 提出了一种基于 VQGAN 的 Wi-Fi CSI 数据压缩框架，提高了人体姿态估计的可扩展性和准确性，同时降低了网络资源占用和延迟。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>SplatBus: A Gaussian Splatting Viewer Framework via GPU Interprocess Communication</h3>
+                
+                <p><strong>Authors:</strong> Yinghan Xu, Théo Morales, John Dingliana</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍SplatBus，一个使用英伟达的进程间通信（IPC）API的软件解决方案，用于将3D高斯溅射集成到传统的基于网格的渲染管道中，并在Unity和Blender等外部客户端中查看结果。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>An Empirical Study on Ensemble-Based Transfer Learning Bayesian Optimisation with Mixed Variable Types</h3>
+                
+                <p><strong>Authors:</strong> Natasha Trinkle, Huong Ha, Jeffrey Chan</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文对基于集成的迁移学习贝叶斯优化方法进行了实证分析，贡献了管道组件和新的基准，重点关注加权策略以及来自热启动初始化和约束代理模型权重的性能改进。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Improve the autonomy of the SE2(3) group based Extended Kalman Filter for Integrated Navigation: Application</h3>
+                
+                <p><strong>Authors:</strong> Jiarui Cui, Maosong Wang, Wenqi Wu, Peiqi Li, Xianfei Pan</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了实地试验和蒙特卡洛模拟，验证了先前提出的基于SE2(3)群的导航模型，以提高SINS/ODO集成导航系统的自主性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Improve the autonomy of the SE2(3) group based Extended Kalman Filter for Integrated Navigation: Theoretical Analysis</h3>
+                
+                <p><strong>Authors:</strong> Jiarui Cui, Maosong Wang, Wenqi Wu, Peiqi Li, Xianfei Pan</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文分析了基于SE2(3)群的高精度导航模型的自主性，并提出了一种通过解决非惯性系中科里奥利力限制来提高自主性的方法。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Investigation of the Generalisation Ability of Genetic Programming-evolved Scheduling Rules in Dynamic Flexible Job Shop Scheduling</h3>
+                
+                <p><strong>Authors:</strong> Luyao Zhu, Fangfang Zhang, Yi Mei, Mengjie Zhang</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文研究了动态柔性作业车间调度 (DFJSS) 中遗传规划进化调度规则在不同实例类型中的泛化能力，发现决策点分布的相似性是良好泛化的关键。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>An IoT-Based Smart Plant Monitoring and Irrigation System with Real-Time Environmental Sensing, Automated Alerts, and Cloud Analytics</h3>
+                
+                <p><strong>Authors:</strong> Abdul Hasib, A. S. M. Ahsanul Sarkar Akib</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了一种基于物联网的智能植物监测和灌溉系统，该系统使用ESP32微控制器、各种传感器和云分析来优化资源利用和植物健康，实现了40%的节水。</p>
+            </div>
+            
+        </div>
+    </section>
+
     <footer class="footer">
-        Generated on 2026-01-25 02:06:01 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-08 07:22:49 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
 </body>

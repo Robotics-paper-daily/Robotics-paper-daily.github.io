@@ -62,6 +62,9 @@ python src/main.py --backfill
 
 # (可选) 限制每次补全的日期数量（默认: 5）
 python src/main.py --backfill --backfill-limit 3
+
+# (可选) 基于已有 daily_json 全量重建 daily_html（不重新抓取）
+python src/rebuild_html.py
 ```
 
 运行成功后：
@@ -92,6 +95,7 @@ python src/main.py --backfill --backfill-limit 3
 ├── .github/workflows/daily_arxiv.yml  # GitHub Actions 配置文件
 ├── src/                     # Python 脚本目录
 │   ├── main.py              # 主执行脚本
+│   ├── rebuild_html.py      # 基于历史 JSON 全量重建 HTML
 │   ├── scraper.py           # ArXiv 爬虫模块
 │   ├── filter.py            # OpenRouter 过滤模块（机器人学主题）
 │   └── html_generator.py    # HTML 生成模块

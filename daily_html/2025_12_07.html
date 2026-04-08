@@ -32,6 +32,39 @@
             line-height: 1.6;
         }
 
+        .quick-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            align-items: center;
+            width: fit-content;
+            margin: 0.9rem auto 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .quick-nav a {
+            color: var(--highlight-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            background: rgba(255, 255, 255, 0.86);
+            box-shadow: 0 2px 6px var(--shadow-color);
+            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+        }
+
+        .quick-nav a:hover {
+            background-color: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+
         .bento-grid {
             display: grid;
             gap: 1.5rem; /* Tailwind gap-6 */
@@ -186,10 +219,48 @@
             margin-right: 0.125rem; /* Consistent spacing */
         }
 
+        .filtered-section {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .filtered-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--header-color);
+            margin-bottom: 1rem;
+        }
+
+        .filtered-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .filtered-item {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .filtered-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+        }
+
+        .filtered-item p {
+            margin: 0.25rem 0;
+            color: var(--text-muted-color);
+            font-size: 0.88rem;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
-
     <motion.div
         initial="{ opacity: 0, y: -30 }"
         animate="{ opacity: 1, y: 0 }"
@@ -200,6 +271,11 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>December 07, 2025</p>
+        <nav class="quick-nav">
+            <a href="../index.html" target="_top">首页</a>
+            <a href="../list.html" target="_top">报告列表</a>
+            <a href="../search.html" target="_top">论文检索</a>
+        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -781,306 +857,41 @@
             
         </motion.div>
         
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 0.30000000000000004, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Measuring the Effect of Background on Classification and Feature Importance in Deep Learning for AV Perception</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Common approaches to explainable AI (XAI) for deep learning focus on analyzing the importance of input features on the classification task in a given model: saliency methods like SHAP and GradCAM are used to measure the impact of spatial regions of the input image on the classification result. Combined with ground truth information about the location of the object in the input image (e.g., a binary mask), it is determined whether object pixels had a high impact on the classification result, or whether the classification focused on background pixels. The former is considered to be a sign of a healthy classifier, whereas the latter is assumed to suggest overfitting on spurious correlations. A major challenge, however, is that these intuitive interpretations are difficult to test quantitatively, and hence the output of such explanations lacks an explanation itself. One particular reason is that correlations in real-world data are difficult to avoid, and whether they are spurious or legitimate is debatable. Synthetic data in turn can facilitate to actively enable or disable correlations where desired but often lack a sufficient quantification of realism and stochastic properties. [...] Therefore, we systematically generate six synthetic datasets for the task of traffic sign recognition, which differ only in their degree of camera variation and background correlation [...] to quantify the isolated influence of background correlation, different levels of camera variation, and considered traffic sign shapes on the classification performance, as well as background feature importance. [...] Results include a quantification of when and how much background features gain importance to support the classification task based on changes in the training domain [...].
-  Download: synset.de/datasets/synset-signset-ger/background-effect</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 用于深度学习的可解释人工智能（XAI）的常见方法侧重于分析输入特征对给定模型中分类任务的重要性：诸如SHAP和GradCAM之类的显著性方法被用于衡量输入图像的空间区域对分类结果的影响。结合输入图像中对象位置的真实信息（例如，二元掩码），确定对象像素是否对分类结果具有高度影响，或者分类是否侧重于背景像素。前者被认为是健康分类器的一个标志，而后者被认为暗示对虚假相关的过拟合。然而，一个主要的挑战是这些直观的解释难以进行定量测试，因此，这些解释的输出本身就缺乏解释。一个特别的原因是现实世界数据中的相关性难以避免，以及它们是虚假的还是合法的，这一点仍存在争议。反过来，合成数据可以促进主动启用或禁用所需的相关性，但通常缺乏对真实性和随机属性的充分量化。[...] 因此，我们系统地生成了六个用于交通标志识别任务的合成数据集，这些数据集仅在其摄像机变化程度和背景相关性方面有所不同 [...] 以量化背景相关性、不同级别的相机变化以及所考虑的交通标志形状对分类性能以及背景特征重要性的独立影响。[...] 结果包括量化了背景特征在多大程度上以及何时变得重要，从而根据训练域中的变化来支持分类任务 [...]。
-  下载地址：synset.de/datasets/synset-signset-ger/background-effect</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper investigates the impact of background correlations on deep learning models for traffic sign recognition using synthetic datasets, quantifying how background features influence classification performance under varying conditions.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文使用合成数据集研究了背景相关性对深度学习交通标志识别模型的影响，量化了在不同条件下背景特征如何影响分类性能。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2512.05937v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Anne Sielemann, Valentin Barner, Stefan Wolf, Masoud Roschani, Jens Ziehn, Juergen Beyerer</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 0.35000000000000003, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Physically-Based Simulation of Automotive LiDAR</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> We present an analytic model for simulating automotive time-of-flight (ToF) LiDAR that includes blooming, echo pulse width, and ambient light, along with steps to determine model parameters systematically through optical laboratory measurements. The model uses physically based rendering (PBR) in the near-infrared domain. It assumes single-bounce reflections and retroreflections over rasterized rendered images from shading or ray tracing, including light emitted from the sensor as well as stray light from other, non-correlated sources such as sunlight. Beams from the sensor and sensitivity of the receiving diodes are modeled with flexible beam steering patterns and with non-vanishing diameter.
-  Different (all non-real time) computational approaches can be chosen based on system properties, computing capabilities, and desired output properties.
-  Model parameters include system-specific properties, namely the physical spread of the LiDAR beam, combined with the sensitivity of the receiving diode; the intensity of the emitted light; the conversion between the intensity of reflected light and the echo pulse width; and scenario parameters such as environment lighting, positioning, and surface properties of the target(s) in the relevant infrared domain. System-specific properties of the model are determined from laboratory measurements of the photometric luminance on different target surfaces aligned with a goniometer at 0.01° resolution, which marks the best available resolution for measuring the beam pattern.
-  The approach is calibrated for and tested on two automotive LiDAR systems, the Valeo Scala Gen. 2 and the Blickfeld Cube 1. Both systems differ notably in their properties and available interfaces, but the relevant model parameters could be extracted successfully.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 我们提出了一个用于模拟汽车飞行时间(ToF)激光雷达的解析模型，该模型包括光晕、回波脉冲宽度和环境光，以及通过光学实验室测量系统地确定模型参数的步骤。该模型在近红外域中使用基于物理的渲染(PBR)。它假设来自着色或光线追踪的栅格化渲染图像上的单次反射和逆反射，包括传感器发出的光以及来自其他非相关光源（如阳光）的杂散光。传感器发出的光束和接收二极管的灵敏度使用灵活的光束控制模式和非零直径进行建模。
-  根据系统特性、计算能力和所需的输出属性，可以选择不同的（所有非实时）计算方法。
-  模型参数包括系统特定的属性，即激光雷达光束的物理扩展，以及接收二极管的灵敏度；发射光的光强；反射光强度与回波脉冲宽度之间的转换；以及场景参数，如环境照明、定位和相关红外域中目标表面的表面属性。模型的系统特定属性是通过在高精度测角仪上以0.01°分辨率对齐的不同目标表面上的光度亮度进行实验室测量来确定的，这标志着测量光束模式的最佳可用分辨率。
-  该方法已针对两种汽车激光雷达系统，即Valeo Scala Gen. 2和Blickfeld Cube 1进行了校准和测试。这两个系统在属性和可用接口方面都有显著差异，但相关的模型参数均已成功提取。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents a physically-based model for simulating automotive LiDAR systems, validated with laboratory measurements and data from two real LiDAR systems. It focuses on accurate simulation of LiDAR signal characteristics in the near-infrared domain.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一个基于物理的汽车激光雷达系统仿真模型，通过实验室测量和两个真实激光雷达系统的数据进行了验证。重点在于近红外领域激光雷达信号特征的精确仿真。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2512.05932v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: L. Dudzik, M. Roschani, A. Sielemann, K. Trampert, J. Ziehn, J. Beyerer, C. Neumann</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 0.4, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Variational Quantum Rainbow Deep Q-Network for Optimizing Resource Allocation Problem</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Resource allocation remains NP-hard due to combinatorial complexity. While deep reinforcement learning (DRL) methods, such as the Rainbow Deep Q-Network (DQN), improve scalability through prioritized replay and distributional heads, classical function approximators limit their representational power. We introduce Variational Quantum Rainbow DQN (VQR-DQN), which integrates ring-topology variational quantum circuits with Rainbow DQN to leverage quantum superposition and entanglement. We frame the human resource allocation problem (HRAP) as a Markov decision process (MDP) with combinatorial action spaces based on officer capabilities, event schedules, and transition times. On four HRAP benchmarks, VQR-DQN achieves 26.8% normalized makespan reduction versus random baselines and outperforms Double DQN and classical Rainbow DQN by 4.9-13.4%. These gains align with theoretical connections between circuit expressibility, entanglement, and policy quality, demonstrating the potential of quantum-enhanced DRL for large-scale resource allocation. Our implementation is available at: https://github.com/Analytics-Everywhere-Lab/qtrl/.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 资源分配因其组合复杂性仍然是NP-hard问题。虽然深度强化学习(DRL)方法，如Rainbow深度Q网络(DQN)，通过优先级经验回放和分布头部改进了可扩展性，但经典函数逼近器限制了其表征能力。我们引入了变分量子Rainbow DQN (VQR-DQN)，它将环形拓扑变分量子线路与Rainbow DQN集成，以利用量子叠加和纠缠。我们将人力资源分配问题(HRAP)建模为马尔可夫决策过程(MDP)，其组合动作空间基于人员能力、事件日程和转移时间。在四个HRAP基准测试中，VQR-DQN相对于随机基线实现了26.8%的标准化完工时间缩减，并且优于Double DQN和经典Rainbow DQN 4.9-13.4%。这些收益与线路可表达性、纠缠和策略质量之间的理论联系相符，证明了量子增强的DRL在大型资源分配中的潜力。我们的实现可在以下网址获得：https://github.com/Analytics-Everywhere-Lab/qtrl/。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces Variational Quantum Rainbow DQN (VQR-DQN) for resource allocation, combining variational quantum circuits with Rainbow DQN, and demonstrates improved performance on human resource allocation problem (HRAP) benchmarks compared to classical baselines.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了用于资源分配的变分量子彩虹 DQN (VQR-DQN)，它结合了变分量子电路和彩虹 DQN，并在人力资源分配问题 (HRAP) 基准测试中展示了比经典基线更好的性能。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2512.05946v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Truong Thanh Hung Nguyen, Truong Thinh Nguyen, Hung Cao</p>
-            
-        </motion.div>
-        
     </div>
 
+    <section class="filtered-section">
+        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <h3>Measuring the Effect of Background on Classification and Feature Importance in Deep Learning for AV Perception</h3>
+                
+                <p><strong>Authors:</strong> Anne Sielemann, Valentin Barner, Stefan Wolf, Masoud Roschani, Jens Ziehn, Juergen Beyerer</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文使用合成数据集研究了背景相关性对深度学习交通标志识别模型的影响，量化了在不同条件下背景特征如何影响分类性能。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Physically-Based Simulation of Automotive LiDAR</h3>
+                
+                <p><strong>Authors:</strong> L. Dudzik, M. Roschani, A. Sielemann, K. Trampert, J. Ziehn, J. Beyerer, C. Neumann</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一个基于物理的汽车激光雷达系统仿真模型，通过实验室测量和两个真实激光雷达系统的数据进行了验证。重点在于近红外领域激光雷达信号特征的精确仿真。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Variational Quantum Rainbow Deep Q-Network for Optimizing Resource Allocation Problem</h3>
+                
+                <p><strong>Authors:</strong> Truong Thanh Hung Nguyen, Truong Thinh Nguyen, Hung Cao</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了用于资源分配的变分量子彩虹 DQN (VQR-DQN)，它结合了变分量子电路和彩虹 DQN，并在人力资源分配问题 (HRAP) 基准测试中展示了比经典基线更好的性能。</p>
+            </div>
+            
+        </div>
+    </section>
+
     <footer class="footer">
-        Generated on 2025-12-09 01:43:06 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-08 07:22:46 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
 </body>

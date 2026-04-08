@@ -29,6 +29,25 @@ def generate_html_from_json(json_file_path: str, template_dir: str, template_nam
     env = Environment(loader=FileSystemLoader(template_dir))
     template = env.get_template(template_name)
 
+    score_threshold = 6.0
+
+    def to_score(paper: dict) -> float:
+        try:
+            score = paper.get('overall_priority_score', 0)
+            return float(score) if score is not None else 0.0
+        except (TypeError, ValueError):
+            return 0.0
+
+    display_papers = [paper for paper in papers if to_score(paper) >= score_threshold]
+    filtered_papers = [paper for paper in papers if to_score(paper) < score_threshold]
+    logging.info(
+        "页面展示论文数量: %s（overall>=%.1f），低分子栏数量: %s（overall<%.1f）",
+        len(display_papers),
+        score_threshold,
+        len(filtered_papers),
+        score_threshold,
+    )
+
     # Extract date from filename (assuming format like YYYY-MM-DD.json)
     try:
         filename = os.path.basename(json_file_path)
@@ -39,12 +58,20 @@ def generate_html_from_json(json_file_path: str, template_dir: str, template_nam
     except (IndexError, ValueError):
         logging.warning(f"Could not extract date from filename {filename}. Using default.")
         today = date.today()
+        report_date = today
         formatted_date = today.strftime("%Y_%m_%d")
         page_title = f"ArXiv Robotics Papers (RL/VLM/World Models/LLMs/VLA/VLN) - {today.strftime('%B %d, %Y')}"
 
 
     generation_time = datetime.now(timezone.utc)
-    html_content = template.render(papers=papers, title=page_title, report_date=report_date, generation_time=generation_time)
+    html_content = template.render(
+        papers=display_papers,
+        filtered_papers=filtered_papers,
+        title=page_title,
+        report_date=report_date,
+        generation_time=generation_time,
+        score_threshold=score_threshold,
+    )
 
     output_filename = f"{formatted_date}.html"
     output_filepath = os.path.join(output_dir, output_filename)

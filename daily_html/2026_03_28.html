@@ -32,6 +32,39 @@
             line-height: 1.6;
         }
 
+        .quick-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            align-items: center;
+            width: fit-content;
+            margin: 0.9rem auto 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .quick-nav a {
+            color: var(--highlight-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            background: rgba(255, 255, 255, 0.86);
+            box-shadow: 0 2px 6px var(--shadow-color);
+            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+        }
+
+        .quick-nav a:hover {
+            background-color: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+
         .bento-grid {
             display: grid;
             gap: 1.5rem; /* Tailwind gap-6 */
@@ -186,10 +219,48 @@
             margin-right: 0.125rem; /* Consistent spacing */
         }
 
+        .filtered-section {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .filtered-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--header-color);
+            margin-bottom: 1rem;
+        }
+
+        .filtered-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .filtered-item {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .filtered-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+        }
+
+        .filtered-item p {
+            margin: 0.25rem 0;
+            color: var(--text-muted-color);
+            font-size: 0.88rem;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
-
     <motion.div
         initial="{ opacity: 0, y: -30 }"
         animate="{ opacity: 1, y: 0 }"
@@ -200,6 +271,11 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>March 28, 2026</p>
+        <nav class="quick-nav">
+            <a href="../index.html" target="_top">首页</a>
+            <a href="../list.html" target="_top">报告列表</a>
+            <a href="../search.html" target="_top">论文检索</a>
+        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -6073,1258 +6149,121 @@
             
         </motion.div>
         
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.0500000000000003, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Drive-Through 3D Vehicle Exterior Reconstruction via Dynamic-Scene SfM and Distortion-Aware Gaussian Splatting</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> High-fidelity 3D reconstruction of vehicle exteriors improves buyer confidence in online automotive marketplaces, but generating these models in cluttered dealership drive-throughs presents severe technical challenges. Unlike static-scene photogrammetry, this setting features a dynamic vehicle moving against heavily cluttered, static backgrounds. This problem is further compounded by wide-angle lens distortion, specular automotive paint, and non-rigid wheel rotations that violate classical epipolar constraints. We propose an end-to-end pipeline utilizing a two-pillar camera rig. First, we resolve dynamic-scene ambiguities by coupling SAM 3 for instance segmentation with motion-gating to cleanly isolate the moving vehicle, explicitly masking out non-rigid wheels to enforce strict epipolar geometry. Second, we extract robust correspondences directly on raw, distorted 4K imagery using the RoMa v2 learned matcher guided by semantic confidence masks. Third, these matches are integrated into a rig-aware SfM optimization that utilizes CAD-derived relative pose priors to eliminate scale drift. Finally, we use a distortion-aware 3D Gaussian Splatting framework (3DGUT) coupled with a stochastic Markov Chain Monte Carlo (MCMC) densification strategy to render reflective surfaces. Evaluations on 25 real-world vehicles across 10 dealerships demonstrate that our full pipeline achieves a PSNR of 28.66 dB, an SSIM of 0.89, and an LPIPS of 0.21 on held-out views, representing a 3.85 dB improvement over standard 3D-GS, delivering inspection-grade interactive 3D models without controlled studio infrastructure.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 车辆外观的高保真3D重建能够提高在线汽车交易市场中买家的信心，但在杂乱的经销商试驾环境中生成这些模型则面临着严峻的技术挑战。与静态场景摄影测量不同，此场景的特点是动态车辆在高度杂乱的静态背景下移动。广角镜头畸变、反光的汽车涂料以及违反经典对极约束的非刚性车轮旋转，进一步加剧了这个问题。我们提出了一种使用双支柱相机装置的端到端流程。首先，我们通过将SAM 3 для instance segmentation与运动门控相结合，干净地隔离移动车辆，并明确屏蔽掉非刚性车轮以强制执行严格的对极几何，从而解决动态场景的模糊性。其次，我们使用由语义置信度掩码引导的RoMa v2 学习匹配器，直接在原始的、失真的4K图像上提取鲁棒的对应关系。第三，这些匹配被整合到考虑装置结构的SfM优化中，该优化利用CAD导出的相对姿态先验来消除尺度漂移。最后，我们使用与随机马尔可夫链蒙特卡洛 (MCMC) 密集化策略相结合的 distortion-aware 3D Gaussian Splatting (3DGUT) 框架来渲染反射表面。在10家经销商的25辆真实车辆上的评估表明，我们的完整流程在预留视图上实现了28.66 dB的PSNR、0.89的SSIM和0.21的LPIPS，与标准3D-GS相比提升了3.85 dB，在无需受控工作室基础设施的情况下，提供了可用于检查级别的交互式3D模型。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents a pipeline for high-fidelity 3D vehicle reconstruction in cluttered environments using dynamic-scene SfM and distortion-aware Gaussian Splatting, achieving robust results without controlled studio conditions.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种在高杂波环境下使用动态场景SfM和失真感知高斯溅射进行高保真3D车辆重建的流水线，无需受控演播室环境即可获得稳健的结果。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.26638v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Nitin Kulkarni, Akhil Devarashetti, Charlie Cluss, Livio Forte, Philip Schneider, Chunming Qiao, Alina Vereshchaka</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.1, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">The Multi-AMR Buffer Storage, Retrieval, and Reshuffling Problem: Exact and Heuristic Approaches</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Buffer zones are essential in production systems to decouple sequential processes. In dense floor storage environments, such as space-constrained brownfield facilities, manual operation is increasingly challenged by severe labor shortages and rising operational costs. Automating these zones requires solving the Buffer Storage, Retrieval, and Reshuffling Problem (BSRRP). While previous work has addressed scenarios where the focus is limited to reshuffling and retrieving a fixed set of items, real-world manufacturing necessitates an adaptive approach that also incorporates arriving unit loads. This paper introduces the Multi-AMR BSRRP, coordinating a robot fleet to manage concurrent reshuffling, alongside time-windowed storage and retrieval tasks, within a shared floor area. We formulate a Binary Integer Programming (IP) model to obtain exact solutions for benchmarking purposes. As the problem is NP-hard, rendering exact methods computationally intractable for industrial scales, we propose a hierarchical heuristic. This approach decomposes the problem into an A* search for task-level sequence planning of unit load placements, and a Constraint Programming (CP) approach for multi-robot coordination and scheduling. Experiments demonstrate orders-of-magnitude computation time reductions compared to the exact formulation. These results confirm the heuristic's viability as responsive control logic for high-density production environments.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 缓冲区在生产系统中至关重要，用于解耦顺序流程。在空间受限的棕地设施等高密度地面存储环境中，人工操作正日益受到严重劳动力短缺和运营成本上升的挑战。实现这些区域的自动化需要解决缓冲区存储、检索和重排问题 (BSRRP)。虽然以前的工作已经解决了重点仅限于重排和检索固定物品集合的场景，但现实世界的制造业需要一种自适应方法，该方法也包括到达的单元负载。本文介绍了多自主移动机器人BSRRP，它协调机器人群组在共享地面区域内同时管理重排，以及有时窗的存储和检索任务。我们建立了一个二元整数规划 (IP) 模型，以获得精确解作为基准。由于该问题是NP-hard问题，使得精确方法在工业规模上计算量太大，因此我们提出了一种分层启发式算法。该方法将问题分解为：用于单元负载放置的任务级序列规划的A*搜索，以及用于多机器人协调和调度的约束规划 (CP) 方法。实验表明，与精确公式相比，计算时间减少了几个数量级。这些结果证实了该启发式算法作为高密度生产环境响应式控制逻辑的可行性。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper proposes a hierarchical heuristic approach for solving the Multi-AMR Buffer Storage, Retrieval, and Reshuffling Problem in automated production systems, demonstrating significant computation time reductions compared to exact solutions.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种分层启发式方法，用于解决自动化生产系统中的多自主移动机器人 (AMR) 缓冲存储、检索和重排问题，与精确解法相比，计算时间显著缩短。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.26542v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Max Disselnmeyer, Thomas Bömer, Laura Dörr, Bastian Amberg, Anne Meyer</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.1500000000000004, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Curvature-aware Expected Free Energy as an Acquisition Function for Bayesian Optimization</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> We propose an Expected Free Energy-based acquisition function for Bayesian optimization to solve the joint learning and optimization problem, i.e., optimize and learn the underlying function simultaneously. We show that, under specific assumptions, Expected Free Energy reduces to Upper Confidence Bound, Lower Confidence Bound, and Expected Information Gain. We prove that Expected Free Energy has unbiased convergence guarantees for concave functions. Using the results from these derivations, we introduce a curvature-aware update law for Expected Free Energy and show its proof of concept using a system identification problem on a Van der Pol oscillator. Through rigorous simulation experiments, we show that our adaptive Expected Free Energy-based acquisition function outperforms state-of-the-art acquisition functions with the least final simple regret and error in learning the Gaussian process.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 我们提出了一种基于期望自由能的采集函数，用于贝叶斯优化，以解决联合学习与优化问题，即同时优化和学习底层函数。我们证明，在特定假设下，期望自由能可简化为上限置信界、下限置信界和期望信息增益。我们证明，对于凹函数，期望自由能具有无偏收敛保证。基于这些推导结果，我们为期望自由能引入了一种曲率感知的更新法则，并使用 Van der Pol 振荡器的系统辨识问题展示了其概念验证。通过严格的仿真实验，我们表明，我们的自适应期望自由能采集函数在学习高斯过程中，以最小的最终简单遗憾和误差，优于最先进的采集函数。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces a curvature-aware Expected Free Energy acquisition function for Bayesian optimization, demonstrating its superior performance compared to existing methods in learning and optimization, with theoretical convergence guarantees.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文提出了一种曲率感知的期望自由能采集函数，用于贝叶斯优化，证明了其在学习和优化方面优于现有方法，并具有理论收敛保证。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.26339v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Ajith Anil Meera, Wouter Kouw</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.2, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Decoding Defensive Coverage Responsibilities in American Football Using Factorized Attention Based Transformer Models</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Defensive coverage schemes in the National Football League (NFL) represent complex tactical patterns requiring coordinated assignments among defenders who must react dynamically to the offense's passing concept. This paper presents a factorized attention-based transformer model applied to NFL multi-agent play tracking data to predict individual coverage assignments, receiver-defender matchups, and the targeted defender on every pass play. Unlike previous approaches that focus on post-hoc coverage classification at the team level, our model enables predictive modeling of individual player assignments and matchup dynamics throughout the play. The factorized attention mechanism separates temporal and agent dimensions, allowing independent modeling of player movement patterns and inter-player relationships. Trained on randomly truncated trajectories, the model generates frame-by-frame predictions that capture how defensive responsibilities evolve from pre-snap through pass arrival. Our models achieve approximately 89\%+ accuracy for all tasks, with true accuracy potentially higher given annotation ambiguity in the ground truth labels. These outputs also enable novel derivative metrics, including disguise rate and double coverage rate, which enable enhanced storytelling in TV broadcasts as well as provide actionable insights for team strategy development and player evaluation.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 本文提出了一种基于分解注意力机制Transformer模型，应用于NFL（国家橄榄球联盟）多智能体比赛追踪数据，以预测个人防守覆盖任务、接球手-防守队员对抗以及每次传球进攻中被针对的防守队员。与以往侧重于事后团队层面覆盖分类的方法不同，我们的模型能够对整个比赛过程中个人球员任务和对抗动态进行预测建模。分解注意力机制分离了时间和智能体维度，从而能够独立建模球员的移动模式和球员间的关系。该模型在随机截断的轨迹上训练，生成逐帧预测，捕捉了防守职责从开球前到传球到达的变化。我们的模型在所有任务中均实现了约89%+的准确率，考虑到真实标签中的标注模糊性，真实准确率可能更高。这些输出还能实现新的衍生指标，包括伪装率和双人包夹率，从而增强电视转播中的故事叙述性，并为团队战略制定和球员评估提供可行的见解。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper uses a factorized attention-based transformer to predict individual defensive assignments and matchup dynamics in NFL football, achieving high accuracy and enabling new analytical metrics.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文使用一种基于分解注意力机制的Transformer模型来预测NFL橄榄球比赛中个人防守任务和对抗动态，实现了高精度，并支持新的分析指标。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.25901v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Kevin Song, Evan Diewald, Ornob Siddiquee, Chris Boomhower, Keegan Abdoo, Mike Band, Amy Lee</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.25, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">SHANDS: A Multi-View Dataset and Benchmark for Surgical Hand-Gesture and Error Recognition Toward Medical Training</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> In surgical training for medical students, proficiency development relies on expert-led skill assessment, which is costly, time-limited, difficult to scale, and its expertise remains confined to institutions with available specialists. Automated AI-based assessment offers a viable alternative, but progress is constrained by the lack of datasets containing realistic trainee errors and the multi-view variability needed to train robust computer vision approaches. To address this gap, we present Surgical-Hands (SHands), a large-scale multi-view video dataset for surgical hand-gesture and error recognition for medical training. \textsc{SHands} captures linear incision and suturing using five RGB cameras from complementary viewpoints, performed by 52 participants (20 experts and 32 trainees), each completing three standardized trials per procedure. The videos are annotated at the frame level with 15 gesture primitives and include a validated taxonomy of 8 trainee error types, enabling both gesture recognition and error detection. We further define standardized evaluation protocols for single-view, multi-view, and cross-view generalization, and benchmark state-of-the-art deep learning models on the dataset. SHands is publicly released to support the development of robust and scalable AI systems for surgical training grounded in clinically curated domain knowledge.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 医学学生的外科手术训练中，技能熟练度的提升依赖于专家主导的技能评估，但这成本高昂、时间有限、难以扩展，且其专业知识仍然局限于拥有专家的机构。基于人工智能的自动评估提供了一种可行的替代方案，但进展受到缺乏包含真实受训者错误的数据集以及训练稳健计算机视觉方法所需的多视角变异性的限制。为了解决这一差距，我们提出了Surgical-Hands（SHands），这是一个大规模多视角视频数据集，用于医学培训中的外科手部姿势和错误识别。\textsc{SHands} 使用五个RGB相机从互补视角捕捉直线切口和缝合，由52名参与者（20名专家和32名受训者）执行，每人完成每个流程的三次标准化试验。视频在帧级别上用15种姿势原语进行标注，并包含一个经过验证的8种受训者错误类型分类法，从而能够进行姿势识别和错误检测。我们进一步定义了单视角、多视角和跨视角泛化的标准化评估协议，并在数据集上对最先进的深度学习模型进行了基准测试。SHands已公开发布，旨在支持开发基于临床策划的领域知识、稳健且可扩展的外科手术训练人工智能系统。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces SHANDS, a large-scale multi-view surgical video dataset with gesture and error annotations, designed to facilitate AI-based surgical skill assessment, particularly for trainees.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一个名为SHANDS的大规模多视角手术视频数据集，它带有手势和错误标注，旨在促进基于人工智能的手术技能评估，特别是针对实习医生。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.26400v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Le Ma, Thiago Freitas dos Santos, Nadia Magnenat-Thalmann, Katarzyna Wac</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.3000000000000003, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">GLASS: Geometry-aware Local Alignment and Structure Synchronization Network for 2D-3D Registration</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Image-to-point cloud registration methods typically follow a coarse-to-fine pipeline, extracting patch-level correspondences and refining them into dense pixel-to-point matches. However, in scenes with repetitive patterns, images often lack sufficient 3D structural cues and alignment with point clouds, leading to incorrect matches. Moreover, prior methods usually overlook structural consistency, limiting the full exploitation of correspondences. To address these issues, we propose two novel modules: the Local Geometry Enhancement (LGE) module and the Graph Distribution Consistency (GDC) module. LGE enhances both image and point cloud features with normal vectors, injecting geometric structure into image features to reduce mismatches. GDC constructs a graph from matched points to update features and explicitly constrain similarity distributions. Extensive experiments and ablations on two benchmarks, RGB-D Scenes v2 and 7-Scenes, demonstrate that our approach achieves state-of-the-art performance in image-to-point cloud registration.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 图像到点云的配准方法通常遵循由粗到精的流程，提取patch级别的对应关系，并将其细化为密集的像素到点的匹配。然而，在具有重复模式的场景中，图像常常缺乏足够的3D结构线索，并且与点云对齐度不足，导致错误的匹配。此外，先前的方法通常忽略结构一致性，限制了对应关系的充分利用。为了解决这些问题，我们提出了两个新的模块：局部几何增强(LGE)模块和图分布一致性(GDC)模块。LGE利用法向量增强图像和点云特征，将几何结构注入图像特征，从而减少误匹配。GDC从匹配的点构建图，以更新特征并显式地约束相似度分布。在RGB-D Scenes v2和7-Scenes两个基准数据集上的大量实验和消融研究表明，我们的方法在图像到点云配准方面达到了最先进的性能。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper proposes a new method, GLASS, for 2D-3D registration that uses geometry-aware modules to improve matching in scenes with repetitive patterns, achieving state-of-the-art performance.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文提出了一种新的 2D-3D 配准方法 GLASS，该方法使用几何感知模块来提高重复模式场景中的匹配，并实现了最先进的性能。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.26262v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Zhixin Cheng, Jiacheng Deng, Xinjun Li, Bohao Liao, Li Liu, Xiaotian Yin, Baoqun Yin, Tianzhu Zhang</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.35, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">DUGAE: Unified Geometry and Attribute Enhancement via Spatiotemporal Correlations for G-PCC Compressed Dynamic Point Clouds</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Existing post-decoding quality enhancement methods for point clouds are designed for static data and typically process each frame independently. As a result, they cannot effectively exploit the spatiotemporal correlations present in point cloud sequences.We propose a unified geometry and attribute enhancement framework (DUGAE) for G-PCC compressed dynamic point clouds that explicitly exploits inter-frame spatiotemporal correlations in both geometry and attributes. First, a dynamic geometry enhancement network (DGE-Net) based on sparse convolution (SPConv) and feature-domain geometry motion compensation (GMC) aligns and aggregates spatiotemporal information. Then, a detail-aware k-nearest neighbors (DA-KNN) recoloring module maps the original attributes onto the enhanced geometry at the encoder side, improving mapping completeness and preserving attribute details. Finally, a dynamic attribute enhancement network (DAE-Net) with dedicated temporal feature extraction and feature-domain attribute motion compensation (AMC) refines attributes by modeling complex spatiotemporal correlations. On seven dynamic point clouds from the 8iVFB v2, Owlii, and MVUB datasets, DUGAE significantly enhanced the performance of the latest G-PCC geometry-based solid content test model (GeS-TM v10). For geometry (D1), it achieved an average BD-PSNR gain of 11.03 dB and a 93.95% BD-bitrate reduction. For the luma component, it achieved a 4.23 dB BD-PSNR gain with a 66.61% BD-bitrate reduction. DUGAE also improved perceptual quality (as measured by PCQM) and outperformed V-PCC. Our source code will be released on GitHub at: https://github.com/yuanhui0325/DUGAE</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 现有的点云后解码质量增强方法是为静态数据设计的，并且通常独立处理每一帧。因此，它们无法有效地利用点云序列中存在的时空相关性。我们提出了一种统一的几何和属性增强框架 (DUGAE)，用于G-PCC压缩的动态点云，该框架显式地利用了几何和属性上的帧间时空相关性。首先，一个基于稀疏卷积 (SPConv) 和特征域几何运动补偿 (GMC) 的动态几何增强网络 (DGE-Net) 对齐和聚合时空信息。然后，一个细节感知的k近邻 (DA-KNN) 重着色模块将原始属性映射到编码器侧增强的几何上，从而提高映射的完整性并保留属性细节。最后，一个具有专用时序特征提取和特征域属性运动补偿 (AMC) 的动态属性增强网络 (DAE-Net) 通过建模复杂的时空相关性来细化属性。在来自 8iVFB v2、Owlii 和 MVUB 数据集的七个动态点云上，DUGAE 显著提高了最新 G-PCC 基于几何的实心内容测试模型 (GeS-TM v10) 的性能。对于几何 (D1)，它实现了平均 11.03 dB 的 BD-PSNR 增益和 93.95% 的 BD-码率降低。对于亮度分量，它实现了 4.23 dB 的 BD-PSNR 增益以及 66.61% 的 BD-码率降低。DUGAE 还改进了感知质量 (如 PCQM 所测量)，并优于 V-PCC。我们的源代码将在 GitHub 上发布，网址为：https://github.com/yuanhui0325/DUGAE</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces DUGAE, a spatiotemporal correlation-aware framework for enhancing G-PCC compressed dynamic point clouds, achieving significant improvements in geometry and attribute quality compared to existing methods and V-PCC.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了DUGAE，一个利用时空相关性的框架，用于增强G-PCC压缩的动态点云，相比现有方法和V-PCC在几何和属性质量上取得了显著提升。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.26183v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Pan Zhao, Hui Yuan, Chang Sun, Chongzhen Tian, Raouf Hamzaoui, Sam Kwong</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.4000000000000004, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">InstaVSR: Taming Diffusion for Efficient and Temporally Consistent Video Super-Resolution</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Video super-resolution (VSR) seeks to reconstruct high-resolution frames from low-resolution inputs. While diffusion-based methods have substantially improved perceptual quality, extending them to video remains challenging for two reasons: strong generative priors can introduce temporal instability, and multi-frame diffusion pipelines are often too expensive for practical deployment. To address both challenges simultaneously, we propose InstaVSR, a lightweight diffusion framework for efficient video super-resolution. InstaVSR combines three ingredients: (1) a pruned one-step diffusion backbone that removes several costly components from conventional diffusion-based VSR pipelines, (2) recurrent training with flow-guided temporal regularization to improve frame-to-frame stability, and (3) dual-space adversarial learning in latent and pixel spaces to preserve perceptual quality after backbone simplification. On an NVIDIA RTX 4090, InstaVSR processes a 30-frame video at 2K$\times$2K resolution in under one minute with only 7 GB of memory usage, substantially reducing the computational cost compared to existing diffusion-based methods while maintaining favorable perceptual quality with significantly smoother temporal transitions.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 视频超分辨率（VSR）旨在从低分辨率输入重建高分辨率帧。虽然基于扩散的方法已显著提高了感知质量，但将其扩展到视频仍然面临两个挑战：强大的生成先验可能引入时间不稳定，以及多帧扩散流程通常过于昂贵，不便于实际部署。为了同时解决这两个挑战，我们提出了 InstaVSR，这是一个用于高效视频超分辨率的轻量级扩散框架。InstaVSR 结合了三个要素：（1）经过剪枝的单步扩散骨干网络，它从传统的基于扩散的VSR流程中移除了一些昂贵的组件；（2）通过光流引导的时间正则化进行循环训练，以改善帧与帧之间的稳定性；以及（3）在潜在空间和像素空间中的双重空间对抗学习，以在骨干网络简化后保持感知质量。在 NVIDIA RTX 4090 上，InstaVSR 处理一个 30 帧的 2K$\times$2K分辨率视频，耗时不到一分钟，仅占用 7 GB 的内存，与现有的基于扩散的方法相比，显著降低了计算成本，同时保持了良好的感知质量和显著更平滑的时间过渡。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces InstaVSR, a lightweight diffusion framework for efficient and temporally stable video super-resolution, achieving significant speed and memory improvements compared to existing diffusion-based methods.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了InstaVSR，一个轻量级的扩散框架，用于高效且时间上稳定的视频超分辨率，与现有的基于扩散的方法相比，实现了显著的速度和内存改进。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star-half-alt"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.26134v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Jintong Hu, Bin Chen, Zhenyu Hu, Jiayue Liu, Guo Wang, Lu Qi</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.45, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">User Involvement in Robotic Wheelchair Development: A Decade of Limited Progress</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Robotic wheelchairs (RWs) offer significant potential to enhance autonomy and participation for people with mobility impairments, yet many systems have failed to achieve sustained real-world adoption. This narrative literature review examined the extent and quality of end-user involvement in RW design, development, and evaluation over the past decade (2015--2025), assessed against core principles shared by major user-involvement approaches (e.g., user-/human-centered design, participatory/co-design, and inclusive design). The findings indicate that user involvement remains limited and is predominantly concentrated in late-stage evaluation rather than in early requirements definition or iterative co-design. Of the 399 records screened, only 23 studies (about 6%) met the inclusion criteria of verifiable end-user involvement, and many relied on small samples, often around ten participants, with limited justification for sample size selection, proxy users, laboratory-based validation, and non-standardized feedback methods. Research teams were largely engineering-dominated (about 89%) and geographically concentrated in high-income countries. Despite strong evidence that sustained user engagement improves usability and adoption in assistive technology, its systematic implementation in RW research remains rare. Advancing the field requires embedding participatory methodologies throughout the design lifecycle and addressing systemic barriers that constrain meaningful user involvement.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 机器人轮椅（RWs）为行动障碍人士增强自主性和参与度提供了巨大的潜力，然而许多系统未能实现可持续的实际应用。本叙述性文献综述考察了过去十年(2015-2025)中，最终用户参与机器人轮椅设计、开发和评估的程度和质量，并对照主要用户参与方法(例如，以用户/人为中心的设计、参与式/协同设计和包容性设计)所共享的核心原则进行了评估。研究结果表明，用户参与仍然有限，并且主要集中在后期评估，而不是在早期的需求定义或迭代协同设计中。在筛选的 399 条记录中，只有 23 项研究（约 6%）符合可验证的最终用户参与的纳入标准，并且许多研究依赖于小样本量，通常约为十名参与者，样本量选择的理由有限，使用代理用户，基于实验室的验证以及非标准化反馈方法。研究团队主要以工程领域为主（约 89%），并且在地理上集中在高收入国家。尽管有强有力的证据表明，持续的用户参与可以提高辅助技术的可用性和采纳率，但其在机器人轮椅研究中的系统性实施仍然罕见。推进该领域需要将参与式方法嵌入到整个设计生命周期中，并解决限制有意义用户参与的系统性障碍。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper reviews a decade of robotic wheelchair development and finds that user involvement is still limited, primarily occurring in late-stage evaluation rather than early design phases, hindering real-world adoption.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文回顾了过去十年机器人轮椅的发展，发现用户参与仍然有限，主要发生在后期评估阶段，而不是早期设计阶段，这阻碍了现实世界的采用。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.26543v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Mario Andres Chavarria, Santiago Price Torrendell, Aude Billard, Samia Hurst, Sébastien Kessler, Michael Stein, Kenji Suzuki, Sophie Weerts, Diego Paez-Granados, Minerva Rivas Velarde</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.5, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Optimal Prioritized Dissipation and Closed-Form Damping Limitation under Actuator Constraints for Haptic Interfaces</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> In haptics, guaranteeing stability is essential to ensure safe interaction with remote or virtual environments. One of the most relevant methods at the state-of-the-art is the Time Domain Passivity Approach (TDPA). However, its high conservatism leads to a significant degradation of transparency. Moreover, the stabilizing action may conflict with the device's physical limitations. State-of-the-art solutions have attempted to address these actuator limits, but they still fail to account simultaneously for the power limits of each actuator while maximizing transparency. This work proposes a new damping limitation method based on prioritized dissipation actions. It prioritizes an optimal dissipation direction that minimizes actuator load, while any excess dissipation is allocated to the orthogonal hyperplane. The solution provides a closed-form formulation and is robust in multi-DoF scenarios, even in the presence of actuator and motion anisotropies. The method is experimentally validated using a parallel haptic interface interacting with a virtual environment and tested under different operating conditions.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 在触觉领域，保证稳定性对于确保与远程或虚拟环境的安全交互至关重要。目前最相关的技术之一是时域无源性方法（TDPA）。然而，其高度保守性会导致透明度显著降低。此外，稳定作用可能与设备的物理限制相冲突。目前最先进的解决方案已尝试解决这些执行器限制，但仍然无法同时兼顾每个执行器的功率限制和最大化透明度。本工作提出了一种基于优先级耗散行为的新型阻尼限制方法。它优先考虑最小化执行器负载的最优耗散方向，同时将任何多余的耗散分配到正交超平面。该解决方案提供了闭式公式，并且在多自由度情况下（即使存在执行器和运动各向异性）也具有鲁棒性。该方法通过一个与虚拟环境交互的并联触觉界面进行了实验验证，并在不同的操作条件下进行了测试。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces a novel damping limitation method for haptic interfaces that prioritizes dissipation to minimize actuator load while maximizing transparency and accounting for actuator constraints, validated experimentally on a parallel haptic interface.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一种新型触觉界面阻尼限制方法，该方法优先考虑耗散以最小化执行器负载，同时最大化透明度并考虑执行器约束，已在并行触觉界面上进行了实验验证。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.26347v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Camilla Celli, Andrea Bini, Valerio Novelli, Alessandro Filippeschi, Francesco Porcini, Antonio Frisoli</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.5500000000000003, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Channelling, Coordinating, Collaborating: A Three-Layer Framework for Disability-Centered Human-Agent Collaboration</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> AI accessibility tools have mostly been designed for individual use, helping one person overcome a specific functional barrier. But for many people with disabilities, complex tasks are accomplished through collaboration with others who bring complementary abilities, not solitary effort. We propose a three-layer framework, Channelling, Coordinating, and Co-Creating, that rethinks AI's role in ability-diverse collaboration: establishing shared informational ground across abilities, mediating workflows between collaborators with different abilities, and contributing as a bounded partner toward shared goals. Grounded in the Ability-Diverse Collaboration framework, grounding theory, and Carlile's 3T framework, it extends the ``agents as remote collaborators'' vision by centring the collaborative, interdependent ways people with disabilities already work.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 人工智能辅助工具主要针对个人使用而设计，旨在帮助个人克服特定的功能障碍。然而对于许多残障人士而言，完成复杂任务是通过与他人合作，发挥各自互补的能力，而非单打独斗。我们提出了一个三层框架——通道化（Channelling）、协调（Coordinating）和共创（Co-Creating）——重新思考人工智能在能力多样化协作中的作用：在不同能力的个体之间建立共享的信息基础，调解具有不同能力的合作者之间的工作流程，并作为有限的伙伴为共同目标做出贡献。该框架立足于能力多样化协作框架、基础理论和Carlile的3T框架，通过关注残障人士已有的协作和相互依赖的工作方式，扩展了“代理作为远程合作者”的愿景。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper proposes a three-layer framework for AI to support ability-diverse collaboration, moving beyond individual accessibility tools to facilitate collaborative task completion for people with disabilities.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一个三层框架，旨在利用人工智能支持不同能力之间的协作，从而超越了个人辅助工具，促进残疾人协作完成任务。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.26252v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Lan Xiao, Catherine Holloway</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.6, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Dynamic LIBRAS Gesture Recognition via CNN over Spatiotemporal Matrix Representation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> This paper proposes a method for dynamic hand gesture recognition based on the composition of two models: the MediaPipe Hand Landmarker, responsible for extracting 21 skeletal keypoints of the hand, and a convolutional neural network (CNN) trained to classify gestures from a spatiotemporal matrix representation of dimensions 90 by 21 of those keypoints. The method is applied to the recognition of LIBRAS (Brazilian Sign Language) gestures for device control in a home automation system, covering 11 classes of static and dynamic gestures. For real-time inference, a sliding window with temporal frame triplication is used, enabling continuous recognition without recurrent networks. Tests achieved 95\% accuracy under low-light conditions and 92\% under normal lighting. The results indicate that the approach is effective, although systematic experiments with greater user diversity are needed for a more thorough evaluation of generalization.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 本文提出了一种基于双模型组合的动态手势识别方法：MediaPipe Hand Landmarker负责提取手的21个骨骼关键点，卷积神经网络(CNN)则负责对手势进行分类，该CNN的输入是这些关键点构成的90x21维时空矩阵表示。该方法应用于家庭自动化系统中LIBRAS（巴西手语）手势的识别，涵盖了11类静态和动态手势，用于设备控制。对于实时推理，采用了一种具有时间帧三倍化的滑动窗口，从而实现了无需循环网络的连续识别。测试表明，在低光照条件下准确率达到95%，在正常光照条件下准确率达到92%。结果表明该方法有效，但为了更彻底地评估其泛化能力，需要进行更大用户多样性的系统性实验。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper presents a CNN-based method for dynamic LIBRAS gesture recognition using a spatiotemporal matrix representation of hand keypoints, achieving high accuracy for home automation device control.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种基于CNN的动态LIBRAS手势识别方法，该方法使用手部关键点的时空矩阵表示，为家庭自动化设备控制实现了高精度。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(3/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.25863v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Jasmine Moreira</p>
-            
-        </motion.div>
-        
-        <motion.div
-            initial="{ opacity: 0, y: 50, scale: 0.9 }"
-            whileInView="{ opacity: 1, y: 0, scale: 1 }"
-            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
-            transition="{ duration: 0.5, delay: 3.6500000000000004, ease: 'easeOut' }"  
-            class="bento-item"
-            data-motion-element
-        >
-            <h2 class="paper-title">Image-based Quantification of Postural Deviations on Patients with Cervical Dystonia: A Machine Learning Approach Using Synthetic Training Data</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Cervical dystonia (CD) is the most common form of dystonia, yet current assessment relies on subjective clinical rating scales, such as the Toronto Western Spasmodic Torticollis Rating Scale (TWSTRS), which requires expertise, is subjective and faces low inter-rater reliability some items of the score. To address the lack of established objective tools for monitoring disease severity and treatment response, this study validates an automated image-based head pose and shift estimation system for patients with CD. We developed an assessment tool that combines a pretrained head-pose estimation algorithm for rotational symptoms with a deep learning model trained exclusively on ~16,000 synthetic avatar images to evaluate rare translational symptoms, specifically lateral shift. This synthetic data approach overcomes the scarcity of clinical training examples. The system's performance was validated in a multicenter study by comparing its predicted scores against the consensus ratings of 20 clinical experts using a dataset of 100 real patient images and 100 labeled synthetic avatars. The automated system demonstrated strong agreement with expert clinical ratings for rotational symptoms, achieving high correlations for torticollis (r=0.91), laterocollis (r=0.81), and anteroretrocollis (r=0.78). For lateral shift, the tool achieved a moderate correlation (r=0.55) with clinical ratings and demonstrated higher accuracy than human raters in controlled benchmark tests on avatars. By leveraging synthetic training data to bridge the clinical data gap, this model successfully generalizes to real-world patients, providing a validated, objective tool for CD postural assessment that can enable standardized clinical decision-making and trial evaluation.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 颈椎肌张力障碍 (CD) 是最常见的肌张力障碍形式，但目前的评估依赖于主观的临床评定量表，例如多伦多西部痉挛性斜颈评定量表 (TWSTRS)，它需要专业知识，具有主观性，并且在评分的某些项目上面临较低的评分者间信度。为了解决缺乏用于监测疾病严重程度和治疗反应的已建立的客观工具的问题，本研究验证了一种用于CD患者的基于图像的头部姿势和位移估计自动化系统。我们开发了一种评估工具，该工具将用于旋转症状的预训练头部姿势估计算法与专门训练在约16,000张合成头像图像上的深度学习模型相结合，以评估罕见的平移症状，特别是侧向位移。这种合成数据方法克服了临床训练样本的稀缺性。该系统的性能通过多中心研究进行了验证，方法是将系统预测的分数与20位临床专家的共识评分进行比较，使用的是包含100张真实患者图像和100个标记合成头像的数据集。该自动化系统在旋转症状方面表现出与专家临床评分的高度一致性，斜颈 (r=0.91)、侧颈 (r=0.81) 和前屈后仰 (r=0.78) 均达到高相关性。对于侧向位移，该工具与临床评分达到了中等相关性 (r=0.55)，并且在头像的对照基准测试中表现出比人类评分者更高的准确性。通过利用合成训练数据来弥补临床数据差距，该模型成功地推广到真实世界的患者，为CD姿势评估提供了一种经过验证的客观工具，该工具可以实现标准化的临床决策制定和试验评估。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents a machine learning approach using synthetic data to objectively assess postural deviations in cervical dystonia patients from images, achieving strong agreement with expert ratings for rotational symptoms and moderate agreement for translational symptoms.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种基于图像的机器学习方法，利用合成数据客观评估颈椎肌张力障碍患者的姿势偏差。该方法在旋转症状方面与专家评级高度一致，在平移症状方面也达到中等一致。</p>
-            
-
-            
-            
-            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
-                
-                <div class="rating-item">
-                    <span class="rating-label">Relevance:</span>
-                    
-                    <i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(2/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Novelty:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Clarity:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
-                </div>
-                
-                
-                <div class="rating-item">
-                    <span class="rating-label">Potential Impact:</span>
-                    
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
-                </div>
-                
-            </div>
-            
-            
-
-            
-            <div class="paper-rating">
-                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
-                
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="fas fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                    
-                        <i class="far fa-star"></i>
-                    
-                
-                <span class="text-xs text-gray-500 ml-1">(4/10)</span>
-            </div>
-            
-
-            <a href="http://arxiv.org/abs/2603.26444v1" target="_blank" class="paper-link">
-                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
-            </a>
-            
-            <p class="paper-authors">Authors: Roland Stenger, Sebastian Löns, Nele Brügge, Feline Hamami, Alexander Münchau, Theresa Paulus, Anne Weissbach, Tatiana Usnich, Max Borsche, Martje G. Pauly, Lara M. Lange, Markus A. Hobert, Rebecca Herzog, Ana Luísa de Almeida Marcelino, Tina Mainka, Friederike Schumann, Lukas L. Goede, Johanna Reimer, Julienne Haas, Jos Becktepe, Alexander Baumann, Robin Wolke, Chi Wang Ip, Thorsten Odorfer, Daniel Zeller, Lisa Harder-Rauschenberger, John-Ih Lee, Philipp Albrecht, Tristan Kölsche, Joachim K. Krauss, Johanna M. Nagel, Joachim Runge, Johanna Doll-Lee, Simone Zittel, Kai Grimm, Pawel Tacik, André Lee, Tobias Bäumer, Sebastian Fudickar</p>
-            
-        </motion.div>
-        
     </div>
 
+    <section class="filtered-section">
+        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <h3>Drive-Through 3D Vehicle Exterior Reconstruction via Dynamic-Scene SfM and Distortion-Aware Gaussian Splatting</h3>
+                
+                <p><strong>Authors:</strong> Nitin Kulkarni, Akhil Devarashetti, Charlie Cluss, Livio Forte, Philip Schneider, Chunming Qiao, Alina Vereshchaka</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种在高杂波环境下使用动态场景SfM和失真感知高斯溅射进行高保真3D车辆重建的流水线，无需受控演播室环境即可获得稳健的结果。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>The Multi-AMR Buffer Storage, Retrieval, and Reshuffling Problem: Exact and Heuristic Approaches</h3>
+                
+                <p><strong>Authors:</strong> Max Disselnmeyer, Thomas Bömer, Laura Dörr, Bastian Amberg, Anne Meyer</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种分层启发式方法，用于解决自动化生产系统中的多自主移动机器人 (AMR) 缓冲存储、检索和重排问题，与精确解法相比，计算时间显著缩短。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Curvature-aware Expected Free Energy as an Acquisition Function for Bayesian Optimization</h3>
+                
+                <p><strong>Authors:</strong> Ajith Anil Meera, Wouter Kouw</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文提出了一种曲率感知的期望自由能采集函数，用于贝叶斯优化，证明了其在学习和优化方面优于现有方法，并具有理论收敛保证。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Decoding Defensive Coverage Responsibilities in American Football Using Factorized Attention Based Transformer Models</h3>
+                
+                <p><strong>Authors:</strong> Kevin Song, Evan Diewald, Ornob Siddiquee, Chris Boomhower, Keegan Abdoo, Mike Band, Amy Lee</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文使用一种基于分解注意力机制的Transformer模型来预测NFL橄榄球比赛中个人防守任务和对抗动态，实现了高精度，并支持新的分析指标。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>SHANDS: A Multi-View Dataset and Benchmark for Surgical Hand-Gesture and Error Recognition Toward Medical Training</h3>
+                
+                <p><strong>Authors:</strong> Le Ma, Thiago Freitas dos Santos, Nadia Magnenat-Thalmann, Katarzyna Wac</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了一个名为SHANDS的大规模多视角手术视频数据集，它带有手势和错误标注，旨在促进基于人工智能的手术技能评估，特别是针对实习医生。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>GLASS: Geometry-aware Local Alignment and Structure Synchronization Network for 2D-3D Registration</h3>
+                
+                <p><strong>Authors:</strong> Zhixin Cheng, Jiacheng Deng, Xinjun Li, Bohao Liao, Li Liu, Xiaotian Yin, Baoqun Yin, Tianzhu Zhang</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文提出了一种新的 2D-3D 配准方法 GLASS，该方法使用几何感知模块来提高重复模式场景中的匹配，并实现了最先进的性能。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>DUGAE: Unified Geometry and Attribute Enhancement via Spatiotemporal Correlations for G-PCC Compressed Dynamic Point Clouds</h3>
+                
+                <p><strong>Authors:</strong> Pan Zhao, Hui Yuan, Chang Sun, Chongzhen Tian, Raouf Hamzaoui, Sam Kwong</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了DUGAE，一个利用时空相关性的框架，用于增强G-PCC压缩的动态点云，相比现有方法和V-PCC在几何和属性质量上取得了显著提升。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>InstaVSR: Taming Diffusion for Efficient and Temporally Consistent Video Super-Resolution</h3>
+                
+                <p><strong>Authors:</strong> Jintong Hu, Bin Chen, Zhenyu Hu, Jiayue Liu, Guo Wang, Lu Qi</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了InstaVSR，一个轻量级的扩散框架，用于高效且时间上稳定的视频超分辨率，与现有的基于扩散的方法相比，实现了显著的速度和内存改进。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>User Involvement in Robotic Wheelchair Development: A Decade of Limited Progress</h3>
+                
+                <p><strong>Authors:</strong> Mario Andres Chavarria, Santiago Price Torrendell, Aude Billard, Samia Hurst, Sébastien Kessler, Michael Stein, Kenji Suzuki, Sophie Weerts, Diego Paez-Granados, Minerva Rivas Velarde</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文回顾了过去十年机器人轮椅的发展，发现用户参与仍然有限，主要发生在后期评估阶段，而不是早期设计阶段，这阻碍了现实世界的采用。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Optimal Prioritized Dissipation and Closed-Form Damping Limitation under Actuator Constraints for Haptic Interfaces</h3>
+                
+                <p><strong>Authors:</strong> Camilla Celli, Andrea Bini, Valerio Novelli, Alessandro Filippeschi, Francesco Porcini, Antonio Frisoli</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文介绍了一种新型触觉界面阻尼限制方法，该方法优先考虑耗散以最小化执行器负载，同时最大化透明度并考虑执行器约束，已在并行触觉界面上进行了实验验证。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Channelling, Coordinating, Collaborating: A Three-Layer Framework for Disability-Centered Human-Agent Collaboration</h3>
+                
+                <p><strong>Authors:</strong> Lan Xiao, Catherine Holloway</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一个三层框架，旨在利用人工智能支持不同能力之间的协作，从而超越了个人辅助工具，促进残疾人协作完成任务。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Dynamic LIBRAS Gesture Recognition via CNN over Spatiotemporal Matrix Representation</h3>
+                
+                <p><strong>Authors:</strong> Jasmine Moreira</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种基于CNN的动态LIBRAS手势识别方法，该方法使用手部关键点的时空矩阵表示，为家庭自动化设备控制实现了高精度。</p>
+            </div>
+            
+            <div class="filtered-item">
+                <h3>Image-based Quantification of Postural Deviations on Patients with Cervical Dystonia: A Machine Learning Approach Using Synthetic Training Data</h3>
+                
+                <p><strong>Authors:</strong> Roland Stenger, Sebastian Löns, Nele Brügge, Feline Hamami, Alexander Münchau, Theresa Paulus, Anne Weissbach, Tatiana Usnich, Max Borsche, Martje G. Pauly, Lara M. Lange, Markus A. Hobert, Rebecca Herzog, Ana Luísa de Almeida Marcelino, Tina Mainka, Friederike Schumann, Lukas L. Goede, Johanna Reimer, Julienne Haas, Jos Becktepe, Alexander Baumann, Robin Wolke, Chi Wang Ip, Thorsten Odorfer, Daniel Zeller, Lisa Harder-Rauschenberger, John-Ih Lee, Philipp Albrecht, Tristan Kölsche, Joachim K. Krauss, Johanna M. Nagel, Joachim Runge, Johanna Doll-Lee, Simone Zittel, Kai Grimm, Pawel Tacik, André Lee, Tobias Bäumer, Sebastian Fudickar</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种基于图像的机器学习方法，利用合成数据客观评估颈椎肌张力障碍患者的姿势偏差。该方法在旋转症状方面与专家评级高度一致，在平移症状方面也达到中等一致。</p>
+            </div>
+            
+        </div>
+    </section>
+
     <footer class="footer">
-        Generated on 2026-03-30 03:34:17 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-08 07:22:54 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
 </body>
