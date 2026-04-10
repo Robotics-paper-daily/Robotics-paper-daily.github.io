@@ -9,7 +9,11 @@ from datetime import date, datetime, timedelta
 # 这通常在运行脚本时自动处理，或者可以通过设置 PYTHONPATH
 # 或者更好的方式是使用相对导入（如果结构允许）或将项目作为包安装
 from scraper import fetch_cv_papers
-from filter import filter_and_rate_papers, translate_summaries
+from filter import (
+    prefilter_papers_by_keywords,
+    filter_and_rate_papers,
+    translate_summaries,
+)
 from html_generator import generate_html_from_json
 
 # 配置日志
@@ -76,6 +80,7 @@ def generate_search_index(json_dir: str, output_path: str):
                 'authors': paper.get('authors', []),
                 'categories': paper.get('categories', []),
                 'score': paper.get('overall_priority_score', 0),
+                'selected': paper.get('selected', paper.get('stage1_selected', True)),
             })
 
     try:
@@ -127,26 +132,49 @@ def main(target_date: date):
             return
         logging.info(f"总共抓取到 {len(raw_papers)} 篇原始论文（已去重）。")
 
-        # --- 2. 过滤论文、论文打分、翻译摘要 --- #
-        logging.info("步骤 2: 使用 AI 过滤论文并打分 (主题: Robotics, RL, Vision-Language Models, World Models, LLMs, VLA, VLN)...")
-        # 注意：filter_and_rate_papers 依赖 DEEPSEEK_API_KEY 环境变量
-        filtered_papers = filter_and_rate_papers(raw_papers)
-        # 翻译摘要
-        logging.info("步骤 2.1: 翻译论文摘要为中文（仅 overall_priority_score >= 6）...")
-        filtered_papers = translate_summaries(
-            filtered_papers,
+        # --- 2. 多级过滤：一级关键词预筛 + 二级 AI 打分 --- #
+        logging.info("步骤 2: 一级关键词预筛（不调用 LLM）...")
+        stage1_selected_papers, stage1_rejected_papers = prefilter_papers_by_keywords(raw_papers)
+
+        logging.info("步骤 2.1: 对一级预筛通过的论文执行 AI 打分...")
+        if stage1_selected_papers:
+            scored_selected_papers = filter_and_rate_papers(stage1_selected_papers)
+        else:
+            logging.warning("一级预筛后没有论文通过，本次将跳过打分与翻译。")
+            scored_selected_papers = []
+
+        logging.info("步骤 2.2: 翻译论文摘要为中文（仅 overall_priority_score >= 6）...")
+        scored_selected_papers = translate_summaries(
+            scored_selected_papers,
             target_language="中文",
             min_overall_score=6,
         )
-        # 将filtered_papers按照overall_priority_score降序排序
-        filtered_papers.sort(key=lambda x: x.get('overall_priority_score', 0), reverse=True)
+
+        def safe_score(paper: dict) -> float:
+            try:
+                value = paper.get("overall_priority_score", 0)
+                return float(value) if value is not None else 0.0
+            except (TypeError, ValueError):
+                return 0.0
+
+        scored_selected_papers.sort(key=safe_score, reverse=True)
+        stage1_rejected_papers.sort(key=lambda x: x.get("title", ""))
+
+        # 统一写回 JSON：已评分(一级通过) + 一级未通过(不打分)
+        filtered_papers = scored_selected_papers + stage1_rejected_papers
+
         if not filtered_papers:
             logging.warning("未抓取到可评分论文。将创建空的 JSON 文件。")
             # 创建一个空列表，以便后续保存为空 JSON
             filtered_papers = []
             # 即使没有过滤后的论文，也可能需要生成一个空的报告，或者在这里停止
             # 这里我们选择继续，生成一个可能为空的报告
-        logging.info(f"评分后共保留 {len(filtered_papers)} 篇论文（低分论文将放入页面底部子栏）。")
+        logging.info(
+            "多级过滤完成：一级通过 %s 篇（进入打分），一级未通过 %s 篇（不打分，总计输出 %s 篇）。",
+            len(scored_selected_papers),
+            len(stage1_rejected_papers),
+            len(filtered_papers),
+        )
 
         # --- 3. 保存为 JSON --- #
         logging.info("步骤 3: 将过滤后的论文保存为 JSON 文件...")

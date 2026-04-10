@@ -399,7 +399,7 @@
     </div>
 
     <section class="filtered-section">
-        <h2 class="filtered-title">筛选的paper（overall &lt; {{ score_threshold }}）</h2>
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; {{ score_threshold }}）</h2>
         <div class="filtered-grid">
             {% for paper in filtered_papers %}
             <div class="filtered-item">
@@ -421,6 +421,34 @@
             {% else %}
             <div class="filtered-item">
                 <p>没有 overall 低于 {{ score_threshold }} 的论文。</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            {% for paper in stage1_rejected_papers %}
+            <div class="filtered-item">
+                {% if paper.url %}
+                <h3>
+                    <a href="{{ paper.url }}" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        {{ paper.title }}
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                {% else %}
+                <h3>{{ paper.title }}</h3>
+                {% endif %}
+                {% if paper.authors %}
+                <p><strong>Authors:</strong> {{ paper.authors | join(', ') }}</p>
+                {% endif %}
+                <p><strong>Stage1:</strong> {{ paper.stage1_reason or 'keyword prefilter rejected' }}</p>
+            </div>
+            {% else %}
+            <div class="filtered-item">
+                <p>没有一级过滤未通过的论文。</p>
             </div>
             {% endfor %}
         </div>

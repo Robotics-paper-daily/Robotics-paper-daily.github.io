@@ -5,7 +5,7 @@ This is an automated project designed to fetch the latest papers from robotics-r
 ## Features
 
 1.  **Data Fetching**: Automatically fetches the latest papers from robotics-related fields (cs.RO, cs.AI, cs.CV, cs.LG) on arXiv daily, with built-in retry logic and exponential backoff to handle arXiv API rate limiting (HTTP 429).
-2.  **AI Filtering**: Uses LLM to intelligently filter papers related to robotics, reinforcement learning, vision-language models, world models, large language models, vision-language-action, and vision-language-navigation themes and scores the value of the papers across different dimensions.
+2.  **Multi-Stage AI Filtering**: First runs a fast keyword/abstract prefilter, then applies LLM scoring and summary translation only to stage-1 selected papers, which significantly reduces daily runtime.
 3.  **Data Storage**: Saves the filtered paper information (title, abstract, link, etc.) as date-named JSON files (stored in the `daily_json/` directory).
 4.  **Web Page Generation**: Generates daily HTML reports based on the JSON data using a preset template (stored in the `daily_html/` directory) and updates the main entry page `index.html`.
 5.  **Automated Deployment**: Implements the complete process of daily scheduled fetching, filtering, generation, and deployment to GitHub Pages via GitHub Actions.

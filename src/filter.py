@@ -16,6 +16,150 @@ DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 DEEPSEEK_API_URL = " https://models.sjtu.edu.cn/api/v1/chat/completions"
 MODEL_NAME = "deepseek-chat"
 
+STAGE1_PRIORITY_KEYWORDS = (
+    "robot",
+    "robotic",
+    "robotics",
+    "embodied",
+    "manipulation",
+    "grasp",
+    "locomotion",
+    "navigation",
+    "humanoid",
+    "quadruped",
+    "uav",
+    "drone",
+    "slam",
+    "sim-to-real",
+    "sim2real",
+    "vision-language-action",
+    "vla",
+    "vision-language-navigation",
+    "vln",
+)
+
+STAGE1_SUPPORT_KEYWORDS = (
+    "reinforcement learning",
+    "imitation learning",
+    "policy learning",
+    "policy optimization",
+    "trajectory optimization",
+    "motion planning",
+    "control policy",
+    "world model",
+    "vision-language model",
+    "large language model",
+    "multimodal",
+    "teleoperation",
+    "propriocept",
+)
+
+STAGE1_CONTEXT_KEYWORDS = (
+    "control",
+    "planning",
+    "action",
+    "policy",
+    "agent",
+    "physical",
+    "embodied",
+    "navigation",
+    "manipulation",
+    "robot",
+    "uav",
+    "drone",
+    "locomotion",
+)
+
+STAGE1_EXCLUDE_KEYWORDS = (
+    "autonomous driving",
+    "medical imaging",
+    "protein",
+    "drug discovery",
+    "genomic",
+    "radiology",
+    "pathology",
+    "speech recognition",
+    "machine translation",
+    "sentiment analysis",
+    "recommendation system",
+    "advertising",
+    "finance",
+    "stock prediction",
+)
+
+
+def _find_keyword_hits(text: str, keywords: tuple[str, ...]) -> list[str]:
+    return [keyword for keyword in keywords if keyword in text]
+
+
+def prefilter_papers_by_keywords(papers: list) -> tuple[list, list]:
+    """一级预筛：先用关键词规则筛选，减少后续 LLM 打分数量。
+
+    Args:
+        papers: 原始论文列表。
+
+    Returns:
+        tuple[list, list]: (stage1 通过的论文, stage1 未通过的论文)
+    """
+    selected_papers = []
+    rejected_papers = []
+
+    for paper in papers:
+        categories = [str(c).lower() for c in paper.get("categories", [])]
+        text = " ".join(
+            [
+                str(paper.get("title", "")).lower(),
+                str(paper.get("summary", "")).lower(),
+                " ".join(categories),
+            ]
+        )
+
+        priority_hits = _find_keyword_hits(text, STAGE1_PRIORITY_KEYWORDS)
+        support_hits = _find_keyword_hits(text, STAGE1_SUPPORT_KEYWORDS)
+        context_hits = _find_keyword_hits(text, STAGE1_CONTEXT_KEYWORDS)
+        exclude_hits = _find_keyword_hits(text, STAGE1_EXCLUDE_KEYWORDS)
+
+        in_ro_category = "cs.ro" in categories
+        selected = False
+        reason = "insufficient robotics signal"
+
+        if in_ro_category:
+            selected = True
+            reason = "category hit: cs.RO"
+        elif priority_hits:
+            selected = True
+            reason = f"priority keyword hit ({len(priority_hits)})"
+        elif (len(support_hits) >= 2 and len(context_hits) >= 1) or (
+            len(support_hits) >= 1 and len(context_hits) >= 2
+        ):
+            selected = True
+            reason = f"support/context hit ({len(support_hits)}/{len(context_hits)})"
+
+        if exclude_hits and not (in_ro_category or priority_hits):
+            selected = False
+            reason = f"excluded domain hit ({len(exclude_hits)})"
+
+        paper["stage1_selected"] = selected
+        paper["selected"] = selected
+        paper["stage1_reason"] = reason
+        paper["stage1_match_terms"] = sorted(
+            set(priority_hits + support_hits + context_hits)
+        )[:10]
+
+        if selected:
+            selected_papers.append(paper)
+        else:
+            paper["ai_processed"] = False
+            rejected_papers.append(paper)
+
+    logging.info(
+        "一级预筛完成：通过 %s 篇，未通过 %s 篇（总计 %s 篇）。",
+        len(selected_papers),
+        len(rejected_papers),
+        len(papers),
+    )
+    return selected_papers, rejected_papers
+
 
 def extract_json_from_response(text: str) -> Optional[Any]:
     """从 LLM 回复中提取 JSON 对象或数组。
@@ -206,13 +350,13 @@ Return ONLY a JSON object (no extra text):
 
 
 def filter_and_rate_papers(papers: list) -> list:
-    """逐篇评分论文。保留所有论文，通过 overall_priority_score 排序区分优先级。
+    """逐篇评分论文（建议传入一级预筛后的论文列表）。
 
     Args:
         papers: 包含论文信息的字典列表，每个字典应包含 'title' 和 'summary'。
 
     Returns:
-        评分后的论文列表（保留全部）。API 失败的论文标记 ai_processed=False。
+        评分后的论文列表。API 失败的论文标记 ai_processed=False。
     """
     if not DEEPSEEK_API_KEY:
         logging.error("未设置 DEEPSEEK_API_KEY 环境变量。无法进行评分。")

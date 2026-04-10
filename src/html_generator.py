@@ -17,8 +17,6 @@ def generate_html_from_json(json_file_path: str, template_dir: str, template_nam
     try:
         with open(json_file_path, 'r', encoding='utf-8') as f:
             papers = json.load(f)
-            # Sort papers by overall_priority_score in descending order
-            papers.sort(key=lambda x: x.get('overall_priority_score', 0), reverse=True)
     except FileNotFoundError:
         logging.error(f"JSON file not found at {json_file_path}")
         return
@@ -38,14 +36,28 @@ def generate_html_from_json(json_file_path: str, template_dir: str, template_nam
         except (TypeError, ValueError):
             return 0.0
 
-    display_papers = [paper for paper in papers if to_score(paper) >= score_threshold]
-    filtered_papers = [paper for paper in papers if to_score(paper) < score_threshold]
+    def is_stage1_selected(paper: dict) -> bool:
+        if "stage1_selected" in paper:
+            return bool(paper.get("stage1_selected"))
+        if "selected" in paper:
+            return bool(paper.get("selected"))
+        # 兼容历史 JSON：缺失字段时默认视为已入选
+        return True
+
+    selected_papers = [paper for paper in papers if is_stage1_selected(paper)]
+    stage1_rejected_papers = [paper for paper in papers if not is_stage1_selected(paper)]
+    selected_papers.sort(key=to_score, reverse=True)
+
+    display_papers = [paper for paper in selected_papers if to_score(paper) >= score_threshold]
+    filtered_papers = [paper for paper in selected_papers if to_score(paper) < score_threshold]
     logging.info(
-        "页面展示论文数量: %s（overall>=%.1f），低分子栏数量: %s（overall<%.1f）",
+        "页面展示统计：一级入选 %s 篇，主栏 %s（overall>=%.1f），低分子栏 %s（overall<%.1f），一级未入选 %s。",
+        len(selected_papers),
         len(display_papers),
         score_threshold,
         len(filtered_papers),
         score_threshold,
+        len(stage1_rejected_papers),
     )
 
     # Extract date from filename (assuming format like YYYY-MM-DD.json)
@@ -67,6 +79,7 @@ def generate_html_from_json(json_file_path: str, template_dir: str, template_nam
     html_content = template.render(
         papers=display_papers,
         filtered_papers=filtered_papers,
+        stage1_rejected_papers=stage1_rejected_papers,
         title=page_title,
         report_date=report_date,
         generation_time=generation_time,
