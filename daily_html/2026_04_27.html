@@ -1,0 +1,3533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArXiv Robotics Papers (RL/VLM/World Models/LLMs/VLA/VLN) - April 27, 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.16.4/framer-motion.dev.js"></script>
+    <!-- Example using Font Awesome (replace with your preferred icon library if needed) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        :root {
+            /* New Palette: Light, Clean, Futuristic with Tsinghua Purple accents */
+            --bg-color: #f8fafc; /* Tailwind slate-50 (Very Light Gray) */
+            --card-bg-color: #ffffff; /* White */
+            --text-color: #1e293b; /* Tailwind slate-800 (Dark Gray-Blue) */
+            --text-muted-color: #64748b; /* Tailwind slate-500 (Medium Gray-Blue) */
+            --header-color: #0f172a; /* Tailwind slate-900 (Very Dark Blue) */
+            --highlight-primary: #7B2C9F; /* Tsinghua Purple */
+            --highlight-secondary: #B794D3; /* Light Tsinghua Purple */
+            --border-color: #e2e8f0; /* Tailwind slate-200 (Light Gray) */
+            --shadow-color: rgba(15, 23, 42, 0.08); /* Subtle shadow based on slate-900 */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            line-height: 1.6;
+        }
+
+        .quick-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            align-items: center;
+            width: fit-content;
+            margin: 0.9rem auto 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .quick-nav a {
+            color: var(--highlight-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid rgba(226, 232, 240, 0.95);
+            background: rgba(255, 255, 255, 0.86);
+            box-shadow: 0 2px 6px var(--shadow-color);
+            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+        }
+
+        .quick-nav a:hover {
+            background-color: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+
+        .bento-grid {
+            display: grid;
+            gap: 1.5rem; /* Tailwind gap-6 */
+            grid-template-columns: 1fr; /* Force single column */
+            padding-bottom: 4rem; /* Add padding at the bottom */
+        }
+
+        .bento-item {
+            /* Apply semi-transparent white background and blur */
+            background-color: rgba(255, 255, 255, 0.7); /* White with 70% opacity */
+            backdrop-filter: blur(10px); /* Apply blur effect */
+            -webkit-backdrop-filter: blur(10px); /* Safari prefix */
+            border-radius: 1rem; /* Slightly larger radius */
+            padding: 1.75rem; /* Slightly more padding */
+            border: 1px solid rgba(226, 232, 240, 0.5); /* Lighter border with transparency */
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.3s ease-out;
+            overflow: hidden; /* Ensure content doesn't overflow */
+            position: relative; /* For potential pseudo-elements */
+        }
+
+        /* Removed ::before pseudo-element for a cleaner look */
+
+
+        .bento-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 20px var(--shadow-color), 0 4px 8px rgba(15, 23, 42, 0.06); /* Adjusted hover shadow */
+        }
+
+        .paper-title {
+            font-size: 1.125rem; /* Tailwind text-lg */
+            font-weight: 600; /* Tailwind font-semibold */
+            color: var(--highlight-primary); /* Use new primary highlight */
+            margin-bottom: 0.75rem; /* Tailwind mb-3 */
+            line-height: 1.4;
+        }
+
+        .paper-summary {
+            font-size: 0.875rem; /* Tailwind text-sm */
+            color: var(--text-muted-color);
+            margin-bottom: 1.25rem; /* Tailwind mb-5 */
+            line-height: 1.6;
+        }
+
+        .paper-link {
+            display: inline-flex; /* Use flex for icon alignment */
+            align-items: center;
+            font-size: 0.875rem; /* Tailwind text-sm */
+            font-weight: 600;
+            color: var(--highlight-primary);
+            text-decoration: none;
+            padding: 0.5rem 1rem; /* Add padding */
+            border-radius: 0.5rem; /* Slightly rounder */
+            background-color: rgba(123, 44, 159, 0.08); /* Subtle purple background */
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
+
+        .paper-link i {
+            margin-right: 0.5rem; /* Tailwind mr-2 */
+            transition: transform 0.3s ease;
+        }
+
+        .paper-link:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F; /* Darker purple on hover */
+            transform: translateY(-1px);
+        }
+        .paper-link:hover i {
+             transform: translateX(2px);
+        }
+
+        .paper-authors {
+            font-size: 0.75rem; /* Tailwind text-xs */
+            color: var(--text-muted-color);
+            margin-top: 1rem; /* Tailwind mt-4 */
+            font-style: italic;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem; /* Tailwind mb-12 */
+            padding-top: 3rem; /* Tailwind pt-12 */
+        }
+
+        .header h1 {
+            font-size: 2.5rem; /* Tailwind text-4xl or 5xl */
+            font-weight: 700; /* Tailwind font-bold */
+            color: var(--header-color);
+            letter-spacing: -0.025em; /* Tailwind tracking-tight */
+            margin-bottom: 0.5rem;
+            /* Optional: Add a subtle text gradient (Tsinghua Purple) */
+            /* background: linear-gradient(90deg, var(--highlight-primary), var(--highlight-secondary)); */
+            /* -webkit-background-clip: text; */
+            /* -webkit-text-fill-color: transparent; */
+        }
+
+        .header p {
+            font-size: 1.125rem; /* Tailwind text-lg */
+            color: var(--text-muted-color);
+            margin-top: 0.5rem; /* Tailwind mt-2 */
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .footer {
+            text-align: center;
+            color: var(--text-muted-color);
+            font-size: 0.875rem; /* Tailwind text-sm */
+            padding-top: 2rem;
+            padding-bottom: 2rem; /* Tailwind py-8 */
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        /* Simple line graphic element (optional) */
+        .line-graphic {
+            height: 1px; /* Thinner line */
+            background: linear-gradient(90deg, rgba(123, 44, 159, 0), var(--highlight-primary), rgba(123, 44, 159, 0));
+            opacity: 0.6;
+            margin: 1.5rem 0; /* Adjust margin */
+        }
+
+        /* Framer Motion requires the script, styles enhance appearance */
+        [data-motion-element] {
+             /* Base styles for elements animated by Framer Motion */
+        }
+
+        .paper-tldr {
+            font-size: 0.95rem; /* Slightly bigger than summary */
+            color: #475569; /* Changed to Tailwind slate-600 (slightly darker than summary) */
+            margin-top: 0.75rem; /* Tailwind mt-3 */
+            margin-bottom: 0.75rem; /* Tailwind mb-2 */
+            /* font-style: italic; */
+            font-weight: bold;
+        }
+
+        .paper-rating {
+            margin-top: 1rem; /* Tailwind mt-4 */
+            margin-bottom: 1rem; /* Tailwind mb-4 */
+            color: #f59e0b; /* Tailwind amber-500 */
+        }
+
+        .paper-rating i {
+            margin-right: 0.125rem; /* Tailwind mr-0.5 */
+        }
+
+        /* Apply consistent star color to sub-ratings */
+        .paper-sub-ratings .rating-item i {
+            color: #f59e0b; /* Match overall rating star color (amber-500) */
+            margin-right: 0.125rem; /* Consistent spacing */
+        }
+
+        .filtered-section {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .filtered-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--header-color);
+            margin-bottom: 1rem;
+        }
+
+        .filtered-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .filtered-item {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .filtered-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+        }
+
+        .filtered-item-title-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: color 0.25s ease;
+        }
+
+        .filtered-item-title-link:hover {
+            color: var(--highlight-primary);
+        }
+
+        .filtered-item-title-link i {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .filtered-item p {
+            margin: 0.25rem 0;
+            color: var(--text-muted-color);
+            font-size: 0.88rem;
+        }
+
+    </style>
+</head>
+<body class="container mx-auto px-4 antialiased">
+    <motion.div
+        initial="{ opacity: 0, y: -30 }"
+        animate="{ opacity: 1, y: 0 }"
+        transition="{ duration: 0.6, ease: 'easeOut' }"
+        class="header"
+        data-motion-element
+    >
+        <h1>Robotics Daily Papers</h1>
+        <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
+        <p>April 27, 2026</p>
+        <nav class="quick-nav">
+            <a href="../index.html" target="_top">首页</a>
+            <a href="../list.html" target="_top">报告列表</a>
+            <a href="../search.html" target="_top">论文检索</a>
+        </nav>
+        <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
+    </motion.div>
+
+    <div class="bento-grid" id="paper-grid">
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.0, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">Tube Diffusion Policy: Reactive Visual-Tactile Policy Learning for Contact-rich Manipulation</h2>
+            <p class="paper-summary"><strong>Abstract (English):</strong> Contact-rich manipulation is central to many everyday human activities, requiring continuous adaptation to contact uncertainty and external disturbances through multi-modal perception, particularly vision and tactile feedback. While imitation learning has shown strong potential for learning complex manipulation behaviors, most existing approaches rely on action chunking, which fundamentally limits their ability to react to unforeseen observations during execution. This limitation becomes especially critical in contact-rich scenarios, where physical uncertainty and high-frequency tactile feedback demand rapid, reactive control. To address this challenge, we propose Tube Diffusion Policy (TDP), a novel reactive visual-tactile policy learning framework that bridges diffusion-based imitation learning with tube-based feedback control. By leveraging the expressive power of generative models, TDP learns an observation-conditioned feedback flow around nominal action chunks, forming an action tube that enables fast and adaptive reactions during execution. We evaluate TDP on the widely used Push-T benchmark and three additional challenging visual-tactile dexterous manipulation tasks. Across all benchmarks, TDP consistently outperforms state-of-the-art imitation learning baselines. Two real-world experiments further validate its robust reactivity under contact uncertainty and external disturbances. Moreover, the step-wise correction mechanism enabled by action tube significantly reduces the required denoising steps, making TDP well suited for real-time, high-frequency feedback control in contact-rich manipulation.</p>
+            
+            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 基于触觉的灵巧操作是日常人类活动的核心，需要通过对多模态感知（尤其是视觉与触觉反馈）的持续适应来应对接触不确定性与外部干扰。尽管模仿学习已展现出学习复杂操作行为的巨大潜力，但现有方法大多依赖于动作分块处理，这从根本上限制了其在执行过程中应对意外观察的能力。在接触密集型场景中，这一局限尤为突出，因为物理不确定性与高频触觉反馈要求快速、反应式的控制。针对这一挑战，我们提出管道扩散策略（TDP）——一种创新的反应式视觉-触觉策略学习框架，该框架将基于扩散模型的模仿学习与基于管道理论的反馈控制相结合。通过发挥生成模型的表达能力，TDP学习到围绕标称动作块的观测条件化反馈流，形成动作管道，从而在执行过程中实现快速自适应反应。我们在广泛使用的Push-T基准测试以及三项额外具有挑战性的视觉-触觉灵巧操作任务上评估TDP。在所有基准测试中，TDP均持续优于当前最先进的模仿学习基线方法。两项真实世界实验进一步验证了其在接触不确定性和外部干扰下具有的鲁棒反应能力。此外，动作管道实现的步进式修正机制显著减少了所需去噪步骤，使TDP特别适用于接触密集型操作中需要实时高频反馈控制的场景。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces Tube Diffusion Policy (TDP), a reactive imitation learning method for contact-rich robotic manipulation that combines diffusion models with tube-based feedback control, enabling fast, adaptive responses to vision and tactile feedback during execution.</p>
+            
+            
+            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了Tube Diffusion Policy (TDP)，一种用于接触式操作的反应式模仿学习方法，通过结合扩散模型和基于管的反馈控制，利用视觉和触觉反馈在任务执行中实现快速、自适应的响应。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(10/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(10/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(10/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2604.23609v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            
+            <p class="paper-authors">Authors: Teng Xue, Alberto Rigo, Bingjian Huang, Jiayi Shen, Zhengtong Xu, Nick Colonnese, Amirhossein H. Memar</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.05, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">Vision-Language-Action Safety: Threats, Challenges, Evaluations, and Mechanisms</h2>
+            <p class="paper-summary"><strong>Abstract (English):</strong> Vision-Language-Action (VLA) models are emerging as a unified substrate for embodied intelligence. This shift raises a new class of safety challenges, stemming from the embodied nature of VLA systems, including irreversible physical consequences, a multimodal attack surface across vision, language, and state, real-time latency constraints on defense, error propagation over long-horizon trajectories, and vulnerabilities in the data supply chain. Yet the literature remains fragmented across robotic learning, adversarial machine learning, AI alignment, and autonomous systems safety. This survey provides a unified and up-to-date overview of safety in Vision-Language-Action models. We organize the field along two parallel timing axes, attack timing (training-time vs. inference-time and defense timing (training-time vs. inference-time, linking each class of threat to the stage at which it can be mitigated. We first define the scope of VLA safety, distinguishing it from text-only LLM safety and classical robotic safety, and review the foundations of VLA models, including architectures, training paradigms, and inference mechanisms. We then examine the literature through four lenses: Attacks, Defenses, Evaluation, and Deployment. We survey training-time threats such as data poisoning and backdoors, as well as inference-time attacks including adversarial patches, cross-modal perturbations, semantic jailbreaks, and freezing attacks. We review training-time and runtime defenses, analyze existing benchmarks and metrics, and discuss safety challenges across six deployment domains. Finally, we highlight key open problems, including certified robustness for embodied trajectories, physically realizable defenses, safety-aware training, unified runtime safety architectures, and standardized evaluation.</p>
+            
+            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 视觉-语言-动作（VLA）模型正逐渐成为具身智能的统一基础平台。这一转变引发了一系列新的安全挑战，这些挑战源于VLA系统的具身特性，包括不可逆的物理后果、覆盖视觉、语言和状态的多模态攻击面、防御的实时延迟约束、长时序轨迹上的错误传播以及数据供应链中的漏洞。然而，现有研究分散在机器人学习、对抗性机器学习、人工智能对齐和自主系统安全等多个领域，尚未形成统一体系。本文综述旨在为视觉-语言-动作模型的安全问题提供统一且前沿的概览。我们通过两条并行的时间轴线（攻击时机——训练时与推理时；防御时机——训练时与推理时）对这一领域进行梳理，将每类威胁与其可被缓解的实施阶段相关联。首先，我们界定了VLA安全的范畴，将其与纯文本LLM安全和传统机器人安全区分开来，并回顾了VLA模型的基础架构，包括模型结构、训练范式和推理机制。随后，我们通过四个维度对现有文献进行系统分析：攻击、防御、评估与部署。我们调研了训练阶段的威胁（如数据投毒和后门攻击）以及推理阶段的攻击手段（包括对抗性补丁、跨模态扰动、语义越狱和冻结攻击），梳理了训练时和运行时的防御策略，分析了现有基准测试与评估指标，并探讨了六大部署领域的安全挑战。最后，我们提出关键开放性问题，包括具身轨迹的认证鲁棒性、物理可实现的防御机制、安全感知训练、统一的运行时安全架构以及标准化评估体系。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR</strong>: This survey paper provides a unified overview of safety challenges specific to Vision-Language-Action models, focusing on the unique threats and defenses arising from their embodied and multimodal nature in robotics and embodied AI applications.</p>
+            
+            
+            <p class="paper-tldr"><strong>简要说明</strong>: 这篇综述文章提供了关于Vision-Language-Action模型安全性的统一概述，重点关注其在机器人学和具身AI应用中因其具身和多模态特性而产生的独特威胁与防御机制。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(10/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star-half-alt"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2604.23775v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            
+            <p class="paper-authors">Authors: Qi Li, Bo Yin, Weiqi Huang, Ruhao Liu, Bojun Zou, Runpeng Yu, Jingwen Ye, Weihao Yu, Xinchao Wang</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.1, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">Unleashing the Agility of Wheeled-Legged Robots for High-Dynamic Reflexive Obstacle Evasion</h2>
+            <p class="paper-summary"><strong>Abstract (English):</strong> Wheeled-legged robots combine the energy efficiency of wheeled locomotion with the terrain adaptability of legged systems, making them promising platforms for agile mobility in complex and dynamic environments. However, enabling high-dynamic reflexive evasion against fast-moving obstacles remains challenging due to the hybrid morphology, mode coupling, and non-holonomic constraints of such platforms. In this work, we propose AWARE, Adaptive Wheeled-Legged Avoidance and Reflexive Evasion, a hierarchical reinforcement learning framework for high-dynamic obstacle avoidance in wheeled-legged robots. The proposed system naturally exhibits diverse emergent gaits and evasive behaviors, including forward lunge and lateral dodge, thereby leveraging the robot's hybrid morphology to enhance agility under highly dynamic threats. Extensive experiments in Isaac Lab simulation and real-world deployment on the M20 platform across diverse dynamic scenarios demonstrate that AWARE achieves robust and agile obstacle avoidance while revealing behaviorally distinct evasive strategies. These results highlight both the practical effectiveness of AWARE and the intrinsic reflexive agility of wheeled-legged robots.</p>
+            
+            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 轮腿式机器人融合了轮式运动的高效性与腿式系统的地形适应能力，成为复杂动态环境中实现敏捷移动的理想平台。然而，由于其混合形态、模式耦合以及非完整约束等特性，在面对快速移动障碍物时实现高动态反射性避障仍具挑战。本研究提出AWARE（自适应轮腿式避障与反射规避）——一种面向轮腿式机器人的分层强化学习框架，用于实现高动态环境下的避障。该系统能自然涌现出多样化的步态与规避行为，包括前冲步与侧向闪避，从而充分利用机器人的混合形态提升在高度动态威胁下的敏捷性。通过在Isaac Lab仿真环境及M20实体平台上的多场景动态实验验证，AWARE在实现鲁棒敏捷避障的同时，展现出行为特征鲜明的规避策略。这些结果既证明了AWARE的实际效能，也揭示了轮腿式机器人固有的反射性敏捷潜力。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR</strong>: A hierarchical reinforcement learning framework for high-dynamic obstacle avoidance, enabling wheeled-legged robots to exhibit agile, reflexive evasion behaviors like lunging and dodging.</p>
+            
+            
+            <p class="paper-tldr"><strong>简要说明</strong>: 一个用于轮腿机器人的分层强化学习框架，可实现高动态避障，使机器人能做出前冲和侧闪等敏捷的反射性规避动作。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(10/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star-half-alt"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2604.23761v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            
+            <p class="paper-authors">Authors: Yongen Zhao, Zihao Xu, Wenzhi Lu, Zhen Chu, Ce Hao</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.15000000000000002, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">QuietWalk: Physics-Informed Reinforcement Learning for Ground Reaction Force-Aware Humanoid Locomotion Under Diverse Footwear</h2>
+            <p class="paper-summary"><strong>Abstract (English):</strong> Humanoid robots operating in human-centered environments (e.g., homes, hospitals, and offices) must mitigate foot--ground impact transients, as impact-induced vibration and noise degrade user experience and repeated impacts accelerate hardware wear. However, existing low-noise locomotion training often relies on kinematic proxy objectives or fragile force sensors, and footwear-induced changes in contact dynamics introduce distribution shifts that hinder policy generalization.We present QuietWalk, a physics-informed reinforcement learning framework for ground-reaction-force-aware humanoid locomotion under diverse footwear conditions. QuietWalk employs an inverse-dynamics-constrained physics-informed neural network (PINN) to estimate per-foot vertical ground reaction forces (GRFs) from proprioceptive signals, and integrates the frozen predictor into the RL training loop to penalize predicted impact forces without requiring force sensors at deployment.On a held-out real-robot dataset, enforcing inverse-dynamics consistency reduces vertical GRF prediction errors by 82%-86% compared with a purely supervised predictor and improves the coefficient of determination from 0.39/0.67 to 0.99/0.99 for the left/right feet. On hardware at 1.2 m/s (barefoot; averaged over four floor materials), QuietWalk reduces mean A-weighted noise level by 7.17 dB and peak noise level by 4.98 dB under a consistent recording setup. Cross-footwear experiments (barefoot, skate shoes, athletic sneakers, and high heels) across multiple surfaces further demonstrate robust adaptation to footwear-induced contact variations.</p>
+            
+            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 在人本环境中（如家庭、医院和办公室）运行的仿人机器人必须减轻足—地面冲击瞬态，因为冲击引发的振动与噪声会降低用户体验，且反复冲击会加速硬件磨损。然而，现有的低噪声步态训练通常依赖运动学代理目标或易损的力传感器，而鞋具引起的接触动力学变化会带来分布偏移，阻碍策略的泛化。本文提出QuietWalk，一个基于物理信息的强化学习框架，用于在不同鞋具条件下实现足—地面反作用力感知的仿人机器人步态。QuietWalk采用一个受逆动力学约束的物理信息神经网络（PINN），通过本体感知信号估计每只足的垂直地面反作用力，并将该冻结的预测器集成到强化学习训练循环中，以惩罚预测的冲击力，而无需在部署时使用力传感器。在一个预留的真实机器人数据集上，通过强制逆动力学一致性，相较于纯监督预测器，垂直地面反作用力预测误差降低了82%–86%，左/右足的确定系数从0.39/0.67提升至0.99/0.99。在1.2米/秒的硬件测试中（赤足；四种地面材料平均），在一致的记录设置下，QuietWalk将平均A加权噪声水平降低了7.17分贝，峰值噪声水平降低了4.98分贝。跨鞋具实验（赤足、滑板鞋、运动鞋和高跟鞋）在多种地面上的进一步测试表明，该方法能稳健适应鞋具引起的接触变化。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents QuietWalk, a reinforcement learning framework that uses a physics-informed neural network to estimate ground reaction forces from proprioception, enabling humanoid robots to learn low-impact, quiet locomotion that adapts to different types of footwear.</p>
+            
+            
+            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了QuietWalk，一个利用物理信息神经网络从本体感知信号中估计地面反作用力的强化学习框架，使人形机器人能够学习适应不同鞋类的低冲击、静音步态。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star-half-alt"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2604.23702v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            
+            <p class="paper-authors">Authors: Hanze Hu, Luying Feng, Silu Chen, Tianjiang Zheng, Dexin Jiang, Wei Chen, Chi Zhang, Guilin Yang, Yaochu Jin</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.2, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">Decentralized Heterogeneous Multi-Robot Collaborative Exploration for Indoor and Outdoor 3D Environments</h2>
+            <p class="paper-summary"><strong>Abstract (English):</strong> Heterogeneous multi-robot systems feature significant adaptability for complex environments. However, effective collaboration that fully exploits the robots' potential remains a core challenge. This paper proposes a decentralized collaborative framework for heterogeneous multi-robot systems to autonomously explore indoor and outdoor 3D environments. First, a basic perception map that integrates terrain and observation metrics is designed. Improved supervoxel segmentation is developed to simplify the map structure and form a high-level representation that supports lightweight communication. Second, the traversal and observation capabilities of heterogeneous robots are modeled to evaluate the requirements of task views derived from incomplete supervoxels. These task views are grouped by requirements and clustered to streamline assignment. Subsequently, the view-cluster assignment is formulated as a heterogeneous multi-depot multi-traveling salesman problem (HMDMTSP) that incorporates constraints between view-cluster requirements and robot capabilities. An improved genetic algorithm is developed to efficiently solve this problem while ensuring global consistency. Based on the assignments, redundant views within clusters are eliminated to refine exploration routes. Finally, conflicts between robots' motion paths are resolved. Simulations and field experiments in cluttered indoor and outdoor environments demonstrate that our approach effectively coordinates exploration tasks among heterogeneous robots, achieving superior exploration efficiency and communication savings compared to state-of-the-art approaches.</p>
+            
+            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 异构多机器人系统在复杂环境中展现出显著适应性，然而如何通过有效协作充分发挥机器人潜力仍是核心挑战。本文提出一种面向异构多机器人系统的分散式协作框架，可实现室内外三维环境的自主探索。首先设计融合地形与观测指标的基础感知地图，通过改进超体素分割方法简化地图结构，形成支持轻量通信的高层表征。其次，建立异构机器人穿越与观测能力模型，用于评估从不完整超体素生成的任务视点需求。这些任务视点按需求分组并聚类以简化分配流程。随后，将视点簇分配问题建模为异构多车场多旅行商问题，其中纳入视点簇需求与机器人能力间的约束关系。开发改进遗传算法以高效求解该问题，同时保障全局一致性。基于分配结果，消除聚类内的冗余视点以优化探索路径。最后，解决机器人运动路径间的冲突问题。在杂乱室内外环境中的仿真与实地实验表明，本方法能有效协调异构机器人间的探索任务，相较于前沿方法具有更优的探索效率与通信节省优势。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR</strong>: This paper proposes a decentralized collaborative framework for heterogeneous multi-robot systems for efficient 3D exploration of indoor and outdoor environments, focusing on perception map simplification, task view clustering, and optimized task assignment.</p>
+            
+            
+            <p class="paper-tldr"><strong>简要说明</strong>: 本文为异构多机器人系统提出了一种去中心化协作框架，用于高效探索室内外3D环境，重点包括感知地图简化、任务视图聚类和优化任务分配。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star-half-alt"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2604.23693v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            
+            <p class="paper-authors">Authors: Yuxiang Li, Kun Chen, Jiancheng Wang, Shihao Fang, Haoyao Chen, Yunhui Liu</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.25, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">Safe Navigation in Unknown and Cluttered Environments via Direction-Aware Convex Free-Region Generation</h2>
+            <p class="paper-summary"><strong>Abstract (English):</strong> Convex free regions provide a structured and optimization-friendly representation of collision-free space for robot navigation in unknown and cluttered environments. However, existing methods typically enlarge local collision-free regions mainly according to surrounding obstacle geometry. In cluttered environments, such strategies may fail to generate regions that both accommodate robot geometry and preserve traversable extension along candidate motion directions, thereby limiting downstream traversal, especially in narrow passages. Even when such a region is available, safe motion generation remains challenging, because safety checking at discretized trajectory samples does not guarantee continuously collision-free motion when robot geometry is modeled explicitly. To address these issues, we propose a navigation framework that jointly incorporates candidate motion directions and robot geometry into convex free-region generation, and achieves continuously collision-free motion through continuous-safe trajectory generation. Within each region, the framework performs geometry-aware target pose selection and trajectory generation, together with Lipschitz-based continuous safety certification and local refinement. The resulting free regions and candidate motions are maintained in a region-based graph to support incremental planning. Quantitative results in cluttered 2D navigation scenarios show that the proposed method generates free regions better aligned with downstream traversal and enables reliable collision-free navigation, while additional 3D and real-world experiments on a quadrupedal robot and a UAV demonstrate the extensibility and practical applicability of the framework. The open-source project can be found at https://github.com/ZhichengSong6/FRGraph.</p>
+            
+            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 凸自由区域为机器人在未知复杂环境中的导航提供了结构化且利于优化的无碰撞空间表示方法。然而，现有方法通常主要根据周围障碍物几何结构来扩展局部无碰撞区域。在复杂环境中，此类策略可能难以生成既能容纳机器人几何结构，又能沿候选运动方向保持可通行延伸的区域，从而限制了后续路径通过能力，尤其在狭窄通道中。即使存在此类区域，安全运动生成仍具挑战性，因为当显式建模机器人几何结构时，在离散轨迹样本点进行安全检测并不能保证连续无碰撞运动。为解决这些问题，我们提出一种导航框架，将候选运动方向与机器人几何结构共同融入凸自由区域生成过程，并通过连续安全轨迹生成实现持续无碰撞运动。在每个区域内，该框架执行几何感知的目标位姿选择与轨迹生成，结合基于Lipschitz连续性的安全认证机制与局部优化。生成的无障碍区域与候选运动被存储在区域图结构中，以支持增量式规划。在复杂二维导航场景中的定量结果表明，所提方法生成的自由区域能更好地适应下游路径通过需求，并实现可靠的无碰撞导航；同时在四足机器人与无人机上进行的额外三维仿真与实物实验验证了该框架的扩展性与实际应用价值。开源项目地址：https://github.com/ZhichengSong6/FRGraph。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR</strong>: A navigation framework for robots in unknown cluttered environments that generates direction-aware convex free regions and continuous-safe trajectories, validated in 2D/3D simulations and on a quadruped and UAV.</p>
+            
+            
+            <p class="paper-tldr"><strong>简要说明</strong>: 用于未知杂乱环境的机器人导航框架，通过生成方向感知的凸自由区域和连续安全轨迹，在2D/3D仿真及四足机器人和无人机上验证。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star-half-alt"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2604.23648v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            
+            <p class="paper-authors">Authors: Zhicheng Song, Yongjian Li, Kai Chen, Yulin Li, Fan Shi, Jun Ma</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.30000000000000004, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">Move-Then-Operate: Behavioral Phasing for Human-Like Robotic Manipulation</h2>
+            <p class="paper-summary"><strong>Abstract (English):</strong> We present Move-Then-Operate, a Vision language action framework that explicitly decouples robotic manipulation into two distinct behavioral phases: coarse relocation (move) and contact-critical interaction (operate). Unlike monolithic policies that conflate these heterogeneous regimes, our architecture employs a dual-expert policy routed by a learnable phase selector, introducing a structural inductive bias that isolates phase-specific dynamics. Phase labels are automatically generated via an MLLM-based pipeline conditioned on lightweight contextual cues such as end-effector velocity and subtask decomposition to ensure alignment with human motor patterns. Evaluated on the RoboTwin2 benchmark, our method achieves an average success rate of $68.9\%$, outperforming the monolithic $π_0$ baseline by $24\%$. It matches or exceeds models trained on $10\times$ more data and reaches peak performance in $40\%$ fewer training steps, demonstrating that architectural disentanglement of move and operate phases is a highly effective and efficient strategy for mastering high-precision manipulation.</p>
+            
+            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 本文提出一种视觉语言动作框架——“移动后操作”，该框架将机器人操控行为明确解耦为两个不同的阶段：粗略重定位（移动）和接触关键型交互（操作）。与将这两种异质行为模式混为一体的单块策略不同，我们的架构采用由可学习阶段选择器调度的双专家策略，通过引入结构化归纳偏置来实现各阶段特定动态的隔离。阶段标签通过基于多模态大语言模型的自动化流水线生成，该流水线以末端执行器速度及子任务分解等轻量级上下文线索为条件，确保与人类运动模式保持一致。在RoboTwin2基准测试中，我们的方法平均成功率达到$68.9\%$，较单块策略基线$π_0$提升$24\%$。其性能与训练数据量多$10$倍的模型相当甚至更优，并在训练步数减少$40\%$的情况下达到峰值性能，证明通过架构分离移动与操作阶段是实现高精度操控任务高效掌握的有效策略。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR</strong>: A dual-phase robot manipulation framework that separates coarse relocation from precise interaction, using a vision-language-action model and MLLM-generated phase labels to improve efficiency and performance on high-precision tasks.</p>
+            
+            
+            <p class="paper-tldr"><strong>简要说明</strong>: 一种将机器人操作分离为粗定位和精操作的双阶段框架，采用视觉-语言-动作模型和MLLM生成的阶段标签，在RoboTwin2基准测试中显著提升了高精度任务的成功率和训练效率。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(10/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star-half-alt"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2604.23620v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            
+            <p class="paper-authors">Authors: Haoming Xu, Lei Lei, Jie Gu, Chu Tang, Jingmin Chen, Ruiqi Wang</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.35000000000000003, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">PhysCodeBench: Benchmarking Physics-Aware Symbolic Simulation of 3D Scenes via Self-Corrective Multi-Agent Refinement</h2>
+            <p class="paper-summary"><strong>Abstract (English):</strong> Physics-aware symbolic simulation of 3D scenes is critical for robotics, embodied AI, and scientific computing, requiring models to understand natural language descriptions of physical phenomena and translate them into executable simulation environments. While large language models (LLMs) excel at general code generation, they struggle with the semantic gap between physical descriptions and simulation implementation. We introduce PhysCodeBench, the first comprehensive benchmark for evaluating physics-aware symbolic simulation, comprising 700 manually-crafted diverse samples across mechanics, fluid dynamics, and soft-body physics with expert annotations. Our evaluation framework measures both code executability and physical accuracy through automated and visual assessment. Building on this, we propose a Self-Corrective Multi-Agent Refinement Framework (SMRF) with three specialized agents (simulation generator, error corrector, and simulation refiner) that collaborate iteratively with domain-specific validation to produce physically accurate simulations. SMRF achieves 67.7 points overall performance compared to 36.3 points for the best baseline among evaluated SOTA models, representing a 31.4-point improvement. Our analysis demonstrates that error correction is critical for accurate physics-aware symbolic simulation and that specialized multi-agent approaches significantly outperform single-agent methods across the tested physical domains.</p>
+            
+            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 面向三维场景的物理感知符号仿真是机器人学、具身人工智能与科学计算的关键技术，需要模型理解物理现象的自然语言描述并将其转化为可执行的仿真环境。尽管大语言模型在通用代码生成方面表现出色，但其在物理描述与仿真实现之间仍存在语义鸿沟。本文提出PhysCodeBench——首个用于评估物理感知符号仿真的综合性基准测试，涵盖力学、流体动力学和软体物理三大领域，包含700个专家标注的多样化手工构建样本。我们的评估框架通过自动化测试与可视化验证，同时衡量代码可执行性与物理准确性。基于此，我们进一步提出自校正多智能体优化框架（SMRF），该框架包含三个专项智能体（仿真生成器、错误校正器与仿真优化器），通过领域特定的迭代协同验证生成物理精确的仿真。SMRF在测试中取得67.7分的综合性能，较当前最优基线的36.3分提升31.4分。分析表明，错误校正对实现精确的物理感知符号仿真至关重要，且专业化的多智能体方法在测试的所有物理领域均显著优于单智能体方法。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces PhysCodeBench, a benchmark for physics-aware symbolic simulation of 3D scenes, and proposes a multi-agent refinement framework to improve the accuracy of simulations generated from natural language descriptions.</p>
+            
+            
+            <p class="paper-tldr"><strong>简要说明</strong>: 该论文提出了PhysCodeBench，一个用于物理感知符号模拟3D场景的基准测试，并提出了一个多智能体细化框架，以提高从自然语言描述生成的模拟的准确性。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2604.23580v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            
+            <p class="paper-authors">Authors: Tianyidan Xie, Peiyu Wang, Yuyi Qian, Yuxuan Wang, Rui Ma, Ying Tai, Song Wu, Qian Wang, Lanjun Wang, Zili Yi</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.4, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">EgoLive: A Large-Scale Egocentric Dataset from Real-World Human Tasks</h2>
+            <p class="paper-summary"><strong>Abstract (English):</strong> The advancement of robot learning is currently hindered by the scarcity of large-scale, high-quality datasets. While established data collection methods such as teleoperation and universal manipulation interfaces dominate current datasets, they suffer from inherent limitations in scalability and real-world deployability. Human egocentric video collection, by contrast, has emerged as a promising approach to enable scalable, natural and in-the-wild data collection. As such, we present EgoLive, a large-scale, high-quality egocentric dataset designed explicitly for robot manipulation learning. EgoLive establishes three distinctive technical advantages over existing egocentric datasets: first, it represents the largest open-source annotated egocentric dataset focused on real-world task-oriented human routines to date; second, it delivers leading data quality via a customized head-mounted capture device and comprehensive high-precision multi-modal annotations; third, all data is collected exclusively in unconstrained real-world scenarios and encompasses vertical field human working data, including home service, retail, and other practical work scenarios, providing superior diversity and ecological validity. With the introduction of EgoLive, we aim to provide the research community with a scalable, high-quality dataset that accelerates breakthroughs in generalizable robotic models and facilitates the real-world deployment of robot systems.</p>
+            
+            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 机器人学习领域的发展目前正受限于大规模、高质量数据集的稀缺性。尽管遥操作和通用操控界面等现有数据采集方法在当前数据集中占据主导地位，但其在可扩展性和实际部署能力方面存在固有局限性。相比之下，以人类第一视角视频采集为代表的新兴方法，展现出实现规模化、自然化及真实场景数据采集的巨大潜力。为此，我们推出EgoLive——一个专为机器人操作学习设计的大规模、高质量第一视角数据集。EgoLive在技术上实现了三大突破性优势：其一，该数据集是目前规模最大的开源标注第一视角数据集，专注于真实世界中面向任务的人类日常行为；其二，通过定制化头戴式采集设备与全面的高精度多模态标注体系，实现了业界领先的数据质量；其三，所有数据均在非受限真实场景中采集，涵盖家庭服务、零售及其他实际工作场景中的垂直领域人类作业数据，具备卓越的多样性与生态效度。我们期望通过推出EgoLive数据集，为研究界提供一个可扩展的高质量数据资源，以加速通用化机器人模型的突破性进展，并推动机器人系统在真实世界的部署应用。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR</strong>: EgoLive is a large-scale, high-quality, annotated egocentric dataset collected from real-world human tasks, designed explicitly to advance robot manipulation learning.</p>
+            
+            
+            <p class="paper-tldr"><strong>简要说明</strong>: EgoLive是一个大规模、高质量、标注的自我中心视角数据集，从真实世界人类任务中收集，旨在专门推动机器人操作学习的发展。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2604.23570v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            
+            <p class="paper-authors">Authors: Yihang Li, Xuelong Wei, Jingzhou Luo, Yingjing Xiao, Yibo Bai, Guangyuan Zhou, Teng Zou, Chenguang Gui, Jiajun Wen, He Zhang, Kangliang Chen, Xing Pan, Shuaiyan Liu, Daming Wang, Tao An, Jiayi Li, Shibo Jin, Wanwan Zhang, Tianyu Wang, Boren Wei, Zhixuan Huang, Fangsheng Liu, Ruodai Li, Hui Zhang, Anson Li, Yicheng Gong, Peng Cao, Jiaming Liang, Liang Lin</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.45, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">Sphere-Depth: A Benchmark for Depth Estimation Methods with Varying Spherical Camera Orientations</h2>
+            <p class="paper-summary"><strong>Abstract (English):</strong> Reliable depth estimation from spherical images is crucial for 360° vision in robotic navigation and immersive scene understanding. However, the onboard spherical camera can experience unintentional pose variations in real-world robotic platforms that, along with the geometric distortions inherent in equirectangular projections, significantly impact the effectiveness of depth estimation. To study this issue, a novel public benchmark, called Sphere-Depth, is introduced to systematically evaluate the robustness of monocular depth estimation models from equirectangular images in a reproducible way. Camera pose perturbations are simulated and used to assess the performance of a popular perspective-based model, Depth Anything, and of spherical-aware models such as Depth Anywhere, ACDNet, Bifuse++, and SliceNet. Furthermore, to ensure meaningful evaluation across models, a depth calibration-based error protocol is proposed to convert predicted relative depth values into metric depth values using supervised learned scaling factors for each model. Experiments show that even models explicitly designed to process spherical images exhibit substantial performance degradation when variations in the camera pose are observed with respect to the canonical pose. The full benchmark, evaluation protocol, and dataset splits are made publicly available at: https://github.com/sgazzeh/Sphere_depth</p>
+            
+            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 可靠的球面图像深度估计对于机器人导航中的360°视觉和沉浸式场景理解至关重要。然而，在实际机器人平台中，搭载的球面相机可能会发生非预期的姿态变化，加之等距柱状投影固有的几何畸变，这些因素会严重影响深度估计的有效性。为研究这一问题，本研究引入了一个名为Sphere-Depth的新型公开基准，旨在以可复现的方式系统评估等距柱状图像单目深度估计模型的鲁棒性。通过模拟相机姿态扰动，评估了基于透视的流行模型Depth Anything，以及球面感知模型如Depth Anywhere、ACDNet、Bifuse++和SliceNet的性能。此外，为确保跨模型评估的有效性，提出了一种基于深度校准的误差评估方案，通过为每个模型学习有监督的缩放因子，将预测的相对深度值转换为度量深度值。实验表明，即使是为处理球面图像而显式设计的模型，在相机姿态相对于标准姿态发生变化时，也表现出显著的性能下降。完整的基准测试、评估方案和数据集划分已公开于：https://github.com/sgazzeh/Sphere_depth</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces Sphere-Depth, a benchmark for evaluating monocular depth estimation methods on spherical images under camera pose perturbations, with application to robotic navigation and 360° vision.</p>
+            
+            
+            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了Sphere-Depth，这是一个用于评估球形图像单目深度估计方法在相机姿态扰动下性能的基准，应用于机器人导航和360°视觉。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star-half-alt"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2604.23432v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            
+            <p class="paper-authors">Authors: Soulayma Gazzeh, Giuseppe Mazzola, Liliana Lo Presti, Marco La Cascia</p>
+            
+        </motion.div>
+        
+    </div>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23604v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Learning to Identify Out-of-Distribution Objects for 3D LiDAR Anomaly Segmentation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Simone Mosco, Daniel Fusaro, Alberto Pretto</p>
+                
+                <p><strong>TLDR-CN:</strong> 提出一种新的3D LiDAR异常分割方法和数据集，专注于自动驾驶和机器人感知中识别未知物体。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23557v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        DLM: Unified Decision Language Models for Offline Multi-Agent Sequential Decision Making
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zhuohui Zhang, Bin Cheng, Bin He</p>
+                
+                <p><strong>TLDR-CN:</strong> DLM将多智能体决策制定为序列预测问题，利用LLM通过监督微调和策略优化进行训练，在多个基准测试中超越现有离线MARL方法，并展示出零样本泛化能力。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23402v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Otherness as a Quality in Designing Expressive Robotic Touch
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ran Zhou, Laurens Boer, Daniel Leithinger, Madeline Balaam</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出将机器人触觉固有的'他者性'作为一种设计质量，借鉴艺术和设计研究案例，开发超越真实感、创造表达性和唤起性触觉交互的设计策略。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23646v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Structural Enforcement of Goal Integrity in AI Agents via Separation-of-Powers Architecture
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Rong Xiang</p>
+                
+                <p><strong>TLDR-CN:</strong> 提出了一种'权力分离'架构（PEA），通过密码学隔离的层来强制实现AI代理的目标完整性与安全性，侧重于系统级保障而非模型级对齐。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23576v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        CAPSULE: Control-Theoretic Action Perturbations for Safe Uncertainty-Aware Reinforcement Learning
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Rahul Narava, Siddharth Verma, Ojas Jain, Shashi Shekhar Jha, Mayank Shekhar Jha</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出一个安全强化学习框架，通过离线学习概率控制仿射动力学模型，构建考虑模型不确定性的控制屏障函数，并在在线阶段通过基于约束的动作修正来实现安全探索。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23446v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        IndustryAssetEQA: A Neurosymbolic Operational Intelligence System for Embodied Question Answering in Industrial Asset Maintenance
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Chathurangi Shyalika, Dhaval Patel, Amit Sheth</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了IndustryAssetEQA，一个用于工业资产维护的神经符号系统，通过结合遥测数据和知识图谱进行具身问答，相比纯大语言模型基线，显著提高了解释的结构有效性、反事实准确性和可验证性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23442v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Resource-Constrained UAV-Based Weed Detection for Site-Specific Management on Edge Devices
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Linyuan Wang, Haibo Yao, Te-Ming Tseng, Kelvin Betitame, Xin Sun, Hanbo Huang, Dong Chen</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一个用于在无人机机载边缘设备上部署实时杂草检测模型的框架，评估了多种目标检测架构在不同Jetson硬件上的精度-延迟权衡。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23696v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Real-Time Non-Contact Force Compensation for Wrist-Mounted Force/Torque Sensors in Haptic-Enabled Robotic Surgery Training
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Walid Shaker, Mustafa Suphi Erden</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种用于低成本机器人手术训练系统的实时补偿方法，采用递归最小二乘（RLS）算法对腕部安装的力/扭矩传感器中的非接触力进行补偿。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23513v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Large Language Model based Interactive Decision-Making for Autonomous Driving
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Xinwei Dong, Jiyang Li, Jiabin Xie, Yang Yi, Tianshang Jia, Shiyu Fang, Ye Tian, Peng Hang</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种基于大语言模型的自动驾驶交互决策框架，利用语义场景建模和意图推理生成安全高效的机动决策，并通过外部人机接口的自然语言进行决策通信。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23532v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Emotion-Conditioned Short-Horizon Human Pose Forecasting with a Lightweight Predictive World Model
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jingni Huang, Peter Bloodsworth</p>
+                
+                <p><strong>TLDR-CN:</strong> 本研究探索利用面部表情情感嵌入作为条件信号进行短期人体姿态预测，并提出一个带有门控机制的轻量级预测世界模型进行多模态融合。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23803v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Bringing a Personal Point of View: Evaluating Dynamic 3D Gaussian Splatting for Egocentric Scene Reconstruction
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jan Warchocki, Xi Wang, Jonas Kulhanek, Jan van Gemert</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文评估了动态3D高斯溅射模型在第一人称（egocentric）视频中的场景重建性能，发现其表现不如第三人称视角，并强调了针对AR和机器人等应用开发第一人称特定方法的必要性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23788v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        MIRAGE: A Micro-Interaction Relational Architecture for Grounded Exploration in Multi-Figure Artworks
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jui-Cheng Chiu, Yu-Chao Wang, Shengyang Luo, Tongyan Wang, Qi Yang, Nabin Khanal, Yingjie Victor Chen</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了MIRAGE框架，它通过创建视觉线索（如目光和姿态）的结构化中间表示，来分析多人物绘画，以提高叙事生成的可解释性和事实依据，从而解决标准视觉语言模型的局限性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23704v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        A Pose-only Geometric Constraint for Multi-Camera Pose Adjustment
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Shunkun Liang, Banglei Guan, Bin Li, Qifeng Yu, Yang Shang</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文提出了一种用于多相机系统的新型纯位姿几何约束，以减少光束法平差中的计算成本，在不牺牲精度的情况下提高效率。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23719v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        AIPsy-Affect: A Keyword-Free Clinical Stimulus Battery for Mechanistic Interpretability of Emotion in Language Models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Michael Keeman</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了一种用于语言模型中情感研究的刺激数据集，通过消除情感关键词，更好地解释模型的情感表征。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23605v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Thinking Like a Clinician: A Cognitive AI Agent for Clinical Diagnosis via Panoramic Profiling and Adversarial Debate
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zhiqi Lv, Duofan Tu, Jun Li, Mingyue Zhao, Heqin Zhu, Wenliang Li, Shaohua Kevin Zhou</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文提出DxChain，一个用于医疗诊断的链式临床推理框架，采用“先画像后计划”范式、医疗思维树算法和对抗性辩论进行诊断验证，基于大型语言模型。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23430v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Automating Categorization of Scientific Texts with In-Context Learning and Prompt-Chaining in Large Language Models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Gautam Kishore Shahi, Oliver Hummel</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文评估了使用大型语言模型（LLM），结合上下文学习和提示链技术，根据分层分类法对科学文本进行自动分类，发现提示链能提高分类准确性。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23662v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        SolarFCD: A Large-Scale Dataset and Benchmark for Solar Fault Classification in Photovoltaic Systems
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Misbah Ijaz, Saif Ur Rehman Khan, Abd Ur Rehman, Arooj Zaib, Sebastian Vollmer, Andreas Dengel, Muhammad Nabeel Asim</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文介绍了SolarFCD，一个用于太阳能电池板缺陷分类的大规模多模态数据集和基准测试，主要使用RGB/无人机和热红外图像。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23747v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        SFT-then-RL Outperforms Mixed-Policy Methods for LLM Reasoning
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Alexis Limozin, Eduard Durech, Torsten Hoefler, Imanol Schlag, Valentina Pyatkin</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文指出，当修正了广泛使用的优化框架中的两个关键 bug 后，用于 LLM 推理的标准 SFT-then-RL 流程优于最近提出的混合策略方法。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23445v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        AI Safety Training Can be Clinically Harmful
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Suhas BN, Andrew M. Sherrill, Rosa I. Arriaga, Chris W. Wiese, Saeed Abdullah</p>
+                
+                <p><strong>TLDR-CN:</strong> 该论文评估了用作心理健康支持代理的大语言模型的安全性和临床有效性，发现在高严重性场景下，RLHF等标准安全对齐方法会破坏治疗协议并造成伤害。论文提出了一个用于AI心理健康系统的多轴评估框架。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23758v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Agentic Fusion of Large Atomic and Language Models to Accelerate Materials Discovery
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Mingze Li, Yu Rong, Songyou Li, Lihong Wang, Jiacheng Cen, Liming Wu, Anyi Li, Zongzhao Li, Qiuliang Liu, Rui Jiao, Tian Bian, Pengju Wang, Hao Sun, Jianfeng Zhang, Ji-Rong Wen, Deli Zhao, Shifeng Jin, Tingyang Xu, Wenbing Huang</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种用于材料发现的智能体框架，结合了大型原子模型和大型语言模型，实现了新超导体的高通量筛选和实验验证，但研究重点在材料科学，而非机器人学。</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23488v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Do Synthetic Trajectories Reflect Real Reward Hacking? A Systematic Study on Monitoring In-the-Wild Hacking in Code Generation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Lichen Li, Hengguang Zhou, Yijun Liang, Tianyi Zhou, Cho-Jui Hsieh</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文研究代码生成任务中RL训练时合成与自然出现的'奖励黑客'行为之间的差异，发现基于合成数据训练的监控器无法泛化到真实世界中的黑客行为。</p>
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23536v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        $Z^2$-Sampling: Zero-Cost Zigzag Trajectories for Semantic Alignment in Diffusion Models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Haosen Li, Wenshuo Chen, Shaofeng Liang, Lei Wang, Kaishen Yuan, Yutao Yue</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23458v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        A Benchmark Suite of Reddit-Derived Datasets for Mental Health Detection
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Khalid Hasan, Jamil Saquer</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23790v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        A General Representation-Based Approach to Multi-Source Domain Adaptation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ignavier Ng, Yan Li, Zijian Li, Yujia Zheng, Guangyi Chen, Kun Zhang</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23415v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        A Heterogeneous Two-Stream Framework for Video Action Recognition with Comparative Fusion Analysis
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Md. Afzalur Rahaman, Tahmid Rahman</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23468v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        A Milestone in Formalization: The Sphere Packing Problem in Dimension 8
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Sidharth Hariharan, Christopher Birkbeck, Seewoo Lee, Ho Kiu Gareth Ma, Bhavik Mehta, Auguste Poiroux, Maryna Viazovska</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23622v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        A Synergistic CNN-Transformer Network with Pooling Attention Fusion for Hyperspectral Image Classification
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Peng Chen, Wenxuan He, Feng Qian, Guangyao Shi, Jingwen Yan</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23821v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Accelerating Quantum Materials Characterization: Hybrid Active Learning for Autonomous Spin Wave Spectroscopy
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> William Ratcliff</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23483v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Agentic Adversarial Rewriting Exposes Architectural Vulnerabilities in Black-Box NLP Pipelines
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Mazal Bethany, Kim-Kwang Raymond Choo, Nishant Vishwamitra, Peyman Najafirad</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23701v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Agri-CPJ: A Training-Free Explainable Framework for Agricultural Pest Diagnosis Using Caption-Prompt-Judge and LLM-as-a-Judge
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Wentao Zhang, Qi Zhang, Mingkun Xu, Mu You, Henghua Shen, Zhongzhi He, Keyan Jin, Derek F. Wong, Tao Fang</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23666v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        An AI-Based Supervisory Measurement Integrity Validation Layer for Cyber-Resilient AC/DC Protection in Inverter-Based Microgrids
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ahmad Mohammad Saber, Ahmed Saber Refae, Davor Svetinovic, Hatem Zeineldin, Amr Youssef, Ehab F. El-Saadany, Deepa Kundur</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23615v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Applications of the Transformer Architecture in AI-Assisted English Reading Comprehension
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ping Li</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23418v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Approximating Uniform Random Rotations by Two-Block Structured Hadamard Rotations in High Dimensions
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Tomer Zilca, Gal Mendelson</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23459v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Architecture Matters for Multi-Agent Security
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ben Hagag, William L. Anderson, Christian Schroeder de Witt, Sarah Scheffler</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23449v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        ArguAgent: AI-Supported Real-Time Grouping for Productive Argumentation in STEM Classrooms
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jennifer Kleiman, Yizhu Gao, Xin Xia, Zhaoji Wang, Zipei Zhu, Jongchan Park, Xiaoming Zhai</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23542v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        AusSmoke meets MultiNatSmoke: a fully-labelled diverse smoke segmentation dataset
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Weihao Li, Hongjin Zhao, Gao Zhu, Ge-Peng Ji, Nicholas Wilson, Marta Yebra, Nick Barnes</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23518v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Autocorrelation Reintroduces Spectral Bias in KANs for Time Series Forecasting
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Chen Zeng, Jiahui Wang, Qiao Wang</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23655v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        BVI-Mamba: Video Enhancement Using a Visual State-Space Model for Low-Light and Underwater Environments
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Guoxi Huang, Ruirui Lin, Yini Li, David R. Bull, Nantheera Anantrasirichai</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23699v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Beyond coauthorship: semantic structure and phantom collaborators in transportation research, 1967--2025
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Seongjin Choi</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23399v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Breaking the Resource Wall: Geometry-Guided Sequence Modeling for Efficient Semantic Segmentation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Sheng-Wei Chan, Xin-Jui Pan, Chun-Po Shen, Chia-Min Lin, Yung-Che Wang, Jen-Shiun Chiang</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23508v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        BurstGP: Enhancing Raw Burst Image Super Resolution with Generative Priors
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Dong Huo, Tristan Aumentado-Armstrong, Samrudhdhi B. Rangrej, Maitreya Suin, Angela Ning Ye, Zhiming Hu, Amanpreet Walia, Amirhossein Kazerouni, Konstantinos G. Derpanis, Iqbal Mohomed, Alex Levinshtein</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23546v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        COMO: Closed-Loop Optical Molecule Recognition with Minimum Risk Training
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zhuoqi Lyu, Qing Ke</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23705v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Can an MLP Absorb Its Own Skip Connection?
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Antonij Mijoski, Marko Karbevski</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23718v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Caries DETR: Tooth Structure-aware Prior and Lesion-aware Dynamic Loss Refinement for DETR Based Caries Detection
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Xuefen Liu, Xinquan Yang, Mianjie Zheng, Kun Tang, Xuguang Li, Xiaoqi Guo, Linlin Shen, He Meng</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23633v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Causal Discovery as Dialectical Aggregation: A Quantitative Argumentation Framework
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Sheng Wei, Yulin Chen, Beishui Liao</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23800v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Causal Representation Learning from General Environments under Nonparametric Mixing
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ignavier Ng, Shaoan Xie, Xinshuai Dong, Peter Spirtes, Kun Zhang</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23628v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Characterizations of Admissible Objective Functions for Hierarchical Clustering
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ryuki Tsukuba, Kazutoshi Ando</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23781v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        ClawMark: A Living-World Benchmark for Multi-Turn, Multi-Day, Multimodal Coworker Agents
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Fanqing Meng, Lingxiao Du, Zijian Wu, Guanzheng Chen, Xiangyan Liu, Jiaqi Liao, Chonghe Jiang, Zhenglin Wan, Jiawei Gu, Pengfei Zhou, Rui Huang, Ziqi Zhao, Shengyuan Ding, Ailing Yu, Bo Peng, Bowei Xia, Hao Sun, Haotian Liang, Ji Xie, Jiajun Chen, Jiajun Song, Liu Yang, Ming Xu, Qionglin Qiu, Runhao Fu, Shengfang Zhai, Shijian Wang, Tengfei Ma, Tianyi Wu, Weiyang Jin, Yan Wang, Yang Dai, Yao Lai, Youwei Shu, Yue Liu, Yunzhuo Hao, Yuwei Niu, Jinkai Huang, Jiayuan Zhuo, Zhennan Shen, Linyu Wu, Cihang Xie, Yuyin Zhou, Jiaheng Zhang, Zeyu Zheng, Mengkang Hu, Michael Qizhe Shieh</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23612v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Comparative Study of Weighted and Coupled Second- and Fourth-Order PDEs for Image Despeckling in Grayscale, Color, SAR, and Ultrasound
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Manish Kumar, Rajendra K. Ray</p>
+                
+                <p><strong>Stage1:</strong> excluded domain hit (1)</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23585v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        ComplianceNLP: Knowledge-Graph-Augmented RAG for Multi-Framework Regulatory Gap Detection
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Dongxin Guo, Jikun Wu, Siu Ming Yiu</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23563v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        CyberCane: Neuro-Symbolic RAG for Privacy-Preserving Phishing Detection with Formal Ontology Reasoning
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Safayat Bin Hakim, Aniqa Afzal, Qi Zhao, Vigna Majmundar, Pawel Sloboda, Houbing Herbert Song</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23670v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Deploy DINO with Many-to-Many Association
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Haodong Jiang, Mingzhe Li, Junfeng Wu</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23636v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Discriminator-Guided Adaptive Diffusion for Source-Free Test-Time Adaptation under Image Corruptions
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Francesco Olivato, Cigdem Beyan, Vittorio Murino</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23688v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Do Protective Perturbations Really Protect Portrait Privacy under Real-world Image Transformations?
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ruiqing Sun, Xingshan Yao, Zhijing Wu, Tian Lan, Chenhao Cui, Huiyang Zhao, Jialing Shi, Chen Yang, Xianling Mao</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23494v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Do Transaction-Level and Actor-Level AML Queues Agree? An Empirical Evaluation of Granularity Effects on the Elliptic++ Graph
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ankur Malik</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23729v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        DynProto: Dynamic Prototype Evolution for Out-of-Distribution Detection
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yanqi Wu, Xinhua Lu, Runhe Lai, Qichao Chen, Jia-Xin Zhuang, Wei-Shi Zheng, Ruixuan Wang</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23798v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        ELSA: Exact Linear-Scan Attention for Fast and Memory-Light Vision Transformers
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Chih-Chung Hsu, Xin-Di Ma, Wo-Ting Liao, Chia-Ming Lee</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23728v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        ESIA: An Energy-Based Spatiotemporal Interaction-Aware Framework for Pedestrian Intention Prediction
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yanping Wu, Meiting Dang, Lin Wu, Edmond S. L. Ho, Zhenghua Chen, Chongfeng Wei</p>
+                
+                <p><strong>Stage1:</strong> excluded domain hit (1)</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23763v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Edit Where You Mean: Region-Aware Adapter Injection for Mask-Free Local Image Editing
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Honghao Cai, Xiangyuan Wang, Yunhao Bai, Haohua Chen, Tianze Zhou, Runqi Wang, Wei Zhu, Yibo Chen, Xu Tang, Yao Hu, Zhen Li</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23426v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Enhanced Privacy and Communication Efficiency in Non-IID Federated Learning with Adaptive Quantization and Differential Privacy
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Emre Ardıç, Yakup Genç</p>
+                
+                <p><strong>Stage1:</strong> excluded domain hit (1)</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23472v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Escher-Loop: Mutual Evolution by Closed-Loop Self-Referential Optimization
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ziyang Liu, Xinyan Guo, Xuchen Wei, Han Hao, Liu Yang</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23466v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Evaluating CUDA Tile for AI Workloads on Hopper and Blackwell GPUs
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Divakar Kumar Yadav, Tian Zhao, Deepak Kumar</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23424v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Evolve: A Persistent Knowledge Lifecycle for Small Language Models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Dikran Hovagimian</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23730v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Expert Evaluation of LLM's Open-Ended Legal Reasoning on the Japanese Bar Exam Writing Task
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jungmin Choi, Keisuke Sakaguchi, Hiroaki Yamada</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23562v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        EyeBrain: Left and Right Brain Lateralization Activity Classification Through Pupil Diameter and Fixation Duration
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ko Watanabe, Pooja Pol, Nicolas Großmann, Shoya Ishimaru, Andreas Dengel</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23786v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        FAIR_XAI: Improving Multimodal Foundation Model Fairness via Explainability for Wellbeing Assessment
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Sophie Chiang, Tom Brennan, Fethiye Irmak Dogan, Jiaee Cheong, Hatice Gunes</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23588v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        FinGround: Detecting and Grounding Financial Hallucinations via Atomic Claim Verification
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Dongxin Guo, Jikun Wu, Siu Ming Yiu</p>
+                
+                <p><strong>Stage1:</strong> excluded domain hit (1)</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23743v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Fixed-Reservoir vs Variational Quantum Architectures for Chaotic Dynamics: Benchmarking QRC and QPINN on the Lorenz System
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Tushar Pandey</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23658v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        FlowPlace: Flow Matching for Chip Placement
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Peng Xie, Ke Xue, Yunqi Shi, Ruo-Tong Chen, Chengrui Gao, Siyuan Xu, Chenjian Ding, Mingxuan Yuan, Chao Qian</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23452v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        From Edges to Depth: Probing the Spatial Hierarchy in Vision Transformers
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jainum Sanghavi</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23776v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        From Noisy Historical Maps to Time-Series Oil Palm Mapping Without Annotation in Malaysia and Indonesia (2020-2024)
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Nuttaset Kuapanich, Juepeng Zheng, Bohan Shi, Jiaying Liu, Jiayin Jiang, Jiatao Huang, Shenghan Tan, Qingmei Li, Haohuan Fu</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23635v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        From Rights to Rites: Expectations Management in Smart-Home AI
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Varad Vishwarupe, Ivan Flechais, Marina Jirotka, Nigel Shadbolt</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23779v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        GLIER: Generative Legal Inference and Evidence Ranking for Legal Case Retrieval
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Minghan Li, Tianrui Lv, Chao Zhang, Guodong Zhou</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23675v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        GS-DOT: Gaussian splatting-based image reconstruction for diffuse optical tomography
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jingjing Jiang</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23474v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        GeoCert: Certified Geometric AI for Reliable Forecasting
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Regina Zhang, Zongru Li, Honggang Wen, Xiaofeng Liu, Siu-Ming Yiu, Pietro Liò, Kwok-Yan Lam</p>
+                
+                <p><strong>Stage1:</strong> excluded domain hit (1)</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23651v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Geometry-Conditioned Diffusion for Occlusion-Robust In-Bed Pose Estimation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Navid Aslankhani Khameneh, Marco Carletti, Cigdem Beyan</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23523v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Grammar-Constrained Refinement of Safety Operational Rules Using Language in the Loop: What Could Go Wrong
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Khouloud Gaaloul, Zaid Ghazal, Madhu Latha Pulimi, Sam Emmanuel Kathiravan</p>
+                
+                <p><strong>Stage1:</strong> excluded domain hit (1)</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23665v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        HAC: Parameter-Efficient Hyperbolic Adaptation of CLIP for Zero-Shot VQA
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Francesco Dibitonto, Cigdem Beyan, Vittorio Murino</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23632v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Hallo-Live: Real-Time Streaming Joint Audio-Video Avatar Generation with Asynchronous Dual-Stream and Human-Centric Preference Distillation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Chunyu Li, Jiaye Li, Ruiqiao Mei, Haoyuan Xia, Hao Zhu, Jingdong Wang, Siyu Zhu</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23606v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Hamiltonian Graph Inference Networks: Joint structure discovery and dynamics prediction for lattice Hamiltonian systems from trajectory data
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ru Geng, Panayotis Kevrekidis, Yixian Gao, Hong-Kun Zhang, Jian Zu</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23547v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Hardware-Efficient FPGA Implementation of Sigmoid Function Using Mixed-Radix Hyperbolic Rotation CORDIC
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Chintan Panchal, Ankur Changela, Mohendra Roy</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23647v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Hardware-Efficient Softmax and Layer Normalization with Guaranteed Normalization for Edge Devices
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Dawon Choi, Hana Kim, Ji-Hoon Kim</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23573v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        High-dimensional Semi-supervised Classification via the Fermat Distance
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ruoxu Tan, Yiming Zang</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23467v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Hybrid JIT-CUDA Graph Optimization for Low-Latency Large Language Model Inference
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Divakar Kumar Yadav, Tian Zhao</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23584v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Identity-Decoupled Anonymization for Visual Evidence in Multi-modal Retrieval-Augmented Generation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zehua Cheng, Wei Dai, Jiahao Sun</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23732v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Impact of Age Specialized Models for Hypoglycemia Classification
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Beyza Cinar, Maria Maleshkova</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23436v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Inference of Online Newton Methods with Nesterov's Accelerated Sketching
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Haoxuan Wang, Xinchen Du, Sen Na</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23716v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Information-Theoretic Measures in AI: A Practical Decision Guide
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Nikolaos Al. Papadopoulos, Konstantinos E. Psannis</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23500v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Interpretable Physics-Informed Load Forecasting for U.S. Grid Resilience: SHAP-Guided Ensemble Validation in Hybrid Deep Learning Under Extreme Weather
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Md Abubakkar, Sajib Debnath, Md. Uzzal Mia</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23493v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        K-SENSE: A Knowledge-Guided Self-Augmented Encoder for Neuro-Semantic Evaluation of Mental Health Conditions on Social Media
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Vijay Yadav</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23435v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Knee-xRAI: An Explainable AI Framework for Automatic Kellgren-Lawrence Grading of Knee Osteoarthritis
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Azmul A. Irfan, Nur Ahmad Khatim, Alfan Alfian Irfan, Achmad Zaki, Erike A. Suwarsono, Mansur M. Arief</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23578v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        LLMs Reading the Rhythms of Daily Life: Aligned Understanding for Behavior Prediction and Generation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Fanjin Meng, Jingtao Ding, Nian Li, Yizhou Sun, Yong Li</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23403v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Learn&Drop: Fast Learning of CNNs based on Layer Dropping
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Giorgio Cruciata, Luca Cruciata, Liliana Lo Presti, Jan Van Gemert, Marco La Cascia</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23683v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Learning to Decipher from Pixels -- A Case Study of Copiale
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Lei Kang, Giuseppe De Gregorio, Raphaela Heil, Alicia Fornés, Beáta Megyesi</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23481v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Leveraging Spatial Transcriptomics as Alternative to Manual Annotations for Deep Learning-Based Nuclei Analysis
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Kazuya Nishimura, Ryoma Bise, Haruka Hirose, Yasuhiro Kojima</p>
+                
+                <p><strong>Stage1:</strong> excluded domain hit (1)</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23530v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        MTRouter: Cost-Aware Multi-Turn LLM Routing with History-Model Joint Embeddings
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yiqun Zhang, Hao Li, Zihan Wang, Shi Feng, Xiaocui Yang, Daling Wang, Bo Zhang, Lei Bai, Shuyue Hu</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23465v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Machine learning models for estimating counterfactuals in a single-arm inflammatory bowel disease study
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Dan Liu, Fida K. Dankar, Jennifer C. deBruyn, Amanda Ricciuto, Anne M. Griffiths, Thomas D. Walters, Khaled EI Emam</p>
+                
+                <p><strong>Stage1:</strong> excluded domain hit (1)</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23814v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Mapping License Plate Recoverability Under Extreme Viewing Angles for Oppor-tunistic Urban Sensing
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Igor Adamenko, Orpaz Ben Aharon, Yehudit Aperstein, Alexander Apartsin</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23539v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        MetaGAI: A Large-Scale and High-Quality Benchmark for Generative AI Model and Data Card Generation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Haoxuan Zhang, Ruochi Li, Yang Zhang, Zhenni Liang, Junhua Ding, Ting Xiao, Haihua Chen</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23753v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Modeling Induced Pleasure through Cognitive Appraisal Prediction via Multimodal Fusion
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Nastaran Dab, Raziyeh Zall, Mohammadreza Kangavari</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23789v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        MuSS: A Large-Scale Dataset and Cinematic Narrative Benchmark for Multi-Shot Subject-to-Video Generation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Haojie Zhang, Di Wu, Bingyan Liu, Linjie Zhong, Yuancheng Wei, Xingsong Ye, Nanqing Liu, Yaling Liang</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23519v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Multi-Plane HyperX: A Low-Latency and Cost-Effective Network for Large-Scale AI and HPC Systems
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ziyu Wang, Fei Lei, Dezun Dong</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23765v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Necessary and sufficient conditions for universality of Kolmogorov-Arnold networks
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Vugar Ismailov</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23627v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Neural Grammatical Error Correction for Romanian
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Teodor-Mihai Cotet, Stefan Ruseti, Mihai Dascalu</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23427v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        On (not) learning the Möbius function
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Alexey Pozdnyakov</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23552v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        On the Memorization of Consistency Distillation for Diffusion Models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Bingqing Jiang, Difan Zou</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23712v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        OptProver: Bridging Olympiad and Optimization through Continual Training in Formal Theorem Proving
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Chenyi Li, Yanchen Nie, Zhengyu Ming, Gong Zhang, Kun Yuan, Zaiwen Wen</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23540v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Oracle Noise: Faster Semantic Spherical Alignment for Interpretable Latent Optimization
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Haosen Li, Wenshuo Chen, Lei Wang, Shaofeng Liang, Haozhe Jia, Yutao Yue</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23599v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Partition-of-Unity Gaussian Kolmogorov-Arnold Networks
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Amir Nooeizadegan</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23692v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Personalizing Causal Audio-Driven Facial Motion via Dynamic Multi-modal Retrieval
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Xuangeng Chu, Yu Han, Wei Mao, Shih-En Wei</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23574v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        PhysLayer: Language-Guided Layered Animation with Depth-Aware Physics
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Tianyidan Xie, Zhentao Huang, Mingjie Wang, Xin Huang, Jun Zhou, Minglun Gong, Zili Yi</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23543v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Pref-CTRL: Preference Driven LLM Alignment using Representation Editing
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Imranul Ashrafi, Inigo Jauregi Unanue, Massimo Piccardi</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23514v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Probabilistic Graphical Model using Graph Neural Networks for Bayesian Inversion of Discrete Structural Component States
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Teng Li, Stephen Wu, Yong Huang, James L. Beck, Hui Li</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23407v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        PushupBench: Your VLM is not good at counting pushups
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Shengzhi Li, Jiarun Chen, Karun Sharma, Jiaqi Su, Shichao Pei</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23720v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Quasi-Equivariant Metanetworks
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Viet-Hoang Tran, An Nguyen, Benoît Guérand, Thieu N. Vo, Tan M. Nguyen</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23816v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Query2Diagram: Answering Developer Queries with UML Diagrams
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Oleg Baryshnikov, Anton M. Alekseev, Sergey I. Nikolenko</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23644v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        RaV-IDP: A Reconstruction-as-Validation Framework for Faithful Intelligent Document Processing
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Pritesh Jha</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23681v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Rank, Head-Channel Non-Identifiability, and Symmetry Breaking: A Precise Analysis of Representational Collapse in Transformers
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Giansalvo Cirrincione</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23685v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Reading in the Dark: Low-light Scene Text Recognition
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Xuanshuo Fu, Lei Kang, Ernest Valveny, Dimosthenis Karatzas, Javier Vazquez-Corral</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23804v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Reparameterization through Coverings and Topological Weight Priors
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Maxim Beketov, Pavel Snopov</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23653v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        ResAF-Net: An Anchor-Free Attention-Based Network for Tree Detection and Agricultural Mapping in Palestine
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Rabee Al-Qasem</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23577v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        RouteNLP: Closed-Loop LLM Routing with Conformal Cascading and Distillation Co-Optimization
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Dongxin Guo, Jikun Wu, Siu Ming Yiu</p>
+                
+                <p><strong>Stage1:</strong> excluded domain hit (1)</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23783v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        S2G-RAG: Structured Sufficiency and Gap Judging for Iterative Retrieval-Augmented QA
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Minghan Li, Junjie Zou, Xinxuan Lv, Chao Zhang, Guodong Zhou</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23437v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Scalable and Verifiable Federated Learning for Cross-Institution Financial Fraud Detection
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Prajwal Panth, Nishant Nigam</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23812v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        SeqShield: A Behavioral Analysis Approach to Uncover Rootkits
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Paras Ghodeshwar, Sandeep K Shukla, Anand Handa, Nitesh Kumar</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23813v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        ShredBench: Evaluating the Semantic Reasoning Capabilities of Multimodal LLMs in Document Reconstruction
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zichun Guo, Yuling Shi, Wenhao Zeng, Chao Hu, Haotian Lin, Terry Yue Zhuo, Jiawei Chen, Xiaodong Gu, Wenping Ma</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23551v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Spatiotemporal Degradation-Aware 3D Gaussian Splatting for Realistic Underwater Scene Reconstruction
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Shaohua Liu, Ning Gao, Zuoya Gu, Hongkun Dou, Yue Deng, Hongjue Li</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23475v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Supernodes and Halos: Loss-Critical Hubs in LLM Feed-Forward Layers
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Audrey Cherilyn, Houman Safaai</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23806v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Symmetric Equilibrium Propagation for Thermodynamic Diffusion Training
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Aditi De</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23586v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Talker-T2AV: Joint Talking Audio-Video Generation with Autoregressive Diffusion Modeling
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zhen Ye, Xu Tan, Aoxiong Yin, Hongzhan Lin, Guangyan Zhang, Peiwen Sun, Yiming Li, Chi-Min Chan, Wei Ye, Shikun Zhang, Wei Xue</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23703v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Talking Slide Avatars: Open-Source Multimodal Communication Approach for Teaching
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Xinxing Wu</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23623v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Tandem: Riding Together with Large and Small Language Models for Efficient Reasoning
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zichuan Fu, Xian Wu, Guojing Li, Yejing Wang, Yijun Chen, Zihao Zhao, Yixuan Luo, Hanyu Yan, Yefeng Zheng, Xiangyu Zhao</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23575v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        The Collapse of Heterogeneity in Silicon Philosophers
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yuanming Shi, Andreas Haupt</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23750v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        The Override Gap: A Magnitude Account of Knowledge Conflict Failure in Hypernetwork-Based Instant LLM Adaptation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Shuaizhi Cheng, Xiang Shi, Mingwei Li</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23602v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        TimingLLM: A Two-Stage Retrieval-Augmented Framework for Pre-Synthesis Timing Prediction from Verilog
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Armin Abdollahi, Negin Ashrafi, Mehdi Kamal, Massoud Pedram</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23678v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Transferable Human Mobility Network Reconstruction with neuroGravity
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jinming Yang, Shaoyu Huang, Zongyuan Huang, Yaohui Jin, Xiaokang Yang, Marta C. Gonzalez, Yanyan Xu</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23740v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Transformer as an Euler Discretization of Score-based Variational Flow
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Huadong Liao</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23460v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Ulterior Motives: Detecting Misaligned Reasoning in Continuous Thought Models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Sharan Ramjee</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23505v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Uncertainty Propagation in LLM-Based Systems
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Boming Xia, Liming Zhu, Erdun Gao, Qinghua Lu, Minhui Xue, Dino Sejdinovic</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23641v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        VDLF-Net: Variational Feature Fusion for Adaptive and Few-Shot Visual Learning
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jiawei Yan</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23674v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Vibe Medicine: Redefining Biomedical Research Through Human-AI Co-Work
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zihao Wu, Steven Xu, Bowen Chen, Shaowen Wan, Yiwei Li, Wei Ruan, Yanjun Lyu, Siyuan Li, Dajiang Zhu, Tianming Liu, Lin Zhao</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23799v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        VitaminP: cross-modal learning enables whole-cell segmentation from routine histology
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yasin Shokrollahi, Karina B. Pinao Gonzales, Elizve N. Barrientos Toro, Paul Acosta, Patient Mosaic Team, Pingjun Chen, Yinyin Yuan, Xiaoxi Pan</p>
+                
+                <p><strong>Stage1:</strong> excluded domain hit (1)</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23767v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        WISE-FM:Operation-Aware, Engineering-Informed Foundation Model for Multi-Task Well Design
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Carine de Menezes Rebello, Anderson Rapello dos Santos, Idelfonso B. R. Nogueira</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23706v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Weakly Supervised Multicenter Nancy Index Scoring in Ulcerative Colitis Using Foundation Models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Adam Kukučka, Ondřej Fabián, Vít Musil, Tomáš Brázdil</p>
+                
+                <p><strong>Stage1:</strong> excluded domain hit (1)</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23593v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        When AI reviews science: Can we trust the referee?
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jialiang Wang, Yuchen Liu, Hang Xu, Kaichun Hu, Shimin Di, Wangze Ni, Linan Yue, Min-Ling Zhang, Kui Ren, Lei Chen</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23398v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        When Corrective Hints Hurt: Prompt Design in Reasoner-Guided Repair of LLM Overcaution on Entailed Negations under OWL~2~DL
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yijiashun Qi, Xiang Xu, Yuxuan Li</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23434v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        When Does Removing LayerNorm Help? Activation Bounding as a Regime-Dependent Implicit Regularizer
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Lucky Verma</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23528v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        When PINNs Go Wrong: Pseudo-Time Stepping Against Spurious Solutions
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Sifan Wang, Shawn Koohy, Yiping Lu, Paris Perdikaris</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23709v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        ZID-Net: Zero-Inference Diffusion Prior Decoupling Network for Single Image Dehazing
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Xinheng Li, Minghao Chen, Mengqing Wu, Yan Liu, Guanying Huo</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2604.23724v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Zoom In, Reason Out: Efficient Far-field Anomaly Detection in Expressway Surveillance Videos via Focused VLM Reasoning Guided by Bayesian Inference
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Xiaowei Mao, Bowen Sui, Weijie Zhang, Yawen Yang, Shengnan Guo, Shilong Zhao, Jiaqi Lin, Tingrui Wu, Youfang Lin, Huaiyu Wa</p>
+                
+                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+            </div>
+            
+        </div>
+    </section>
+
+    <footer class="footer">
+        Generated on 2026-04-28 03:35:57 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+    </footer>
+
+</body>
+</html>
