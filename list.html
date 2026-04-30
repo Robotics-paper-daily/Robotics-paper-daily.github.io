@@ -3,138 +3,410 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArXiv Daily Robotics Paper Digest</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>报告列表 — Robotics Daily Papers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --header-color: #0f172a;
+            --primary: #7B2C9F;
+            --primary-hover: #6B1F8F;
+            --secondary: #B794D3;
+            --border: #e2e8f0;
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --card-border: rgba(226, 232, 240, 0.7);
+            --shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
+            --shadow-hover: 0 18px 48px rgba(15, 23, 42, 0.12);
+        }
+        * { box-sizing: border-box; }
+        html, body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f3e8ff 100%);
+            color: var(--text-color);
+        }
+        body { display: flex; flex-direction: column; }
+
         .quick-nav {
             display: flex;
             justify-content: center;
-            gap: 1rem;
-            align-items: center;
-            width: fit-content;
-            margin: 0.9rem auto 1.4rem;
-            padding: 0;
-            border: none;
-            background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
+            gap: 0.5rem;
+            margin: 1.2rem auto 0;
+            padding: 0 1rem;
+            flex-wrap: wrap;
         }
         .quick-nav a {
-            color: #7B2C9F;
+            color: var(--primary);
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.9rem;
-            padding: 0.35rem 0.75rem;
+            font-size: 0.86rem;
+            padding: 0.42rem 1rem;
             border-radius: 999px;
             border: 1px solid rgba(226, 232, 240, 0.95);
             background: rgba(255, 255, 255, 0.86);
-            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
-            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-        }
-        .quick-nav a:hover {
-            background-color: rgba(123, 44, 159, 0.12);
-            color: #6B1F8F;
-            transform: translateY(-1px);
-        }
-        .repo-link {
-            color: #7B2C9F;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
             display: inline-flex;
             align-items: center;
+            gap: 0.4rem;
+        }
+        .quick-nav a svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+            opacity: 0.85;
+        }
+        .quick-nav a:hover {
+            background: rgba(123, 44, 159, 0.12);
+            color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.15);
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1.6rem 1.25rem 3rem;
+            flex: 1;
+        }
+        .hero {
+            text-align: center;
+            margin: 2rem auto 1.4rem;
+            max-width: 720px;
+        }
+        .hero h1 {
+            margin: 0 0 0.45rem;
+            font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+            color: var(--header-color);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        .hero p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.98rem;
+            line-height: 1.6;
+        }
+
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
             justify-content: center;
+            gap: 0.8rem;
+            margin: 1.4rem auto 2.2rem;
+        }
+        .stat-pill {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 999px;
+            padding: 0.5rem 1.1rem;
+            font-size: 0.85rem;
+            color: var(--text-color);
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .stat-pill strong {
+            color: var(--primary);
+            font-weight: 700;
+            margin-right: 0.25rem;
+        }
+
+        .month-section { margin-bottom: 2.4rem; }
+        .month-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin: 0 0 0.85rem 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+        .month-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, rgba(226, 232, 240, 0.95), transparent);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 0.85rem;
+        }
+        .card {
+            position: relative;
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            padding: 1.1rem 1rem 1rem;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+            overflow: hidden;
+        }
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.18s ease;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(123, 44, 159, 0.3);
+        }
+        .card:hover::before { opacity: 1; }
+
+        .card .day {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--header-color);
+            line-height: 1;
+            letter-spacing: -0.02em;
+        }
+        .card .meta {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+        }
+        .card .month-day {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .card .weekday {
+            font-size: 0.72rem;
+            color: var(--primary);
+            font-weight: 600;
+            background: rgba(123, 44, 159, 0.1);
+            padding: 0.15rem 0.55rem;
+            border-radius: 999px;
+        }
+        .card .arrow {
+            position: absolute;
+            top: 0.85rem;
+            right: 0.95rem;
+            color: rgba(123, 44, 159, 0.35);
+            font-size: 0.95rem;
+            transition: transform 0.18s ease, color 0.18s ease;
+        }
+        .card:hover .arrow {
+            color: var(--primary);
+            transform: translate(2px, -2px);
+        }
+
+        .empty-state, .error-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+        }
+        .empty-state h2, .error-state h2 {
+            margin: 0 0 0.5rem;
+            color: var(--header-color);
+            font-size: 1.2rem;
+        }
+        .empty-state p, .error-state p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 0.92rem;
+            line-height: 1.55;
+        }
+        .error-state h2 { color: #b91c1c; }
+
+        .skeleton {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 0.85rem;
+        }
+        .skeleton-card {
+            height: 116px;
+            border-radius: 1rem;
+            background: linear-gradient(110deg, rgba(255,255,255,0.65) 30%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0.65) 70%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s linear infinite;
+            border: 1px solid var(--card-border);
+        }
+        @keyframes shimmer {
+            from { background-position: 200% 0; }
+            to { background-position: -200% 0; }
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 1rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+        }
+        .repo-link {
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
             transition: opacity 0.2s ease;
         }
-        .repo-link:hover { opacity: 0.75; }
-        .repo-icon {
-            width: 22px;
-            height: 22px;
-            display: block;
-        }
+        .repo-link:hover { opacity: 0.7; }
+        .repo-icon { width: 22px; height: 22px; }
     </style>
 </head>
-<body class="bg-gray-100 font-sans min-h-screen flex flex-col">
-    <div class="container mx-auto px-4 py-8 flex-1">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">每日 arXiv 机器人学论文摘要 (Robotics, RL, VLM, World Models, LLMs, VLA, VLN)</h1>
-        <nav class="quick-nav">
-            <a href="./index.html">首页</a>
-            <a href="./search.html">论文检索</a>
-        </nav>
-        
-        <div id="report-list" class="space-y-4">
-            <p class="text-center text-gray-500">正在加载报告列表...</p>
-            <!-- Report links will be loaded here -->
-        </div>
-    </div>
+<body>
+    <nav class="quick-nav">
+        <a id="home-link" href="./index.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>首页</span>
+        </a>
+        <a href="./search.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-3.5-3.5"/></svg>
+            <span>论文检索</span>
+        </a>
+    </nav>
 
-    <footer class="h-[46px] border-t border-[#eee] flex items-center justify-center bg-white">
+    <main class="container">
+        <div class="hero">
+            <h1>每日报告归档</h1>
+            <p>VLA · 世界模型 · 自动驾驶 · 具身智能。每天自动从 arXiv 抓取并经 LLM 评分的精选论文报告。</p>
+        </div>
+
+        <div id="stats" class="stats" style="display:none"></div>
+
+        <div id="report-list">
+            <div class="skeleton">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
         <a class="repo-link" href="https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io" target="_blank" rel="noopener noreferrer" title="Project Repository" aria-label="Project Repository">
             <svg class="repo-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38
-                0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
-                -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
-                .07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
-                -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.7 7.7 0 0 1 2-.27c.68 0 1.36.09 2 .27
-                1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15
-                0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48
-                0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                <path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.7 7.7 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
             </svg>
         </a>
     </footer>
 
     <script>
-        // Function to fetch and display report links
-        async function loadReportLinks() {
-            const reportListDiv = document.getElementById('report-list');
-            reportListDiv.innerHTML = ''; // Clear loading message
+        // Personal mode bounce: rewrite "首页" to personal.html when logged in.
+        try {
+            if (sessionStorage.getItem('zotero_secrets')) {
+                document.getElementById('home-link').setAttribute('href', './personal.html');
+            }
+        } catch (e) { /* sessionStorage unavailable */ }
+
+        const WEEKDAYS_ZH = ['日', '一', '二', '三', '四', '五', '六'];
+        const MONTHS_ZH = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+
+        async function loadReports() {
+            const listEl = document.getElementById('report-list');
+            const statsEl = document.getElementById('stats');
 
             try {
-                // In a real GitHub Pages setup, listing directory contents directly isn't possible.
-                // A common workaround is to have the GitHub Action generate a JSON file (e.g., reports.json)
-                // listing all the available HTML files in daily_html/.
-                // Then, fetch that JSON file here.
+                const res = await fetch('reports.json?v=' + Date.now());
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const reports = await res.json();
 
-                // For now, let's simulate with placeholder data or a simple message.
-                // We'll assume the GitHub Action will generate 'reports.json' in the root.
-                const response = await fetch('reports.json'); // Adjust path if needed
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const reports = await response.json();
-
-                if (reports && reports.length > 0) {
-                    // Sort reports, newest first (assuming YYYY_MM_DD.html format)
-                    reports.sort().reverse(); 
-
-                    reports.forEach(reportFile => {
-                        const reportName = reportFile.replace('.html', '').replace(/_/g, '-'); // Format date
-                        const link = document.createElement('a');
-                        link.href = `daily_html/${reportFile}`;
-                        link.textContent = `报告日期: ${reportName}`;
-                        link.className = 'block bg-white p-4 rounded shadow hover:bg-blue-50 transition duration-300';
-                        reportListDiv.appendChild(link);
-                    });
-                } else {
-                    reportListDiv.innerHTML = '<p class="text-center text-red-500">未能加载报告列表或列表为空。请确保 GitHub Action 已成功运行并生成了 reports.json。</p>';
+                if (!reports || reports.length === 0) {
+                    listEl.innerHTML = `
+                        <div class="empty-state">
+                            <h2>还没有报告</h2>
+                            <p>请等待 GitHub Actions 首次跑完，或手动触发 workflow。</p>
+                        </div>`;
+                    return;
                 }
 
-            } catch (error) {
-                console.error('Error loading report list:', error);
-                let errorMessage = '加载报告列表时遇到未知错误。请检查浏览器控制台获取详细信息。';
-                if (error instanceof SyntaxError) {
-                    // JSON 解析错误
-                    errorMessage = '<p class="text-center text-red-500">加载报告列表失败：reports.json 文件格式无效。请检查文件内容是否为合法的 JSON 数组。</p>';
-                } else if (error.message.startsWith('HTTP error!')) {
-                    // Fetch 网络错误 (e.g., 404 Not Found)
-                    errorMessage = `<p class="text-center text-red-500">加载报告列表失败：无法获取 reports.json 文件 (${error.message})。请确保文件存在于正确的位置且可访问。</p>`;
-                } else {
-                    // 其他类型的错误
-                     errorMessage = `<p class="text-center text-red-500">加载报告列表时出错：${error.message}。请检查浏览器控制台。</p>`;
+                // YYYY_MM_DD.html → Date object
+                const items = reports
+                    .map(file => {
+                        const m = file.match(/(\d{4})_(\d{2})_(\d{2})\.html$/);
+                        if (!m) return null;
+                        const date = new Date(+m[1], +m[2] - 1, +m[3]);
+                        return { file, date };
+                    })
+                    .filter(Boolean)
+                    .sort((a, b) => b.date - a.date);
+
+                const total = items.length;
+                const latest = items[0].date;
+                const earliest = items[items.length - 1].date;
+                const fmt = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+                statsEl.innerHTML = `
+                    <div class="stat-pill"><strong>${total}</strong> 份报告</div>
+                    <div class="stat-pill">最新 <strong>${fmt(latest)}</strong></div>
+                    <div class="stat-pill">最早 <strong>${fmt(earliest)}</strong></div>`;
+                statsEl.style.display = 'flex';
+
+                // Group by year-month
+                const groups = new Map();
+                for (const item of items) {
+                    const key = `${item.date.getFullYear()}-${item.date.getMonth()}`;
+                    if (!groups.has(key)) {
+                        groups.set(key, {
+                            label: `${item.date.getFullYear()} 年 ${MONTHS_ZH[item.date.getMonth()]}`,
+                            items: []
+                        });
+                    }
+                    groups.get(key).items.push(item);
                 }
-                reportListDiv.innerHTML = errorMessage;
+
+                let html = '';
+                for (const [, group] of groups) {
+                    html += `<section class="month-section"><h2 class="month-title">${group.label}</h2><div class="grid">`;
+                    for (const item of group.items) {
+                        const d = item.date;
+                        const day = String(d.getDate()).padStart(2, '0');
+                        const md = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                        const weekday = `周${WEEKDAYS_ZH[d.getDay()]}`;
+                        html += `
+                            <a class="card" href="daily_html/${item.file}">
+                                <span class="arrow">→</span>
+                                <div class="day">${day}</div>
+                                <div class="meta">
+                                    <span class="month-day">${md}</span>
+                                    <span class="weekday">${weekday}</span>
+                                </div>
+                            </a>`;
+                    }
+                    html += `</div></section>`;
+                }
+                listEl.innerHTML = html;
+
+            } catch (err) {
+                console.error('load reports failed:', err);
+                listEl.innerHTML = `
+                    <div class="error-state">
+                        <h2>加载失败</h2>
+                        <p>${err.message}<br>请确认 GitHub Actions 已成功运行并产出 <code>reports.json</code>。</p>
+                    </div>`;
             }
         }
 
-        // Load the links when the page loads
-        document.addEventListener('DOMContentLoaded', loadReportLinks);
+        document.addEventListener('DOMContentLoaded', loadReports);
     </script>
 </body>
 </html>

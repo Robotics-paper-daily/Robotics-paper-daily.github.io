@@ -32,38 +32,6 @@
             line-height: 1.6;
         }
 
-        .quick-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            align-items: center;
-            width: fit-content;
-            margin: 0.9rem auto 0;
-            padding: 0;
-            border: none;
-            background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-        }
-
-        .quick-nav a {
-            color: var(--highlight-primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 0.35rem 0.75rem;
-            border-radius: 999px;
-            border: 1px solid rgba(226, 232, 240, 0.95);
-            background: rgba(255, 255, 255, 0.86);
-            box-shadow: 0 2px 6px var(--shadow-color);
-            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-        }
-
-        .quick-nav a:hover {
-            background-color: rgba(123, 44, 159, 0.12);
-            color: #6B1F8F;
-            transform: translateY(-1px);
-        }
 
         .bento-grid {
             display: grid;
@@ -103,10 +71,25 @@
         }
 
         .paper-summary {
-            font-size: 0.875rem; /* Tailwind text-sm */
+            font-size: 0.85rem;
             color: var(--text-muted-color);
-            margin-bottom: 1.25rem; /* Tailwind mb-5 */
+            margin-bottom: 1.25rem;
             line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
         }
 
         .paper-link {
@@ -195,12 +178,25 @@
         }
 
         .paper-tldr {
-            font-size: 0.95rem; /* Slightly bigger than summary */
-            color: #475569; /* Changed to Tailwind slate-600 (slightly darker than summary) */
-            margin-top: 0.75rem; /* Tailwind mt-3 */
-            margin-bottom: 0.75rem; /* Tailwind mb-2 */
-            /* font-style: italic; */
-            font-weight: bold;
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
         }
 
         .paper-rating {
@@ -276,6 +272,222 @@
             font-size: 0.88rem;
         }
 
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link.
+           Shown only when body.zotero-mode is set (which like.js does after
+           confirming sessionStorage has decrypted credentials). Guests never
+           see it. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn i {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover i {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
@@ -289,11 +501,6 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>December 14, 2025</p>
-        <nav class="quick-nav">
-            <a href="../index.html" target="_top">首页</a>
-            <a href="../list.html" target="_top">报告列表</a>
-            <a href="../search.html" target="_top">论文检索</a>
-        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -307,16 +514,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">AnchorDream: Repurposing Video Diffusion for Embodiment-Aware Robot Data Synthesis</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> The collection of large-scale and diverse robot demonstrations remains a major bottleneck for imitation learning, as real-world data acquisition is costly and simulators offer limited diversity and fidelity with pronounced sim-to-real gaps. While generative models present an attractive solution, existing methods often alter only visual appearances without creating new behaviors, or suffer from embodiment inconsistencies that yield implausible motions. To address these limitations, we introduce AnchorDream, an embodiment-aware world model that repurposes pretrained video diffusion models for robot data synthesis. AnchorDream conditions the diffusion process on robot motion renderings, anchoring the embodiment to prevent hallucination while synthesizing objects and environments consistent with the robot's kinematics. Starting from only a handful of human teleoperation demonstrations, our method scales them into large, diverse, high-quality datasets without requiring explicit environment modeling. Experiments show that the generated data leads to consistent improvements in downstream policy learning, with relative gains of 36.4% in simulator benchmarks and nearly double performance in real-world studies. These results suggest that grounding generative world models in robot motion provides a practical path toward scaling imitation learning.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 大规模且多样化的机器人演示数据的收集仍然是模仿学习的主要瓶颈，因为真实世界的数据获取成本高昂，而模拟器提供的多样性和保真度有限，且存在显著的“模拟到真实”差距。 虽然生成模型提供了一个有吸引力的解决方案，但现有方法通常只改变视觉外观而不创造新的行为，或者遭受具身不一致性，从而导致不可思议的运动。 为了解决这些限制，我们引入了AnchorDream，一种具身感知的世界模型，它将预训练的视频扩散模型重新用于机器人数据合成。 AnchorDream 将扩散过程限制在机器人运动渲染上，锚定具身以防止幻觉，同时合成与机器人运动学一致的物体和环境。 仅仅从少量的真人遥操作演示开始，我们的方法就可以将它们扩展为大型、多样化、高质量的数据集，而无需显式的环境建模。 实验表明，生成的数据在下游策略学习中带来了一致的改进，在模拟器基准测试中相对增益为 36.4%，在真实世界研究中性能几乎翻倍。 这些结果表明，将生成世界模型建立在机器人运动的基础上，为扩展模仿学习提供了一条可行的途径。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: AnchorDream uses video diffusion models conditioned on robot motion renderings to generate large, diverse, and high-quality robot datasets from limited human teleoperation demonstrations, significantly improving downstream policy learning in both simulation and real-world settings.</p>
+            <h2 class="paper-title">
+                AnchorDream: Repurposing Video Diffusion for Embodiment-Aware Robot Data Synthesis
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: AnchorDream通过视频扩散模型，以机器人运动渲染为条件，从少量人类遥操作演示中生成大量、多样化和高质量的机器人数据集，从而显著提高模拟和实际环境中的下游策略学习。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>AnchorDream通过视频扩散模型，以机器人运动渲染为条件，从少量人类遥操作演示中生成大量、多样化和高质量的机器人数据集，从而显著提高模拟和实际环境中的下游策略学习。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> AnchorDream uses video diffusion models conditioned on robot motion renderings to generate large, diverse, and high-quality robot datasets from limited human teleoperation demonstrations, significantly improving downstream policy learning in both simulation and real-world settings.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> The collection of large-scale and diverse robot demonstrations remains a major bottleneck for imitation learning, as real-world data acquisition is costly and simulators offer limited diversity and fidelity with pronounced sim-to-real gaps. While generative models present an attractive solution, existing methods often alter only visual appearances without creating new behaviors, or suffer from embodiment inconsistencies that yield implausible motions. To address these limitations, we introduce AnchorDream, an embodiment-aware world model that repurposes pretrained video diffusion models for robot data synthesis. AnchorDream conditions the diffusion process on robot motion renderings, anchoring the embodiment to prevent hallucination while synthesizing objects and environments consistent with the robot's kinematics. Starting from only a handful of human teleoperation demonstrations, our method scales them into large, diverse, high-quality datasets without requiring explicit environment modeling. Experiments show that the generated data leads to consistent improvements in downstream policy learning, with relative gains of 36.4% in simulator benchmarks and nearly double performance in real-world studies. These results suggest that grounding generative world models in robot motion provides a practical path toward scaling imitation learning.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>大规模且多样化的机器人演示数据的收集仍然是模仿学习的主要瓶颈，因为真实世界的数据获取成本高昂，而模拟器提供的多样性和保真度有限，且存在显著的“模拟到真实”差距。 虽然生成模型提供了一个有吸引力的解决方案，但现有方法通常只改变视觉外观而不创造新的行为，或者遭受具身不一致性，从而导致不可思议的运动。 为了解决这些限制，我们引入了AnchorDream，一种具身感知的世界模型，它将预训练的视频扩散模型重新用于机器人数据合成。 AnchorDream 将扩散过程限制在机器人运动渲染上，锚定具身以防止幻觉，同时合成与机器人运动学一致的物体和环境。 仅仅从少量的真人遥操作演示开始，我们的方法就可以将它们扩展为大型、多样化、高质量的数据集，而无需显式的环境建模。 实验表明，生成的数据在下游策略学习中带来了一致的改进，在模拟器基准测试中相对增益为 36.4%，在真实世界研究中性能几乎翻倍。 这些结果表明，将生成世界模型建立在机器人运动的基础上，为扩展模仿学习提供了一条可行的途径。</p>
             
 
             
@@ -390,6 +601,14 @@
             <a href="http://arxiv.org/abs/2512.11797v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Junjie Ye, Rong Xue, Basile Van Hoorick, Pavel Tokmakov, Muhammad Zubair Irshad, Yue Wang, Vitor Guizilini</p>
             
@@ -403,16 +622,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">BLURR: A Boosted Low-Resource Inference for Vision-Language-Action Models</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Vision-language-action (VLA) models enable impressive zero shot manipulation, but their inference stacks are often too heavy for responsive web demos or high frequency robot control on commodity GPUs. We present BLURR, a lightweight inference wrapper that can be plugged into existing VLA controllers without retraining or changing model checkpoints. Instantiated on the pi-zero VLA controller, BLURR keeps the original observation interfaces and accelerates control by combining an instruction prefix key value cache, mixed precision execution, and a single step rollout schedule that reduces per step computation. In our SimplerEnv based evaluation, BLURR maintains task success rates comparable to the original controller while significantly lowering effective FLOPs and wall clock latency. We also build an interactive web demo that allows users to switch between controllers and toggle inference options in real time while watching manipulation episodes. This highlights BLURR as a practical approach for deploying modern VLA policies under tight compute budgets.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 视觉-语言-动作 (VLA) 模型实现了令人印象深刻的零样本操作，但其推理堆栈通常过于庞大，难以在商品级 GPU 上实现响应迅速的网络演示或高频机器人控制。我们提出了 BLURR，一个轻量级的推理封装器，可以插入到现有的 VLA 控制器中，而无需重新训练或更改模型检查点。BLURR 在 pi-zero VLA 控制器上实例化，保留了原始观察接口，并通过结合指令前缀键值缓存、混合精度执行和单步展开调度来加速控制，从而减少每步计算量。在基于 SimplerEnv 的评估中，BLURR 在保持与原始控制器相当的任务成功率的同时，显著降低了有效 FLOPs 和实际延迟。我们还构建了一个交互式网络演示，允许用户在观看操作过程的同时，实时切换控制器和切换推理选项。 这突显了 BLURR 是在有限计算预算下部署现代 VLA 策略的一种实用方法。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: BLURR is a lightweight inference wrapper for VLA models that significantly reduces computation and latency without retraining, enabling deployment on resource-constrained platforms.</p>
+            <h2 class="paper-title">
+                BLURR: A Boosted Low-Resource Inference for Vision-Language-Action Models
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: BLURR是一个轻量级的VLA模型推理封装器，无需重新训练即可显著降低计算量和延迟，从而能够在资源受限的平台上进行部署。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>BLURR是一个轻量级的VLA模型推理封装器，无需重新训练即可显著降低计算量和延迟，从而能够在资源受限的平台上进行部署。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> BLURR is a lightweight inference wrapper for VLA models that significantly reduces computation and latency without retraining, enabling deployment on resource-constrained platforms.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Vision-language-action (VLA) models enable impressive zero shot manipulation, but their inference stacks are often too heavy for responsive web demos or high frequency robot control on commodity GPUs. We present BLURR, a lightweight inference wrapper that can be plugged into existing VLA controllers without retraining or changing model checkpoints. Instantiated on the pi-zero VLA controller, BLURR keeps the original observation interfaces and accelerates control by combining an instruction prefix key value cache, mixed precision execution, and a single step rollout schedule that reduces per step computation. In our SimplerEnv based evaluation, BLURR maintains task success rates comparable to the original controller while significantly lowering effective FLOPs and wall clock latency. We also build an interactive web demo that allows users to switch between controllers and toggle inference options in real time while watching manipulation episodes. This highlights BLURR as a practical approach for deploying modern VLA policies under tight compute budgets.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>视觉-语言-动作 (VLA) 模型实现了令人印象深刻的零样本操作，但其推理堆栈通常过于庞大，难以在商品级 GPU 上实现响应迅速的网络演示或高频机器人控制。我们提出了 BLURR，一个轻量级的推理封装器，可以插入到现有的 VLA 控制器中，而无需重新训练或更改模型检查点。BLURR 在 pi-zero VLA 控制器上实例化，保留了原始观察接口，并通过结合指令前缀键值缓存、混合精度执行和单步展开调度来加速控制，从而减少每步计算量。在基于 SimplerEnv 的评估中，BLURR 在保持与原始控制器相当的任务成功率的同时，显著降低了有效 FLOPs 和实际延迟。我们还构建了一个交互式网络演示，允许用户在观看操作过程的同时，实时切换控制器和切换推理选项。 这突显了 BLURR 是在有限计算预算下部署现代 VLA 策略的一种实用方法。</p>
             
 
             
@@ -486,6 +709,14 @@
             <a href="http://arxiv.org/abs/2512.11769v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="1" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="1" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Xiaoyu Ma, Zhengqing Yuan, Zheyuan Zhang, Kaiwen Shi, Lichao Sun, Yanfang Ye</p>
             
@@ -499,18 +730,22 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Agile Flight Emerges from Multi-Agent Competitive Racing</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Through multi-agent competition and the sparse high-level objective of winning a race, we find that both agile flight (e.g., high-speed motion pushing the platform to its physical limits) and strategy (e.g., overtaking or blocking) emerge from agents trained with reinforcement learning. We provide evidence in both simulation and the real world that this approach outperforms the common paradigm of training agents in isolation with rewards that prescribe behavior, e.g., progress on the raceline, in particular when the complexity of the environment increases, e.g., in the presence of obstacles. Moreover, we find that multi-agent competition yields policies that transfer more reliably to the real world than policies trained with a single-agent progress-based reward, despite the two methods using the same simulation environment, randomization strategy, and hardware. In addition to improved sim-to-real transfer, the multi-agent policies also exhibit some degree of generalization to opponents unseen at training time. Overall, our work, following in the tradition of multi-agent competitive game-play in digital domains, shows that sparse task-level rewards are sufficient for training agents capable of advanced low-level control in the physical world.
+            <h2 class="paper-title">
+                Agile Flight Emerges from Multi-Agent Competitive Racing
+                
+            </h2>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文展示了通过强化学习和稀疏的胜负奖励，多智能体无人机竞速可以涌现出敏捷飞行和策略性行为。这种方法优于使用密集、基于进度的奖励的方法，并表现出更好的从模拟到现实的迁移和泛化能力。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper demonstrates that agile flight and strategic behaviors emerge in multi-agent drone racing through reinforcement learning with a sparse, win-based reward, outperforming methods using dense, progress-based rewards, and exhibiting better sim-to-real transfer and generalization.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Through multi-agent competition and the sparse high-level objective of winning a race, we find that both agile flight (e.g., high-speed motion pushing the platform to its physical limits) and strategy (e.g., overtaking or blocking) emerge from agents trained with reinforcement learning. We provide evidence in both simulation and the real world that this approach outperforms the common paradigm of training agents in isolation with rewards that prescribe behavior, e.g., progress on the raceline, in particular when the complexity of the environment increases, e.g., in the presence of obstacles. Moreover, we find that multi-agent competition yields policies that transfer more reliably to the real world than policies trained with a single-agent progress-based reward, despite the two methods using the same simulation environment, randomization strategy, and hardware. In addition to improved sim-to-real transfer, the multi-agent policies also exhibit some degree of generalization to opponents unseen at training time. Overall, our work, following in the tradition of multi-agent competitive game-play in digital domains, shows that sparse task-level rewards are sufficient for training agents capable of advanced low-level control in the physical world.
   Code: https://github.com/Jirl-upenn/AgileFlight_MultiAgent</p>
             
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 通过多智能体竞争以及赢得比赛的稀疏高层目标，我们发现敏捷飞行（例如，将平台推向物理极限的高速运动）和策略（例如，超车或阻挡）都从使用强化学习训练的智能体中涌现出来。我们提供的仿真和真实世界证据表明，该方法优于常见的在隔离环境中训练智能体并使用规定行为的奖励（例如，在赛道上的进展）的范式，尤其是在环境复杂性增加时（例如，存在障碍物时）。此外，我们发现，尽管两种方法使用相同的仿真环境、随机化策略和硬件，但多智能体竞争产生的策略比使用基于单智能体进展的奖励训练的策略更可靠地迁移到真实世界。除了改进的仿真到真实世界迁移之外，多智能体策略还表现出一定程度的泛化能力，能够适应训练期间未曾见过的对手。总而言之，我们的工作延续了数字领域多智能体竞争游戏的传统，表明稀疏的任务级奖励足以训练能够在物理世界中进行高级底层控制的智能体。
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>通过多智能体竞争以及赢得比赛的稀疏高层目标，我们发现敏捷飞行（例如，将平台推向物理极限的高速运动）和策略（例如，超车或阻挡）都从使用强化学习训练的智能体中涌现出来。我们提供的仿真和真实世界证据表明，该方法优于常见的在隔离环境中训练智能体并使用规定行为的奖励（例如，在赛道上的进展）的范式，尤其是在环境复杂性增加时（例如，存在障碍物时）。此外，我们发现，尽管两种方法使用相同的仿真环境、随机化策略和硬件，但多智能体竞争产生的策略比使用基于单智能体进展的奖励训练的策略更可靠地迁移到真实世界。除了改进的仿真到真实世界迁移之外，多智能体策略还表现出一定程度的泛化能力，能够适应训练期间未曾见过的对手。总而言之，我们的工作延续了数字领域多智能体竞争游戏的传统，表明稀疏的任务级奖励足以训练能够在物理世界中进行高级底层控制的智能体。
 代码：https://github.com/Jirl-upenn/AgileFlight_MultiAgent</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper demonstrates that agile flight and strategic behaviors emerge in multi-agent drone racing through reinforcement learning with a sparse, win-based reward, outperforming methods using dense, progress-based rewards, and exhibiting better sim-to-real transfer and generalization.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文展示了通过强化学习和稀疏的胜负奖励，多智能体无人机竞速可以涌现出敏捷飞行和策略性行为。这种方法优于使用密集、基于进度的奖励的方法，并表现出更好的从模拟到现实的迁移和泛化能力。</p>
             
 
             
@@ -584,6 +819,14 @@
             <a href="http://arxiv.org/abs/2512.11781v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="2" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="2" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Vineet Pasumarti, Lorenzo Bianchi, Antonio Loquercio</p>
             
@@ -597,16 +840,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">ProbeMDE: Uncertainty-Guided Active Proprioception for Monocular Depth Estimation in Surgical Robotics</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Monocular depth estimation (MDE) provides a useful tool for robotic perception, but its predictions are often uncertain and inaccurate in challenging environments such as surgical scenes where textureless surfaces, specular reflections, and occlusions are common. To address this, we propose ProbeMDE, a cost-aware active sensing framework that combines RGB images with sparse proprioceptive measurements for MDE. Our approach utilizes an ensemble of MDE models to predict dense depth maps conditioned on both RGB images and on a sparse set of known depth measurements obtained via proprioception, where the robot has touched the environment in a known configuration. We quantify predictive uncertainty via the ensemble's variance and measure the gradient of the uncertainty with respect to candidate measurement locations. To prevent mode collapse while selecting maximally informative locations to propriocept (touch), we leverage Stein Variational Gradient Descent (SVGD) over this gradient map. We validate our method in both simulated and physical experiments on central airway obstruction surgical phantoms. Our results demonstrate that our approach outperforms baseline methods across standard depth estimation metrics, achieving higher accuracy while minimizing the number of required proprioceptive measurements.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 单目深度估计 (MDE) 为机器人感知提供了一种有用的工具，但其预测结果在具有挑战性的环境中往往存在不确定性和不准确性，例如手术场景中常见的无纹理表面、镜面反射和遮挡。为了解决这个问题，我们提出了 ProbeMDE，一种具有成本意识的主动感知框架，它将 RGB 图像与稀疏的本体感受测量结合用于 MDE。我们的方法利用一个 MDE 模型集成，来预测以 RGB 图像和通过本体感受获得的稀疏已知深度测量集为条件的密集深度图，其中机器人以已知配置触摸环境。我们通过集成的方差来量化预测的不确定性，并测量不确定性相对于候选测量位置的梯度。为了在选择最具信息量的本体感受 (触摸) 位置时防止模式崩塌，我们利用基于该梯度图的 Stein 变分梯度下降 (SVGD)。我们在中央气道阻塞手术模型上的模拟和物理实验中验证了我们的方法。我们的结果表明，我们的方法在标准深度估计指标上优于基线方法，并在最小化所需本体感受测量次数的同时实现了更高的精度。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces ProbeMDE, a method for improving monocular depth estimation in surgical robotics by using uncertainty-guided active proprioception to strategically select locations for sparse depth measurements, leading to more accurate and efficient depth estimation.</p>
+            <h2 class="paper-title">
+                ProbeMDE: Uncertainty-Guided Active Proprioception for Monocular Depth Estimation in Surgical Robotics
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了ProbeMDE，一种通过不确定性引导的主动本体感觉来选择稀疏深度测量位置，从而提高手术机器人单目深度估计的方法，从而实现更准确和高效的深度估计。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文介绍了ProbeMDE，一种通过不确定性引导的主动本体感觉来选择稀疏深度测量位置，从而提高手术机器人单目深度估计的方法，从而实现更准确和高效的深度估计。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper introduces ProbeMDE, a method for improving monocular depth estimation in surgical robotics by using uncertainty-guided active proprioception to strategically select locations for sparse depth measurements, leading to more accurate and efficient depth estimation.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Monocular depth estimation (MDE) provides a useful tool for robotic perception, but its predictions are often uncertain and inaccurate in challenging environments such as surgical scenes where textureless surfaces, specular reflections, and occlusions are common. To address this, we propose ProbeMDE, a cost-aware active sensing framework that combines RGB images with sparse proprioceptive measurements for MDE. Our approach utilizes an ensemble of MDE models to predict dense depth maps conditioned on both RGB images and on a sparse set of known depth measurements obtained via proprioception, where the robot has touched the environment in a known configuration. We quantify predictive uncertainty via the ensemble's variance and measure the gradient of the uncertainty with respect to candidate measurement locations. To prevent mode collapse while selecting maximally informative locations to propriocept (touch), we leverage Stein Variational Gradient Descent (SVGD) over this gradient map. We validate our method in both simulated and physical experiments on central airway obstruction surgical phantoms. Our results demonstrate that our approach outperforms baseline methods across standard depth estimation metrics, achieving higher accuracy while minimizing the number of required proprioceptive measurements.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>单目深度估计 (MDE) 为机器人感知提供了一种有用的工具，但其预测结果在具有挑战性的环境中往往存在不确定性和不准确性，例如手术场景中常见的无纹理表面、镜面反射和遮挡。为了解决这个问题，我们提出了 ProbeMDE，一种具有成本意识的主动感知框架，它将 RGB 图像与稀疏的本体感受测量结合用于 MDE。我们的方法利用一个 MDE 模型集成，来预测以 RGB 图像和通过本体感受获得的稀疏已知深度测量集为条件的密集深度图，其中机器人以已知配置触摸环境。我们通过集成的方差来量化预测的不确定性，并测量不确定性相对于候选测量位置的梯度。为了在选择最具信息量的本体感受 (触摸) 位置时防止模式崩塌，我们利用基于该梯度图的 Stein 变分梯度下降 (SVGD)。我们在中央气道阻塞手术模型上的模拟和物理实验中验证了我们的方法。我们的结果表明，我们的方法在标准深度估计指标上优于基线方法，并在最小化所需本体感受测量次数的同时实现了更高的精度。</p>
             
 
             
@@ -680,6 +927,14 @@
             <a href="http://arxiv.org/abs/2512.11773v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="3" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="3" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Britton Jordan, Jordan Thompson, Jesse F. d'Almeida, Hao Li, Nithesh Kumar, Susheela Sharma Stern, Ipek Oguz, Robert J. Webster, Daniel Brown, Alan Kuntz, James Ferguson</p>
             
@@ -693,16 +948,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Particulate: Feed-Forward 3D Object Articulation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> We present Particulate, a feed-forward approach that, given a single static 3D mesh of an everyday object, directly infers all attributes of the underlying articulated structure, including its 3D parts, kinematic structure, and motion constraints. At its core is a transformer network, Part Articulation Transformer, which processes a point cloud of the input mesh using a flexible and scalable architecture to predict all the aforementioned attributes with native multi-joint support. We train the network end-to-end on a diverse collection of articulated 3D assets from public datasets. During inference, Particulate lifts the network's feed-forward prediction to the input mesh, yielding a fully articulated 3D model in seconds, much faster than prior approaches that require per-object optimization. Particulate can also accurately infer the articulated structure of AI-generated 3D assets, enabling full-fledged extraction of articulated 3D objects from a single (real or synthetic) image when combined with an off-the-shelf image-to-3D generator. We further introduce a new challenging benchmark for 3D articulation estimation curated from high-quality public 3D assets, and redesign the evaluation protocol to be more consistent with human preferences. Quantitative and qualitative results show that Particulate significantly outperforms state-of-the-art approaches.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 我们提出了Particulate，一种前馈方法，它在给定日常物体的单个静态3D网格的情况下，直接推断底层铰接结构的所有属性，包括其3D部件、运动学结构和运动约束。其核心是一个Transformer网络，即部件铰接Transformer，它使用灵活且可扩展的架构处理输入网格的点云，以预测所有上述属性，并原生支持多关节。我们在来自公共数据集的各种铰接3D资源集合上对网络进行端到端训练。在推理过程中，Particulate将网络的馈入预测提升到输入网格，从而在几秒钟内生成一个完全铰接的3D模型，比先前需要对每个对象进行优化的方法快得多。Particulate还可以准确推断AI生成的3D资产的铰接结构，当与现成的图像到3D生成器结合使用时，能够从单个图像（真实或合成）中全面提取铰接的3D对象。我们还引入了一个新的具有挑战性的3D铰接估计基准，该基准是从高质量的公共3D资产中整理出来的，并重新设计了评估协议，使其与人类偏好更加一致。定量和定性结果表明，Particulate明显优于最先进的方法。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: Particulate is a feed-forward transformer network that infers the articulation of 3D objects from a single static mesh, outperforming existing methods in speed and accuracy, and enabling articulation extraction from AI-generated 3D assets.</p>
+            <h2 class="paper-title">
+                Particulate: Feed-Forward 3D Object Articulation
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: Particulate是一个前馈Transformer网络，可以从单个静态网格推断3D物体的关节，在速度和准确性方面优于现有方法，并能够从AI生成的3D资产中提取关节。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>Particulate是一个前馈Transformer网络，可以从单个静态网格推断3D物体的关节，在速度和准确性方面优于现有方法，并能够从AI生成的3D资产中提取关节。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> Particulate is a feed-forward transformer network that infers the articulation of 3D objects from a single static mesh, outperforming existing methods in speed and accuracy, and enabling articulation extraction from AI-generated 3D assets.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> We present Particulate, a feed-forward approach that, given a single static 3D mesh of an everyday object, directly infers all attributes of the underlying articulated structure, including its 3D parts, kinematic structure, and motion constraints. At its core is a transformer network, Part Articulation Transformer, which processes a point cloud of the input mesh using a flexible and scalable architecture to predict all the aforementioned attributes with native multi-joint support. We train the network end-to-end on a diverse collection of articulated 3D assets from public datasets. During inference, Particulate lifts the network's feed-forward prediction to the input mesh, yielding a fully articulated 3D model in seconds, much faster than prior approaches that require per-object optimization. Particulate can also accurately infer the articulated structure of AI-generated 3D assets, enabling full-fledged extraction of articulated 3D objects from a single (real or synthetic) image when combined with an off-the-shelf image-to-3D generator. We further introduce a new challenging benchmark for 3D articulation estimation curated from high-quality public 3D assets, and redesign the evaluation protocol to be more consistent with human preferences. Quantitative and qualitative results show that Particulate significantly outperforms state-of-the-art approaches.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>我们提出了Particulate，一种前馈方法，它在给定日常物体的单个静态3D网格的情况下，直接推断底层铰接结构的所有属性，包括其3D部件、运动学结构和运动约束。其核心是一个Transformer网络，即部件铰接Transformer，它使用灵活且可扩展的架构处理输入网格的点云，以预测所有上述属性，并原生支持多关节。我们在来自公共数据集的各种铰接3D资源集合上对网络进行端到端训练。在推理过程中，Particulate将网络的馈入预测提升到输入网格，从而在几秒钟内生成一个完全铰接的3D模型，比先前需要对每个对象进行优化的方法快得多。Particulate还可以准确推断AI生成的3D资产的铰接结构，当与现成的图像到3D生成器结合使用时，能够从单个图像（真实或合成）中全面提取铰接的3D对象。我们还引入了一个新的具有挑战性的3D铰接估计基准，该基准是从高质量的公共3D资产中整理出来的，并重新设计了评估协议，使其与人类偏好更加一致。定量和定性结果表明，Particulate明显优于最先进的方法。</p>
             
 
             
@@ -776,6 +1035,14 @@
             <a href="http://arxiv.org/abs/2512.11798v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="4" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="4" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Ruining Li, Yuxin Yao, Chuanxia Zheng, Christian Rupprecht, Joan Lasenby, Shangzhe Wu, Andrea Vedaldi</p>
             
@@ -784,7 +1051,7 @@
     </div>
 
     <section class="filtered-section">
-        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
         <div class="filtered-grid">
             
             <div class="filtered-item">
@@ -794,20 +1061,55 @@
                         Toward a Decision Support System for Energy-Efficient Ferry Operation on Lake Constance based on Optimal Control
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="5" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="5" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Hannes Homburger, Bastian Jäckl, Stefan Wirtensohn, Christian Stopp, Maximilian T. Fischer, Moritz Diehl, Daniel A. Keim, Johannes Reuter</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文介绍了一个为康斯坦茨湖上的节能渡轮运营设计的决策支持系统，该系统使用一个收缩范围的最优控制框架，为渡轮船员提供实时指导。</p>
+                
+                <p><strong>Overall:</strong> 4/10</p>
+                
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <p>没有一级过滤未通过的论文。</p>
             </div>
             
         </div>
     </section>
 
     <footer class="footer">
-        Generated on 2026-04-08 07:41:48 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-30 18:17:57 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
+    
+    
+    <script type="application/json" id="papers-data">[{"title": "AnchorDream: Repurposing Video Diffusion for Embodiment-Aware Robot Data Synthesis", "summary": "The collection of large-scale and diverse robot demonstrations remains a major bottleneck for imitation learning, as real-world data acquisition is costly and simulators offer limited diversity and fidelity with pronounced sim-to-real gaps. While generative models present an attractive solution, existing methods often alter only visual appearances without creating new behaviors, or suffer from embodiment inconsistencies that yield implausible motions. To address these limitations, we introduce AnchorDream, an embodiment-aware world model that repurposes pretrained video diffusion models for robot data synthesis. AnchorDream conditions the diffusion process on robot motion renderings, anchoring the embodiment to prevent hallucination while synthesizing objects and environments consistent with the robot\u0027s kinematics. Starting from only a handful of human teleoperation demonstrations, our method scales them into large, diverse, high-quality datasets without requiring explicit environment modeling. Experiments show that the generated data leads to consistent improvements in downstream policy learning, with relative gains of 36.4% in simulator benchmarks and nearly double performance in real-world studies. These results suggest that grounding generative world models in robot motion provides a practical path toward scaling imitation learning.", "url": "http://arxiv.org/abs/2512.11797v1", "authors": ["Junjie Ye", "Rong Xue", "Basile Van Hoorick", "Pavel Tokmakov", "Muhammad Zubair Irshad", "Yue Wang", "Vitor Guizilini"], "keywords": []},{"title": "BLURR: A Boosted Low-Resource Inference for Vision-Language-Action Models", "summary": "Vision-language-action (VLA) models enable impressive zero shot manipulation, but their inference stacks are often too heavy for responsive web demos or high frequency robot control on commodity GPUs. We present BLURR, a lightweight inference wrapper that can be plugged into existing VLA controllers without retraining or changing model checkpoints. Instantiated on the pi-zero VLA controller, BLURR keeps the original observation interfaces and accelerates control by combining an instruction prefix key value cache, mixed precision execution, and a single step rollout schedule that reduces per step computation. In our SimplerEnv based evaluation, BLURR maintains task success rates comparable to the original controller while significantly lowering effective FLOPs and wall clock latency. We also build an interactive web demo that allows users to switch between controllers and toggle inference options in real time while watching manipulation episodes. This highlights BLURR as a practical approach for deploying modern VLA policies under tight compute budgets.", "url": "http://arxiv.org/abs/2512.11769v1", "authors": ["Xiaoyu Ma", "Zhengqing Yuan", "Zheyuan Zhang", "Kaiwen Shi", "Lichao Sun", "Yanfang Ye"], "keywords": []},{"title": "Agile Flight Emerges from Multi-Agent Competitive Racing", "summary": "Through multi-agent competition and the sparse high-level objective of winning a race, we find that both agile flight (e.g., high-speed motion pushing the platform to its physical limits) and strategy (e.g., overtaking or blocking) emerge from agents trained with reinforcement learning. We provide evidence in both simulation and the real world that this approach outperforms the common paradigm of training agents in isolation with rewards that prescribe behavior, e.g., progress on the raceline, in particular when the complexity of the environment increases, e.g., in the presence of obstacles. Moreover, we find that multi-agent competition yields policies that transfer more reliably to the real world than policies trained with a single-agent progress-based reward, despite the two methods using the same simulation environment, randomization strategy, and hardware. In addition to improved sim-to-real transfer, the multi-agent policies also exhibit some degree of generalization to opponents unseen at training time. Overall, our work, following in the tradition of multi-agent competitive game-play in digital domains, shows that sparse task-level rewards are sufficient for training agents capable of advanced low-level control in the physical world.\n  Code: https://github.com/Jirl-upenn/AgileFlight_MultiAgent", "url": "http://arxiv.org/abs/2512.11781v1", "authors": ["Vineet Pasumarti", "Lorenzo Bianchi", "Antonio Loquercio"], "keywords": []},{"title": "ProbeMDE: Uncertainty-Guided Active Proprioception for Monocular Depth Estimation in Surgical Robotics", "summary": "Monocular depth estimation (MDE) provides a useful tool for robotic perception, but its predictions are often uncertain and inaccurate in challenging environments such as surgical scenes where textureless surfaces, specular reflections, and occlusions are common. To address this, we propose ProbeMDE, a cost-aware active sensing framework that combines RGB images with sparse proprioceptive measurements for MDE. Our approach utilizes an ensemble of MDE models to predict dense depth maps conditioned on both RGB images and on a sparse set of known depth measurements obtained via proprioception, where the robot has touched the environment in a known configuration. We quantify predictive uncertainty via the ensemble\u0027s variance and measure the gradient of the uncertainty with respect to candidate measurement locations. To prevent mode collapse while selecting maximally informative locations to propriocept (touch), we leverage Stein Variational Gradient Descent (SVGD) over this gradient map. We validate our method in both simulated and physical experiments on central airway obstruction surgical phantoms. Our results demonstrate that our approach outperforms baseline methods across standard depth estimation metrics, achieving higher accuracy while minimizing the number of required proprioceptive measurements.", "url": "http://arxiv.org/abs/2512.11773v1", "authors": ["Britton Jordan", "Jordan Thompson", "Jesse F. d\u0027Almeida", "Hao Li", "Nithesh Kumar", "Susheela Sharma Stern", "Ipek Oguz", "Robert J. Webster", "Daniel Brown", "Alan Kuntz", "James Ferguson"], "keywords": []},{"title": "Particulate: Feed-Forward 3D Object Articulation", "summary": "We present Particulate, a feed-forward approach that, given a single static 3D mesh of an everyday object, directly infers all attributes of the underlying articulated structure, including its 3D parts, kinematic structure, and motion constraints. At its core is a transformer network, Part Articulation Transformer, which processes a point cloud of the input mesh using a flexible and scalable architecture to predict all the aforementioned attributes with native multi-joint support. We train the network end-to-end on a diverse collection of articulated 3D assets from public datasets. During inference, Particulate lifts the network\u0027s feed-forward prediction to the input mesh, yielding a fully articulated 3D model in seconds, much faster than prior approaches that require per-object optimization. Particulate can also accurately infer the articulated structure of AI-generated 3D assets, enabling full-fledged extraction of articulated 3D objects from a single (real or synthetic) image when combined with an off-the-shelf image-to-3D generator. We further introduce a new challenging benchmark for 3D articulation estimation curated from high-quality public 3D assets, and redesign the evaluation protocol to be more consistent with human preferences. Quantitative and qualitative results show that Particulate significantly outperforms state-of-the-art approaches.", "url": "http://arxiv.org/abs/2512.11798v1", "authors": ["Ruining Li", "Yuxin Yao", "Chuanxia Zheng", "Christian Rupprecht", "Joan Lasenby", "Shangzhe Wu", "Andrea Vedaldi"], "keywords": []},{"title": "Toward a Decision Support System for Energy-Efficient Ferry Operation on Lake Constance based on Optimal Control", "summary": "The maritime sector is undergoing a disruptive technological change driven by three main factors: autonomy, decarbonization, and digital transformation. Addressing these factors necessitates a reassessment of inland vessel operations. This paper presents the design and development of a decision support system for ferry operations based on a shrinking-horizon optimal control framework. The problem formulation incorporates a mathematical model of the ferry\u0027s dynamics and environmental disturbances, specifically water currents and wind, which can significantly influence the dynamics. Real-world data and illustrative scenarios demonstrate the potential of the proposed system to effectively support ferry crews by providing real-time guidance. This enables enhanced operational efficiency while maintaining predefined maneuver durations. The findings suggest that optimal control applications hold substantial promise for advancing future ferry operations on inland waters. A video of the real-world ferry MS Insel Mainau operating on Lake Constance is available at: https://youtu.be/i1MjCdbEQyE", "url": "http://arxiv.org/abs/2512.11786v1", "authors": ["Hannes Homburger", "Bastian J\u00e4ckl", "Stefan Wirtensohn", "Christian Stopp", "Maximilian T. Fischer", "Moritz Diehl", "Daniel A. Keim", "Johannes Reuter"], "keywords": []}]</script>
+
+    <!-- SparkMD5: Zotero's WebDAV format requires md5; SubtleCrypto can't do MD5 -->
+    <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
+    <!-- JSZip: needed to build the <key>.zip wrapper Zotero expects on WebDAV -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="../js/zotero.js"></script>
+    <script src="../js/webdav.js"></script>
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
 </body>
 </html>

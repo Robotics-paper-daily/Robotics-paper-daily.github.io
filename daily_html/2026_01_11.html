@@ -32,38 +32,6 @@
             line-height: 1.6;
         }
 
-        .quick-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            align-items: center;
-            width: fit-content;
-            margin: 0.9rem auto 0;
-            padding: 0;
-            border: none;
-            background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-        }
-
-        .quick-nav a {
-            color: var(--highlight-primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 0.35rem 0.75rem;
-            border-radius: 999px;
-            border: 1px solid rgba(226, 232, 240, 0.95);
-            background: rgba(255, 255, 255, 0.86);
-            box-shadow: 0 2px 6px var(--shadow-color);
-            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-        }
-
-        .quick-nav a:hover {
-            background-color: rgba(123, 44, 159, 0.12);
-            color: #6B1F8F;
-            transform: translateY(-1px);
-        }
 
         .bento-grid {
             display: grid;
@@ -103,10 +71,25 @@
         }
 
         .paper-summary {
-            font-size: 0.875rem; /* Tailwind text-sm */
+            font-size: 0.85rem;
             color: var(--text-muted-color);
-            margin-bottom: 1.25rem; /* Tailwind mb-5 */
+            margin-bottom: 1.25rem;
             line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
         }
 
         .paper-link {
@@ -195,12 +178,25 @@
         }
 
         .paper-tldr {
-            font-size: 0.95rem; /* Slightly bigger than summary */
-            color: #475569; /* Changed to Tailwind slate-600 (slightly darker than summary) */
-            margin-top: 0.75rem; /* Tailwind mt-3 */
-            margin-bottom: 0.75rem; /* Tailwind mb-2 */
-            /* font-style: italic; */
-            font-weight: bold;
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
         }
 
         .paper-rating {
@@ -276,6 +272,222 @@
             font-size: 0.88rem;
         }
 
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link.
+           Shown only when body.zotero-mode is set (which like.js does after
+           confirming sessionStorage has decrypted credentials). Guests never
+           see it. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn i {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover i {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
@@ -289,11 +501,6 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>January 11, 2026</p>
-        <nav class="quick-nav">
-            <a href="../index.html" target="_top">首页</a>
-            <a href="../list.html" target="_top">报告列表</a>
-            <a href="../search.html" target="_top">论文检索</a>
-        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -307,16 +514,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Open-Vocabulary 3D Instruction Ambiguity Detection</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> In safety-critical domains, linguistic ambiguity can have severe consequences; a vague command like "Pass me the vial" in a surgical setting could lead to catastrophic errors. Yet, most embodied AI research overlooks this, assuming instructions are clear and focusing on execution rather than confirmation. To address this critical safety gap, we are the first to define Open-Vocabulary 3D Instruction Ambiguity Detection, a fundamental new task where a model must determine if a command has a single, unambiguous meaning within a given 3D scene. To support this research, we build Ambi3D, the large-scale benchmark for this task, featuring over 700 diverse 3D scenes and around 22k instructions. Our analysis reveals a surprising limitation: state-of-the-art 3D Large Language Models (LLMs) struggle to reliably determine if an instruction is ambiguous. To address this challenge, we propose AmbiVer, a two-stage framework that collects explicit visual evidence from multiple views and uses it to guide an vision-language model (VLM) in judging instruction ambiguity. Extensive experiments demonstrate the challenge of our task and the effectiveness of AmbiVer, paving the way for safer and more trustworthy embodied AI. Code and dataset available at https://jiayuding031020.github.io/ambi3d/.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 在安全攸关领域，语言歧义可能导致严重后果；在外科手术环境中，诸如“把小瓶递给我”这样含糊不清的指令可能会酿成灾难性错误。然而，大多数具身人工智能研究忽略了这一点，假设指令清晰明确，并且侧重于执行而非确认。为了弥补这一关键的安全漏洞，我们率先定义了开放词汇3D指令歧义检测，这是一项全新的基础任务，要求模型判断指令在给定的3D场景中是否具有单一、明确的含义。为了支持这项研究，我们构建了Ambi3D，一个大规模的基准数据集，其中包含700多个不同的3D场景和大约2.2万条指令。我们的分析揭示了一个令人惊讶的局限性：最先进的3D大型语言模型（LLM）难以可靠地判断指令是否具有歧义。为了应对这一挑战，我们提出了AmbiVer，一个两阶段框架，该框架从多个视角收集显式的视觉证据，并使用这些证据来引导视觉-语言模型（VLM）判断指令歧义。大量的实验证明了我们任务的挑战性和AmbiVer的有效性，为更安全、更值得信赖的具身人工智能铺平了道路。代码和数据集可在https://jiayuding031020.github.io/ambi3d/获取。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces a new task, Open-Vocabulary 3D Instruction Ambiguity Detection, and a benchmark dataset (Ambi3D) to address the problem of instruction ambiguity in embodied AI, finding that existing 3D LLMs struggle with this task, and proposes AmbiVer to improve performance.</p>
+            <h2 class="paper-title">
+                Open-Vocabulary 3D Instruction Ambiguity Detection
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文提出了一个新的任务：开放词汇3D指令歧义检测，并创建了一个基准数据集 (Ambi3D)，旨在解决具身智能中指令歧义的问题。研究发现现有的3D LLM在此任务上表现不佳，并提出了AmbiVer来提高性能。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文提出了一个新的任务：开放词汇3D指令歧义检测，并创建了一个基准数据集 (Ambi3D)，旨在解决具身智能中指令歧义的问题。研究发现现有的3D LLM在此任务上表现不佳，并提出了AmbiVer来提高性能。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper introduces a new task, Open-Vocabulary 3D Instruction Ambiguity Detection, and a benchmark dataset (Ambi3D) to address the problem of instruction ambiguity in embodied AI, finding that existing 3D LLMs struggle with this task, and proposes AmbiVer to improve performance.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> In safety-critical domains, linguistic ambiguity can have severe consequences; a vague command like "Pass me the vial" in a surgical setting could lead to catastrophic errors. Yet, most embodied AI research overlooks this, assuming instructions are clear and focusing on execution rather than confirmation. To address this critical safety gap, we are the first to define Open-Vocabulary 3D Instruction Ambiguity Detection, a fundamental new task where a model must determine if a command has a single, unambiguous meaning within a given 3D scene. To support this research, we build Ambi3D, the large-scale benchmark for this task, featuring over 700 diverse 3D scenes and around 22k instructions. Our analysis reveals a surprising limitation: state-of-the-art 3D Large Language Models (LLMs) struggle to reliably determine if an instruction is ambiguous. To address this challenge, we propose AmbiVer, a two-stage framework that collects explicit visual evidence from multiple views and uses it to guide an vision-language model (VLM) in judging instruction ambiguity. Extensive experiments demonstrate the challenge of our task and the effectiveness of AmbiVer, paving the way for safer and more trustworthy embodied AI. Code and dataset available at https://jiayuding031020.github.io/ambi3d/.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>在安全攸关领域，语言歧义可能导致严重后果；在外科手术环境中，诸如“把小瓶递给我”这样含糊不清的指令可能会酿成灾难性错误。然而，大多数具身人工智能研究忽略了这一点，假设指令清晰明确，并且侧重于执行而非确认。为了弥补这一关键的安全漏洞，我们率先定义了开放词汇3D指令歧义检测，这是一项全新的基础任务，要求模型判断指令在给定的3D场景中是否具有单一、明确的含义。为了支持这项研究，我们构建了Ambi3D，一个大规模的基准数据集，其中包含700多个不同的3D场景和大约2.2万条指令。我们的分析揭示了一个令人惊讶的局限性：最先进的3D大型语言模型（LLM）难以可靠地判断指令是否具有歧义。为了应对这一挑战，我们提出了AmbiVer，一个两阶段框架，该框架从多个视角收集显式的视觉证据，并使用这些证据来引导视觉-语言模型（VLM）判断指令歧义。大量的实验证明了我们任务的挑战性和AmbiVer的有效性，为更安全、更值得信赖的具身人工智能铺平了道路。代码和数据集可在https://jiayuding031020.github.io/ambi3d/获取。</p>
             
 
             
@@ -390,6 +601,14 @@
             <a href="http://arxiv.org/abs/2601.05991v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Jiayu Ding, Haoran Tang, Ge Li</p>
             
@@ -398,7 +617,7 @@
     </div>
 
     <section class="filtered-section">
-        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
         <div class="filtered-grid">
             
             <div class="filtered-item">
@@ -408,9 +627,32 @@
         </div>
     </section>
 
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <p>没有一级过滤未通过的论文。</p>
+            </div>
+            
+        </div>
+    </section>
+
     <footer class="footer">
-        Generated on 2026-04-08 07:41:49 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-30 18:17:57 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
+    
+    
+    <script type="application/json" id="papers-data">[{"title": "Open-Vocabulary 3D Instruction Ambiguity Detection", "summary": "In safety-critical domains, linguistic ambiguity can have severe consequences; a vague command like \"Pass me the vial\" in a surgical setting could lead to catastrophic errors. Yet, most embodied AI research overlooks this, assuming instructions are clear and focusing on execution rather than confirmation. To address this critical safety gap, we are the first to define Open-Vocabulary 3D Instruction Ambiguity Detection, a fundamental new task where a model must determine if a command has a single, unambiguous meaning within a given 3D scene. To support this research, we build Ambi3D, the large-scale benchmark for this task, featuring over 700 diverse 3D scenes and around 22k instructions. Our analysis reveals a surprising limitation: state-of-the-art 3D Large Language Models (LLMs) struggle to reliably determine if an instruction is ambiguous. To address this challenge, we propose AmbiVer, a two-stage framework that collects explicit visual evidence from multiple views and uses it to guide an vision-language model (VLM) in judging instruction ambiguity. Extensive experiments demonstrate the challenge of our task and the effectiveness of AmbiVer, paving the way for safer and more trustworthy embodied AI. Code and dataset available at https://jiayuding031020.github.io/ambi3d/.", "url": "http://arxiv.org/abs/2601.05991v1", "authors": ["Jiayu Ding", "Haoran Tang", "Ge Li"], "keywords": []}]</script>
+
+    <!-- SparkMD5: Zotero's WebDAV format requires md5; SubtleCrypto can't do MD5 -->
+    <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
+    <!-- JSZip: needed to build the <key>.zip wrapper Zotero expects on WebDAV -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="../js/zotero.js"></script>
+    <script src="../js/webdav.js"></script>
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
 </body>
 </html>

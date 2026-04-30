@@ -32,38 +32,6 @@
             line-height: 1.6;
         }
 
-        .quick-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            align-items: center;
-            width: fit-content;
-            margin: 0.9rem auto 0;
-            padding: 0;
-            border: none;
-            background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-        }
-
-        .quick-nav a {
-            color: var(--highlight-primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 0.35rem 0.75rem;
-            border-radius: 999px;
-            border: 1px solid rgba(226, 232, 240, 0.95);
-            background: rgba(255, 255, 255, 0.86);
-            box-shadow: 0 2px 6px var(--shadow-color);
-            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-        }
-
-        .quick-nav a:hover {
-            background-color: rgba(123, 44, 159, 0.12);
-            color: #6B1F8F;
-            transform: translateY(-1px);
-        }
 
         .bento-grid {
             display: grid;
@@ -103,10 +71,25 @@
         }
 
         .paper-summary {
-            font-size: 0.875rem; /* Tailwind text-sm */
+            font-size: 0.85rem;
             color: var(--text-muted-color);
-            margin-bottom: 1.25rem; /* Tailwind mb-5 */
+            margin-bottom: 1.25rem;
             line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
         }
 
         .paper-link {
@@ -195,12 +178,25 @@
         }
 
         .paper-tldr {
-            font-size: 0.95rem; /* Slightly bigger than summary */
-            color: #475569; /* Changed to Tailwind slate-600 (slightly darker than summary) */
-            margin-top: 0.75rem; /* Tailwind mt-3 */
-            margin-bottom: 0.75rem; /* Tailwind mb-2 */
-            /* font-style: italic; */
-            font-weight: bold;
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
         }
 
         .paper-rating {
@@ -276,6 +272,222 @@
             font-size: 0.88rem;
         }
 
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link.
+           Shown only when body.zotero-mode is set (which like.js does after
+           confirming sessionStorage has decrypted credentials). Guests never
+           see it. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn i {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover i {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
@@ -289,11 +501,6 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>February 28, 2026</p>
-        <nav class="quick-nav">
-            <a href="../index.html" target="_top">首页</a>
-            <a href="../list.html" target="_top">报告列表</a>
-            <a href="../search.html" target="_top">论文检索</a>
-        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -307,16 +514,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Utilizing LLMs for Industrial Process Automation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> A growing number of publications address the best practices to use Large Language Models (LLMs) for software engineering in recent years. However, most of this work focuses on widely-used general purpose programming languages like Python due to their widespread usage training data. The utility of LLMs for software within the industrial process automation domain, with highly-specialized languages that are typically only used in proprietary contexts, remains underexplored. This research aims to utilize and integrate LLMs in the industrial development process, solving real-life programming tasks (e.g., generating a movement routine for a robotic arm) and accelerating the development cycles of manufacturing systems.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 近年来，越来越多的出版物探讨了使用大型语言模型（LLMs）进行软件工程的最佳实践。 然而，由于其训练数据使用的广泛性，大部分工作集中于像 Python 这样被广泛使用的通用编程语言。在工业过程自动化领域，大型语言模型在软件方面的效用，特别是对于通常只在专有环境中使用的、高度专业化的语言，仍然有待探索。 本研究旨在利用大型语言模型并将其集成到工业开发过程中，解决实际编程任务（例如，生成机器人手臂的运动程序），并加速制造系统的开发周期。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper explores the use of LLMs in the industrial process automation domain, focusing on specialized programming languages and real-world automation tasks like robotic arm control.</p>
+            <h2 class="paper-title">
+                Utilizing LLMs for Industrial Process Automation
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文探讨了LLM在工业过程自动化领域的应用，重点关注专用编程语言和实际自动化任务，如机器人手臂控制。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文探讨了LLM在工业过程自动化领域的应用，重点关注专用编程语言和实际自动化任务，如机器人手臂控制。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper explores the use of LLMs in the industrial process automation domain, focusing on specialized programming languages and real-world automation tasks like robotic arm control.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> A growing number of publications address the best practices to use Large Language Models (LLMs) for software engineering in recent years. However, most of this work focuses on widely-used general purpose programming languages like Python due to their widespread usage training data. The utility of LLMs for software within the industrial process automation domain, with highly-specialized languages that are typically only used in proprietary contexts, remains underexplored. This research aims to utilize and integrate LLMs in the industrial development process, solving real-life programming tasks (e.g., generating a movement routine for a robotic arm) and accelerating the development cycles of manufacturing systems.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>近年来，越来越多的出版物探讨了使用大型语言模型（LLMs）进行软件工程的最佳实践。 然而，由于其训练数据使用的广泛性，大部分工作集中于像 Python 这样被广泛使用的通用编程语言。在工业过程自动化领域，大型语言模型在软件方面的效用，特别是对于通常只在专有环境中使用的、高度专业化的语言，仍然有待探索。 本研究旨在利用大型语言模型并将其集成到工业开发过程中，解决实际编程任务（例如，生成机器人手臂的运动程序），并加速制造系统的开发周期。</p>
             
 
             
@@ -390,6 +601,14 @@
             <a href="http://arxiv.org/abs/2602.23331v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Salim Fares</p>
             
@@ -403,16 +622,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">MediX-R1: Open Ended Medical Reinforcement Learning</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> We introduce MediX-R1, an open-ended Reinforcement Learning (RL) framework for medical multimodal large language models (MLLMs) that enables clinically grounded, free-form answers beyond multiple-choice formats. MediX-R1 fine-tunes a baseline vision-language backbone with Group Based RL and a composite reward tailored for medical reasoning: an LLM-based accuracy reward that judges semantic correctness with a strict YES/NO decision, a medical embedding-based semantic reward to capture paraphrases and terminology variants, and lightweight format and modality rewards that enforce interpretable reasoning and modality recognition. This multi-signal design provides stable, informative feedback for open-ended outputs where traditional verifiable or MCQ-only rewards fall short. To measure progress, we propose a unified evaluation framework for both text-only and image+text tasks that uses a Reference-based LLM-as-judge in place of brittle string-overlap metrics, capturing semantic correctness, reasoning, and contextual alignment. Despite using only $\sim51$K instruction examples, MediX-R1 achieves excellent results across standard medical LLM (text-only) and VLM (image + text) benchmarks, outperforming strong open-source baselines and delivering particularly large gains on open-ended clinical tasks. Our results demonstrate that open-ended RL with comprehensive reward signals and LLM-based evaluation is a practical path toward reliable medical reasoning in multimodal models. Our trained models, curated datasets and source code are available at https://medix.cvmbzuai.com</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 我们介绍了MediX-R1，一个开放式的强化学习（RL）框架，用于医学多模态大型语言模型（MLLM），它能够提供临床层面扎实、自由形式的答案，超越了多项选择题的形式。 MediX-R1 使用基于组的强化学习和专为医学推理定制的复合奖励，对基线的视觉-语言主干网络进行微调：一个基于LLM的准确度奖励，通过严格的是/否决策来判断语义的正确性；一个基于医学嵌入的语义奖励，用于捕捉释义和术语变体；以及轻量级的格式和模态奖励，用于加强可解释的推理和模态识别。这种多信号设计为开放式输出提供了稳定且信息丰富的反馈，而传统的、可验证的或仅基于多项选择题的奖励则相形见绌。为了衡量进展，我们提出了一种统一的评估框架，用于纯文本任务和图像+文本任务，该框架使用基于参考的LLM作为评判者来替代脆弱的字符串重叠度量，从而捕捉语义正确性、推理和上下文一致性。尽管只使用了约 5.1 万个指令示例，MediX-R1 在标准医学LLM（纯文本）和VLM（图像+文本）基准测试中均取得了优异的成绩，超越了强大的开源基线，尤其是在开放式临床任务中取得了显著的提升。我们的结果表明，带有全面奖励信号和基于 LLM 评估的开放式强化学习是多模态模型中实现可靠医学推理的有效途径。我们训练的模型，整理的数据集和源代码可在 https://medix.cvmbzuai.com 获取。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: MediX-R1 is an open-ended RL framework for medical MLLMs that utilizes group-based RL and a composite reward system for improved medical reasoning and benchmark performance, especially on open-ended tasks.</p>
+            <h2 class="paper-title">
+                MediX-R1: Open Ended Medical Reinforcement Learning
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: MediX-R1是一个用于医疗多模态大型语言模型的开放式强化学习框架，它利用基于群体的强化学习和一个综合奖励系统来提高医疗推理能力和基准性能，特别是在开放式任务上。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>MediX-R1是一个用于医疗多模态大型语言模型的开放式强化学习框架，它利用基于群体的强化学习和一个综合奖励系统来提高医疗推理能力和基准性能，特别是在开放式任务上。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> MediX-R1 is an open-ended RL framework for medical MLLMs that utilizes group-based RL and a composite reward system for improved medical reasoning and benchmark performance, especially on open-ended tasks.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> We introduce MediX-R1, an open-ended Reinforcement Learning (RL) framework for medical multimodal large language models (MLLMs) that enables clinically grounded, free-form answers beyond multiple-choice formats. MediX-R1 fine-tunes a baseline vision-language backbone with Group Based RL and a composite reward tailored for medical reasoning: an LLM-based accuracy reward that judges semantic correctness with a strict YES/NO decision, a medical embedding-based semantic reward to capture paraphrases and terminology variants, and lightweight format and modality rewards that enforce interpretable reasoning and modality recognition. This multi-signal design provides stable, informative feedback for open-ended outputs where traditional verifiable or MCQ-only rewards fall short. To measure progress, we propose a unified evaluation framework for both text-only and image+text tasks that uses a Reference-based LLM-as-judge in place of brittle string-overlap metrics, capturing semantic correctness, reasoning, and contextual alignment. Despite using only $\sim51$K instruction examples, MediX-R1 achieves excellent results across standard medical LLM (text-only) and VLM (image + text) benchmarks, outperforming strong open-source baselines and delivering particularly large gains on open-ended clinical tasks. Our results demonstrate that open-ended RL with comprehensive reward signals and LLM-based evaluation is a practical path toward reliable medical reasoning in multimodal models. Our trained models, curated datasets and source code are available at https://medix.cvmbzuai.com</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>我们介绍了MediX-R1，一个开放式的强化学习（RL）框架，用于医学多模态大型语言模型（MLLM），它能够提供临床层面扎实、自由形式的答案，超越了多项选择题的形式。 MediX-R1 使用基于组的强化学习和专为医学推理定制的复合奖励，对基线的视觉-语言主干网络进行微调：一个基于LLM的准确度奖励，通过严格的是/否决策来判断语义的正确性；一个基于医学嵌入的语义奖励，用于捕捉释义和术语变体；以及轻量级的格式和模态奖励，用于加强可解释的推理和模态识别。这种多信号设计为开放式输出提供了稳定且信息丰富的反馈，而传统的、可验证的或仅基于多项选择题的奖励则相形见绌。为了衡量进展，我们提出了一种统一的评估框架，用于纯文本任务和图像+文本任务，该框架使用基于参考的LLM作为评判者来替代脆弱的字符串重叠度量，从而捕捉语义正确性、推理和上下文一致性。尽管只使用了约 5.1 万个指令示例，MediX-R1 在标准医学LLM（纯文本）和VLM（图像+文本）基准测试中均取得了优异的成绩，超越了强大的开源基线，尤其是在开放式临床任务中取得了显著的提升。我们的结果表明，带有全面奖励信号和基于 LLM 评估的开放式强化学习是多模态模型中实现可靠医学推理的有效途径。我们训练的模型，整理的数据集和源代码可在 https://medix.cvmbzuai.com 获取。</p>
             
 
             
@@ -486,6 +709,14 @@
             <a href="http://arxiv.org/abs/2602.23363v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="1" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="1" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Sahal Shaji Mullappilly, Mohammed Irfan Kurpath, Omair Mohamed, Mohamed Zidan, Fahad Khan, Salman Khan, Rao Anwer, Hisham Cholakkal</p>
             
@@ -499,16 +730,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Interface-Aware Trajectory Reconstruction of Limited Demonstrations for Robot Learning</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Assistive robots offer agency to humans with severe motor impairments. Often, these users control high-DoF robots through low-dimensional interfaces, such as using a 1-D sip-and-puff interface to operate a 6-DoF robotic arm. This mismatch results in having access to only a subset of control dimensions at a given time, imposing unintended and artificial constraints on robot motion. As a result, interface-limited demonstrations embed suboptimal motions that reflect interface restrictions rather than user intent. To address this, we present a trajectory reconstruction algorithm that reasons about task, environment, and interface constraints to lift demonstrations into the robot's full control space. We evaluate our approach using real-world demonstrations of ADL-inspired tasks performed via a 2-D joystick and 1-D sip-and-puff control interface, teleoperating two distinct 7-DoF robotic arms. Analyses of the reconstructed demonstrations and derived control policies show that lifted trajectories are faster and more efficient than their interface-constrained counterparts while respecting user preferences.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 辅助机器人为重度运动障碍人士提供了行动能力。通常，这些用户通过低维界面控制高自由度机器人，例如使用一维吹吸界面操作六自由度机械臂。这种不匹配导致在给定时间只能访问控制维度的一个子集，从而对机器人运动施加了非预期的和人为的约束。因此，受界面限制的示教数据嵌入了次优运动，这些运动反映了界面限制而不是用户的意图。为了解决这个问题，我们提出了一种轨迹重建算法，该算法能推理任务、环境和界面约束，从而将示教数据提升到机器人的完整控制空间中。我们使用通过二维操纵杆和一维吹吸控制界面进行远程操作两种不同的七自由度机械臂所执行的、受日常生活活动启发的真实示教数据来评估我们的方法。对重建的示教数据和导出的控制策略的分析表明，提升后的轨迹比其受界面约束的对应轨迹更快、更高效，同时尊重用户偏好。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces a trajectory reconstruction algorithm to improve robot learning from demonstrations using low-dimensional interfaces, addressing the limitations imposed by interface constraints and generating faster, more efficient robot trajectories.</p>
+            <h2 class="paper-title">
+                Interface-Aware Trajectory Reconstruction of Limited Demonstrations for Robot Learning
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一种轨迹重建算法，该算法通过低维界面改进从演示中进行的机器人学习，解决了界面约束带来的限制，并生成更快、更高效的机器人轨迹。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了一种轨迹重建算法，该算法通过低维界面改进从演示中进行的机器人学习，解决了界面约束带来的限制，并生成更快、更高效的机器人轨迹。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces a trajectory reconstruction algorithm to improve robot learning from demonstrations using low-dimensional interfaces, addressing the limitations imposed by interface constraints and generating faster, more efficient robot trajectories.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Assistive robots offer agency to humans with severe motor impairments. Often, these users control high-DoF robots through low-dimensional interfaces, such as using a 1-D sip-and-puff interface to operate a 6-DoF robotic arm. This mismatch results in having access to only a subset of control dimensions at a given time, imposing unintended and artificial constraints on robot motion. As a result, interface-limited demonstrations embed suboptimal motions that reflect interface restrictions rather than user intent. To address this, we present a trajectory reconstruction algorithm that reasons about task, environment, and interface constraints to lift demonstrations into the robot's full control space. We evaluate our approach using real-world demonstrations of ADL-inspired tasks performed via a 2-D joystick and 1-D sip-and-puff control interface, teleoperating two distinct 7-DoF robotic arms. Analyses of the reconstructed demonstrations and derived control policies show that lifted trajectories are faster and more efficient than their interface-constrained counterparts while respecting user preferences.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>辅助机器人为重度运动障碍人士提供了行动能力。通常，这些用户通过低维界面控制高自由度机器人，例如使用一维吹吸界面操作六自由度机械臂。这种不匹配导致在给定时间只能访问控制维度的一个子集，从而对机器人运动施加了非预期的和人为的约束。因此，受界面限制的示教数据嵌入了次优运动，这些运动反映了界面限制而不是用户的意图。为了解决这个问题，我们提出了一种轨迹重建算法，该算法能推理任务、环境和界面约束，从而将示教数据提升到机器人的完整控制空间中。我们使用通过二维操纵杆和一维吹吸控制界面进行远程操作两种不同的七自由度机械臂所执行的、受日常生活活动启发的真实示教数据来评估我们的方法。对重建的示教数据和导出的控制策略的分析表明，提升后的轨迹比其受界面约束的对应轨迹更快、更高效，同时尊重用户偏好。</p>
             
 
             
@@ -582,6 +817,14 @@
             <a href="http://arxiv.org/abs/2602.23287v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="2" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="2" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Demiana R. Barsoum, Mahdieh Nejati Javaremi, Larisa Y. C. Loke, Brenna D. Argall</p>
             
@@ -595,16 +838,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">SeeThrough3D: Occlusion Aware 3D Control in Text-to-Image Generation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> We identify occlusion reasoning as a fundamental yet overlooked aspect for 3D layout-conditioned generation. It is essential for synthesizing partially occluded objects with depth-consistent geometry and scale. While existing methods can generate realistic scenes that follow input layouts, they often fail to model precise inter-object occlusions. We propose SeeThrough3D, a model for 3D layout conditioned generation that explicitly models occlusions. We introduce an occlusion-aware 3D scene representation (OSCR), where objects are depicted as translucent 3D boxes placed within a virtual environment and rendered from desired camera viewpoint. The transparency encodes hidden object regions, enabling the model to reason about occlusions, while the rendered viewpoint provides explicit camera control during generation. We condition a pretrained flow based text-to-image image generation model by introducing a set of visual tokens derived from our rendered 3D representation. Furthermore, we apply masked self-attention to accurately bind each object bounding box to its corresponding textual description, enabling accurate generation of multiple objects without object attribute mixing. To train the model, we construct a synthetic dataset with diverse multi-object scenes with strong inter-object occlusions. SeeThrough3D generalizes effectively to unseen object categories and enables precise 3D layout control with realistic occlusions and consistent camera control.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 我们将遮挡推理识别为3D布局条件生成中一个基础但被忽视的方面。它对于合成具有深度一致的几何形状和大小的、部分遮挡的对象至关重要。虽然现有方法可以生成符合输入布局的逼真场景，但它们通常无法精确建模对象间的遮挡。我们提出了SeeThrough3D，一个用于3D布局条件生成且显式建模遮挡的模型。我们引入了一种遮挡感知3D场景表示(OSCR)，其中对象被描绘为放置在虚拟环境中的半透明3D盒子，并从所需的相机视角渲染。透明度编码隐藏的对象区域，使模型能够进行遮挡推理，而渲染的视点在生成过程中提供显式的相机控制。通过引入一组从我们渲染的3D表示中导出的视觉令牌，我们对预训练的基于流的文本到图像生成模型进行条件化。此外，我们应用掩码自注意力来精确地将每个对象边界框绑定到其对应的文本描述，从而实现多个对象的准确生成，而不会发生对象属性混合。为了训练模型，我们构建了一个合成数据集，其中包含具有强烈对象间遮挡的各种多对象场景。SeeThrough3D能够有效地推广到未见过的对象类别，并实现精确的3D布局控制，同时保证逼真的遮挡效果和一致的相机控制。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: SeeThrough3D introduces an occlusion-aware 3D scene representation for text-to-image generation, enabling better object occlusion and camera control in generated images based on text prompts and 3D layouts.</p>
+            <h2 class="paper-title">
+                SeeThrough3D: Occlusion Aware 3D Control in Text-to-Image Generation
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: SeeThrough3D 提出了一种用于文本到图像生成的、具有遮挡感知能力的 3D 场景表示，可以在基于文本提示和 3D 布局生成的图像中实现更好的对象遮挡和相机控制。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>SeeThrough3D 提出了一种用于文本到图像生成的、具有遮挡感知能力的 3D 场景表示，可以在基于文本提示和 3D 布局生成的图像中实现更好的对象遮挡和相机控制。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> SeeThrough3D introduces an occlusion-aware 3D scene representation for text-to-image generation, enabling better object occlusion and camera control in generated images based on text prompts and 3D layouts.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> We identify occlusion reasoning as a fundamental yet overlooked aspect for 3D layout-conditioned generation. It is essential for synthesizing partially occluded objects with depth-consistent geometry and scale. While existing methods can generate realistic scenes that follow input layouts, they often fail to model precise inter-object occlusions. We propose SeeThrough3D, a model for 3D layout conditioned generation that explicitly models occlusions. We introduce an occlusion-aware 3D scene representation (OSCR), where objects are depicted as translucent 3D boxes placed within a virtual environment and rendered from desired camera viewpoint. The transparency encodes hidden object regions, enabling the model to reason about occlusions, while the rendered viewpoint provides explicit camera control during generation. We condition a pretrained flow based text-to-image image generation model by introducing a set of visual tokens derived from our rendered 3D representation. Furthermore, we apply masked self-attention to accurately bind each object bounding box to its corresponding textual description, enabling accurate generation of multiple objects without object attribute mixing. To train the model, we construct a synthetic dataset with diverse multi-object scenes with strong inter-object occlusions. SeeThrough3D generalizes effectively to unseen object categories and enables precise 3D layout control with realistic occlusions and consistent camera control.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>我们将遮挡推理识别为3D布局条件生成中一个基础但被忽视的方面。它对于合成具有深度一致的几何形状和大小的、部分遮挡的对象至关重要。虽然现有方法可以生成符合输入布局的逼真场景，但它们通常无法精确建模对象间的遮挡。我们提出了SeeThrough3D，一个用于3D布局条件生成且显式建模遮挡的模型。我们引入了一种遮挡感知3D场景表示(OSCR)，其中对象被描绘为放置在虚拟环境中的半透明3D盒子，并从所需的相机视角渲染。透明度编码隐藏的对象区域，使模型能够进行遮挡推理，而渲染的视点在生成过程中提供显式的相机控制。通过引入一组从我们渲染的3D表示中导出的视觉令牌，我们对预训练的基于流的文本到图像生成模型进行条件化。此外，我们应用掩码自注意力来精确地将每个对象边界框绑定到其对应的文本描述，从而实现多个对象的准确生成，而不会发生对象属性混合。为了训练模型，我们构建了一个合成数据集，其中包含具有强烈对象间遮挡的各种多对象场景。SeeThrough3D能够有效地推广到未见过的对象类别，并实现精确的3D布局控制，同时保证逼真的遮挡效果和一致的相机控制。</p>
             
 
             
@@ -678,6 +925,14 @@
             <a href="http://arxiv.org/abs/2602.23359v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="3" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="3" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Vaibhav Agrawal, Rishubh Parihar, Pradhaan Bhat, Ravi Kiran Sarvadevabhatla, R. Venkatesh Babu</p>
             
@@ -691,16 +946,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Evaluating Zero-Shot and One-Shot Adaptation of Small Language Models in Leader-Follower Interaction</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Leader-follower interaction is an important paradigm in human-robot interaction (HRI). Yet, assigning roles in real time remains challenging for resource-constrained mobile and assistive robots. While large language models (LLMs) have shown promise for natural communication, their size and latency limit on-device deployment. Small language models (SLMs) offer a potential alternative, but their effectiveness for role classification in HRI has not been systematically evaluated. In this paper, we present a benchmark of SLMs for leader-follower communication, introducing a novel dataset derived from a published database and augmented with synthetic samples to capture interaction-specific dynamics. We investigate two adaptation strategies: prompt engineering and fine-tuning, studied under zero-shot and one-shot interaction modes, compared with an untrained baseline. Experiments with Qwen2.5-0.5B reveal that zero-shot fine-tuning achieves robust classification performance (86.66% accuracy) while maintaining low latency (22.2 ms per sample), significantly outperforming baseline and prompt-engineered approaches. However, results also indicate a performance degradation in one-shot modes, where increased context length challenges the model's architectural capacity. These findings demonstrate that fine-tuned SLMs provide an effective solution for direct role assignment, while highlighting critical trade-offs between dialogue complexity and classification reliability on the edge.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 领导者-追随者交互是人机交互（HRI）中一个重要的范式。然而，对于资源受限的移动和辅助机器人而言，实时分配角色仍然具有挑战性。虽然大型语言模型（LLMs）在自然通信方面表现出潜力，但其尺寸和延迟限制了设备端部署。小型语言模型（SLMs）提供了一种潜在的替代方案，但其在HRI中角色分类方面的有效性尚未得到系统评估。本文提出了一个针对领导者-追随者通信的SLM基准测试，引入了一个新颖的数据集，该数据集源自已发布的数据库，并使用合成样本进行增强以捕获特定于交互的动态。我们研究了两种适应策略：提示工程和微调，并在零样本和单样本交互模式下进行了研究，并与未经训练的基线进行了比较。使用Qwen2.5-0.5B进行的实验表明，零样本微调实现了稳健的分类性能（准确率86.66%），同时保持了低延迟（每个样本22.2毫秒），显著优于基线和提示工程方法。然而，结果也表明在单样本模式下性能下降，其中增加的上下文长度挑战了模型的架构能力。这些发现表明，经过微调的SLM为直接角色分配提供了一种有效的解决方案，同时突出了边缘设备上对话复杂性和分类可靠性之间的关键权衡。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper benchmarks the effectiveness of small language models (SLMs) for leader-follower role classification in human-robot interaction, finding that zero-shot fine-tuning of Qwen2.5-0.5B achieves high accuracy with low latency, but performance degrades in one-shot scenarios.</p>
+            <h2 class="paper-title">
+                Evaluating Zero-Shot and One-Shot Adaptation of Small Language Models in Leader-Follower Interaction
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文评估了小型语言模型 (SLM) 在人机交互中领导者-跟随者角色分类的有效性，发现 Qwen2.5-0.5B 的零样本微调实现了高精度和低延迟，但性能在单样本场景中下降。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文评估了小型语言模型 (SLM) 在人机交互中领导者-跟随者角色分类的有效性，发现 Qwen2.5-0.5B 的零样本微调实现了高精度和低延迟，但性能在单样本场景中下降。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper benchmarks the effectiveness of small language models (SLMs) for leader-follower role classification in human-robot interaction, finding that zero-shot fine-tuning of Qwen2.5-0.5B achieves high accuracy with low latency, but performance degrades in one-shot scenarios.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Leader-follower interaction is an important paradigm in human-robot interaction (HRI). Yet, assigning roles in real time remains challenging for resource-constrained mobile and assistive robots. While large language models (LLMs) have shown promise for natural communication, their size and latency limit on-device deployment. Small language models (SLMs) offer a potential alternative, but their effectiveness for role classification in HRI has not been systematically evaluated. In this paper, we present a benchmark of SLMs for leader-follower communication, introducing a novel dataset derived from a published database and augmented with synthetic samples to capture interaction-specific dynamics. We investigate two adaptation strategies: prompt engineering and fine-tuning, studied under zero-shot and one-shot interaction modes, compared with an untrained baseline. Experiments with Qwen2.5-0.5B reveal that zero-shot fine-tuning achieves robust classification performance (86.66% accuracy) while maintaining low latency (22.2 ms per sample), significantly outperforming baseline and prompt-engineered approaches. However, results also indicate a performance degradation in one-shot modes, where increased context length challenges the model's architectural capacity. These findings demonstrate that fine-tuned SLMs provide an effective solution for direct role assignment, while highlighting critical trade-offs between dialogue complexity and classification reliability on the edge.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>领导者-追随者交互是人机交互（HRI）中一个重要的范式。然而，对于资源受限的移动和辅助机器人而言，实时分配角色仍然具有挑战性。虽然大型语言模型（LLMs）在自然通信方面表现出潜力，但其尺寸和延迟限制了设备端部署。小型语言模型（SLMs）提供了一种潜在的替代方案，但其在HRI中角色分类方面的有效性尚未得到系统评估。本文提出了一个针对领导者-追随者通信的SLM基准测试，引入了一个新颖的数据集，该数据集源自已发布的数据库，并使用合成样本进行增强以捕获特定于交互的动态。我们研究了两种适应策略：提示工程和微调，并在零样本和单样本交互模式下进行了研究，并与未经训练的基线进行了比较。使用Qwen2.5-0.5B进行的实验表明，零样本微调实现了稳健的分类性能（准确率86.66%），同时保持了低延迟（每个样本22.2毫秒），显著优于基线和提示工程方法。然而，结果也表明在单样本模式下性能下降，其中增加的上下文长度挑战了模型的架构能力。这些发现表明，经过微调的SLM为直接角色分配提供了一种有效的解决方案，同时突出了边缘设备上对话复杂性和分类可靠性之间的关键权衡。</p>
             
 
             
@@ -774,6 +1033,14 @@
             <a href="http://arxiv.org/abs/2602.23312v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="4" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="4" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Rafael R. Baptista, André de Lima Salgado, Ricardo V. Godoy, Marcelo Becker, Thiago Boaventura, Gustavo J. G. Lahr</p>
             
@@ -782,7 +1049,7 @@
     </div>
 
     <section class="filtered-section">
-        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
         <div class="filtered-grid">
             
             <div class="filtered-item">
@@ -792,20 +1059,55 @@
                         Generalized Rapid Action Value Estimation in Memory-Constrained Environments
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="5" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="5" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Aloïs Rautureau, Tristan Cazenave, Éric Piette</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文介绍了GRAVE2，GRAVER和GRAVER2算法，它们改进了用于通用游戏玩法（GGP）的GRAVE算法，通过显着减少内存使用量而不牺牲游戏强度。</p>
+                
+                <p><strong>Overall:</strong> 4/10</p>
+                
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <p>没有一级过滤未通过的论文。</p>
             </div>
             
         </div>
     </section>
 
     <footer class="footer">
-        Generated on 2026-04-08 07:41:51 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-30 18:17:58 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
+    
+    
+    <script type="application/json" id="papers-data">[{"title": "Utilizing LLMs for Industrial Process Automation", "summary": "A growing number of publications address the best practices to use Large Language Models (LLMs) for software engineering in recent years. However, most of this work focuses on widely-used general purpose programming languages like Python due to their widespread usage training data. The utility of LLMs for software within the industrial process automation domain, with highly-specialized languages that are typically only used in proprietary contexts, remains underexplored. This research aims to utilize and integrate LLMs in the industrial development process, solving real-life programming tasks (e.g., generating a movement routine for a robotic arm) and accelerating the development cycles of manufacturing systems.", "url": "http://arxiv.org/abs/2602.23331v1", "authors": ["Salim Fares"], "keywords": []},{"title": "MediX-R1: Open Ended Medical Reinforcement Learning", "summary": "We introduce MediX-R1, an open-ended Reinforcement Learning (RL) framework for medical multimodal large language models (MLLMs) that enables clinically grounded, free-form answers beyond multiple-choice formats. MediX-R1 fine-tunes a baseline vision-language backbone with Group Based RL and a composite reward tailored for medical reasoning: an LLM-based accuracy reward that judges semantic correctness with a strict YES/NO decision, a medical embedding-based semantic reward to capture paraphrases and terminology variants, and lightweight format and modality rewards that enforce interpretable reasoning and modality recognition. This multi-signal design provides stable, informative feedback for open-ended outputs where traditional verifiable or MCQ-only rewards fall short. To measure progress, we propose a unified evaluation framework for both text-only and image+text tasks that uses a Reference-based LLM-as-judge in place of brittle string-overlap metrics, capturing semantic correctness, reasoning, and contextual alignment. Despite using only $\\sim51$K instruction examples, MediX-R1 achieves excellent results across standard medical LLM (text-only) and VLM (image + text) benchmarks, outperforming strong open-source baselines and delivering particularly large gains on open-ended clinical tasks. Our results demonstrate that open-ended RL with comprehensive reward signals and LLM-based evaluation is a practical path toward reliable medical reasoning in multimodal models. Our trained models, curated datasets and source code are available at https://medix.cvmbzuai.com", "url": "http://arxiv.org/abs/2602.23363v1", "authors": ["Sahal Shaji Mullappilly", "Mohammed Irfan Kurpath", "Omair Mohamed", "Mohamed Zidan", "Fahad Khan", "Salman Khan", "Rao Anwer", "Hisham Cholakkal"], "keywords": []},{"title": "Interface-Aware Trajectory Reconstruction of Limited Demonstrations for Robot Learning", "summary": "Assistive robots offer agency to humans with severe motor impairments. Often, these users control high-DoF robots through low-dimensional interfaces, such as using a 1-D sip-and-puff interface to operate a 6-DoF robotic arm. This mismatch results in having access to only a subset of control dimensions at a given time, imposing unintended and artificial constraints on robot motion. As a result, interface-limited demonstrations embed suboptimal motions that reflect interface restrictions rather than user intent. To address this, we present a trajectory reconstruction algorithm that reasons about task, environment, and interface constraints to lift demonstrations into the robot\u0027s full control space. We evaluate our approach using real-world demonstrations of ADL-inspired tasks performed via a 2-D joystick and 1-D sip-and-puff control interface, teleoperating two distinct 7-DoF robotic arms. Analyses of the reconstructed demonstrations and derived control policies show that lifted trajectories are faster and more efficient than their interface-constrained counterparts while respecting user preferences.", "url": "http://arxiv.org/abs/2602.23287v1", "authors": ["Demiana R. Barsoum", "Mahdieh Nejati Javaremi", "Larisa Y. C. Loke", "Brenna D. Argall"], "keywords": []},{"title": "SeeThrough3D: Occlusion Aware 3D Control in Text-to-Image Generation", "summary": "We identify occlusion reasoning as a fundamental yet overlooked aspect for 3D layout-conditioned generation. It is essential for synthesizing partially occluded objects with depth-consistent geometry and scale. While existing methods can generate realistic scenes that follow input layouts, they often fail to model precise inter-object occlusions. We propose SeeThrough3D, a model for 3D layout conditioned generation that explicitly models occlusions. We introduce an occlusion-aware 3D scene representation (OSCR), where objects are depicted as translucent 3D boxes placed within a virtual environment and rendered from desired camera viewpoint. The transparency encodes hidden object regions, enabling the model to reason about occlusions, while the rendered viewpoint provides explicit camera control during generation. We condition a pretrained flow based text-to-image image generation model by introducing a set of visual tokens derived from our rendered 3D representation. Furthermore, we apply masked self-attention to accurately bind each object bounding box to its corresponding textual description, enabling accurate generation of multiple objects without object attribute mixing. To train the model, we construct a synthetic dataset with diverse multi-object scenes with strong inter-object occlusions. SeeThrough3D generalizes effectively to unseen object categories and enables precise 3D layout control with realistic occlusions and consistent camera control.", "url": "http://arxiv.org/abs/2602.23359v1", "authors": ["Vaibhav Agrawal", "Rishubh Parihar", "Pradhaan Bhat", "Ravi Kiran Sarvadevabhatla", "R. Venkatesh Babu"], "keywords": []},{"title": "Evaluating Zero-Shot and One-Shot Adaptation of Small Language Models in Leader-Follower Interaction", "summary": "Leader-follower interaction is an important paradigm in human-robot interaction (HRI). Yet, assigning roles in real time remains challenging for resource-constrained mobile and assistive robots. While large language models (LLMs) have shown promise for natural communication, their size and latency limit on-device deployment. Small language models (SLMs) offer a potential alternative, but their effectiveness for role classification in HRI has not been systematically evaluated. In this paper, we present a benchmark of SLMs for leader-follower communication, introducing a novel dataset derived from a published database and augmented with synthetic samples to capture interaction-specific dynamics. We investigate two adaptation strategies: prompt engineering and fine-tuning, studied under zero-shot and one-shot interaction modes, compared with an untrained baseline. Experiments with Qwen2.5-0.5B reveal that zero-shot fine-tuning achieves robust classification performance (86.66% accuracy) while maintaining low latency (22.2 ms per sample), significantly outperforming baseline and prompt-engineered approaches. However, results also indicate a performance degradation in one-shot modes, where increased context length challenges the model\u0027s architectural capacity. These findings demonstrate that fine-tuned SLMs provide an effective solution for direct role assignment, while highlighting critical trade-offs between dialogue complexity and classification reliability on the edge.", "url": "http://arxiv.org/abs/2602.23312v1", "authors": ["Rafael R. Baptista", "Andr\u00e9 de Lima Salgado", "Ricardo V. Godoy", "Marcelo Becker", "Thiago Boaventura", "Gustavo J. G. Lahr"], "keywords": []},{"title": "Generalized Rapid Action Value Estimation in Memory-Constrained Environments", "summary": "Generalized Rapid Action Value Estimation (GRAVE) has been shown to be a strong variant within the Monte-Carlo Tree Search (MCTS) family of algorithms for General Game Playing (GGP). However, its reliance on storing additional win/visit statistics at each node makes its use impractical in memory-constrained environments, thereby limiting its applicability in practice. In this paper, we introduce the GRAVE2, GRAVER and GRAVER2 algorithms, which extend GRAVE through two-level search, node recycling, and a combination of both techniques, respectively. We show that these enhancements enable a drastic reduction in the number of stored nodes while matching the playing strength of GRAVE.", "url": "http://arxiv.org/abs/2602.23318v1", "authors": ["Alo\u00efs Rautureau", "Tristan Cazenave", "\u00c9ric Piette"], "keywords": []}]</script>
+
+    <!-- SparkMD5: Zotero's WebDAV format requires md5; SubtleCrypto can't do MD5 -->
+    <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
+    <!-- JSZip: needed to build the <key>.zip wrapper Zotero expects on WebDAV -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="../js/zotero.js"></script>
+    <script src="../js/webdav.js"></script>
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
 </body>
 </html>

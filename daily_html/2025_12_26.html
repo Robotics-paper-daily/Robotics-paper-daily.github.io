@@ -32,38 +32,6 @@
             line-height: 1.6;
         }
 
-        .quick-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            align-items: center;
-            width: fit-content;
-            margin: 0.9rem auto 0;
-            padding: 0;
-            border: none;
-            background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-        }
-
-        .quick-nav a {
-            color: var(--highlight-primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 0.35rem 0.75rem;
-            border-radius: 999px;
-            border: 1px solid rgba(226, 232, 240, 0.95);
-            background: rgba(255, 255, 255, 0.86);
-            box-shadow: 0 2px 6px var(--shadow-color);
-            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-        }
-
-        .quick-nav a:hover {
-            background-color: rgba(123, 44, 159, 0.12);
-            color: #6B1F8F;
-            transform: translateY(-1px);
-        }
 
         .bento-grid {
             display: grid;
@@ -103,10 +71,25 @@
         }
 
         .paper-summary {
-            font-size: 0.875rem; /* Tailwind text-sm */
+            font-size: 0.85rem;
             color: var(--text-muted-color);
-            margin-bottom: 1.25rem; /* Tailwind mb-5 */
+            margin-bottom: 1.25rem;
             line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
         }
 
         .paper-link {
@@ -195,12 +178,25 @@
         }
 
         .paper-tldr {
-            font-size: 0.95rem; /* Slightly bigger than summary */
-            color: #475569; /* Changed to Tailwind slate-600 (slightly darker than summary) */
-            margin-top: 0.75rem; /* Tailwind mt-3 */
-            margin-bottom: 0.75rem; /* Tailwind mb-2 */
-            /* font-style: italic; */
-            font-weight: bold;
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
         }
 
         .paper-rating {
@@ -276,6 +272,222 @@
             font-size: 0.88rem;
         }
 
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link.
+           Shown only when body.zotero-mode is set (which like.js does after
+           confirming sessionStorage has decrypted credentials). Guests never
+           see it. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn i {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover i {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
@@ -289,11 +501,6 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>December 26, 2025</p>
-        <nav class="quick-nav">
-            <a href="../index.html" target="_top">首页</a>
-            <a href="../list.html" target="_top">报告列表</a>
-            <a href="../search.html" target="_top">论文检索</a>
-        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -307,16 +514,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Streaming Video Instruction Tuning</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> We present Streamo, a real-time streaming video LLM that serves as a general-purpose interactive assistant. Unlike existing online video models that focus narrowly on question answering or captioning, Streamo performs a broad spectrum of streaming video tasks, including real-time narration, action understanding, event captioning, temporal event grounding, and time-sensitive question answering. To develop such versatility, we construct Streamo-Instruct-465K, a large-scale instruction-following dataset tailored for streaming video understanding. The dataset covers diverse temporal contexts and multi-task supervision, enabling unified training across heterogeneous streaming tasks. After training end-to-end on the instruction-following dataset through a streamlined pipeline, Streamo exhibits strong temporal reasoning, responsive interaction, and broad generalization across a variety of streaming benchmarks. Extensive experiments show that Streamo bridges the gap between offline video perception models and real-time multimodal assistants, making a step toward unified, intelligent video understanding in continuous video streams.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 我们提出了Streamo，一个实时流媒体视频大语言模型，可作为通用交互式助手。与现有专注于问答或字幕的在线视频模型不同，Streamo执行广泛的流媒体视频任务，包括实时叙述、动作理解、事件字幕、时间事件定位和时间敏感的问题回答。为了开发这种多功能性，我们构建了Streamo-Instruct-465K，一个专为流媒体视频理解量身定制的大规模指令遵循数据集。该数据集涵盖了多样的时间上下文和多任务监督，从而实现了跨异构流媒体任务的统一训练。通过精简的流水线端到端地在指令遵循数据集上训练后，Streamo展现出强大的时间推理能力、响应式交互能力以及在各种流媒体基准测试中的广泛泛化能力。大量实验表明，Streamo弥合了离线视频感知模型和实时多模态助手之间的差距，朝着连续视频流中统一、智能的视频理解迈出了一步。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: Streamo is a real-time streaming video LLM trained on a large instruction-following dataset (Streamo-Instruct-465K) to perform a broad spectrum of streaming video tasks, demonstrating strong temporal reasoning and generalization.</p>
+            <h2 class="paper-title">
+                Streaming Video Instruction Tuning
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: Streamo是一个实时流视频LLM，它在大型指令跟随数据集（Streamo-Instruct-465K）上进行训练，以执行广泛的流视频任务，展示了强大的时间推理和泛化能力。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>Streamo是一个实时流视频LLM，它在大型指令跟随数据集（Streamo-Instruct-465K）上进行训练，以执行广泛的流视频任务，展示了强大的时间推理和泛化能力。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> Streamo is a real-time streaming video LLM trained on a large instruction-following dataset (Streamo-Instruct-465K) to perform a broad spectrum of streaming video tasks, demonstrating strong temporal reasoning and generalization.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> We present Streamo, a real-time streaming video LLM that serves as a general-purpose interactive assistant. Unlike existing online video models that focus narrowly on question answering or captioning, Streamo performs a broad spectrum of streaming video tasks, including real-time narration, action understanding, event captioning, temporal event grounding, and time-sensitive question answering. To develop such versatility, we construct Streamo-Instruct-465K, a large-scale instruction-following dataset tailored for streaming video understanding. The dataset covers diverse temporal contexts and multi-task supervision, enabling unified training across heterogeneous streaming tasks. After training end-to-end on the instruction-following dataset through a streamlined pipeline, Streamo exhibits strong temporal reasoning, responsive interaction, and broad generalization across a variety of streaming benchmarks. Extensive experiments show that Streamo bridges the gap between offline video perception models and real-time multimodal assistants, making a step toward unified, intelligent video understanding in continuous video streams.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>我们提出了Streamo，一个实时流媒体视频大语言模型，可作为通用交互式助手。与现有专注于问答或字幕的在线视频模型不同，Streamo执行广泛的流媒体视频任务，包括实时叙述、动作理解、事件字幕、时间事件定位和时间敏感的问题回答。为了开发这种多功能性，我们构建了Streamo-Instruct-465K，一个专为流媒体视频理解量身定制的大规模指令遵循数据集。该数据集涵盖了多样的时间上下文和多任务监督，从而实现了跨异构流媒体任务的统一训练。通过精简的流水线端到端地在指令遵循数据集上训练后，Streamo展现出强大的时间推理能力、响应式交互能力以及在各种流媒体基准测试中的广泛泛化能力。大量实验表明，Streamo弥合了离线视频感知模型和实时多模态助手之间的差距，朝着连续视频流中统一、智能的视频理解迈出了一步。</p>
             
 
             
@@ -390,6 +601,14 @@
             <a href="http://arxiv.org/abs/2512.21334v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Jiaer Xia, Peixian Chen, Mengdan Zhang, Xing Sun, Kaiyang Zhou</p>
             
@@ -403,16 +622,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Fast SAM2 with Text-Driven Token Pruning</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Segment Anything Model 2 (SAM2), a vision foundation model has significantly advanced in prompt-driven video object segmentation, yet their practical deployment remains limited by the high computational and memory cost of processing dense visual tokens across time. The SAM2 pipelines typically propagate all visual tokens produced by the image encoder through downstream temporal reasoning modules, regardless of their relevance to the target object, resulting in reduced scalability due to quadratic memory attention overhead. In this work, we introduce a text-guided token pruning framework that improves inference efficiency by selectively reducing token density prior to temporal propagation, without modifying the underlying segmentation architecture. Operating after visual encoding and before memory based propagation, our method ranks tokens using a lightweight routing mechanism that integrates local visual context, semantic relevance derived from object-centric textual descriptions (either user-provided or automatically generated), and uncertainty cues that help preserve ambiguous or boundary critical regions. By retaining only the most informative tokens for downstream processing, the proposed approach reduces redundant computation while maintaining segmentation fidelity. Extensive experiments across multiple challenging video segmentation benchmarks demonstrate that post-encoder token pruning provides a practical and effective pathway to efficient, prompt-aware video segmentation, achieving up to 42.50 percent faster inference and 37.41 percent lower GPU memory usage compared to the unpruned baseline SAM2, while preserving competitive J and F performance. These results highlight the potential of early token selection to improve the scalability of transformer-based video segmentation systems for real-time and resource-constrained applications.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 分割一切模型2（SAM2）作为一种视觉基础模型，在提示驱动的视频对象分割方面取得了显著进展，然而，由于处理跨时间密集视觉标记的高计算和内存成本，它们的实际部署仍然受到限制。SAM2管线通常将图像编码器产生的所有视觉标记通过下游的时间推理模块传播，而不管它们与目标对象的相关性如何，从而导致二次内存注意力开销，降低了可扩展性。在这项工作中，我们引入了一种文本引导的标记剪枝框架，通过在时间传播之前选择性地减少标记密度来提高推理效率，而无需修改底层的分割架构。我们的方法在视觉编码之后和基于内存的传播之前运行，它使用一种轻量级的路由机制对标记进行排序，该机制集成了局部视觉上下文、从以对象为中心的文本描述（用户提供或自动生成）中获得的语义相关性，以及有助于保留模糊或边界关键区域的不确定性线索。通过仅保留信息最丰富的标记用于下游处理，所提出的方法减少了冗余计算，同时保持了分割的保真度。在多个具有挑战性的视频分割基准测试中的广泛实验表明，后编码器标记剪枝为高效的、提示感知的视频分割提供了一种实用且有效的途径，与未剪枝的基线SAM2相比，实现了高达42.50%的推理速度提升和37.41%的GPU内存使用降低，同时保持了具有竞争力的J和F性能。这些结果突出了早期标记选择在提高基于Transformer的视频分割系统面向实时和资源受限应用的扩展性的潜力。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces a text-guided token pruning method to reduce the computational cost of SAM2 for video object segmentation, achieving significant speedup and memory reduction without sacrificing performance.</p>
+            <h2 class="paper-title">
+                Fast SAM2 with Text-Driven Token Pruning
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一种文本引导的令牌修剪方法，旨在降低 SAM2 在视频对象分割中的计算成本，实现了显著的加速和内存减少，同时没有牺牲性能。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了一种文本引导的令牌修剪方法，旨在降低 SAM2 在视频对象分割中的计算成本，实现了显著的加速和内存减少，同时没有牺牲性能。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces a text-guided token pruning method to reduce the computational cost of SAM2 for video object segmentation, achieving significant speedup and memory reduction without sacrificing performance.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Segment Anything Model 2 (SAM2), a vision foundation model has significantly advanced in prompt-driven video object segmentation, yet their practical deployment remains limited by the high computational and memory cost of processing dense visual tokens across time. The SAM2 pipelines typically propagate all visual tokens produced by the image encoder through downstream temporal reasoning modules, regardless of their relevance to the target object, resulting in reduced scalability due to quadratic memory attention overhead. In this work, we introduce a text-guided token pruning framework that improves inference efficiency by selectively reducing token density prior to temporal propagation, without modifying the underlying segmentation architecture. Operating after visual encoding and before memory based propagation, our method ranks tokens using a lightweight routing mechanism that integrates local visual context, semantic relevance derived from object-centric textual descriptions (either user-provided or automatically generated), and uncertainty cues that help preserve ambiguous or boundary critical regions. By retaining only the most informative tokens for downstream processing, the proposed approach reduces redundant computation while maintaining segmentation fidelity. Extensive experiments across multiple challenging video segmentation benchmarks demonstrate that post-encoder token pruning provides a practical and effective pathway to efficient, prompt-aware video segmentation, achieving up to 42.50 percent faster inference and 37.41 percent lower GPU memory usage compared to the unpruned baseline SAM2, while preserving competitive J and F performance. These results highlight the potential of early token selection to improve the scalability of transformer-based video segmentation systems for real-time and resource-constrained applications.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>分割一切模型2（SAM2）作为一种视觉基础模型，在提示驱动的视频对象分割方面取得了显著进展，然而，由于处理跨时间密集视觉标记的高计算和内存成本，它们的实际部署仍然受到限制。SAM2管线通常将图像编码器产生的所有视觉标记通过下游的时间推理模块传播，而不管它们与目标对象的相关性如何，从而导致二次内存注意力开销，降低了可扩展性。在这项工作中，我们引入了一种文本引导的标记剪枝框架，通过在时间传播之前选择性地减少标记密度来提高推理效率，而无需修改底层的分割架构。我们的方法在视觉编码之后和基于内存的传播之前运行，它使用一种轻量级的路由机制对标记进行排序，该机制集成了局部视觉上下文、从以对象为中心的文本描述（用户提供或自动生成）中获得的语义相关性，以及有助于保留模糊或边界关键区域的不确定性线索。通过仅保留信息最丰富的标记用于下游处理，所提出的方法减少了冗余计算，同时保持了分割的保真度。在多个具有挑战性的视频分割基准测试中的广泛实验表明，后编码器标记剪枝为高效的、提示感知的视频分割提供了一种实用且有效的途径，与未剪枝的基线SAM2相比，实现了高达42.50%的推理速度提升和37.41%的GPU内存使用降低，同时保持了具有竞争力的J和F性能。这些结果突出了早期标记选择在提高基于Transformer的视频分割系统面向实时和资源受限应用的扩展性的潜力。</p>
             
 
             
@@ -486,6 +709,14 @@
             <a href="http://arxiv.org/abs/2512.21333v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="1" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="1" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Avilasha Mandal, Chaoning Zhang, Fachrina Dewi Puspitasari, Xudong Wang, Jiaquan Zhang, Caiyan Qin, Guoqing Wang, Yang Yang, Heng Tao Shen</p>
             
@@ -494,7 +725,7 @@
     </div>
 
     <section class="filtered-section">
-        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
         <div class="filtered-grid">
             
             <div class="filtered-item">
@@ -504,9 +735,32 @@
         </div>
     </section>
 
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <p>没有一级过滤未通过的论文。</p>
+            </div>
+            
+        </div>
+    </section>
+
     <footer class="footer">
-        Generated on 2026-04-08 07:41:49 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-30 18:17:57 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
+    
+    
+    <script type="application/json" id="papers-data">[{"title": "Streaming Video Instruction Tuning", "summary": "We present Streamo, a real-time streaming video LLM that serves as a general-purpose interactive assistant. Unlike existing online video models that focus narrowly on question answering or captioning, Streamo performs a broad spectrum of streaming video tasks, including real-time narration, action understanding, event captioning, temporal event grounding, and time-sensitive question answering. To develop such versatility, we construct Streamo-Instruct-465K, a large-scale instruction-following dataset tailored for streaming video understanding. The dataset covers diverse temporal contexts and multi-task supervision, enabling unified training across heterogeneous streaming tasks. After training end-to-end on the instruction-following dataset through a streamlined pipeline, Streamo exhibits strong temporal reasoning, responsive interaction, and broad generalization across a variety of streaming benchmarks. Extensive experiments show that Streamo bridges the gap between offline video perception models and real-time multimodal assistants, making a step toward unified, intelligent video understanding in continuous video streams.", "url": "http://arxiv.org/abs/2512.21334v1", "authors": ["Jiaer Xia", "Peixian Chen", "Mengdan Zhang", "Xing Sun", "Kaiyang Zhou"], "keywords": []},{"title": "Fast SAM2 with Text-Driven Token Pruning", "summary": "Segment Anything Model 2 (SAM2), a vision foundation model has significantly advanced in prompt-driven video object segmentation, yet their practical deployment remains limited by the high computational and memory cost of processing dense visual tokens across time. The SAM2 pipelines typically propagate all visual tokens produced by the image encoder through downstream temporal reasoning modules, regardless of their relevance to the target object, resulting in reduced scalability due to quadratic memory attention overhead. In this work, we introduce a text-guided token pruning framework that improves inference efficiency by selectively reducing token density prior to temporal propagation, without modifying the underlying segmentation architecture. Operating after visual encoding and before memory based propagation, our method ranks tokens using a lightweight routing mechanism that integrates local visual context, semantic relevance derived from object-centric textual descriptions (either user-provided or automatically generated), and uncertainty cues that help preserve ambiguous or boundary critical regions. By retaining only the most informative tokens for downstream processing, the proposed approach reduces redundant computation while maintaining segmentation fidelity. Extensive experiments across multiple challenging video segmentation benchmarks demonstrate that post-encoder token pruning provides a practical and effective pathway to efficient, prompt-aware video segmentation, achieving up to 42.50 percent faster inference and 37.41 percent lower GPU memory usage compared to the unpruned baseline SAM2, while preserving competitive J and F performance. These results highlight the potential of early token selection to improve the scalability of transformer-based video segmentation systems for real-time and resource-constrained applications.", "url": "http://arxiv.org/abs/2512.21333v1", "authors": ["Avilasha Mandal", "Chaoning Zhang", "Fachrina Dewi Puspitasari", "Xudong Wang", "Jiaquan Zhang", "Caiyan Qin", "Guoqing Wang", "Yang Yang", "Heng Tao Shen"], "keywords": []}]</script>
+
+    <!-- SparkMD5: Zotero's WebDAV format requires md5; SubtleCrypto can't do MD5 -->
+    <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
+    <!-- JSZip: needed to build the <key>.zip wrapper Zotero expects on WebDAV -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="../js/zotero.js"></script>
+    <script src="../js/webdav.js"></script>
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
 </body>
 </html>

@@ -32,38 +32,6 @@
             line-height: 1.6;
         }
 
-        .quick-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            align-items: center;
-            width: fit-content;
-            margin: 0.9rem auto 0;
-            padding: 0;
-            border: none;
-            background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-        }
-
-        .quick-nav a {
-            color: var(--highlight-primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 0.35rem 0.75rem;
-            border-radius: 999px;
-            border: 1px solid rgba(226, 232, 240, 0.95);
-            background: rgba(255, 255, 255, 0.86);
-            box-shadow: 0 2px 6px var(--shadow-color);
-            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-        }
-
-        .quick-nav a:hover {
-            background-color: rgba(123, 44, 159, 0.12);
-            color: #6B1F8F;
-            transform: translateY(-1px);
-        }
 
         .bento-grid {
             display: grid;
@@ -103,10 +71,25 @@
         }
 
         .paper-summary {
-            font-size: 0.875rem; /* Tailwind text-sm */
+            font-size: 0.85rem;
             color: var(--text-muted-color);
-            margin-bottom: 1.25rem; /* Tailwind mb-5 */
+            margin-bottom: 1.25rem;
             line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
         }
 
         .paper-link {
@@ -195,12 +178,25 @@
         }
 
         .paper-tldr {
-            font-size: 0.95rem; /* Slightly bigger than summary */
-            color: #475569; /* Changed to Tailwind slate-600 (slightly darker than summary) */
-            margin-top: 0.75rem; /* Tailwind mt-3 */
-            margin-bottom: 0.75rem; /* Tailwind mb-2 */
-            /* font-style: italic; */
-            font-weight: bold;
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
         }
 
         .paper-rating {
@@ -276,6 +272,222 @@
             font-size: 0.88rem;
         }
 
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link.
+           Shown only when body.zotero-mode is set (which like.js does after
+           confirming sessionStorage has decrypted credentials). Guests never
+           see it. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn i {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover i {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
@@ -289,11 +501,6 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>December 07, 2025</p>
-        <nav class="quick-nav">
-            <a href="../index.html" target="_top">首页</a>
-            <a href="../list.html" target="_top">报告列表</a>
-            <a href="../search.html" target="_top">论文检索</a>
-        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -307,16 +514,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">PRiSM: An Agentic Multimodal Benchmark for Scientific Reasoning via Python-Grounded Evaluation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Evaluating vision-language models (VLMs) in scientific domains like mathematics and physics poses unique challenges that go far beyond predicting final answers. These domains demand conceptual understanding, symbolic reasoning, and adherence to formal laws, requirements that most existing benchmarks fail to address. In particular, current datasets tend to be static, lacking intermediate reasoning steps, robustness to variations, or mechanisms for verifying scientific correctness. To address these limitations, we introduce PRiSM, a synthetic, fully dynamic, and multimodal benchmark for evaluating scientific reasoning via grounded Python code. PRiSM includes over 24,750 university-level physics and math problems, and it leverages our scalable agent-based pipeline, PrismAgent, to generate well-structured problem instances. Each problem contains dynamic textual and visual input, a generated figure, alongside rich structured outputs: executable Python code for ground truth generation and verification, and detailed step-by-step reasoning. The dynamic nature and Python-powered automated ground truth generation of our benchmark allow for fine-grained experimental auditing of multimodal VLMs, revealing failure modes, uncertainty behaviors, and limitations in scientific reasoning. To this end, we propose five targeted evaluation tasks covering generalization, symbolic program synthesis, perturbation robustness, reasoning correction, and ambiguity resolution. Through comprehensive evaluation of existing VLMs, we highlight their limitations and showcase how PRiSM enables deeper insights into their scientific reasoning capabilities.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 在数学和物理等科学领域中评估视觉-语言模型（VLMs）提出了超越预测最终答案的独特挑战。这些领域需要概念理解、符号推理以及对形式规则的遵守，而大多数现有基准未能解决这些需求。特别是，当前数据集往往是静态的，缺乏中间推理步骤、对变化的鲁棒性或验证科学正确性的机制。为了解决这些局限性，我们引入了PRiSM，这是一个合成的、完全动态的、多模态的基准，用于通过基于Python代码的方式评估科学推理。PRiSM包含超过24,750个大学级别的物理和数学问题，并利用我们可扩展的基于代理的流水线PrismAgent来生成结构良好的问题实例。每个问题都包含动态的文本和视觉输入、生成的图形，以及丰富的结构化输出：用于生成和验证真实值的可执行Python代码，以及详细的逐步推理。我们基准的动态性质和Python驱动的自动真实值生成能力，允许对多模态VLM进行细粒度的实验审计，揭示故障模式、不确定性行为以及科学推理方面的局限性。为此，我们提出了五个有针对性的评估任务，涵盖泛化、符号程序合成、扰动鲁棒性、推理纠正和歧义消解。通过对现有VLM的全面评估，我们强调了它们的局限性，并展示了PRiSM如何能够更深入地了解它们的科学推理能力。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces PRiSM, a new dynamic, multimodal benchmark for evaluating scientific reasoning in VLMs using Python-grounded evaluation, addressing limitations of existing static datasets in physics and math. It includes 24,750 university-level problems and five targeted evaluation tasks.</p>
+            <h2 class="paper-title">
+                PRiSM: An Agentic Multimodal Benchmark for Scientific Reasoning via Python-Grounded Evaluation
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了PRiSM，一种新的动态多模态基准，用于评估视觉语言模型在科学推理方面的能力，基于Python的评估方式，解决了现有静态数据集在物理和数学上的局限性。它包含24,750个大学水平的问题和五个有针对性的评估任务。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了PRiSM，一种新的动态多模态基准，用于评估视觉语言模型在科学推理方面的能力，基于Python的评估方式，解决了现有静态数据集在物理和数学上的局限性。它包含24,750个大学水平的问题和五个有针对性的评估任务。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces PRiSM, a new dynamic, multimodal benchmark for evaluating scientific reasoning in VLMs using Python-grounded evaluation, addressing limitations of existing static datasets in physics and math. It includes 24,750 university-level problems and five targeted evaluation tasks.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Evaluating vision-language models (VLMs) in scientific domains like mathematics and physics poses unique challenges that go far beyond predicting final answers. These domains demand conceptual understanding, symbolic reasoning, and adherence to formal laws, requirements that most existing benchmarks fail to address. In particular, current datasets tend to be static, lacking intermediate reasoning steps, robustness to variations, or mechanisms for verifying scientific correctness. To address these limitations, we introduce PRiSM, a synthetic, fully dynamic, and multimodal benchmark for evaluating scientific reasoning via grounded Python code. PRiSM includes over 24,750 university-level physics and math problems, and it leverages our scalable agent-based pipeline, PrismAgent, to generate well-structured problem instances. Each problem contains dynamic textual and visual input, a generated figure, alongside rich structured outputs: executable Python code for ground truth generation and verification, and detailed step-by-step reasoning. The dynamic nature and Python-powered automated ground truth generation of our benchmark allow for fine-grained experimental auditing of multimodal VLMs, revealing failure modes, uncertainty behaviors, and limitations in scientific reasoning. To this end, we propose five targeted evaluation tasks covering generalization, symbolic program synthesis, perturbation robustness, reasoning correction, and ambiguity resolution. Through comprehensive evaluation of existing VLMs, we highlight their limitations and showcase how PRiSM enables deeper insights into their scientific reasoning capabilities.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>在数学和物理等科学领域中评估视觉-语言模型（VLMs）提出了超越预测最终答案的独特挑战。这些领域需要概念理解、符号推理以及对形式规则的遵守，而大多数现有基准未能解决这些需求。特别是，当前数据集往往是静态的，缺乏中间推理步骤、对变化的鲁棒性或验证科学正确性的机制。为了解决这些局限性，我们引入了PRiSM，这是一个合成的、完全动态的、多模态的基准，用于通过基于Python代码的方式评估科学推理。PRiSM包含超过24,750个大学级别的物理和数学问题，并利用我们可扩展的基于代理的流水线PrismAgent来生成结构良好的问题实例。每个问题都包含动态的文本和视觉输入、生成的图形，以及丰富的结构化输出：用于生成和验证真实值的可执行Python代码，以及详细的逐步推理。我们基准的动态性质和Python驱动的自动真实值生成能力，允许对多模态VLM进行细粒度的实验审计，揭示故障模式、不确定性行为以及科学推理方面的局限性。为此，我们提出了五个有针对性的评估任务，涵盖泛化、符号程序合成、扰动鲁棒性、推理纠正和歧义消解。通过对现有VLM的全面评估，我们强调了它们的局限性，并展示了PRiSM如何能够更深入地了解它们的科学推理能力。</p>
             
 
             
@@ -390,6 +601,14 @@
             <a href="http://arxiv.org/abs/2512.05930v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Shima Imani, Seungwhan Moon, Adel Ahmadyan, Lu Zhang, Kirmani Ahmed, Babak Damavandi</p>
             
@@ -403,16 +622,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Training-Time Action Conditioning for Efficient Real-Time Chunking</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Real-time chunking (RTC) enables vision-language-action models (VLAs) to generate smooth, reactive robot trajectories by asynchronously predicting action chunks and conditioning on previously committed actions via inference-time inpainting. However, this inpainting method introduces computational overhead that increases inference latency. In this work, we propose a simple alternative: simulating inference delay at training time and conditioning on action prefixes directly, eliminating any inference-time overhead. Our method requires no modifications to the model architecture or robot runtime, and can be implemented with only a few additional lines of code. In simulated experiments, we find that training-time RTC outperforms inference-time RTC at higher inference delays. In real-world experiments on box building and espresso making tasks with the $π_{0.6}$ VLA, we demonstrate that training-time RTC maintains both task performance and speed parity with inference-time RTC while being computationally cheaper. Our results suggest that training-time action conditioning is a practical drop-in replacement for inference-time inpainting in real-time robot control.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 实时分块（RTC）通过异步预测动作块并在推理时通过补全方式以先前提交的动作为条件，使视觉-语言-动作模型（VLAs）能够生成平滑的、反应灵敏的机器人轨迹。然而，这种补全方法引入了计算开销，从而增加了推理延迟。在这项工作中，我们提出了一种简单的替代方案：在训练时模拟推理延迟，并直接以动作前缀为条件，从而消除任何推理时开销。我们的方法不需要修改模型架构或机器人运行时，只需几行额外的代码即可实现。在模拟实验中，我们发现训练时 RTC 在更高的推理延迟下优于推理时 RTC。 在使用 $π_{0.6}$ VLA 进行的箱子搭建和浓缩咖啡制作任务的真实世界实验中，我们证明了训练时 RTC 保持了与推理时 RTC 相当的任务性能和速度，同时计算成本更低。 我们的结果表明，在实时机器人控制中，训练时动作条件反射可以作为推理时补全的实用替代方案。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper proposes a training-time action conditioning method for real-time chunking in vision-language-action models, replacing inference-time inpainting for improved efficiency without sacrificing performance.</p>
+            <h2 class="paper-title">
+                Training-Time Action Conditioning for Efficient Real-Time Chunking
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文提出了一种用于视觉-语言-动作模型中实时分块的训练时动作条件化方法，替代了推理时绘制，从而提高了效率且不牺牲性能。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文提出了一种用于视觉-语言-动作模型中实时分块的训练时动作条件化方法，替代了推理时绘制，从而提高了效率且不牺牲性能。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper proposes a training-time action conditioning method for real-time chunking in vision-language-action models, replacing inference-time inpainting for improved efficiency without sacrificing performance.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Real-time chunking (RTC) enables vision-language-action models (VLAs) to generate smooth, reactive robot trajectories by asynchronously predicting action chunks and conditioning on previously committed actions via inference-time inpainting. However, this inpainting method introduces computational overhead that increases inference latency. In this work, we propose a simple alternative: simulating inference delay at training time and conditioning on action prefixes directly, eliminating any inference-time overhead. Our method requires no modifications to the model architecture or robot runtime, and can be implemented with only a few additional lines of code. In simulated experiments, we find that training-time RTC outperforms inference-time RTC at higher inference delays. In real-world experiments on box building and espresso making tasks with the $π_{0.6}$ VLA, we demonstrate that training-time RTC maintains both task performance and speed parity with inference-time RTC while being computationally cheaper. Our results suggest that training-time action conditioning is a practical drop-in replacement for inference-time inpainting in real-time robot control.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>实时分块（RTC）通过异步预测动作块并在推理时通过补全方式以先前提交的动作为条件，使视觉-语言-动作模型（VLAs）能够生成平滑的、反应灵敏的机器人轨迹。然而，这种补全方法引入了计算开销，从而增加了推理延迟。在这项工作中，我们提出了一种简单的替代方案：在训练时模拟推理延迟，并直接以动作前缀为条件，从而消除任何推理时开销。我们的方法不需要修改模型架构或机器人运行时，只需几行额外的代码即可实现。在模拟实验中，我们发现训练时 RTC 在更高的推理延迟下优于推理时 RTC。 在使用 $π_{0.6}$ VLA 进行的箱子搭建和浓缩咖啡制作任务的真实世界实验中，我们证明了训练时 RTC 保持了与推理时 RTC 相当的任务性能和速度，同时计算成本更低。 我们的结果表明，在实时机器人控制中，训练时动作条件反射可以作为推理时补全的实用替代方案。</p>
             
 
             
@@ -486,6 +709,14 @@
             <a href="http://arxiv.org/abs/2512.05964v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="1" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="1" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Kevin Black, Allen Z. Ren, Michael Equi, Sergey Levine</p>
             
@@ -499,16 +730,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">SIMPACT: Simulation-Enabled Action Planning using Vision-Language Models</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Vision-Language Models (VLMs) exhibit remarkable common-sense and semantic reasoning capabilities. However, they lack a grounded understanding of physical dynamics. This limitation arises from training VLMs on static internet-scale visual-language data that contain no causal interactions or action-conditioned changes. Consequently, it remains challenging to leverage VLMs for fine-grained robotic manipulation tasks that require physical understanding, reasoning, and corresponding action planning. To overcome this, we present SIMPACT, a test-time, SIMulation-enabled ACTion Planning framework that equips VLMs with physical reasoning through simulation-in-the-loop world modeling, without requiring any additional training. From a single RGB-D observation, SIMPACT efficiently constructs physics simulations, enabling the VLM to propose informed actions, observe simulated rollouts, and iteratively refine its reasoning. By integrating language reasoning with physics prediction, our simulation-enabled VLM can understand contact dynamics and action outcomes in a physically grounded way. Our method demonstrates state-of-the-art performance on five challenging, real-world rigid-body and deformable manipulation tasks that require fine-grained physical reasoning, outperforming existing general-purpose robotic manipulation models. Our results demonstrate that embedding physics understanding via efficient simulation into VLM reasoning at test time offers a promising path towards generalizable embodied intelligence. Project webpage can be found at https://simpact-bot.github.io</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 视觉-语言模型（VLMs）展现出卓越的常识和语义推理能力。然而，它们缺乏对物理动态的具身理解。这一局限性源于对静态互联网规模的视觉-语言数据进行VLM训练，这些数据不包含因果交互或动作条件下的变化。因此，将VLM用于需要物理理解、推理和相应动作规划的精细机器人操作任务仍然具有挑战性。为了克服这一问题，我们提出SIMPACT，一种测试时、基于仿真使能的动作规划框架，它通过模拟环路世界建模赋予VLM物理推理能力，而无需任何额外训练。从单个RGB-D观测中，SIMPACT高效地构建物理仿真，使VLM能够提出知情动作，观察模拟推出，并迭代地改进其推理。通过将语言推理与物理预测相结合，我们基于仿真使能的VLM能够以物理具身的方式理解接触动力学和动作结果。我们的方法在五个具有挑战性的、需要精细物理推理的真实世界刚体和可变形操作任务上展示了最先进的性能，超越了现有的通用机器人操作模型。我们的结果表明，在测试时通过高效仿真将物理理解嵌入到VLM推理中，为实现可泛化的具身智能提供了一条有希望的途径。项目网页参见https://simpact-bot.github.io</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: SIMPACT is a framework that enhances Vision-Language Models with physics reasoning for robotic manipulation by incorporating simulation rollouts at test time, achieving SOTA performance on real-world tasks.</p>
+            <h2 class="paper-title">
+                SIMPACT: Simulation-Enabled Action Planning using Vision-Language Models
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: SIMPACT是一个框架，通过在测试时结合模拟推演来增强视觉-语言模型（VLM）的物理推理能力，用于机器人操作，并在现实世界任务中实现了SOTA性能。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>SIMPACT是一个框架，通过在测试时结合模拟推演来增强视觉-语言模型（VLM）的物理推理能力，用于机器人操作，并在现实世界任务中实现了SOTA性能。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> SIMPACT is a framework that enhances Vision-Language Models with physics reasoning for robotic manipulation by incorporating simulation rollouts at test time, achieving SOTA performance on real-world tasks.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Vision-Language Models (VLMs) exhibit remarkable common-sense and semantic reasoning capabilities. However, they lack a grounded understanding of physical dynamics. This limitation arises from training VLMs on static internet-scale visual-language data that contain no causal interactions or action-conditioned changes. Consequently, it remains challenging to leverage VLMs for fine-grained robotic manipulation tasks that require physical understanding, reasoning, and corresponding action planning. To overcome this, we present SIMPACT, a test-time, SIMulation-enabled ACTion Planning framework that equips VLMs with physical reasoning through simulation-in-the-loop world modeling, without requiring any additional training. From a single RGB-D observation, SIMPACT efficiently constructs physics simulations, enabling the VLM to propose informed actions, observe simulated rollouts, and iteratively refine its reasoning. By integrating language reasoning with physics prediction, our simulation-enabled VLM can understand contact dynamics and action outcomes in a physically grounded way. Our method demonstrates state-of-the-art performance on five challenging, real-world rigid-body and deformable manipulation tasks that require fine-grained physical reasoning, outperforming existing general-purpose robotic manipulation models. Our results demonstrate that embedding physics understanding via efficient simulation into VLM reasoning at test time offers a promising path towards generalizable embodied intelligence. Project webpage can be found at https://simpact-bot.github.io</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>视觉-语言模型（VLMs）展现出卓越的常识和语义推理能力。然而，它们缺乏对物理动态的具身理解。这一局限性源于对静态互联网规模的视觉-语言数据进行VLM训练，这些数据不包含因果交互或动作条件下的变化。因此，将VLM用于需要物理理解、推理和相应动作规划的精细机器人操作任务仍然具有挑战性。为了克服这一问题，我们提出SIMPACT，一种测试时、基于仿真使能的动作规划框架，它通过模拟环路世界建模赋予VLM物理推理能力，而无需任何额外训练。从单个RGB-D观测中，SIMPACT高效地构建物理仿真，使VLM能够提出知情动作，观察模拟推出，并迭代地改进其推理。通过将语言推理与物理预测相结合，我们基于仿真使能的VLM能够以物理具身的方式理解接触动力学和动作结果。我们的方法在五个具有挑战性的、需要精细物理推理的真实世界刚体和可变形操作任务上展示了最先进的性能，超越了现有的通用机器人操作模型。我们的结果表明，在测试时通过高效仿真将物理理解嵌入到VLM推理中，为实现可泛化的具身智能提供了一条有希望的途径。项目网页参见https://simpact-bot.github.io</p>
             
 
             
@@ -582,6 +817,14 @@
             <a href="http://arxiv.org/abs/2512.05955v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="2" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="2" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Haowen Liu, Shaoxiong Yao, Haonan Chen, Jiawei Gao, Jiayuan Mao, Jia-Bin Huang, Yilun Du</p>
             
@@ -595,16 +838,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Correspondence-Oriented Imitation Learning: Flexible Visuomotor Control with 3D Conditioning</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> We introduce Correspondence-Oriented Imitation Learning (COIL), a conditional policy learning framework for visuomotor control with a flexible task representation in 3D. At the core of our approach, each task is defined by the intended motion of keypoints selected on objects in the scene. Instead of assuming a fixed number of keypoints or uniformly spaced time intervals, COIL supports task specifications with variable spatial and temporal granularity, adapting to different user intents and task requirements. To robustly ground this correspondence-oriented task representation into actions, we design a conditional policy with a spatio-temporal attention mechanism that effectively fuses information across multiple input modalities. The policy is trained via a scalable self-supervised pipeline using demonstrations collected in simulation, with correspondence labels automatically generated in hindsight. COIL generalizes across tasks, objects, and motion patterns, achieving superior performance compared to prior methods on real-world manipulation tasks under both sparse and dense specifications.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 我们提出面向对应的模仿学习 (COIL)，一种条件策略学习框架，用于具备灵活3D任务表示的视觉运动控制。我们的方法核心在于，每个任务由场景中物体上选定的关键点的预期运动来定义。COIL 不假定固定的关键点数量或均匀间隔的时间段，而是支持具有可变空间和时间粒度的任务规范，从而适应不同的用户意图和任务需求。为了将这种面向对应的任务表示稳健地融入到动作中，我们设计了一种条件策略，该策略具有时空注意力机制，可以有效地融合跨多个输入模态的信息。该策略通过可扩展的自监督流程进行训练，使用在模拟环境中收集的演示，并追溯自动生成对应标签。COIL 可以跨任务、物体和运动模式进行泛化，在稀疏和密集规范下的真实世界操作任务中，与先前方法相比，实现了卓越的性能。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper presents COIL, a correspondence-oriented imitation learning framework that uses flexible 3D keypoint motions for visuomotor robot control, trained with self-supervision and achieving superior performance on real-world tasks.</p>
+            <h2 class="paper-title">
+                Correspondence-Oriented Imitation Learning: Flexible Visuomotor Control with 3D Conditioning
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了COIL，一种面向对应的模仿学习框架，它使用灵活的3D关键点运动进行视觉运动机器人控制，通过自我监督训练并在真实世界的任务中实现了卓越的性能。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了COIL，一种面向对应的模仿学习框架，它使用灵活的3D关键点运动进行视觉运动机器人控制，通过自我监督训练并在真实世界的任务中实现了卓越的性能。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper presents COIL, a correspondence-oriented imitation learning framework that uses flexible 3D keypoint motions for visuomotor robot control, trained with self-supervision and achieving superior performance on real-world tasks.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> We introduce Correspondence-Oriented Imitation Learning (COIL), a conditional policy learning framework for visuomotor control with a flexible task representation in 3D. At the core of our approach, each task is defined by the intended motion of keypoints selected on objects in the scene. Instead of assuming a fixed number of keypoints or uniformly spaced time intervals, COIL supports task specifications with variable spatial and temporal granularity, adapting to different user intents and task requirements. To robustly ground this correspondence-oriented task representation into actions, we design a conditional policy with a spatio-temporal attention mechanism that effectively fuses information across multiple input modalities. The policy is trained via a scalable self-supervised pipeline using demonstrations collected in simulation, with correspondence labels automatically generated in hindsight. COIL generalizes across tasks, objects, and motion patterns, achieving superior performance compared to prior methods on real-world manipulation tasks under both sparse and dense specifications.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>我们提出面向对应的模仿学习 (COIL)，一种条件策略学习框架，用于具备灵活3D任务表示的视觉运动控制。我们的方法核心在于，每个任务由场景中物体上选定的关键点的预期运动来定义。COIL 不假定固定的关键点数量或均匀间隔的时间段，而是支持具有可变空间和时间粒度的任务规范，从而适应不同的用户意图和任务需求。为了将这种面向对应的任务表示稳健地融入到动作中，我们设计了一种条件策略，该策略具有时空注意力机制，可以有效地融合跨多个输入模态的信息。该策略通过可扩展的自监督流程进行训练，使用在模拟环境中收集的演示，并追溯自动生成对应标签。COIL 可以跨任务、物体和运动模式进行泛化，在稀疏和密集规范下的真实世界操作任务中，与先前方法相比，实现了卓越的性能。</p>
             
 
             
@@ -678,6 +925,14 @@
             <a href="http://arxiv.org/abs/2512.05953v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="3" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="3" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Yunhao Cao, Zubin Bhaumik, Jessie Jia, Xingyi He, Kuan Fang</p>
             
@@ -691,16 +946,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">World Models That Know When They Don't Know: Controllable Video Generation with Calibrated Uncertainty</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Recent advances in generative video models have led to significant breakthroughs in high-fidelity video synthesis, specifically in controllable video generation where the generated video is conditioned on text and action inputs, e.g., in instruction-guided video editing and world modeling in robotics. Despite these exceptional capabilities, controllable video models often hallucinate - generating future video frames that are misaligned with physical reality - which raises serious concerns in many tasks such as robot policy evaluation and planning. However, state-of-the-art video models lack the ability to assess and express their confidence, impeding hallucination mitigation. To rigorously address this challenge, we propose C3, an uncertainty quantification (UQ) method for training continuous-scale calibrated controllable video models for dense confidence estimation at the subpatch level, precisely localizing the uncertainty in each generated video frame. Our UQ method introduces three core innovations to empower video models to estimate their uncertainty. First, our method develops a novel framework that trains video models for correctness and calibration via strictly proper scoring rules. Second, we estimate the video model's uncertainty in latent space, avoiding training instability and prohibitive training costs associated with pixel-space approaches. Third, we map the dense latent-space uncertainty to interpretable pixel-level uncertainty in the RGB space for intuitive visualization, providing high-resolution uncertainty heatmaps that identify untrustworthy regions. Through extensive experiments on large-scale robot learning datasets (Bridge and DROID) and real-world evaluations, we demonstrate that our method not only provides calibrated uncertainty estimates within the training distribution, but also enables effective out-of-distribution detection.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 生成式视频模型的最新进展在高保真视频合成方面取得了重大突破，尤其是在可控视频生成方面，生成的视频以文本和动作输入为条件，例如在指令引导的视频编辑和机器人技术中的世界建模。尽管具备这些卓越能力，可控视频模型通常会产生幻觉——生成与物理现实不符的未来视频帧——这在机器人策略评估和规划等诸多任务中引发了严重担忧。然而，最先进的视频模型缺乏评估和表达其置信度的能力，从而阻碍了幻觉的缓解。为了严谨地应对这一挑战，我们提出 C3，一种不确定性量化 (UQ) 方法，用于训练连续尺度校准的可控视频模型，以实现子块级别的密集置信度估计，从而精确地定位每个生成的视频帧中的不确定性。我们的 UQ 方法引入了三个核心创新来增强视频模型估计其不确定性的能力。首先，我们的方法开发了一个新颖的框架，通过严格适当的评分规则训练视频模型，使其既正确又经过校准。其次，我们在潜在空间中估计视频模型的不确定性，避免了与像素空间方法相关的训练不稳定性和过高的训练成本。第三，我们将密集的潜在空间不确定性映射到 RGB 空间中可解释的像素级不确定性，以便进行直观的可视化，从而提供高分辨率的不确定性热图，以识别不可信的区域。通过对大规模机器人学习数据集（Bridge 和 DROID）的广泛实验以及真实世界的评估，我们证明了我们的方法不仅在训练分布内提供了经过校准的不确定性估计，而且还能够有效地进行分布外检测。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces C3, a novel uncertainty quantification method for controllable video generation models, enabling them to assess confidence and identify untrustworthy regions by estimating uncertainty in latent space and mapping it to pixel-level uncertainty.</p>
+            <h2 class="paper-title">
+                World Models That Know When They Don't Know: Controllable Video Generation with Calibrated Uncertainty
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种名为C3的新型不确定性量化方法，用于可控视频生成模型，使其能够评估置信度并通过估计潜在空间中的不确定性并将其映射到像素级不确定性来识别不可信区域。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文介绍了一种名为C3的新型不确定性量化方法，用于可控视频生成模型，使其能够评估置信度并通过估计潜在空间中的不确定性并将其映射到像素级不确定性来识别不可信区域。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper introduces C3, a novel uncertainty quantification method for controllable video generation models, enabling them to assess confidence and identify untrustworthy regions by estimating uncertainty in latent space and mapping it to pixel-level uncertainty.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Recent advances in generative video models have led to significant breakthroughs in high-fidelity video synthesis, specifically in controllable video generation where the generated video is conditioned on text and action inputs, e.g., in instruction-guided video editing and world modeling in robotics. Despite these exceptional capabilities, controllable video models often hallucinate - generating future video frames that are misaligned with physical reality - which raises serious concerns in many tasks such as robot policy evaluation and planning. However, state-of-the-art video models lack the ability to assess and express their confidence, impeding hallucination mitigation. To rigorously address this challenge, we propose C3, an uncertainty quantification (UQ) method for training continuous-scale calibrated controllable video models for dense confidence estimation at the subpatch level, precisely localizing the uncertainty in each generated video frame. Our UQ method introduces three core innovations to empower video models to estimate their uncertainty. First, our method develops a novel framework that trains video models for correctness and calibration via strictly proper scoring rules. Second, we estimate the video model's uncertainty in latent space, avoiding training instability and prohibitive training costs associated with pixel-space approaches. Third, we map the dense latent-space uncertainty to interpretable pixel-level uncertainty in the RGB space for intuitive visualization, providing high-resolution uncertainty heatmaps that identify untrustworthy regions. Through extensive experiments on large-scale robot learning datasets (Bridge and DROID) and real-world evaluations, we demonstrate that our method not only provides calibrated uncertainty estimates within the training distribution, but also enables effective out-of-distribution detection.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>生成式视频模型的最新进展在高保真视频合成方面取得了重大突破，尤其是在可控视频生成方面，生成的视频以文本和动作输入为条件，例如在指令引导的视频编辑和机器人技术中的世界建模。尽管具备这些卓越能力，可控视频模型通常会产生幻觉——生成与物理现实不符的未来视频帧——这在机器人策略评估和规划等诸多任务中引发了严重担忧。然而，最先进的视频模型缺乏评估和表达其置信度的能力，从而阻碍了幻觉的缓解。为了严谨地应对这一挑战，我们提出 C3，一种不确定性量化 (UQ) 方法，用于训练连续尺度校准的可控视频模型，以实现子块级别的密集置信度估计，从而精确地定位每个生成的视频帧中的不确定性。我们的 UQ 方法引入了三个核心创新来增强视频模型估计其不确定性的能力。首先，我们的方法开发了一个新颖的框架，通过严格适当的评分规则训练视频模型，使其既正确又经过校准。其次，我们在潜在空间中估计视频模型的不确定性，避免了与像素空间方法相关的训练不稳定性和过高的训练成本。第三，我们将密集的潜在空间不确定性映射到 RGB 空间中可解释的像素级不确定性，以便进行直观的可视化，从而提供高分辨率的不确定性热图，以识别不可信的区域。通过对大规模机器人学习数据集（Bridge 和 DROID）的广泛实验以及真实世界的评估，我们证明了我们的方法不仅在训练分布内提供了经过校准的不确定性估计，而且还能够有效地进行分布外检测。</p>
             
 
             
@@ -774,6 +1033,14 @@
             <a href="http://arxiv.org/abs/2512.05927v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="4" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="4" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Zhiting Mei, Tenny Yin, Micah Baker, Ola Shorinwa, Anirudha Majumdar</p>
             
@@ -787,16 +1054,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Zoom in, Click out: Unlocking and Evaluating the Potential of Zooming for GUI Grounding</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Grounding is a fundamental capability for building graphical user interface (GUI) agents. Although existing approaches rely on large-scale bounding box supervision, they still face various challenges, such as cross-platform generalization, complex layout analysis, and fine-grained element localization. In this paper, we investigate zoom as a strong yet underexplored prior for GUI grounding, and propose a training-free method, ZoomClick. By characterizing four key properties of zoom (i.e., pre-zoom, depth, shrink size, minimal crop size), we unlock its full capabilities for dynamic spatial focusing and adaptive context switching. Experiments demonstrate that our method significantly boosts the performance of both general vision-language and specialized GUI grounding models, achieving state-of-the-art results on several mainstream benchmarks; for example, UI-Venus-72B attains a 73.1% success rate on ScreenSpot-Pro. Furthermore, we present GUIZoom-Bench, a benchmark for evaluating model adaptability to zoom, aiming to inspire future research on improving zoom for further training and test-time scaling in GUI grounding tasks.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 定位是构建图形用户界面（GUI）代理的基础能力。尽管现有方法依赖于大规模的边界框监督，但它们仍然面临着各种挑战，例如跨平台泛化、复杂布局分析和细粒度元素定位。在本文中，我们研究了缩放作为GUI定位的强大但尚未充分探索的先验信息，并提出了一种无需训练的方法，ZoomClick。通过表征缩放的四个关键属性（即，预缩放、深度、收缩尺寸、最小裁剪尺寸），我们释放了其在动态空间聚焦和自适应上下文切换方面的全部能力。实验表明，我们的方法显著提升了通用视觉-语言模型和专用GUI定位模型的性能，在几个主流基准测试中取得了最先进的结果；例如，UI-Venus-72B在ScreenSpot-Pro上获得了73.1%的成功率。此外，我们提出了GUIZoom-Bench，这是一个用于评估模型对缩放适应性的基准，旨在激发未来研究，以改进缩放，从而在GUI定位任务中实现进一步的训练和测试时缩放。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces ZoomClick, a training-free method leveraging zoom properties for improved GUI grounding, achieving state-of-the-art results on benchmarks and introducing a new benchmark for zoom adaptability.</p>
+            <h2 class="paper-title">
+                Zoom in, Click out: Unlocking and Evaluating the Potential of Zooming for GUI Grounding
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种名为 ZoomClick 的免训练方法，该方法利用缩放特性来改进 GUI 接地，在基准测试中取得了最先进的结果，并引入了一个新的缩放适应性基准。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文介绍了一种名为 ZoomClick 的免训练方法，该方法利用缩放特性来改进 GUI 接地，在基准测试中取得了最先进的结果，并引入了一个新的缩放适应性基准。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper introduces ZoomClick, a training-free method leveraging zoom properties for improved GUI grounding, achieving state-of-the-art results on benchmarks and introducing a new benchmark for zoom adaptability.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Grounding is a fundamental capability for building graphical user interface (GUI) agents. Although existing approaches rely on large-scale bounding box supervision, they still face various challenges, such as cross-platform generalization, complex layout analysis, and fine-grained element localization. In this paper, we investigate zoom as a strong yet underexplored prior for GUI grounding, and propose a training-free method, ZoomClick. By characterizing four key properties of zoom (i.e., pre-zoom, depth, shrink size, minimal crop size), we unlock its full capabilities for dynamic spatial focusing and adaptive context switching. Experiments demonstrate that our method significantly boosts the performance of both general vision-language and specialized GUI grounding models, achieving state-of-the-art results on several mainstream benchmarks; for example, UI-Venus-72B attains a 73.1% success rate on ScreenSpot-Pro. Furthermore, we present GUIZoom-Bench, a benchmark for evaluating model adaptability to zoom, aiming to inspire future research on improving zoom for further training and test-time scaling in GUI grounding tasks.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>定位是构建图形用户界面（GUI）代理的基础能力。尽管现有方法依赖于大规模的边界框监督，但它们仍然面临着各种挑战，例如跨平台泛化、复杂布局分析和细粒度元素定位。在本文中，我们研究了缩放作为GUI定位的强大但尚未充分探索的先验信息，并提出了一种无需训练的方法，ZoomClick。通过表征缩放的四个关键属性（即，预缩放、深度、收缩尺寸、最小裁剪尺寸），我们释放了其在动态空间聚焦和自适应上下文切换方面的全部能力。实验表明，我们的方法显著提升了通用视觉-语言模型和专用GUI定位模型的性能，在几个主流基准测试中取得了最先进的结果；例如，UI-Venus-72B在ScreenSpot-Pro上获得了73.1%的成功率。此外，我们提出了GUIZoom-Bench，这是一个用于评估模型对缩放适应性的基准，旨在激发未来研究，以改进缩放，从而在GUI定位任务中实现进一步的训练和测试时缩放。</p>
             
 
             
@@ -870,6 +1141,14 @@
             <a href="http://arxiv.org/abs/2512.05941v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="5" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="5" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Zhiyuan Jiang, Shenghao Xie, Wenyi Li, Wenqiang Zu, Peihang Li, Jiahao Qiu, Siqi Pei, Lei Ma, Tiejun Huang, Mengdi Wang, Shilong Liu</p>
             
@@ -878,7 +1157,7 @@
     </div>
 
     <section class="filtered-section">
-        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
         <div class="filtered-grid">
             
             <div class="filtered-item">
@@ -888,12 +1167,24 @@
                         Measuring the Effect of Background on Classification and Feature Importance in Deep Learning for AV Perception
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="6" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="6" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Anne Sielemann, Valentin Barner, Stefan Wolf, Masoud Roschani, Jens Ziehn, Juergen Beyerer</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文使用合成数据集研究了背景相关性对深度学习交通标志识别模型的影响，量化了在不同条件下背景特征如何影响分类性能。</p>
+                
+                <p><strong>Overall:</strong> 5/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -903,12 +1194,24 @@
                         Physically-Based Simulation of Automotive LiDAR
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="7" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="7" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> L. Dudzik, M. Roschani, A. Sielemann, K. Trampert, J. Ziehn, J. Beyerer, C. Neumann</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文提出了一个基于物理的汽车激光雷达系统仿真模型，通过实验室测量和两个真实激光雷达系统的数据进行了验证。重点在于近红外领域激光雷达信号特征的精确仿真。</p>
+                
+                <p><strong>Overall:</strong> 5/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -918,20 +1221,55 @@
                         Variational Quantum Rainbow Deep Q-Network for Optimizing Resource Allocation Problem
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="8" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="8" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Truong Thanh Hung Nguyen, Truong Thinh Nguyen, Hung Cao</p>
                 
                 <p><strong>TLDR-CN:</strong> 该论文介绍了用于资源分配的变分量子彩虹 DQN (VQR-DQN)，它结合了变分量子电路和彩虹 DQN，并在人力资源分配问题 (HRAP) 基准测试中展示了比经典基线更好的性能。</p>
+                
+                <p><strong>Overall:</strong> 5/10</p>
+                
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <p>没有一级过滤未通过的论文。</p>
             </div>
             
         </div>
     </section>
 
     <footer class="footer">
-        Generated on 2026-04-08 07:41:48 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-30 18:17:56 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
+    
+    
+    <script type="application/json" id="papers-data">[{"title": "PRiSM: An Agentic Multimodal Benchmark for Scientific Reasoning via Python-Grounded Evaluation", "summary": "Evaluating vision-language models (VLMs) in scientific domains like mathematics and physics poses unique challenges that go far beyond predicting final answers. These domains demand conceptual understanding, symbolic reasoning, and adherence to formal laws, requirements that most existing benchmarks fail to address. In particular, current datasets tend to be static, lacking intermediate reasoning steps, robustness to variations, or mechanisms for verifying scientific correctness. To address these limitations, we introduce PRiSM, a synthetic, fully dynamic, and multimodal benchmark for evaluating scientific reasoning via grounded Python code. PRiSM includes over 24,750 university-level physics and math problems, and it leverages our scalable agent-based pipeline, PrismAgent, to generate well-structured problem instances. Each problem contains dynamic textual and visual input, a generated figure, alongside rich structured outputs: executable Python code for ground truth generation and verification, and detailed step-by-step reasoning. The dynamic nature and Python-powered automated ground truth generation of our benchmark allow for fine-grained experimental auditing of multimodal VLMs, revealing failure modes, uncertainty behaviors, and limitations in scientific reasoning. To this end, we propose five targeted evaluation tasks covering generalization, symbolic program synthesis, perturbation robustness, reasoning correction, and ambiguity resolution. Through comprehensive evaluation of existing VLMs, we highlight their limitations and showcase how PRiSM enables deeper insights into their scientific reasoning capabilities.", "url": "http://arxiv.org/abs/2512.05930v1", "authors": ["Shima Imani", "Seungwhan Moon", "Adel Ahmadyan", "Lu Zhang", "Kirmani Ahmed", "Babak Damavandi"], "keywords": []},{"title": "Training-Time Action Conditioning for Efficient Real-Time Chunking", "summary": "Real-time chunking (RTC) enables vision-language-action models (VLAs) to generate smooth, reactive robot trajectories by asynchronously predicting action chunks and conditioning on previously committed actions via inference-time inpainting. However, this inpainting method introduces computational overhead that increases inference latency. In this work, we propose a simple alternative: simulating inference delay at training time and conditioning on action prefixes directly, eliminating any inference-time overhead. Our method requires no modifications to the model architecture or robot runtime, and can be implemented with only a few additional lines of code. In simulated experiments, we find that training-time RTC outperforms inference-time RTC at higher inference delays. In real-world experiments on box building and espresso making tasks with the $\u03c0_{0.6}$ VLA, we demonstrate that training-time RTC maintains both task performance and speed parity with inference-time RTC while being computationally cheaper. Our results suggest that training-time action conditioning is a practical drop-in replacement for inference-time inpainting in real-time robot control.", "url": "http://arxiv.org/abs/2512.05964v1", "authors": ["Kevin Black", "Allen Z. Ren", "Michael Equi", "Sergey Levine"], "keywords": []},{"title": "SIMPACT: Simulation-Enabled Action Planning using Vision-Language Models", "summary": "Vision-Language Models (VLMs) exhibit remarkable common-sense and semantic reasoning capabilities. However, they lack a grounded understanding of physical dynamics. This limitation arises from training VLMs on static internet-scale visual-language data that contain no causal interactions or action-conditioned changes. Consequently, it remains challenging to leverage VLMs for fine-grained robotic manipulation tasks that require physical understanding, reasoning, and corresponding action planning. To overcome this, we present SIMPACT, a test-time, SIMulation-enabled ACTion Planning framework that equips VLMs with physical reasoning through simulation-in-the-loop world modeling, without requiring any additional training. From a single RGB-D observation, SIMPACT efficiently constructs physics simulations, enabling the VLM to propose informed actions, observe simulated rollouts, and iteratively refine its reasoning. By integrating language reasoning with physics prediction, our simulation-enabled VLM can understand contact dynamics and action outcomes in a physically grounded way. Our method demonstrates state-of-the-art performance on five challenging, real-world rigid-body and deformable manipulation tasks that require fine-grained physical reasoning, outperforming existing general-purpose robotic manipulation models. Our results demonstrate that embedding physics understanding via efficient simulation into VLM reasoning at test time offers a promising path towards generalizable embodied intelligence. Project webpage can be found at https://simpact-bot.github.io", "url": "http://arxiv.org/abs/2512.05955v1", "authors": ["Haowen Liu", "Shaoxiong Yao", "Haonan Chen", "Jiawei Gao", "Jiayuan Mao", "Jia-Bin Huang", "Yilun Du"], "keywords": []},{"title": "Correspondence-Oriented Imitation Learning: Flexible Visuomotor Control with 3D Conditioning", "summary": "We introduce Correspondence-Oriented Imitation Learning (COIL), a conditional policy learning framework for visuomotor control with a flexible task representation in 3D. At the core of our approach, each task is defined by the intended motion of keypoints selected on objects in the scene. Instead of assuming a fixed number of keypoints or uniformly spaced time intervals, COIL supports task specifications with variable spatial and temporal granularity, adapting to different user intents and task requirements. To robustly ground this correspondence-oriented task representation into actions, we design a conditional policy with a spatio-temporal attention mechanism that effectively fuses information across multiple input modalities. The policy is trained via a scalable self-supervised pipeline using demonstrations collected in simulation, with correspondence labels automatically generated in hindsight. COIL generalizes across tasks, objects, and motion patterns, achieving superior performance compared to prior methods on real-world manipulation tasks under both sparse and dense specifications.", "url": "http://arxiv.org/abs/2512.05953v1", "authors": ["Yunhao Cao", "Zubin Bhaumik", "Jessie Jia", "Xingyi He", "Kuan Fang"], "keywords": []},{"title": "World Models That Know When They Don\u0027t Know: Controllable Video Generation with Calibrated Uncertainty", "summary": "Recent advances in generative video models have led to significant breakthroughs in high-fidelity video synthesis, specifically in controllable video generation where the generated video is conditioned on text and action inputs, e.g., in instruction-guided video editing and world modeling in robotics. Despite these exceptional capabilities, controllable video models often hallucinate - generating future video frames that are misaligned with physical reality - which raises serious concerns in many tasks such as robot policy evaluation and planning. However, state-of-the-art video models lack the ability to assess and express their confidence, impeding hallucination mitigation. To rigorously address this challenge, we propose C3, an uncertainty quantification (UQ) method for training continuous-scale calibrated controllable video models for dense confidence estimation at the subpatch level, precisely localizing the uncertainty in each generated video frame. Our UQ method introduces three core innovations to empower video models to estimate their uncertainty. First, our method develops a novel framework that trains video models for correctness and calibration via strictly proper scoring rules. Second, we estimate the video model\u0027s uncertainty in latent space, avoiding training instability and prohibitive training costs associated with pixel-space approaches. Third, we map the dense latent-space uncertainty to interpretable pixel-level uncertainty in the RGB space for intuitive visualization, providing high-resolution uncertainty heatmaps that identify untrustworthy regions. Through extensive experiments on large-scale robot learning datasets (Bridge and DROID) and real-world evaluations, we demonstrate that our method not only provides calibrated uncertainty estimates within the training distribution, but also enables effective out-of-distribution detection.", "url": "http://arxiv.org/abs/2512.05927v1", "authors": ["Zhiting Mei", "Tenny Yin", "Micah Baker", "Ola Shorinwa", "Anirudha Majumdar"], "keywords": []},{"title": "Zoom in, Click out: Unlocking and Evaluating the Potential of Zooming for GUI Grounding", "summary": "Grounding is a fundamental capability for building graphical user interface (GUI) agents. Although existing approaches rely on large-scale bounding box supervision, they still face various challenges, such as cross-platform generalization, complex layout analysis, and fine-grained element localization. In this paper, we investigate zoom as a strong yet underexplored prior for GUI grounding, and propose a training-free method, ZoomClick. By characterizing four key properties of zoom (i.e., pre-zoom, depth, shrink size, minimal crop size), we unlock its full capabilities for dynamic spatial focusing and adaptive context switching. Experiments demonstrate that our method significantly boosts the performance of both general vision-language and specialized GUI grounding models, achieving state-of-the-art results on several mainstream benchmarks; for example, UI-Venus-72B attains a 73.1% success rate on ScreenSpot-Pro. Furthermore, we present GUIZoom-Bench, a benchmark for evaluating model adaptability to zoom, aiming to inspire future research on improving zoom for further training and test-time scaling in GUI grounding tasks.", "url": "http://arxiv.org/abs/2512.05941v1", "authors": ["Zhiyuan Jiang", "Shenghao Xie", "Wenyi Li", "Wenqiang Zu", "Peihang Li", "Jiahao Qiu", "Siqi Pei", "Lei Ma", "Tiejun Huang", "Mengdi Wang", "Shilong Liu"], "keywords": []},{"title": "Measuring the Effect of Background on Classification and Feature Importance in Deep Learning for AV Perception", "summary": "Common approaches to explainable AI (XAI) for deep learning focus on analyzing the importance of input features on the classification task in a given model: saliency methods like SHAP and GradCAM are used to measure the impact of spatial regions of the input image on the classification result. Combined with ground truth information about the location of the object in the input image (e.g., a binary mask), it is determined whether object pixels had a high impact on the classification result, or whether the classification focused on background pixels. The former is considered to be a sign of a healthy classifier, whereas the latter is assumed to suggest overfitting on spurious correlations. A major challenge, however, is that these intuitive interpretations are difficult to test quantitatively, and hence the output of such explanations lacks an explanation itself. One particular reason is that correlations in real-world data are difficult to avoid, and whether they are spurious or legitimate is debatable. Synthetic data in turn can facilitate to actively enable or disable correlations where desired but often lack a sufficient quantification of realism and stochastic properties. [...] Therefore, we systematically generate six synthetic datasets for the task of traffic sign recognition, which differ only in their degree of camera variation and background correlation [...] to quantify the isolated influence of background correlation, different levels of camera variation, and considered traffic sign shapes on the classification performance, as well as background feature importance. [...] Results include a quantification of when and how much background features gain importance to support the classification task based on changes in the training domain [...].\n  Download: synset.de/datasets/synset-signset-ger/background-effect", "url": "http://arxiv.org/abs/2512.05937v1", "authors": ["Anne Sielemann", "Valentin Barner", "Stefan Wolf", "Masoud Roschani", "Jens Ziehn", "Juergen Beyerer"], "keywords": []},{"title": "Physically-Based Simulation of Automotive LiDAR", "summary": "We present an analytic model for simulating automotive time-of-flight (ToF) LiDAR that includes blooming, echo pulse width, and ambient light, along with steps to determine model parameters systematically through optical laboratory measurements. The model uses physically based rendering (PBR) in the near-infrared domain. It assumes single-bounce reflections and retroreflections over rasterized rendered images from shading or ray tracing, including light emitted from the sensor as well as stray light from other, non-correlated sources such as sunlight. Beams from the sensor and sensitivity of the receiving diodes are modeled with flexible beam steering patterns and with non-vanishing diameter.\n  Different (all non-real time) computational approaches can be chosen based on system properties, computing capabilities, and desired output properties.\n  Model parameters include system-specific properties, namely the physical spread of the LiDAR beam, combined with the sensitivity of the receiving diode; the intensity of the emitted light; the conversion between the intensity of reflected light and the echo pulse width; and scenario parameters such as environment lighting, positioning, and surface properties of the target(s) in the relevant infrared domain. System-specific properties of the model are determined from laboratory measurements of the photometric luminance on different target surfaces aligned with a goniometer at 0.01\u00b0 resolution, which marks the best available resolution for measuring the beam pattern.\n  The approach is calibrated for and tested on two automotive LiDAR systems, the Valeo Scala Gen. 2 and the Blickfeld Cube 1. Both systems differ notably in their properties and available interfaces, but the relevant model parameters could be extracted successfully.", "url": "http://arxiv.org/abs/2512.05932v1", "authors": ["L. Dudzik", "M. Roschani", "A. Sielemann", "K. Trampert", "J. Ziehn", "J. Beyerer", "C. Neumann"], "keywords": []},{"title": "Variational Quantum Rainbow Deep Q-Network for Optimizing Resource Allocation Problem", "summary": "Resource allocation remains NP-hard due to combinatorial complexity. While deep reinforcement learning (DRL) methods, such as the Rainbow Deep Q-Network (DQN), improve scalability through prioritized replay and distributional heads, classical function approximators limit their representational power. We introduce Variational Quantum Rainbow DQN (VQR-DQN), which integrates ring-topology variational quantum circuits with Rainbow DQN to leverage quantum superposition and entanglement. We frame the human resource allocation problem (HRAP) as a Markov decision process (MDP) with combinatorial action spaces based on officer capabilities, event schedules, and transition times. On four HRAP benchmarks, VQR-DQN achieves 26.8% normalized makespan reduction versus random baselines and outperforms Double DQN and classical Rainbow DQN by 4.9-13.4%. These gains align with theoretical connections between circuit expressibility, entanglement, and policy quality, demonstrating the potential of quantum-enhanced DRL for large-scale resource allocation. Our implementation is available at: https://github.com/Analytics-Everywhere-Lab/qtrl/.", "url": "http://arxiv.org/abs/2512.05946v1", "authors": ["Truong Thanh Hung Nguyen", "Truong Thinh Nguyen", "Hung Cao"], "keywords": []}]</script>
+
+    <!-- SparkMD5: Zotero's WebDAV format requires md5; SubtleCrypto can't do MD5 -->
+    <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
+    <!-- JSZip: needed to build the <key>.zip wrapper Zotero expects on WebDAV -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="../js/zotero.js"></script>
+    <script src="../js/webdav.js"></script>
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
 </body>
 </html>

@@ -2,122 +2,327 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>最新 ArXiv Robotics 报告</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robotics Daily Papers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --text-muted-color: #64748b;
+            --header-color: #0f172a;
+            --highlight-primary: #7B2C9F;
+            --highlight-secondary: #B794D3;
+            --border-color: #e2e8f0;
+            --shadow-color: rgba(15, 23, 42, 0.08);
+        }
+        * { box-sizing: border-box; }
         html, body {
             margin: 0;
-            padding: 0;
-            height: 100%; /* Use percentage height */
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f3e8ff 100%);
+            color: var(--text-color);
+        }
+        body {
             display: flex;
             flex-direction: column;
-            font-family: sans-serif;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.25rem;
         }
-        #content-wrapper {
-            flex: 1 1 auto; /* Grow, shrink, basis auto */
-            overflow: hidden; /* Contain the iframe */
-            position: relative; /* Needed for absolute positioning of iframe if required */
-        }
-        iframe {
-            border: none;
+        .gate-card {
+            max-width: 460px;
             width: 100%;
-            height: 100%; /* Make iframe fill its container */
-            display: block; /* Ensure iframe is treated as a block element */
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(226, 232, 240, 0.7);
+            border-radius: 1rem;
+            box-shadow: 0 14px 40px var(--shadow-color);
+            padding: 2.4rem 2.2rem 2rem;
+            text-align: center;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            position: relative;
+            overflow: hidden;
         }
-        #footer {
-            flex-shrink: 0; /* Prevent footer from shrinking */
-            height: 46px; /* Give footer a fixed height */
+        .gate-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--highlight-primary), var(--highlight-secondary));
+        }
+        .gate-card .logo {
+            width: 44px;
+            height: 44px;
+            margin: 0 auto 0.9rem;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0;
-            border-top: 1px solid #eee; /* Optional: add a separator */
+            box-shadow: 0 6px 18px rgba(123, 44, 159, 0.32);
         }
-        .repo-link {
-            color: #7B2C9F;
+        .gate-card .logo svg {
+            width: 24px;
+            height: 24px;
+            color: #fff;
+        }
+        .gate-card h1 {
+            margin: 0 0 0.4rem;
+            font-size: 1.6rem;
+            color: var(--header-color);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        .gate-card .tagline {
+            font-size: 0.92rem;
+            color: var(--text-muted-color);
+            margin: 0 0 1.6rem;
+            line-height: 1.6;
+        }
+        .gate-card .topics-line {
+            display: inline-block;
+            margin-top: 0.35rem;
+            padding: 0.18rem 0.65rem;
+            background: rgba(123, 44, 159, 0.08);
+            color: var(--highlight-primary);
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+        .feature-list {
+            margin: 1.4rem 0 0;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            gap: 0.55rem;
+            text-align: left;
+            border-top: 1px solid rgba(226, 232, 240, 0.7);
+            padding-top: 1.3rem;
+        }
+        .feature-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.55rem;
+            font-size: 0.83rem;
+            color: var(--text-color);
+            line-height: 1.45;
+        }
+        .feature-list .icon {
+            flex-shrink: 0;
+            width: 16px;
+            height: 16px;
+            margin-top: 2px;
+            color: var(--highlight-primary);
+        }
+        .feature-list strong { color: var(--header-color); font-weight: 600; }
+        .field {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .field input {
+            width: 100%;
+            padding: 0.75rem 0.95rem;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.55rem;
+            font-family: inherit;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background: #fff;
+            color: var(--text-color);
+        }
+        .field input:focus {
+            outline: none;
+            border-color: var(--highlight-primary);
+            box-shadow: 0 0 0 3px rgba(123, 44, 159, 0.18);
+        }
+        .field input:disabled {
+            background: #f1f5f9;
+            color: var(--text-muted-color);
+            cursor: not-allowed;
+        }
+        .btn {
+            width: 100%;
+            padding: 0.78rem 1rem;
+            font-size: 0.96rem;
+            font-weight: 600;
+            border-radius: 0.55rem;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.2s ease;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(123, 44, 159, 0.28);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.2s ease;
+            gap: 0.4rem;
         }
-        .repo-link:hover {
-            opacity: 0.75;
+        .btn-primary svg {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
         }
-        .repo-icon {
-            width: 22px;
-            height: 22px;
-            display: block;
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(123, 44, 159, 0.36);
         }
-        #loading-message, #error-message {
-            padding: 20px;
+        .btn-primary:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+        .btn-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-top: 1.3rem;
+            color: var(--text-muted-color);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            border-radius: 999px;
+            transition: color 0.2s ease, background 0.2s ease;
+        }
+        .btn-link:hover {
+            color: var(--highlight-primary);
+            background: rgba(123, 44, 159, 0.08);
+        }
+        .btn-link svg {
+            width: 13px;
+            height: 13px;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+        .btn-link:hover svg { transform: translateX(2px); }
+        .error-msg {
+            margin: 0.6rem 0 0;
+            font-size: 0.85rem;
+            color: #b91c1c;
+            min-height: 1.1rem;
+            font-weight: 500;
+        }
+        .info-msg {
+            margin: 0.6rem 0 0;
+            font-size: 0.82rem;
+            color: var(--text-muted-color);
+            min-height: 1.1rem;
+        }
+        .footer {
+            margin-top: 1.8rem;
+            font-size: 0.78rem;
+            color: var(--text-muted-color);
             text-align: center;
-            margin-top: 50px;
         }
-        #error-message p {
-             color: red;
+        .footer a {
+            color: var(--highlight-primary);
+            text-decoration: none;
         }
+        .footer a:hover { text-decoration: underline; }
     </style>
-    <script>
-        async function loadLatestReportIntoIframe() {
-            const iframe = document.getElementById('report-frame');
-            const loadingMessage = document.getElementById('loading-message');
-            const errorMessageDiv = document.getElementById('error-message');
-
-            try {
-                const response = await fetch('reports.json');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const reports = await response.json();
-
-                if (reports && reports.length > 0) {
-                    // Assuming reports are sorted newest first or we take the first one
-                    const latestReportFile = reports[0]; 
-                    const latestReportUrl = `./daily_html/${latestReportFile}`;
-                    
-                    iframe.src = latestReportUrl;
-                    // Update the main page title based on the loaded report
-                    document.title = `ArXiv Robotics 报告 - ${latestReportFile.replace('.html', '').replace(/_/g, '-')}`;
-                    loadingMessage.style.display = 'none'; // Hide loading message
-                    iframe.style.display = 'block'; // Show iframe
-
-                } else {
-                    throw new Error('无法找到最新的报告文件。请确保 reports.json 文件存在且包含报告列表。');
-                }
-            } catch (error) {
-                console.error('Error loading report:', error);
-                loadingMessage.style.display = 'none'; // Hide loading message
-                errorMessageDiv.innerHTML = `<p style="color: red; text-align: center; margin-top: 50px;">加载最新报告时出错: ${error.message} 请 <a href="./list.html">查看报告列表</a>。</p>`;
-                errorMessageDiv.style.display = 'block'; // Show error message
-            }
-        }
-
-        // Execute the loading function when the page loads
-        window.onload = loadLatestReportIntoIframe;
-    </script>
 </head>
 <body>
-    <div id="content-wrapper">
-        <div id="loading-message">
-            <p>正在加载最新报告，请稍候...</p>
+    <div class="gate-card">
+        <div class="logo" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg>
         </div>
-        <div id="error-message" style="display: none;">
-            <!-- Error messages will be displayed here -->
-        </div>
-        <iframe id="report-frame" style="display: none;"></iframe>
-    </div>
-    <div id="footer">
-        <a class="repo-link" href="https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io" target="_blank" rel="noopener noreferrer" title="Project Repository" aria-label="Project Repository">
-            <svg class="repo-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38
-                0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
-                -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
-                .07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
-                -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.7 7.7 0 0 1 2-.27c.68 0 1.36.09 2 .27
-                1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15
-                0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48
-                0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-            </svg>
+        <h1>Robotics Daily Papers</h1>
+        <p class="tagline">具身智能前沿论文调研<br>
+            <span class="topics-line">VLA · 世界模型 · 自动驾驶 · 具身智能</span>
+        </p>
+
+        <form id="login-form" autocomplete="off">
+            <div class="field">
+                <input id="password" type="password" placeholder="输入访问密码" autofocus>
+            </div>
+            <button class="btn btn-primary" id="login-btn" type="submit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span id="login-btn-label">进入个人模式</span>
+            </button>
+            <p class="error-msg" id="error-msg"></p>
+            <p class="info-msg" id="info-msg"></p>
+        </form>
+
+        <a class="btn-link" href="guest.html">
+            个人模式目前测试中，请以访客身份继续浏览
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </a>
+
+        <!-- <ul class="feature-list">
+            <li>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>一键 <strong>Add to Zotero</strong>，按日期自动归档</span>
+            </li>
+            <li>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>PDF 自动上传到你的 <strong>WebDAV</strong>，桌面同步即可阅读</span>
+            </li>
+            <li>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>一键跳转 <strong>hjfy.top</strong> 中英对照阅读</span>
+            </li>
+        </ul> -->
     </div>
+
+    <div class="footer">
+        <a href="https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+    </div>
+
+    <script src="js/secrets.enc.js"></script>
+    <script src="js/crypto.js"></script>
+    <script>
+      (function () {
+        // If user already authenticated this session, skip the gate.
+        if (sessionStorage.getItem('zotero_secrets')) {
+          window.location.replace('personal.html');
+          return;
+        }
+
+        const form = document.getElementById('login-form');
+        const passInput = document.getElementById('password');
+        const errEl = document.getElementById('error-msg');
+        const infoEl = document.getElementById('info-msg');
+        const btn = document.getElementById('login-btn');
+        const btnLabel = document.getElementById('login-btn-label');
+
+        // If the build_secrets.py script didn't write a real bundle, disable the form.
+        if (!window.__ZOTERO_ENC) {
+          passInput.disabled = true;
+          btn.disabled = true;
+          infoEl.textContent = '本站尚未启用个人模式 — 请使用访客模式入口';
+        }
+
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          errEl.textContent = '';
+          const pw = passInput.value;
+          if (!pw) return;
+
+          btn.disabled = true;
+          const originalLabel = btnLabel.textContent;
+          btnLabel.textContent = '验证中…';
+
+          try {
+            const creds = await decryptZoteroBundle(pw);
+            sessionStorage.setItem('zotero_secrets', JSON.stringify(creds));
+            window.location.replace('personal.html');
+          } catch (e) {
+            btn.disabled = false;
+            btnLabel.textContent = originalLabel;
+            errEl.textContent = e.message === 'wrong password'
+              ? '密码错误，请重试'
+              : `验证失败：${e.message}`;
+            passInput.focus();
+            passInput.select();
+          }
+        });
+      })();
+    </script>
 </body>
 </html>

@@ -32,38 +32,6 @@
             line-height: 1.6;
         }
 
-        .quick-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            align-items: center;
-            width: fit-content;
-            margin: 0.9rem auto 0;
-            padding: 0;
-            border: none;
-            background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-        }
-
-        .quick-nav a {
-            color: var(--highlight-primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 0.35rem 0.75rem;
-            border-radius: 999px;
-            border: 1px solid rgba(226, 232, 240, 0.95);
-            background: rgba(255, 255, 255, 0.86);
-            box-shadow: 0 2px 6px var(--shadow-color);
-            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-        }
-
-        .quick-nav a:hover {
-            background-color: rgba(123, 44, 159, 0.12);
-            color: #6B1F8F;
-            transform: translateY(-1px);
-        }
 
         .bento-grid {
             display: grid;
@@ -103,10 +71,25 @@
         }
 
         .paper-summary {
-            font-size: 0.875rem; /* Tailwind text-sm */
+            font-size: 0.85rem;
             color: var(--text-muted-color);
-            margin-bottom: 1.25rem; /* Tailwind mb-5 */
+            margin-bottom: 1.25rem;
             line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
         }
 
         .paper-link {
@@ -195,12 +178,25 @@
         }
 
         .paper-tldr {
-            font-size: 0.95rem; /* Slightly bigger than summary */
-            color: #475569; /* Changed to Tailwind slate-600 (slightly darker than summary) */
-            margin-top: 0.75rem; /* Tailwind mt-3 */
-            margin-bottom: 0.75rem; /* Tailwind mb-2 */
-            /* font-style: italic; */
-            font-weight: bold;
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
         }
 
         .paper-rating {
@@ -276,6 +272,222 @@
             font-size: 0.88rem;
         }
 
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link.
+           Shown only when body.zotero-mode is set (which like.js does after
+           confirming sessionStorage has decrypted credentials). Guests never
+           see it. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn i {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover i {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
@@ -289,11 +501,6 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>January 10, 2026</p>
-        <nav class="quick-nav">
-            <a href="../index.html" target="_top">首页</a>
-            <a href="../list.html" target="_top">报告列表</a>
-            <a href="../search.html" target="_top">论文检索</a>
-        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -307,16 +514,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">LaST$_{0}$: Latent Spatio-Temporal Chain-of-Thought for Robotic Vision-Language-Action Model</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Vision-Language-Action (VLA) models have recently demonstrated strong generalization capabilities in robotic manipulation. Some existing VLA approaches attempt to improve action accuracy by explicitly generating linguistic reasoning traces or future visual observations before action execution. However, explicit reasoning typically incurs non-negligible inference latency, which constrains the temporal resolution required for robotic manipulation. Moreover, such reasoning is confined to the linguistic space, imposing a representational bottleneck that struggles to faithfully capture ineffable physical attributes. To mitigate these limitations, we propose LaST$_0$, a framework that enables efficient reasoning before acting through a Latent Spatio-Temporal Chain-of-Thought (CoT), capturing fine-grained physical and robotic dynamics that are often difficult to verbalize. Specifically, we introduce a token-efficient latent CoT space that models future visual dynamics, 3D structural information, and robot proprioceptive states, and further extends these representations across time to enable temporally consistent implicit reasoning trajectories. Furthermore, LaST$_0$ adopts a dual-system architecture implemented via a Mixture-of-Transformers design, where a reasoning expert conducts low-frequency latent inference and an acting expert generates high-frequency actions conditioned on robotics-oriented latent representations. To facilitate coordination, LaST$_0$ is trained with heterogeneous operation frequencies, enabling adaptive switching between reasoning and action inference rates during deployment. Across ten simulated and six real-world manipulation tasks, LaST$_0$ improves mean success rates by 8% and 13% over prior VLA methods, respectively, while achieving substantially faster inference. Project website: https://sites.google.com/view/last0</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 视觉-语言-动作 (VLA) 模型最近在机器人操作中展现出强大的泛化能力。现有的一些VLA方法试图通过在执行动作之前显式地生成语言推理轨迹或未来的视觉观测来提高动作的准确性。然而，显式推理通常会带来不可忽视的推理延迟，这限制了机器人操作所需的时间分辨率。此外，这种推理被限制在语言空间中，施加了一种表征瓶颈，难以忠实地捕捉难以言表的物理属性。为了缓解这些限制，我们提出了 LaST$_0$，这是一个框架，通过潜在时空思维链 (CoT) 实现动作前的高效推理，捕捉通常难以用语言表达的细粒度物理和机器人动力学。具体来说，我们引入了一种令牌高效的潜在 CoT 空间，用于建模未来的视觉动态、3D 结构信息和机器人本体感受状态，并将这些表征按时间跨度扩展，以实现时间上一致的隐式推理轨迹。此外，LaST$_0$ 采用通过混合Transformer设计实现的双系统架构，其中推理专家进行低频潜在推理，而动作专家根据面向机器人的潜在表征生成高频动作。为了方便协调，LaST$_0$ 采用异构操作频率进行训练，从而能够在部署期间自适应地切换推理和动作的推理速率。在十个模拟和六个真实世界操作任务中，LaST$_0$ 相对于先前的 VLA 方法，分别将平均成功率提高了 8% 和 13%，同时实现了显著更快的推理速度。项目网站：https://sites.google.com/view/last0</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces LaST$_0$, a Latent Spatio-Temporal Chain-of-Thought framework for robotic VLA models that improves performance and reduces inference latency by using a latent space for reasoning about visual dynamics, 3D structure, and proprioception.</p>
+            <h2 class="paper-title">
+                LaST$_{0}$: Latent Spatio-Temporal Chain-of-Thought for Robotic Vision-Language-Action Model
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了LaST$_0$，一个用于机器人VLA模型的潜在时空链式思考框架，通过使用潜在空间来推理视觉动力学、3D结构和本体感觉，从而提高了性能并降低了推理延迟。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了LaST$_0$，一个用于机器人VLA模型的潜在时空链式思考框架，通过使用潜在空间来推理视觉动力学、3D结构和本体感觉，从而提高了性能并降低了推理延迟。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces LaST$_0$, a Latent Spatio-Temporal Chain-of-Thought framework for robotic VLA models that improves performance and reduces inference latency by using a latent space for reasoning about visual dynamics, 3D structure, and proprioception.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Vision-Language-Action (VLA) models have recently demonstrated strong generalization capabilities in robotic manipulation. Some existing VLA approaches attempt to improve action accuracy by explicitly generating linguistic reasoning traces or future visual observations before action execution. However, explicit reasoning typically incurs non-negligible inference latency, which constrains the temporal resolution required for robotic manipulation. Moreover, such reasoning is confined to the linguistic space, imposing a representational bottleneck that struggles to faithfully capture ineffable physical attributes. To mitigate these limitations, we propose LaST$_0$, a framework that enables efficient reasoning before acting through a Latent Spatio-Temporal Chain-of-Thought (CoT), capturing fine-grained physical and robotic dynamics that are often difficult to verbalize. Specifically, we introduce a token-efficient latent CoT space that models future visual dynamics, 3D structural information, and robot proprioceptive states, and further extends these representations across time to enable temporally consistent implicit reasoning trajectories. Furthermore, LaST$_0$ adopts a dual-system architecture implemented via a Mixture-of-Transformers design, where a reasoning expert conducts low-frequency latent inference and an acting expert generates high-frequency actions conditioned on robotics-oriented latent representations. To facilitate coordination, LaST$_0$ is trained with heterogeneous operation frequencies, enabling adaptive switching between reasoning and action inference rates during deployment. Across ten simulated and six real-world manipulation tasks, LaST$_0$ improves mean success rates by 8% and 13% over prior VLA methods, respectively, while achieving substantially faster inference. Project website: https://sites.google.com/view/last0</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>视觉-语言-动作 (VLA) 模型最近在机器人操作中展现出强大的泛化能力。现有的一些VLA方法试图通过在执行动作之前显式地生成语言推理轨迹或未来的视觉观测来提高动作的准确性。然而，显式推理通常会带来不可忽视的推理延迟，这限制了机器人操作所需的时间分辨率。此外，这种推理被限制在语言空间中，施加了一种表征瓶颈，难以忠实地捕捉难以言表的物理属性。为了缓解这些限制，我们提出了 LaST$_0$，这是一个框架，通过潜在时空思维链 (CoT) 实现动作前的高效推理，捕捉通常难以用语言表达的细粒度物理和机器人动力学。具体来说，我们引入了一种令牌高效的潜在 CoT 空间，用于建模未来的视觉动态、3D 结构信息和机器人本体感受状态，并将这些表征按时间跨度扩展，以实现时间上一致的隐式推理轨迹。此外，LaST$_0$ 采用通过混合Transformer设计实现的双系统架构，其中推理专家进行低频潜在推理，而动作专家根据面向机器人的潜在表征生成高频动作。为了方便协调，LaST$_0$ 采用异构操作频率进行训练，从而能够在部署期间自适应地切换推理和动作的推理速率。在十个模拟和六个真实世界操作任务中，LaST$_0$ 相对于先前的 VLA 方法，分别将平均成功率提高了 8% 和 13%，同时实现了显著更快的推理速度。项目网站：https://sites.google.com/view/last0</p>
             
 
             
@@ -390,6 +601,14 @@
             <a href="http://arxiv.org/abs/2601.05248v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Zhuoyang Liu, Jiaming Liu, Hao Chen, Ziyu Guo, Chengkai Hou, Chenyang Gu, Jiale Yu, Xiangju Mi, Renrui Zhang, Zhengping Che, Jian Tang, Pheng-Ann Heng, Shanghang Zhang</p>
             
@@ -403,16 +622,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">RoboVIP: Multi-View Video Generation with Visual Identity Prompting Augments Robot Manipulation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> The diversity, quantity, and quality of manipulation data are critical for training effective robot policies. However, due to hardware and physical setup constraints, collecting large-scale real-world manipulation data remains difficult to scale across diverse environments. Recent work uses text-prompt conditioned image diffusion models to augment manipulation data by altering the backgrounds and tabletop objects in the visual observations. However, these approaches often overlook the practical need for multi-view and temporally coherent observations required by state-of-the-art policy models. Further, text prompts alone cannot reliably specify the scene setup. To provide the diffusion model with explicit visual guidance, we introduce visual identity prompting, which supplies exemplar images as conditioning inputs to guide the generation of the desired scene setup. To this end, we also build a scalable pipeline to curate a visual identity pool from large robotics datasets. Using our augmented manipulation data to train downstream vision-language-action and visuomotor policy models yields consistent performance gains in both simulation and real-robot settings.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 操控数据的多样性、数量和质量对于训练有效的机器人策略至关重要。然而，由于硬件和物理设置的限制，收集大规模的真实世界操控数据在多样化的环境中仍然难以扩展。最近的研究使用文本提示条件下的图像扩散模型，通过改变视觉观察中的背景和桌面物体来增强操控数据。然而，这些方法通常忽略了最先进的策略模型所需的、具有多视角和时间一致性的观察数据的实际需求。此外，仅靠文本提示无法可靠地指定场景设置。为了给扩散模型提供明确的视觉指导，我们引入视觉身份提示，提供示例图像作为条件输入，以指导生成期望的场景设置。为此，我们还构建了一个可扩展的流水线，从大型机器人数据集中整理一个视觉身份池。使用我们增强的操控数据来训练下游的视觉-语言-动作和视觉运动策略模型，在仿真和真实机器人环境中均取得了持续的性能提升。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces RoboVIP, a multi-view video generation technique using visual identity prompting to augment robot manipulation data, addressing the need for diverse and coherent visual observations for training robot policies and showing performance gains in simulation and real-world scenarios.</p>
+            <h2 class="paper-title">
+                RoboVIP: Multi-View Video Generation with Visual Identity Prompting Augments Robot Manipulation
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了RoboVIP，一种使用视觉身份提示的多视角视频生成技术，用于增强机器人操作数据。它旨在解决训练机器人策略对多样化和连贯视觉观察的需求，并在模拟和真实场景中都展示了性能提升。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了RoboVIP，一种使用视觉身份提示的多视角视频生成技术，用于增强机器人操作数据。它旨在解决训练机器人策略对多样化和连贯视觉观察的需求，并在模拟和真实场景中都展示了性能提升。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper introduces RoboVIP, a multi-view video generation technique using visual identity prompting to augment robot manipulation data, addressing the need for diverse and coherent visual observations for training robot policies and showing performance gains in simulation and real-world scenarios.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> The diversity, quantity, and quality of manipulation data are critical for training effective robot policies. However, due to hardware and physical setup constraints, collecting large-scale real-world manipulation data remains difficult to scale across diverse environments. Recent work uses text-prompt conditioned image diffusion models to augment manipulation data by altering the backgrounds and tabletop objects in the visual observations. However, these approaches often overlook the practical need for multi-view and temporally coherent observations required by state-of-the-art policy models. Further, text prompts alone cannot reliably specify the scene setup. To provide the diffusion model with explicit visual guidance, we introduce visual identity prompting, which supplies exemplar images as conditioning inputs to guide the generation of the desired scene setup. To this end, we also build a scalable pipeline to curate a visual identity pool from large robotics datasets. Using our augmented manipulation data to train downstream vision-language-action and visuomotor policy models yields consistent performance gains in both simulation and real-robot settings.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>操控数据的多样性、数量和质量对于训练有效的机器人策略至关重要。然而，由于硬件和物理设置的限制，收集大规模的真实世界操控数据在多样化的环境中仍然难以扩展。最近的研究使用文本提示条件下的图像扩散模型，通过改变视觉观察中的背景和桌面物体来增强操控数据。然而，这些方法通常忽略了最先进的策略模型所需的、具有多视角和时间一致性的观察数据的实际需求。此外，仅靠文本提示无法可靠地指定场景设置。为了给扩散模型提供明确的视觉指导，我们引入视觉身份提示，提供示例图像作为条件输入，以指导生成期望的场景设置。为此，我们还构建了一个可扩展的流水线，从大型机器人数据集中整理一个视觉身份池。使用我们增强的操控数据来训练下游的视觉-语言-动作和视觉运动策略模型，在仿真和真实机器人环境中均取得了持续的性能提升。</p>
             
 
             
@@ -486,6 +709,14 @@
             <a href="http://arxiv.org/abs/2601.05241v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="1" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="1" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Boyang Wang, Haoran Zhang, Shujie Zhang, Jinkun Hao, Mingda Jia, Qi Lv, Yucheng Mao, Zhaoyang Lyu, Jia Zeng, Xudong Xu, Jiangmiao Pang</p>
             
@@ -499,16 +730,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Learning Latent Action World Models In The Wild</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Agents capable of reasoning and planning in the real world require the ability of predicting the consequences of their actions. While world models possess this capability, they most often require action labels, that can be complex to obtain at scale. This motivates the learning of latent action models, that can learn an action space from videos alone. Our work addresses the problem of learning latent actions world models on in-the-wild videos, expanding the scope of existing works that focus on simple robotics simulations, video games, or manipulation data. While this allows us to capture richer actions, it also introduces challenges stemming from the video diversity, such as environmental noise, or the lack of a common embodiment across videos. To address some of the challenges, we discuss properties that actions should follow as well as relevant architectural choices and evaluations. We find that continuous, but constrained, latent actions are able to capture the complexity of actions from in-the-wild videos, something that the common vector quantization does not. We for example find that changes in the environment coming from agents, such as humans entering the room, can be transferred across videos. This highlights the capability of learning actions that are specific to in-the-wild videos. In the absence of a common embodiment across videos, we are mainly able to learn latent actions that become localized in space, relative to the camera. Nonetheless, we are able to train a controller that maps known actions to latent ones, allowing us to use latent actions as a universal interface and solve planning tasks with our world model with similar performance as action-conditioned baselines. Our analyses and experiments provide a step towards scaling latent action models to the real world.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 能够进行推理和规划的智能体需要在现实世界中预测其行为的后果。世界模型具备这种能力，但通常需要动作标签，而大规模获取动作标签可能非常复杂。这促使人们研究隐式动作模型，这种模型可以仅从视频中学习动作空间。我们的工作致力于在真实场景视频中学习隐式动作世界模型，扩展了现有工作主要集中在简单机器人仿真、电子游戏或操控数据的范围。虽然这使我们能够捕捉更丰富的动作，但也引入了来自视频多样性的挑战，例如环境噪声或视频间缺乏共同的embodiment。为了应对这些挑战，我们讨论了动作应该遵循的属性，以及相关的架构选择和评估。我们发现，连续但受约束的隐式动作能够捕捉真实场景视频中动作的复杂性，而常见的向量量化则无法做到这一点。例如，我们发现来自智能体（如人进入房间）的环境变化可以在视频间传递。这突出了学习特定于真实场景视频的动作的能力。在视频间缺乏共同的embodiment的情况下，我们主要能够学习到相对于相机在空间中定位的隐式动作。尽管如此，我们还是能够训练出一个控制器，将已知的动作映射到隐式动作，从而使我们能够将隐式动作用作通用接口，并使用我们的世界模型解决规划任务，其性能与以动作为条件的基线相似。我们的分析和实验为将隐式动作模型扩展到现实世界迈出了一步。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces a method for learning latent action world models from in-the-wild videos, addressing the challenge of learning action representations without explicit action labels and demonstrating the ability to capture complex environment changes and transfer them across videos.</p>
+            <h2 class="paper-title">
+                Learning Latent Action World Models In The Wild
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种从真实场景视频中学习潜在动作世界模型的方法，解决了在没有明确动作标签的情况下学习动作表征的挑战，并展示了捕捉复杂环境变化并在视频之间转移变化的能力。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文提出了一种从真实场景视频中学习潜在动作世界模型的方法，解决了在没有明确动作标签的情况下学习动作表征的挑战，并展示了捕捉复杂环境变化并在视频之间转移变化的能力。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper introduces a method for learning latent action world models from in-the-wild videos, addressing the challenge of learning action representations without explicit action labels and demonstrating the ability to capture complex environment changes and transfer them across videos.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Agents capable of reasoning and planning in the real world require the ability of predicting the consequences of their actions. While world models possess this capability, they most often require action labels, that can be complex to obtain at scale. This motivates the learning of latent action models, that can learn an action space from videos alone. Our work addresses the problem of learning latent actions world models on in-the-wild videos, expanding the scope of existing works that focus on simple robotics simulations, video games, or manipulation data. While this allows us to capture richer actions, it also introduces challenges stemming from the video diversity, such as environmental noise, or the lack of a common embodiment across videos. To address some of the challenges, we discuss properties that actions should follow as well as relevant architectural choices and evaluations. We find that continuous, but constrained, latent actions are able to capture the complexity of actions from in-the-wild videos, something that the common vector quantization does not. We for example find that changes in the environment coming from agents, such as humans entering the room, can be transferred across videos. This highlights the capability of learning actions that are specific to in-the-wild videos. In the absence of a common embodiment across videos, we are mainly able to learn latent actions that become localized in space, relative to the camera. Nonetheless, we are able to train a controller that maps known actions to latent ones, allowing us to use latent actions as a universal interface and solve planning tasks with our world model with similar performance as action-conditioned baselines. Our analyses and experiments provide a step towards scaling latent action models to the real world.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>能够进行推理和规划的智能体需要在现实世界中预测其行为的后果。世界模型具备这种能力，但通常需要动作标签，而大规模获取动作标签可能非常复杂。这促使人们研究隐式动作模型，这种模型可以仅从视频中学习动作空间。我们的工作致力于在真实场景视频中学习隐式动作世界模型，扩展了现有工作主要集中在简单机器人仿真、电子游戏或操控数据的范围。虽然这使我们能够捕捉更丰富的动作，但也引入了来自视频多样性的挑战，例如环境噪声或视频间缺乏共同的embodiment。为了应对这些挑战，我们讨论了动作应该遵循的属性，以及相关的架构选择和评估。我们发现，连续但受约束的隐式动作能够捕捉真实场景视频中动作的复杂性，而常见的向量量化则无法做到这一点。例如，我们发现来自智能体（如人进入房间）的环境变化可以在视频间传递。这突出了学习特定于真实场景视频的动作的能力。在视频间缺乏共同的embodiment的情况下，我们主要能够学习到相对于相机在空间中定位的隐式动作。尽管如此，我们还是能够训练出一个控制器，将已知的动作映射到隐式动作，从而使我们能够将隐式动作用作通用接口，并使用我们的世界模型解决规划任务，其性能与以动作为条件的基线相似。我们的分析和实验为将隐式动作模型扩展到现实世界迈出了一步。</p>
             
 
             
@@ -582,6 +817,14 @@
             <a href="http://arxiv.org/abs/2601.05230v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="2" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="2" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Quentin Garrido, Tushar Nagarajan, Basile Terver, Nicolas Ballas, Yann LeCun, Michael Rabbat</p>
             
@@ -595,19 +838,23 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">MineNPC-Task: Task Suite for Memory-Aware Minecraft Agents</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> We present \textsc{MineNPC-Task}, a user-authored benchmark and evaluation harness for testing memory-aware, mixed-initiative LLM agents in open-world \emph{Minecraft}. Rather than relying on synthetic prompts, tasks are elicited from formative and summative co-play with expert players, normalized into parametric templates with explicit preconditions and dependency structure, and paired with machine-checkable validators under a bounded-knowledge policy that forbids out-of-world shortcuts. The harness captures plan/act/memory events-including plan previews, targeted clarifications, memory reads and writes, precondition checks, and repair attempts and reports outcomes relative to the total number of attempted subtasks, derived from in-world evidence.
+            <h2 class="paper-title">
+                MineNPC-Task: Task Suite for Memory-Aware Minecraft Agents
+                
+            </h2>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了MineNPC-Task，一个Minecraft基准测试，用于评估具有记忆感知能力的大语言模型智能体。通过用户创作的任务，及显式的前提条件和验证器，揭示了崩溃模式以及对更强记忆持久性的需求。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces MineNPC-Task, a Minecraft benchmark for evaluating memory-aware LLM agents through user-authored tasks with explicit preconditions and validators, revealing breakdown patterns and the need for stronger memory persistence.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> We present \textsc{MineNPC-Task}, a user-authored benchmark and evaluation harness for testing memory-aware, mixed-initiative LLM agents in open-world \emph{Minecraft}. Rather than relying on synthetic prompts, tasks are elicited from formative and summative co-play with expert players, normalized into parametric templates with explicit preconditions and dependency structure, and paired with machine-checkable validators under a bounded-knowledge policy that forbids out-of-world shortcuts. The harness captures plan/act/memory events-including plan previews, targeted clarifications, memory reads and writes, precondition checks, and repair attempts and reports outcomes relative to the total number of attempted subtasks, derived from in-world evidence.
   As an initial snapshot, we instantiate the framework with GPT-4o and evaluate \textbf{216} subtasks across \textbf{8} experienced players. We observe recurring breakdown patterns in code execution, inventory/tool handling, referencing, and navigation, alongside recoveries supported by mixed-initiative clarifications and lightweight memory. Participants rated interaction quality and interface usability positively, while highlighting the need for stronger memory persistence across tasks. We release the complete task suite, validators, logs, and harness to support transparent, reproducible evaluation of future memory-aware embodied agents.</p>
             
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 我们提出了\textsc{MineNPC-Task}，一个用户创作的基准测试和评估工具，用于在开放世界\emph{Minecraft}中测试具有记忆功能的、混合主动式的大型语言模型代理。任务并非依赖于合成提示，而是通过与专家玩家的形成性和总结性协同游戏获取，被规范化为具有明确前提条件和依赖结构的参数化模板，并与在有界知识策略下的机器可校验验证器配对，该策略禁止利用世界之外的捷径。该工具捕获计划/行动/记忆事件——包括计划预览、目标明确的澄清、记忆读取和写入、前提条件检查以及修复尝试——并基于尝试的子任务总数报告结果，这些子任务总数是从游戏世界内的证据中推导出来的。
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>我们提出了\textsc{MineNPC-Task}，一个用户创作的基准测试和评估工具，用于在开放世界\emph{Minecraft}中测试具有记忆功能的、混合主动式的大型语言模型代理。任务并非依赖于合成提示，而是通过与专家玩家的形成性和总结性协同游戏获取，被规范化为具有明确前提条件和依赖结构的参数化模板，并与在有界知识策略下的机器可校验验证器配对，该策略禁止利用世界之外的捷径。该工具捕获计划/行动/记忆事件——包括计划预览、目标明确的澄清、记忆读取和写入、前提条件检查以及修复尝试——并基于尝试的子任务总数报告结果，这些子任务总数是从游戏世界内的证据中推导出来的。
 
 作为一个初步快照，我们用GPT-4o实例化了这个框架，并评估了\textbf{8}位经验丰富的玩家所涉及的\textbf{216}个子任务。我们观察到代码执行、库存/工具处理、引用和导航方面反复出现的崩溃模式，以及混合主动式澄清和轻量级记忆所支持的恢复情况。参与者对交互质量和界面可用性评价积极，同时也强调了跨任务更强的记忆持久性的需求。我们发布完整的任务套件、验证器、日志和工具，以支持对未来具有记忆功能的具身代理进行透明且可复现的评估。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces MineNPC-Task, a Minecraft benchmark for evaluating memory-aware LLM agents through user-authored tasks with explicit preconditions and validators, revealing breakdown patterns and the need for stronger memory persistence.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了MineNPC-Task，一个Minecraft基准测试，用于评估具有记忆感知能力的大语言模型智能体。通过用户创作的任务，及显式的前提条件和验证器，揭示了崩溃模式以及对更强记忆持久性的需求。</p>
             
 
             
@@ -681,6 +928,14 @@
             <a href="http://arxiv.org/abs/2601.05215v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="3" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="3" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Tamil Sudaravan Mohan Doss, Michael Xu, Sudha Rao, Andrew D. Wilson, Balasaravanan Thoravi Kumaravel</p>
             
@@ -694,16 +949,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Internal Representations as Indicators of Hallucinations in Agent Tool Selection</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Large Language Models (LLMs) have shown remarkable capabilities in tool calling and tool usage, but suffer from hallucinations where they choose incorrect tools, provide malformed parameters and exhibit 'tool bypass' behavior by performing simulations and generating outputs instead of invoking specialized tools or external systems. This undermines the reliability of LLM based agents in production systems as it leads to inconsistent results, and bypasses security and audit controls. Such hallucinations in agent tool selection require early detection and error handling. Unlike existing hallucination detection methods that require multiple forward passes or external validation, we present a computationally efficient framework that detects tool-calling hallucinations in real-time by leveraging LLMs' internal representations during the same forward pass used for generation. We evaluate this approach on reasoning tasks across multiple domains, demonstrating strong detection performance (up to 86.4\% accuracy) while maintaining real-time inference capabilities with minimal computational overhead, particularly excelling at detecting parameter-level hallucinations and inappropriate tool selections, critical for reliable agent deployment.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 大型语言模型(LLM)在工具调用和工具使用方面展现出卓越能力，但也存在幻觉问题，例如选择不正确的工具、提供格式错误的参数，以及表现出"工具绕过"行为，即进行模拟并生成输出，而不是调用专门的工具或外部系统。这损害了基于LLM的代理在生产系统中的可靠性，因为它会导致结果不一致，并绕过安全和审计控制。代理工具选择中的此类幻觉需要及早检测和错误处理。与需要多次正向传递或外部验证的现有幻觉检测方法不同，我们提出了一个计算效率高的框架，通过利用LLM在生成过程中同一正向传递期间的内部表示，实时检测工具调用幻觉。我们在多个领域的推理任务上评估了这种方法，展示了强大的检测性能（高达86.4％的准确率），同时保持了具有最小计算开销的实时推理能力，尤其擅长检测参数级别的幻觉和不适当的工具选择，这对于可靠的代理部署至关重要。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces a real-time method for detecting tool-calling hallucinations in LLM agents by analyzing internal representations during inference, achieving high accuracy with minimal overhead.</p>
+            <h2 class="paper-title">
+                Internal Representations as Indicators of Hallucinations in Agent Tool Selection
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种实时检测LLM代理中工具调用幻觉的方法，通过在推理过程中分析内部表示来实现，具有高精度和最小的开销。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文介绍了一种实时检测LLM代理中工具调用幻觉的方法，通过在推理过程中分析内部表示来实现，具有高精度和最小的开销。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper introduces a real-time method for detecting tool-calling hallucinations in LLM agents by analyzing internal representations during inference, achieving high accuracy with minimal overhead.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Large Language Models (LLMs) have shown remarkable capabilities in tool calling and tool usage, but suffer from hallucinations where they choose incorrect tools, provide malformed parameters and exhibit 'tool bypass' behavior by performing simulations and generating outputs instead of invoking specialized tools or external systems. This undermines the reliability of LLM based agents in production systems as it leads to inconsistent results, and bypasses security and audit controls. Such hallucinations in agent tool selection require early detection and error handling. Unlike existing hallucination detection methods that require multiple forward passes or external validation, we present a computationally efficient framework that detects tool-calling hallucinations in real-time by leveraging LLMs' internal representations during the same forward pass used for generation. We evaluate this approach on reasoning tasks across multiple domains, demonstrating strong detection performance (up to 86.4\% accuracy) while maintaining real-time inference capabilities with minimal computational overhead, particularly excelling at detecting parameter-level hallucinations and inappropriate tool selections, critical for reliable agent deployment.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>大型语言模型(LLM)在工具调用和工具使用方面展现出卓越能力，但也存在幻觉问题，例如选择不正确的工具、提供格式错误的参数，以及表现出"工具绕过"行为，即进行模拟并生成输出，而不是调用专门的工具或外部系统。这损害了基于LLM的代理在生产系统中的可靠性，因为它会导致结果不一致，并绕过安全和审计控制。代理工具选择中的此类幻觉需要及早检测和错误处理。与需要多次正向传递或外部验证的现有幻觉检测方法不同，我们提出了一个计算效率高的框架，通过利用LLM在生成过程中同一正向传递期间的内部表示，实时检测工具调用幻觉。我们在多个领域的推理任务上评估了这种方法，展示了强大的检测性能（高达86.4％的准确率），同时保持了具有最小计算开销的实时推理能力，尤其擅长检测参数级别的幻觉和不适当的工具选择，这对于可靠的代理部署至关重要。</p>
             
 
             
@@ -777,6 +1036,14 @@
             <a href="http://arxiv.org/abs/2601.05214v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="4" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="4" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Kait Healy, Bharathi Srinivasan, Visakh Madathil, Jing Wu</p>
             
@@ -790,16 +1057,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">SimuAgent: An LLM-Based Simulink Modeling Assistant Enhanced with Reinforcement Learning</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Large language models (LLMs) have revolutionized text-based code automation, but their potential in graph-oriented engineering workflows remains under-explored. We introduce SimuAgent, an LLM-powered modeling and simulation agent tailored for Simulink. SimuAgent replaces verbose XML with a concise, dictionary-style Python representation, dramatically cutting token counts, improving interpretability, and enabling fast, in-process simulation. A lightweight plan-execute architecture, trained in two stages, equips the agent with both low-level tool skills and high-level design reasoning. To tackle sparse rewards in long-horizon tasks, we propose Reflection-GRPO (ReGRPO), which augments Group Relative Policy Optimization (GRPO) with self-reflection traces that supply rich intermediate feedback, accelerating convergence and boosting robustness. Experiments on SimuBench, our newly released benchmark comprising 5300 multi-domain modeling tasks, show that a Qwen2.5-7B model fine-tuned with SimuAgent converges faster and achieves higher modeling accuracy than standard RL baselines, and even surpasses GPT-4o when evaluated with few-shot prompting on the same benchmark. Ablations confirm that the two-stage curriculum and abstract-reconstruct data augmentation further enhance generalization. SimuAgent trains and runs entirely on-premise with modest hardware, delivering a privacy-preserving, cost-effective solution for industrial model-driven engineering. SimuAgent bridges the gap between LLMs and graphical modeling environments, offering a practical solution for AI-assisted engineering design in industrial settings.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 大型语言模型（LLM）已经彻底改变了基于文本的代码自动化，但它们在面向图的工程工作流中的潜力仍未得到充分探索。我们推出了SimuAgent，一种专为Simulink量身定制的、基于LLM的建模与仿真代理。SimuAgent用简洁的字典式Python表示替代了冗长的XML，显著减少了token数量，提高了可解释性，并实现了快速的进程内仿真。通过两阶段训练的轻量级计划-执行架构为代理赋予了低级工具技能和高级设计推理能力。为了解决长时程任务中的稀疏奖励问题，我们提出了Reflection-GRPO（ReGRPO），它利用自反思轨迹来丰富中间反馈，从而增强了组相对策略优化（GRPO），加速了收敛并提高了鲁棒性。在SimuBench（我们新发布的包含5300个多领域建模任务的基准）上的实验表明，使用SimuAgent微调的Qwen2.5-7B模型比标准RL基线收敛更快，实现了更高的建模精度，甚至在使用相同基准进行少样本提示评估时超越了GPT-4o。消融实验证实，两阶段课程学习和抽象-重构数据增强进一步提升了泛化能力。SimuAgent完全在本地进行训练和运行，硬件要求不高，为工业模型驱动工程提供了一种保护隐私、经济高效的解决方案。SimuAgent弥合了LLM与图形建模环境之间的差距，为工业环境中的AI辅助工程设计提供了一种实用的解决方案。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: SimuAgent uses LLMs and reinforcement learning with a novel Reflection-GRPO algorithm to improve Simulink modeling, showing superior performance compared to standard RL baselines and even GPT-4o on a new benchmark.</p>
+            <h2 class="paper-title">
+                SimuAgent: An LLM-Based Simulink Modeling Assistant Enhanced with Reinforcement Learning
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: SimuAgent使用LLM和强化学习，结合一种新颖的Reflection-GRPO算法来改进Simulink建模。在新的基准测试中，SimuAgent的性能优于标准强化学习基线，甚至超过了GPT-4o。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>SimuAgent使用LLM和强化学习，结合一种新颖的Reflection-GRPO算法来改进Simulink建模。在新的基准测试中，SimuAgent的性能优于标准强化学习基线，甚至超过了GPT-4o。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> SimuAgent uses LLMs and reinforcement learning with a novel Reflection-GRPO algorithm to improve Simulink modeling, showing superior performance compared to standard RL baselines and even GPT-4o on a new benchmark.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Large language models (LLMs) have revolutionized text-based code automation, but their potential in graph-oriented engineering workflows remains under-explored. We introduce SimuAgent, an LLM-powered modeling and simulation agent tailored for Simulink. SimuAgent replaces verbose XML with a concise, dictionary-style Python representation, dramatically cutting token counts, improving interpretability, and enabling fast, in-process simulation. A lightweight plan-execute architecture, trained in two stages, equips the agent with both low-level tool skills and high-level design reasoning. To tackle sparse rewards in long-horizon tasks, we propose Reflection-GRPO (ReGRPO), which augments Group Relative Policy Optimization (GRPO) with self-reflection traces that supply rich intermediate feedback, accelerating convergence and boosting robustness. Experiments on SimuBench, our newly released benchmark comprising 5300 multi-domain modeling tasks, show that a Qwen2.5-7B model fine-tuned with SimuAgent converges faster and achieves higher modeling accuracy than standard RL baselines, and even surpasses GPT-4o when evaluated with few-shot prompting on the same benchmark. Ablations confirm that the two-stage curriculum and abstract-reconstruct data augmentation further enhance generalization. SimuAgent trains and runs entirely on-premise with modest hardware, delivering a privacy-preserving, cost-effective solution for industrial model-driven engineering. SimuAgent bridges the gap between LLMs and graphical modeling environments, offering a practical solution for AI-assisted engineering design in industrial settings.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>大型语言模型（LLM）已经彻底改变了基于文本的代码自动化，但它们在面向图的工程工作流中的潜力仍未得到充分探索。我们推出了SimuAgent，一种专为Simulink量身定制的、基于LLM的建模与仿真代理。SimuAgent用简洁的字典式Python表示替代了冗长的XML，显著减少了token数量，提高了可解释性，并实现了快速的进程内仿真。通过两阶段训练的轻量级计划-执行架构为代理赋予了低级工具技能和高级设计推理能力。为了解决长时程任务中的稀疏奖励问题，我们提出了Reflection-GRPO（ReGRPO），它利用自反思轨迹来丰富中间反馈，从而增强了组相对策略优化（GRPO），加速了收敛并提高了鲁棒性。在SimuBench（我们新发布的包含5300个多领域建模任务的基准）上的实验表明，使用SimuAgent微调的Qwen2.5-7B模型比标准RL基线收敛更快，实现了更高的建模精度，甚至在使用相同基准进行少样本提示评估时超越了GPT-4o。消融实验证实，两阶段课程学习和抽象-重构数据增强进一步提升了泛化能力。SimuAgent完全在本地进行训练和运行，硬件要求不高，为工业模型驱动工程提供了一种保护隐私、经济高效的解决方案。SimuAgent弥合了LLM与图形建模环境之间的差距，为工业环境中的AI辅助工程设计提供了一种实用的解决方案。</p>
             
 
             
@@ -873,6 +1144,14 @@
             <a href="http://arxiv.org/abs/2601.05187v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="5" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="5" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Yanchang Liang, Xiaowei Zhao</p>
             
@@ -886,16 +1165,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Pixel-Perfect Visual Geometry Estimation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Recovering clean and accurate geometry from images is essential for robotics and augmented reality. However, existing geometry foundation models still suffer severely from flying pixels and the loss of fine details. In this paper, we present pixel-perfect visual geometry models that can predict high-quality, flying-pixel-free point clouds by leveraging generative modeling in the pixel space. We first introduce Pixel-Perfect Depth (PPD), a monocular depth foundation model built upon pixel-space diffusion transformers (DiT). To address the high computational complexity associated with pixel-space diffusion, we propose two key designs: 1) Semantics-Prompted DiT, which incorporates semantic representations from vision foundation models to prompt the diffusion process, preserving global semantics while enhancing fine-grained visual details; and 2) Cascade DiT architecture that progressively increases the number of image tokens, improving both efficiency and accuracy. To further extend PPD to video (PPVD), we introduce a new Semantics-Consistent DiT, which extracts temporally consistent semantics from a multi-view geometry foundation model. We then perform reference-guided token propagation within the DiT to maintain temporal coherence with minimal computational and memory overhead. Our models achieve the best performance among all generative monocular and video depth estimation models and produce significantly cleaner point clouds than all other models.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 从图像中恢复干净、精确的几何信息对于机器人技术和增强现实至关重要。然而，现有的几何基础模型仍然严重受到飞点和精细细节丢失的困扰。在本文中，我们提出了像素级完美视觉几何模型，该模型可以通过利用像素空间中的生成建模来预测高质量、无飞点的点云。我们首先介绍了像素级完美深度（PPD），这是一种基于像素空间扩散Transformer（DiT）构建的单目深度基础模型。为了解决与像素空间扩散相关的高计算复杂度，我们提出了两项关键设计：1）语义提示DiT，它结合了来自视觉基础模型的语义表示来提示扩散过程，在保留全局语义的同时增强精细的视觉细节；以及 2）级联DiT架构，逐步增加图像token的数量，从而提高效率和准确性。为了进一步将PPD扩展到视频（PPVD），我们引入了一种新的语义一致性DiT，它从多视图几何基础模型中提取时间上一致的语义信息。然后，我们在DiT内执行参考引导的token传播，以保持时间连贯性，同时最大限度地减少计算和内存开销。我们的模型在所有生成式单目和视频深度估计模型中实现了最佳性能，并产生了比所有其他模型都明显更干净的点云。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces pixel-perfect visual geometry models using diffusion transformers for monocular and video depth estimation, achieving state-of-the-art performance with cleaner point clouds.</p>
+            <h2 class="paper-title">
+                Pixel-Perfect Visual Geometry Estimation
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了像素完美的视觉几何模型，利用扩散 Transformer 进行单目和视频深度估计，实现了最先进的性能，并生成更清晰的点云。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了像素完美的视觉几何模型，利用扩散 Transformer 进行单目和视频深度估计，实现了最先进的性能，并生成更清晰的点云。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces pixel-perfect visual geometry models using diffusion transformers for monocular and video depth estimation, achieving state-of-the-art performance with cleaner point clouds.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Recovering clean and accurate geometry from images is essential for robotics and augmented reality. However, existing geometry foundation models still suffer severely from flying pixels and the loss of fine details. In this paper, we present pixel-perfect visual geometry models that can predict high-quality, flying-pixel-free point clouds by leveraging generative modeling in the pixel space. We first introduce Pixel-Perfect Depth (PPD), a monocular depth foundation model built upon pixel-space diffusion transformers (DiT). To address the high computational complexity associated with pixel-space diffusion, we propose two key designs: 1) Semantics-Prompted DiT, which incorporates semantic representations from vision foundation models to prompt the diffusion process, preserving global semantics while enhancing fine-grained visual details; and 2) Cascade DiT architecture that progressively increases the number of image tokens, improving both efficiency and accuracy. To further extend PPD to video (PPVD), we introduce a new Semantics-Consistent DiT, which extracts temporally consistent semantics from a multi-view geometry foundation model. We then perform reference-guided token propagation within the DiT to maintain temporal coherence with minimal computational and memory overhead. Our models achieve the best performance among all generative monocular and video depth estimation models and produce significantly cleaner point clouds than all other models.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>从图像中恢复干净、精确的几何信息对于机器人技术和增强现实至关重要。然而，现有的几何基础模型仍然严重受到飞点和精细细节丢失的困扰。在本文中，我们提出了像素级完美视觉几何模型，该模型可以通过利用像素空间中的生成建模来预测高质量、无飞点的点云。我们首先介绍了像素级完美深度（PPD），这是一种基于像素空间扩散Transformer（DiT）构建的单目深度基础模型。为了解决与像素空间扩散相关的高计算复杂度，我们提出了两项关键设计：1）语义提示DiT，它结合了来自视觉基础模型的语义表示来提示扩散过程，在保留全局语义的同时增强精细的视觉细节；以及 2）级联DiT架构，逐步增加图像token的数量，从而提高效率和准确性。为了进一步将PPD扩展到视频（PPVD），我们引入了一种新的语义一致性DiT，它从多视图几何基础模型中提取时间上一致的语义信息。然后，我们在DiT内执行参考引导的token传播，以保持时间连贯性，同时最大限度地减少计算和内存开销。我们的模型在所有生成式单目和视频深度估计模型中实现了最佳性能，并产生了比所有其他模型都明显更干净的点云。</p>
             
 
             
@@ -969,6 +1252,14 @@
             <a href="http://arxiv.org/abs/2601.05246v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="6" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="6" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Gangwei Xu, Haotong Lin, Hongcheng Luo, Haiyang Sun, Bing Wang, Guang Chen, Sida Peng, Hangjun Ye, Xin Yang</p>
             
@@ -982,16 +1273,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">ObjectForesight: Predicting Future 3D Object Trajectories from Human Videos</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Humans can effortlessly anticipate how objects might move or change through interaction--imagining a cup being lifted, a knife slicing, or a lid being closed. We aim to endow computational systems with a similar ability to predict plausible future object motions directly from passive visual observation. We introduce ObjectForesight, a 3D object-centric dynamics model that predicts future 6-DoF poses and trajectories of rigid objects from short egocentric video sequences. Unlike conventional world or dynamics models that operate in pixel or latent space, ObjectForesight represents the world explicitly in 3D at the object level, enabling geometrically grounded and temporally coherent predictions that capture object affordances and trajectories. To train such a model at scale, we leverage recent advances in segmentation, mesh reconstruction, and 3D pose estimation to curate a dataset of 2 million plus short clips with pseudo-ground-truth 3D object trajectories. Through extensive experiments, we show that ObjectForesight achieves significant gains in accuracy, geometric consistency, and generalization to unseen objects and scenes, establishing a scalable framework for learning physically grounded, object-centric dynamics models directly from observation. objectforesight.github.io</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 人类可以毫不费力地预测物体在交互过程中可能如何移动或变化——想象着杯子被拿起、刀在切割、或盖子被关闭。我们的目标是赋予计算系统类似的能力，直接从被动的视觉观察中预测合理的未来物体运动。我们引入ObjectForesight，一个以3D物体为中心的动力学模型，它可以从短期的以自我为中心的视频序列中预测刚性物体的未来6-DoF位姿和轨迹。与在像素或潜在空间中操作的传统世界或动力学模型不同，ObjectForesight在物体层面上以3D显式地表示世界，从而实现几何上可靠且时间上连贯的预测，捕捉物体的可供性和轨迹。为了大规模地训练这种模型，我们利用了分割、网格重建和3D位姿估计方面的最新进展，构建了一个包含超过200万段短视频片段的数据集，并带有伪标签的3D物体轨迹。通过大量的实验，我们表明ObjectForesight在准确性、几何一致性以及对未见物体和场景的泛化方面取得了显著的提升，从而建立了一个可扩展的框架，可以直接从观察中学习具有物理基础的、以物体为中心的动力学模型。 objectforesight.github.io</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces ObjectForesight, a 3D object-centric dynamics model trained on a large dataset to predict future object poses and trajectories from egocentric video, demonstrating improved accuracy and generalization.</p>
+            <h2 class="paper-title">
+                ObjectForesight: Predicting Future 3D Object Trajectories from Human Videos
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了ObjectForesight，一个基于3D物体中心的动力学模型，通过大型数据集训练，用于预测来自自我中心视频的未来物体姿态和轨迹，并展示了更高的准确性和泛化能力。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了ObjectForesight，一个基于3D物体中心的动力学模型，通过大型数据集训练，用于预测来自自我中心视频的未来物体姿态和轨迹，并展示了更高的准确性和泛化能力。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces ObjectForesight, a 3D object-centric dynamics model trained on a large dataset to predict future object poses and trajectories from egocentric video, demonstrating improved accuracy and generalization.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Humans can effortlessly anticipate how objects might move or change through interaction--imagining a cup being lifted, a knife slicing, or a lid being closed. We aim to endow computational systems with a similar ability to predict plausible future object motions directly from passive visual observation. We introduce ObjectForesight, a 3D object-centric dynamics model that predicts future 6-DoF poses and trajectories of rigid objects from short egocentric video sequences. Unlike conventional world or dynamics models that operate in pixel or latent space, ObjectForesight represents the world explicitly in 3D at the object level, enabling geometrically grounded and temporally coherent predictions that capture object affordances and trajectories. To train such a model at scale, we leverage recent advances in segmentation, mesh reconstruction, and 3D pose estimation to curate a dataset of 2 million plus short clips with pseudo-ground-truth 3D object trajectories. Through extensive experiments, we show that ObjectForesight achieves significant gains in accuracy, geometric consistency, and generalization to unseen objects and scenes, establishing a scalable framework for learning physically grounded, object-centric dynamics models directly from observation. objectforesight.github.io</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>人类可以毫不费力地预测物体在交互过程中可能如何移动或变化——想象着杯子被拿起、刀在切割、或盖子被关闭。我们的目标是赋予计算系统类似的能力，直接从被动的视觉观察中预测合理的未来物体运动。我们引入ObjectForesight，一个以3D物体为中心的动力学模型，它可以从短期的以自我为中心的视频序列中预测刚性物体的未来6-DoF位姿和轨迹。与在像素或潜在空间中操作的传统世界或动力学模型不同，ObjectForesight在物体层面上以3D显式地表示世界，从而实现几何上可靠且时间上连贯的预测，捕捉物体的可供性和轨迹。为了大规模地训练这种模型，我们利用了分割、网格重建和3D位姿估计方面的最新进展，构建了一个包含超过200万段短视频片段的数据集，并带有伪标签的3D物体轨迹。通过大量的实验，我们表明ObjectForesight在准确性、几何一致性以及对未见物体和场景的泛化方面取得了显著的提升，从而建立了一个可扩展的框架，可以直接从观察中学习具有物理基础的、以物体为中心的动力学模型。 objectforesight.github.io</p>
             
 
             
@@ -1065,6 +1360,14 @@
             <a href="http://arxiv.org/abs/2601.05237v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="7" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="7" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Rustin Soraki, Homanga Bharadhwaj, Ali Farhadi, Roozbeh Mottaghi</p>
             
@@ -1078,16 +1381,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Cutting AI Research Costs: How Task-Aware Compression Makes Large Language Model Agents Affordable</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> When researchers deploy large language models for autonomous tasks like reviewing literature or generating hypotheses, the computational bills add up quickly. A single research session using a 70-billion parameter model can cost around $127 in cloud fees, putting these tools out of reach for many academic labs. We developed AgentCompress to tackle this problem head-on. The core idea came from a simple observation during our own work: writing a novel hypothesis clearly demands more from the model than reformatting a bibliography. Why should both tasks run at full precision? Our system uses a small neural network to gauge how hard each incoming task will be, based only on its opening words, then routes it to a suitably compressed model variant. The decision happens in under a millisecond. Testing across 500 research workflows in four scientific fields, we cut compute costs by 68.3% while keeping 96.2% of the original success rate. For labs watching their budgets, this could mean the difference between running experiments and sitting on the sidelines</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 当研究人员部署大型语言模型来执行诸如文献综述或生成假设等自主任务时，计算费用会迅速累积。仅仅使用一个700亿参数的模型进行一次研究会话，就可能产生约127美元的云费用，这使得许多学术实验室难以负担这些工具。我们开发了AgentCompress来直接解决这个问题。其核心思想来自于我们在自身工作中的一个简单观察：清楚地撰写一个新颖的假设，比重新格式化参考文献需要模型付出更多努力。为什么这两个任务都必须以全精度运行？我们的系统使用一个小型神经网络，仅根据输入任务的开头几个词来评估任务的复杂度，然后将其路由到合适的、经过压缩的模型变体。决策过程在不到一毫秒内完成。在四个科学领域的500个研究工作流程中进行测试，我们降低了68.3%的计算成本，同时保持了96.2%的原始成功率。对于关注预算的实验室来说，这可能意味着能够进行实验与只能袖手旁观之间的差别。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces AgentCompress, a system that reduces the computational cost of using large language models for research tasks by dynamically compressing the model based on task difficulty, achieving significant cost savings with minimal performance loss.</p>
+            <h2 class="paper-title">
+                Cutting AI Research Costs: How Task-Aware Compression Makes Large Language Model Agents Affordable
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了AgentCompress，一种通过根据任务难度动态压缩模型来降低大型语言模型在研究任务中计算成本的系统，在性能损失最小的情况下实现了显著的成本节约。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了AgentCompress，一种通过根据任务难度动态压缩模型来降低大型语言模型在研究任务中计算成本的系统，在性能损失最小的情况下实现了显著的成本节约。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces AgentCompress, a system that reduces the computational cost of using large language models for research tasks by dynamically compressing the model based on task difficulty, achieving significant cost savings with minimal performance loss.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> When researchers deploy large language models for autonomous tasks like reviewing literature or generating hypotheses, the computational bills add up quickly. A single research session using a 70-billion parameter model can cost around $127 in cloud fees, putting these tools out of reach for many academic labs. We developed AgentCompress to tackle this problem head-on. The core idea came from a simple observation during our own work: writing a novel hypothesis clearly demands more from the model than reformatting a bibliography. Why should both tasks run at full precision? Our system uses a small neural network to gauge how hard each incoming task will be, based only on its opening words, then routes it to a suitably compressed model variant. The decision happens in under a millisecond. Testing across 500 research workflows in four scientific fields, we cut compute costs by 68.3% while keeping 96.2% of the original success rate. For labs watching their budgets, this could mean the difference between running experiments and sitting on the sidelines</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>当研究人员部署大型语言模型来执行诸如文献综述或生成假设等自主任务时，计算费用会迅速累积。仅仅使用一个700亿参数的模型进行一次研究会话，就可能产生约127美元的云费用，这使得许多学术实验室难以负担这些工具。我们开发了AgentCompress来直接解决这个问题。其核心思想来自于我们在自身工作中的一个简单观察：清楚地撰写一个新颖的假设，比重新格式化参考文献需要模型付出更多努力。为什么这两个任务都必须以全精度运行？我们的系统使用一个小型神经网络，仅根据输入任务的开头几个词来评估任务的复杂度，然后将其路由到合适的、经过压缩的模型变体。决策过程在不到一毫秒内完成。在四个科学领域的500个研究工作流程中进行测试，我们降低了68.3%的计算成本，同时保持了96.2%的原始成功率。对于关注预算的实验室来说，这可能意味着能够进行实验与只能袖手旁观之间的差别。</p>
             
 
             
@@ -1161,6 +1468,14 @@
             <a href="http://arxiv.org/abs/2601.05191v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="8" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="8" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Zuhair Ahmed Khan Taha, Mohammed Mudassir Uddin, Shahnawaz Alam</p>
             
@@ -1174,16 +1489,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">VideoAuto-R1: Video Auto Reasoning via Thinking Once, Answering Twice</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Chain-of-thought (CoT) reasoning has emerged as a powerful tool for multimodal large language models on video understanding tasks. However, its necessity and advantages over direct answering remain underexplored. In this paper, we first demonstrate that for RL-trained video models, direct answering often matches or even surpasses CoT performance, despite CoT producing step-by-step analyses at a higher computational cost. Motivated by this, we propose VideoAuto-R1, a video understanding framework that adopts a reason-when-necessary strategy. During training, our approach follows a Thinking Once, Answering Twice paradigm: the model first generates an initial answer, then performs reasoning, and finally outputs a reviewed answer. Both answers are supervised via verifiable rewards. During inference, the model uses the confidence score of the initial answer to determine whether to proceed with reasoning. Across video QA and grounding benchmarks, VideoAuto-R1 achieves state-of-the-art accuracy with significantly improved efficiency, reducing the average response length by ~3.3x, e.g., from 149 to just 44 tokens. Moreover, we observe a low rate of thinking-mode activation on perception-oriented tasks, but a higher rate on reasoning-intensive tasks. This suggests that explicit language-based reasoning is generally beneficial but not always necessary.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 思维链(CoT)推理已成为多模态大型语言模型在视频理解任务中一种强大的工具。然而，其必要性以及相对于直接回答的优势仍有待进一步探索。在本文中，我们首先证明了对于强化学习训练的视频模型，直接回答通常能匹配甚至超过CoT的性能，尽管CoT以更高的计算成本产生逐步分析。受此启发，我们提出VideoAuto-R1，一种采用“按需推理”策略的视频理解框架。在训练期间，我们的方法遵循“思考一次，回答两次”的范式：模型首先生成一个初始答案，然后进行推理，最后输出一个经过审查的答案。两个答案都通过可验证的回报进行监督。在推理过程中，模型利用初始答案的置信度来决定是否继续进行推理。在视频问答和定位基准测试中，VideoAuto-R1实现了最先进的准确率，并显著提高了效率，将平均回复长度降低了约3.3倍，例如，从149个token减少到只有44个token。此外，我们观察到在感知导向的任务上，思考模式的激活率较低，而在推理密集型任务上，激活率较高。这表明，基于显式语言的推理通常是有益的，但并非总是必要的。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces VideoAuto-R1, a video understanding framework that uses a 'reason-when-necessary' strategy, showing comparable or superior performance to chain-of-thought methods with increased efficiency by selectively applying reasoning only when the model is uncertain.</p>
+            <h2 class="paper-title">
+                VideoAuto-R1: Video Auto Reasoning via Thinking Once, Answering Twice
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了VideoAuto-R1，一个视频理解框架，它采用“按需推理”策略，通过仅在模型不确定时选择性地应用推理，展示了与思维链方法相当或更优越的性能，同时提高了效率。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了VideoAuto-R1，一个视频理解框架，它采用“按需推理”策略，通过仅在模型不确定时选择性地应用推理，展示了与思维链方法相当或更优越的性能，同时提高了效率。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces VideoAuto-R1, a video understanding framework that uses a 'reason-when-necessary' strategy, showing comparable or superior performance to chain-of-thought methods with increased efficiency by selectively applying reasoning only when the model is uncertain.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Chain-of-thought (CoT) reasoning has emerged as a powerful tool for multimodal large language models on video understanding tasks. However, its necessity and advantages over direct answering remain underexplored. In this paper, we first demonstrate that for RL-trained video models, direct answering often matches or even surpasses CoT performance, despite CoT producing step-by-step analyses at a higher computational cost. Motivated by this, we propose VideoAuto-R1, a video understanding framework that adopts a reason-when-necessary strategy. During training, our approach follows a Thinking Once, Answering Twice paradigm: the model first generates an initial answer, then performs reasoning, and finally outputs a reviewed answer. Both answers are supervised via verifiable rewards. During inference, the model uses the confidence score of the initial answer to determine whether to proceed with reasoning. Across video QA and grounding benchmarks, VideoAuto-R1 achieves state-of-the-art accuracy with significantly improved efficiency, reducing the average response length by ~3.3x, e.g., from 149 to just 44 tokens. Moreover, we observe a low rate of thinking-mode activation on perception-oriented tasks, but a higher rate on reasoning-intensive tasks. This suggests that explicit language-based reasoning is generally beneficial but not always necessary.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>思维链(CoT)推理已成为多模态大型语言模型在视频理解任务中一种强大的工具。然而，其必要性以及相对于直接回答的优势仍有待进一步探索。在本文中，我们首先证明了对于强化学习训练的视频模型，直接回答通常能匹配甚至超过CoT的性能，尽管CoT以更高的计算成本产生逐步分析。受此启发，我们提出VideoAuto-R1，一种采用“按需推理”策略的视频理解框架。在训练期间，我们的方法遵循“思考一次，回答两次”的范式：模型首先生成一个初始答案，然后进行推理，最后输出一个经过审查的答案。两个答案都通过可验证的回报进行监督。在推理过程中，模型利用初始答案的置信度来决定是否继续进行推理。在视频问答和定位基准测试中，VideoAuto-R1实现了最先进的准确率，并显著提高了效率，将平均回复长度降低了约3.3倍，例如，从149个token减少到只有44个token。此外，我们观察到在感知导向的任务上，思考模式的激活率较低，而在推理密集型任务上，激活率较高。这表明，基于显式语言的推理通常是有益的，但并非总是必要的。</p>
             
 
             
@@ -1257,6 +1576,14 @@
             <a href="http://arxiv.org/abs/2601.05175v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="9" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="9" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Shuming Liu, Mingchen Zhuge, Changsheng Zhao, Jun Chen, Lemeng Wu, Zechun Liu, Chenchen Zhu, Zhipeng Cai, Chong Zhou, Haozhe Liu, Ernie Chang, Saksham Suri, Hongyu Xu, Qi Qian, Wei Wen, Balakrishnan Varadarajan, Zhuang Liu, Hu Xu, Florian Bordes, Raghuraman Krishnamoorthi, Bernard Ghanem, Vikas Chandra, Yunyang Xiong</p>
             
@@ -1270,16 +1597,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Generate, Transfer, Adapt: Learning Functional Dexterous Grasping from a Single Human Demonstration</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Functional grasping with dexterous robotic hands is a key capability for enabling tool use and complex manipulation, yet progress has been constrained by two persistent bottlenecks: the scarcity of large-scale datasets and the absence of integrated semantic and geometric reasoning in learned models. In this work, we present CorDex, a framework that robustly learns dexterous functional grasps of novel objects from synthetic data generated from just a single human demonstration. At the core of our approach is a correspondence-based data engine that generates diverse, high-quality training data in simulation. Based on the human demonstration, our data engine generates diverse object instances of the same category, transfers the expert grasp to the generated objects through correspondence estimation, and adapts the grasp through optimization. Building on the generated data, we introduce a multimodal prediction network that integrates visual and geometric information. By devising a local-global fusion module and an importance-aware sampling mechanism, we enable robust and computationally efficient prediction of functional dexterous grasps. Through extensive experiments across various object categories, we demonstrate that CorDex generalizes well to unseen object instances and significantly outperforms state-of-the-art baselines.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 使用灵巧机械手进行功能性抓取是实现工具使用和复杂操控的关键能力，但其进展一直受到两个持续性瓶颈的制约：大规模数据集的稀缺以及学习型模型中缺乏集成的语义和几何推理。在本文中，我们提出了 CorDex，一个可以仅从单次人类演示生成的合成数据中，稳健地学习新颖物体的灵巧功能性抓取的框架。我们方法的核心是一个基于对应关系的数据引擎，它可以在仿真中生成多样化、高质量的训练数据。基于人类演示，我们的数据引擎生成同一类别的多样化物体实例，通过对应关系估计将专家抓取转移到生成的物体上，并通过优化来调整抓取。在生成的数据的基础上，我们引入了一个集成视觉和几何信息的多模态预测网络。通过设计一个局部-全局融合模块和一种重要性感知采样机制，我们实现了对功能性灵巧抓取的稳健和计算高效的预测。通过跨多个物体类别的广泛实验，我们证明了 CorDex 可以很好地泛化到未见过的物体实例，并且显著优于最先进的基线方法。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces CorDex, a framework for learning functional dexterous grasps from a single human demonstration by generating synthetic data and using a multimodal prediction network. It claims to outperform existing methods in generalizing to unseen object instances.</p>
+            <h2 class="paper-title">
+                Generate, Transfer, Adapt: Learning Functional Dexterous Grasping from a Single Human Demonstration
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一种名为 CorDex 的框架，该框架通过生成合成数据和使用多模态预测网络，从单个人类演示中学习功能性灵巧抓取。 它声称在泛化到未见过的对象实例方面优于现有方法。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了一种名为 CorDex 的框架，该框架通过生成合成数据和使用多模态预测网络，从单个人类演示中学习功能性灵巧抓取。 它声称在泛化到未见过的对象实例方面优于现有方法。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces CorDex, a framework for learning functional dexterous grasps from a single human demonstration by generating synthetic data and using a multimodal prediction network. It claims to outperform existing methods in generalizing to unseen object instances.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Functional grasping with dexterous robotic hands is a key capability for enabling tool use and complex manipulation, yet progress has been constrained by two persistent bottlenecks: the scarcity of large-scale datasets and the absence of integrated semantic and geometric reasoning in learned models. In this work, we present CorDex, a framework that robustly learns dexterous functional grasps of novel objects from synthetic data generated from just a single human demonstration. At the core of our approach is a correspondence-based data engine that generates diverse, high-quality training data in simulation. Based on the human demonstration, our data engine generates diverse object instances of the same category, transfers the expert grasp to the generated objects through correspondence estimation, and adapts the grasp through optimization. Building on the generated data, we introduce a multimodal prediction network that integrates visual and geometric information. By devising a local-global fusion module and an importance-aware sampling mechanism, we enable robust and computationally efficient prediction of functional dexterous grasps. Through extensive experiments across various object categories, we demonstrate that CorDex generalizes well to unseen object instances and significantly outperforms state-of-the-art baselines.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>使用灵巧机械手进行功能性抓取是实现工具使用和复杂操控的关键能力，但其进展一直受到两个持续性瓶颈的制约：大规模数据集的稀缺以及学习型模型中缺乏集成的语义和几何推理。在本文中，我们提出了 CorDex，一个可以仅从单次人类演示生成的合成数据中，稳健地学习新颖物体的灵巧功能性抓取的框架。我们方法的核心是一个基于对应关系的数据引擎，它可以在仿真中生成多样化、高质量的训练数据。基于人类演示，我们的数据引擎生成同一类别的多样化物体实例，通过对应关系估计将专家抓取转移到生成的物体上，并通过优化来调整抓取。在生成的数据的基础上，我们引入了一个集成视觉和几何信息的多模态预测网络。通过设计一个局部-全局融合模块和一种重要性感知采样机制，我们实现了对功能性灵巧抓取的稳健和计算高效的预测。通过跨多个物体类别的广泛实验，我们证明了 CorDex 可以很好地泛化到未见过的物体实例，并且显著优于最先进的基线方法。</p>
             
 
             
@@ -1353,6 +1684,14 @@
             <a href="http://arxiv.org/abs/2601.05243v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="10" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="10" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Xingyi He, Adhitya Polavaram, Yunhao Cao, Om Deshmukh, Tianrui Wang, Xiaowei Zhou, Kuan Fang</p>
             
@@ -1366,16 +1705,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">RL-AWB: Deep Reinforcement Learning for Auto White Balance Correction in Low-Light Night-time Scenes</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Nighttime color constancy remains a challenging problem in computational photography due to low-light noise and complex illumination conditions. We present RL-AWB, a novel framework combining statistical methods with deep reinforcement learning for nighttime white balance. Our method begins with a statistical algorithm tailored for nighttime scenes, integrating salient gray pixel detection with novel illumination estimation. Building on this foundation, we develop the first deep reinforcement learning approach for color constancy that leverages the statistical algorithm as its core, mimicking professional AWB tuning experts by dynamically optimizing parameters for each image. To facilitate cross-sensor evaluation, we introduce the first multi-sensor nighttime dataset. Experiment results demonstrate that our method achieves superior generalization capability across low-light and well-illuminated images. Project page: https://ntuneillee.github.io/research/rl-awb/</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 夜间色彩恒常性由于低光噪声和复杂的光照条件，仍然是计算摄影学中的一个挑战性问题。我们提出了一种名为RL-AWB的新框架，它将统计方法与深度强化学习相结合，用于夜间白平衡。 我们的方法首先采用一种专为夜间场景定制的统计算法，该算法集成了显著灰像素检测与新的照明估计。 在此基础上，我们开发了第一个用于色彩恒常性的深度强化学习方法，它利用统计算法作为其核心，通过动态优化每个图像的参数来模仿专业的AWB调优专家。 为了方便跨传感器评估，我们引入了首个多传感器夜间数据集。实验结果表明，我们的方法在低光和良好照明图像中均实现了卓越的泛化能力。 项目页面：https://ntuneillee.github.io/research/rl-awb/</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces RL-AWB, a deep reinforcement learning framework for auto white balance (AWB) correction in low-light nighttime scenes, combining statistical methods with RL and introducing a new multi-sensor nighttime dataset.</p>
+            <h2 class="paper-title">
+                RL-AWB: Deep Reinforcement Learning for Auto White Balance Correction in Low-Light Night-time Scenes
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了RL-AWB，一个用于低光夜间场景中自动白平衡(AWB)校正的深度强化学习框架，结合了统计方法和强化学习，并引入了一个新的多传感器夜间数据集。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了RL-AWB，一个用于低光夜间场景中自动白平衡(AWB)校正的深度强化学习框架，结合了统计方法和强化学习，并引入了一个新的多传感器夜间数据集。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces RL-AWB, a deep reinforcement learning framework for auto white balance (AWB) correction in low-light nighttime scenes, combining statistical methods with RL and introducing a new multi-sensor nighttime dataset.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Nighttime color constancy remains a challenging problem in computational photography due to low-light noise and complex illumination conditions. We present RL-AWB, a novel framework combining statistical methods with deep reinforcement learning for nighttime white balance. Our method begins with a statistical algorithm tailored for nighttime scenes, integrating salient gray pixel detection with novel illumination estimation. Building on this foundation, we develop the first deep reinforcement learning approach for color constancy that leverages the statistical algorithm as its core, mimicking professional AWB tuning experts by dynamically optimizing parameters for each image. To facilitate cross-sensor evaluation, we introduce the first multi-sensor nighttime dataset. Experiment results demonstrate that our method achieves superior generalization capability across low-light and well-illuminated images. Project page: https://ntuneillee.github.io/research/rl-awb/</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>夜间色彩恒常性由于低光噪声和复杂的光照条件，仍然是计算摄影学中的一个挑战性问题。我们提出了一种名为RL-AWB的新框架，它将统计方法与深度强化学习相结合，用于夜间白平衡。 我们的方法首先采用一种专为夜间场景定制的统计算法，该算法集成了显著灰像素检测与新的照明估计。 在此基础上，我们开发了第一个用于色彩恒常性的深度强化学习方法，它利用统计算法作为其核心，通过动态优化每个图像的参数来模仿专业的AWB调优专家。 为了方便跨传感器评估，我们引入了首个多传感器夜间数据集。实验结果表明，我们的方法在低光和良好照明图像中均实现了卓越的泛化能力。 项目页面：https://ntuneillee.github.io/research/rl-awb/</p>
             
 
             
@@ -1449,6 +1792,14 @@
             <a href="http://arxiv.org/abs/2601.05249v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="11" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="11" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Yuan-Kang Lee, Kuan-Lin Chen, Chia-Che Chang, Yu-Lun Liu</p>
             
@@ -1462,16 +1813,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Plenoptic Video Generation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Camera-controlled generative video re-rendering methods, such as ReCamMaster, have achieved remarkable progress. However, despite their success in single-view setting, these works often struggle to maintain consistency across multi-view scenarios. Ensuring spatio-temporal coherence in hallucinated regions remains challenging due to the inherent stochasticity of generative models. To address it, we introduce PlenopticDreamer, a framework that synchronizes generative hallucinations to maintain spatio-temporal memory. The core idea is to train a multi-in-single-out video-conditioned model in an autoregressive manner, aided by a camera-guided video retrieval strategy that adaptively selects salient videos from previous generations as conditional inputs. In addition, Our training incorporates progressive context-scaling to improve convergence, self-conditioning to enhance robustness against long-range visual degradation caused by error accumulation, and a long-video conditioning mechanism to support extended video generation. Extensive experiments on the Basic and Agibot benchmarks demonstrate that PlenopticDreamer achieves state-of-the-art video re-rendering, delivering superior view synchronization, high-fidelity visuals, accurate camera control, and diverse view transformations (e.g., third-person to third-person, and head-view to gripper-view in robotic manipulation). Project page: https://research.nvidia.com/labs/dir/plenopticdreamer/</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 相机控制的生成式视频重渲染方法，例如ReCamMaster，已经取得了显著进展。然而，尽管它们在单视角设置中获得了成功，但在多视角场景中，这些方法往往难以保持一致性。由于生成模型的固有随机性，确保幻觉区域的时空连贯性仍然具有挑战性。为了解决这个问题，我们提出了PlenopticDreamer，一个同步生成幻觉以保持时空记忆的框架。其核心思想是以自回归方式训练一个多输入单输出的视频条件模型，并采用一种相机引导的视频检索策略，自适应地从先前生成的结果中选择显著视频作为条件输入。此外，我们的训练结合了渐进式上下文缩放来提高收敛性，自条件化来增强对误差累积造成的长程视觉退化的鲁棒性，以及长视频条件机制来支持更长的视频生成。在Basic和Agibot基准测试上的大量实验表明，PlenopticDreamer实现了最先进的视频重渲染，提供了卓越的视角同步、高保真视觉效果、精确的相机控制以及多样化的视角转换（例如，在机器人操作中，从第三人称视角到第三人称视角，以及从头部视角到机械臂视角）。项目主页：https://research.nvidia.com/labs/dir/plenopticdreamer/</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: PlenopticDreamer synchronizes generative hallucinations in video re-rendering to maintain spatio-temporal consistency across multiple views. It utilizes a camera-guided video retrieval strategy and several training mechanisms to achieve state-of-the-art performance.</p>
+            <h2 class="paper-title">
+                Plenoptic Video Generation
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: PlenopticDreamer通过同步生成式视频重渲染中的幻觉，以维持多视角的时空一致性。它利用相机引导的视频检索策略和多种训练机制，实现了最先进的性能。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>PlenopticDreamer通过同步生成式视频重渲染中的幻觉，以维持多视角的时空一致性。它利用相机引导的视频检索策略和多种训练机制，实现了最先进的性能。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> PlenopticDreamer synchronizes generative hallucinations in video re-rendering to maintain spatio-temporal consistency across multiple views. It utilizes a camera-guided video retrieval strategy and several training mechanisms to achieve state-of-the-art performance.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Camera-controlled generative video re-rendering methods, such as ReCamMaster, have achieved remarkable progress. However, despite their success in single-view setting, these works often struggle to maintain consistency across multi-view scenarios. Ensuring spatio-temporal coherence in hallucinated regions remains challenging due to the inherent stochasticity of generative models. To address it, we introduce PlenopticDreamer, a framework that synchronizes generative hallucinations to maintain spatio-temporal memory. The core idea is to train a multi-in-single-out video-conditioned model in an autoregressive manner, aided by a camera-guided video retrieval strategy that adaptively selects salient videos from previous generations as conditional inputs. In addition, Our training incorporates progressive context-scaling to improve convergence, self-conditioning to enhance robustness against long-range visual degradation caused by error accumulation, and a long-video conditioning mechanism to support extended video generation. Extensive experiments on the Basic and Agibot benchmarks demonstrate that PlenopticDreamer achieves state-of-the-art video re-rendering, delivering superior view synchronization, high-fidelity visuals, accurate camera control, and diverse view transformations (e.g., third-person to third-person, and head-view to gripper-view in robotic manipulation). Project page: https://research.nvidia.com/labs/dir/plenopticdreamer/</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>相机控制的生成式视频重渲染方法，例如ReCamMaster，已经取得了显著进展。然而，尽管它们在单视角设置中获得了成功，但在多视角场景中，这些方法往往难以保持一致性。由于生成模型的固有随机性，确保幻觉区域的时空连贯性仍然具有挑战性。为了解决这个问题，我们提出了PlenopticDreamer，一个同步生成幻觉以保持时空记忆的框架。其核心思想是以自回归方式训练一个多输入单输出的视频条件模型，并采用一种相机引导的视频检索策略，自适应地从先前生成的结果中选择显著视频作为条件输入。此外，我们的训练结合了渐进式上下文缩放来提高收敛性，自条件化来增强对误差累积造成的长程视觉退化的鲁棒性，以及长视频条件机制来支持更长的视频生成。在Basic和Agibot基准测试上的大量实验表明，PlenopticDreamer实现了最先进的视频重渲染，提供了卓越的视角同步、高保真视觉效果、精确的相机控制以及多样化的视角转换（例如，在机器人操作中，从第三人称视角到第三人称视角，以及从头部视角到机械臂视角）。项目主页：https://research.nvidia.com/labs/dir/plenopticdreamer/</p>
             
 
             
@@ -1545,6 +1900,14 @@
             <a href="http://arxiv.org/abs/2601.05239v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="12" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="12" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Xiao Fu, Shitao Tang, Min Shi, Xian Liu, Jinwei Gu, Ming-Yu Liu, Dahua Lin, Chen-Hsuan Lin</p>
             
@@ -1558,16 +1921,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Mesh4D: 4D Mesh Reconstruction and Tracking from Monocular Video</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> We propose Mesh4D, a feed-forward model for monocular 4D mesh reconstruction. Given a monocular video of a dynamic object, our model reconstructs the object's complete 3D shape and motion, represented as a deformation field. Our key contribution is a compact latent space that encodes the entire animation sequence in a single pass. This latent space is learned by an autoencoder that, during training, is guided by the skeletal structure of the training objects, providing strong priors on plausible deformations. Crucially, skeletal information is not required at inference time. The encoder employs spatio-temporal attention, yielding a more stable representation of the object's overall deformation. Building on this representation, we train a latent diffusion model that, conditioned on the input video and the mesh reconstructed from the first frame, predicts the full animation in one shot. We evaluate Mesh4D on reconstruction and novel view synthesis benchmarks, outperforming prior methods in recovering accurate 3D shape and deformation.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 我们提出了Mesh4D，一个用于单目4D网格重建的前馈模型。给定动态物体的单目视频，我们的模型重建物体完整的3D形状和运动，并将其表示为一个形变场。我们的主要贡献是一个紧凑的潜在空间，它以单次传递的方式编码整个动画序列。该潜在空间由一个自编码器学习，在训练过程中，自编码器由训练对象的骨骼结构引导，从而为合理的形变提供强先验。至关重要的是，在推理时不需要骨骼信息。编码器采用时空注意力机制，从而产生物体整体形变的更稳定的表示。基于这种表示，我们训练了一个潜在扩散模型，该模型以输入的视频和从第一帧重建的网格为条件，一次性预测完整的动画。我们在重建和新视角合成基准上评估Mesh4D，在恢复准确的3D形状和形变方面优于现有方法。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: Mesh4D reconstructs and tracks 4D meshes from monocular video using a novel latent space learned with skeletal priors guiding a diffusion model for single-pass animation prediction, outperforming existing methods.</p>
+            <h2 class="paper-title">
+                Mesh4D: 4D Mesh Reconstruction and Tracking from Monocular Video
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: Mesh4D通过单目视频重建和跟踪4D网格，利用骨骼先验引导的潜在空间学习和一个扩散模型进行单次动画预测，性能优于现有方法。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>Mesh4D通过单目视频重建和跟踪4D网格，利用骨骼先验引导的潜在空间学习和一个扩散模型进行单次动画预测，性能优于现有方法。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> Mesh4D reconstructs and tracks 4D meshes from monocular video using a novel latent space learned with skeletal priors guiding a diffusion model for single-pass animation prediction, outperforming existing methods.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> We propose Mesh4D, a feed-forward model for monocular 4D mesh reconstruction. Given a monocular video of a dynamic object, our model reconstructs the object's complete 3D shape and motion, represented as a deformation field. Our key contribution is a compact latent space that encodes the entire animation sequence in a single pass. This latent space is learned by an autoencoder that, during training, is guided by the skeletal structure of the training objects, providing strong priors on plausible deformations. Crucially, skeletal information is not required at inference time. The encoder employs spatio-temporal attention, yielding a more stable representation of the object's overall deformation. Building on this representation, we train a latent diffusion model that, conditioned on the input video and the mesh reconstructed from the first frame, predicts the full animation in one shot. We evaluate Mesh4D on reconstruction and novel view synthesis benchmarks, outperforming prior methods in recovering accurate 3D shape and deformation.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>我们提出了Mesh4D，一个用于单目4D网格重建的前馈模型。给定动态物体的单目视频，我们的模型重建物体完整的3D形状和运动，并将其表示为一个形变场。我们的主要贡献是一个紧凑的潜在空间，它以单次传递的方式编码整个动画序列。该潜在空间由一个自编码器学习，在训练过程中，自编码器由训练对象的骨骼结构引导，从而为合理的形变提供强先验。至关重要的是，在推理时不需要骨骼信息。编码器采用时空注意力机制，从而产生物体整体形变的更稳定的表示。基于这种表示，我们训练了一个潜在扩散模型，该模型以输入的视频和从第一帧重建的网格为条件，一次性预测完整的动画。我们在重建和新视角合成基准上评估Mesh4D，在恢复准确的3D形状和形变方面优于现有方法。</p>
             
 
             
@@ -1641,6 +2008,14 @@
             <a href="http://arxiv.org/abs/2601.05251v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="13" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="13" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Zeren Jiang, Chuanxia Zheng, Iro Laina, Diane Larlus, Andrea Vedaldi</p>
             
@@ -1654,16 +2029,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">EARL: Energy-Aware Optimization of Liquid State Machines for Pervasive AI</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Pervasive AI increasingly depends on on-device learning systems that deliver low-latency and energy-efficient computation under strict resource constraints. Liquid State Machines (LSMs) offer a promising approach for low-power temporal processing in pervasive and neuromorphic systems, but their deployment remains challenging due to high hyperparameter sensitivity and the computational cost of traditional optimization methods that ignore energy constraints. This work presents EARL, an energy-aware reinforcement learning framework that integrates Bayesian optimization with an adaptive reinforcement learning based selection policy to jointly optimize accuracy and energy consumption. EARL employs surrogate modeling for global exploration, reinforcement learning for dynamic candidate prioritization, and an early termination mechanism to eliminate redundant evaluations, substantially reducing computational overhead. Experiments on three benchmark datasets demonstrate that EARL achieves 6 to 15 percent higher accuracy, 60 to 80 percent lower energy consumption, and up to an order of magnitude reduction in optimization time compared to leading hyperparameter tuning frameworks. These results highlight the effectiveness of energy-aware adaptive search in improving the efficiency and scalability of LSMs for resource-constrained on-device AI applications.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 普适人工智能越来越依赖于设备端学习系统，这些系统需要在严格的资源约束下提供低延迟和高能效的计算。液态机（LSM）为普适和神经形态系统中的低功耗时序处理提供了一种有前景的方法，但由于其对超参数的高度敏感性以及忽略能量约束的传统优化方法产生的计算成本，其部署仍然具有挑战性。这项工作提出了EARL，一个能量感知的强化学习框架，它集成了贝叶斯优化和一个基于自适应强化学习的选择策略，以联合优化准确性和能耗。EARL采用代理建模进行全局探索，采用强化学习进行动态候选优先级排序，并采用早期终止机制来消除冗余评估，从而大幅降低计算开销。在三个基准数据集上的实验表明，与领先的超参数调优框架相比，EARL实现了6%到15%更高的准确率，60%到80%更低的能耗，以及高达一个数量级的优化时间缩短。这些结果突出了能量感知的自适应搜索在提高LSM针对资源受限的设备端人工智能应用的效率和可扩展性方面的有效性。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces EARL, an energy-aware reinforcement learning framework for optimizing Liquid State Machines (LSMs) that achieves higher accuracy, lower energy consumption, and faster optimization compared to existing methods for resource-constrained on-device AI.</p>
+            <h2 class="paper-title">
+                EARL: Energy-Aware Optimization of Liquid State Machines for Pervasive AI
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一种名为EARL的节能强化学习框架，用于优化液态机（LSM）。与现有的资源受限的片上AI方法相比，该框架可实现更高的准确性、更低的能耗和更快的优化。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了一种名为EARL的节能强化学习框架，用于优化液态机（LSM）。与现有的资源受限的片上AI方法相比，该框架可实现更高的准确性、更低的能耗和更快的优化。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces EARL, an energy-aware reinforcement learning framework for optimizing Liquid State Machines (LSMs) that achieves higher accuracy, lower energy consumption, and faster optimization compared to existing methods for resource-constrained on-device AI.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Pervasive AI increasingly depends on on-device learning systems that deliver low-latency and energy-efficient computation under strict resource constraints. Liquid State Machines (LSMs) offer a promising approach for low-power temporal processing in pervasive and neuromorphic systems, but their deployment remains challenging due to high hyperparameter sensitivity and the computational cost of traditional optimization methods that ignore energy constraints. This work presents EARL, an energy-aware reinforcement learning framework that integrates Bayesian optimization with an adaptive reinforcement learning based selection policy to jointly optimize accuracy and energy consumption. EARL employs surrogate modeling for global exploration, reinforcement learning for dynamic candidate prioritization, and an early termination mechanism to eliminate redundant evaluations, substantially reducing computational overhead. Experiments on three benchmark datasets demonstrate that EARL achieves 6 to 15 percent higher accuracy, 60 to 80 percent lower energy consumption, and up to an order of magnitude reduction in optimization time compared to leading hyperparameter tuning frameworks. These results highlight the effectiveness of energy-aware adaptive search in improving the efficiency and scalability of LSMs for resource-constrained on-device AI applications.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>普适人工智能越来越依赖于设备端学习系统，这些系统需要在严格的资源约束下提供低延迟和高能效的计算。液态机（LSM）为普适和神经形态系统中的低功耗时序处理提供了一种有前景的方法，但由于其对超参数的高度敏感性以及忽略能量约束的传统优化方法产生的计算成本，其部署仍然具有挑战性。这项工作提出了EARL，一个能量感知的强化学习框架，它集成了贝叶斯优化和一个基于自适应强化学习的选择策略，以联合优化准确性和能耗。EARL采用代理建模进行全局探索，采用强化学习进行动态候选优先级排序，并采用早期终止机制来消除冗余评估，从而大幅降低计算开销。在三个基准数据集上的实验表明，与领先的超参数调优框架相比，EARL实现了6%到15%更高的准确率，60%到80%更低的能耗，以及高达一个数量级的优化时间缩短。这些结果突出了能量感知的自适应搜索在提高LSM针对资源受限的设备端人工智能应用的效率和可扩展性方面的有效性。</p>
             
 
             
@@ -1737,6 +2116,14 @@
             <a href="http://arxiv.org/abs/2601.05205v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="14" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="14" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Zain Iqbal, Lorenzo Valerio</p>
             
@@ -1745,7 +2132,7 @@
     </div>
 
     <section class="filtered-section">
-        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
         <div class="filtered-grid">
             
             <div class="filtered-item">
@@ -1755,20 +2142,55 @@
                         CAOS: Conformal Aggregation of One-Shot Predictors
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="15" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="15" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Maja Waldron</p>
                 
                 <p><strong>TLDR-CN:</strong> 该论文介绍了CAOS，一种用于单样本学习的共形预测框架，它聚合了多个预测器并使用留一法校准来改善预测集大小，同时保持有效的覆盖率，即使在违反可交换性的情况下也是如此。</p>
+                
+                <p><strong>Overall:</strong> 5/10</p>
+                
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <p>没有一级过滤未通过的论文。</p>
             </div>
             
         </div>
     </section>
 
     <footer class="footer">
-        Generated on 2026-04-08 07:41:49 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-30 18:17:57 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
+    
+    
+    <script type="application/json" id="papers-data">[{"title": "LaST$_{0}$: Latent Spatio-Temporal Chain-of-Thought for Robotic Vision-Language-Action Model", "summary": "Vision-Language-Action (VLA) models have recently demonstrated strong generalization capabilities in robotic manipulation. Some existing VLA approaches attempt to improve action accuracy by explicitly generating linguistic reasoning traces or future visual observations before action execution. However, explicit reasoning typically incurs non-negligible inference latency, which constrains the temporal resolution required for robotic manipulation. Moreover, such reasoning is confined to the linguistic space, imposing a representational bottleneck that struggles to faithfully capture ineffable physical attributes. To mitigate these limitations, we propose LaST$_0$, a framework that enables efficient reasoning before acting through a Latent Spatio-Temporal Chain-of-Thought (CoT), capturing fine-grained physical and robotic dynamics that are often difficult to verbalize. Specifically, we introduce a token-efficient latent CoT space that models future visual dynamics, 3D structural information, and robot proprioceptive states, and further extends these representations across time to enable temporally consistent implicit reasoning trajectories. Furthermore, LaST$_0$ adopts a dual-system architecture implemented via a Mixture-of-Transformers design, where a reasoning expert conducts low-frequency latent inference and an acting expert generates high-frequency actions conditioned on robotics-oriented latent representations. To facilitate coordination, LaST$_0$ is trained with heterogeneous operation frequencies, enabling adaptive switching between reasoning and action inference rates during deployment. Across ten simulated and six real-world manipulation tasks, LaST$_0$ improves mean success rates by 8% and 13% over prior VLA methods, respectively, while achieving substantially faster inference. Project website: https://sites.google.com/view/last0", "url": "http://arxiv.org/abs/2601.05248v1", "authors": ["Zhuoyang Liu", "Jiaming Liu", "Hao Chen", "Ziyu Guo", "Chengkai Hou", "Chenyang Gu", "Jiale Yu", "Xiangju Mi", "Renrui Zhang", "Zhengping Che", "Jian Tang", "Pheng-Ann Heng", "Shanghang Zhang"], "keywords": []},{"title": "RoboVIP: Multi-View Video Generation with Visual Identity Prompting Augments Robot Manipulation", "summary": "The diversity, quantity, and quality of manipulation data are critical for training effective robot policies. However, due to hardware and physical setup constraints, collecting large-scale real-world manipulation data remains difficult to scale across diverse environments. Recent work uses text-prompt conditioned image diffusion models to augment manipulation data by altering the backgrounds and tabletop objects in the visual observations. However, these approaches often overlook the practical need for multi-view and temporally coherent observations required by state-of-the-art policy models. Further, text prompts alone cannot reliably specify the scene setup. To provide the diffusion model with explicit visual guidance, we introduce visual identity prompting, which supplies exemplar images as conditioning inputs to guide the generation of the desired scene setup. To this end, we also build a scalable pipeline to curate a visual identity pool from large robotics datasets. Using our augmented manipulation data to train downstream vision-language-action and visuomotor policy models yields consistent performance gains in both simulation and real-robot settings.", "url": "http://arxiv.org/abs/2601.05241v1", "authors": ["Boyang Wang", "Haoran Zhang", "Shujie Zhang", "Jinkun Hao", "Mingda Jia", "Qi Lv", "Yucheng Mao", "Zhaoyang Lyu", "Jia Zeng", "Xudong Xu", "Jiangmiao Pang"], "keywords": []},{"title": "Learning Latent Action World Models In The Wild", "summary": "Agents capable of reasoning and planning in the real world require the ability of predicting the consequences of their actions. While world models possess this capability, they most often require action labels, that can be complex to obtain at scale. This motivates the learning of latent action models, that can learn an action space from videos alone. Our work addresses the problem of learning latent actions world models on in-the-wild videos, expanding the scope of existing works that focus on simple robotics simulations, video games, or manipulation data. While this allows us to capture richer actions, it also introduces challenges stemming from the video diversity, such as environmental noise, or the lack of a common embodiment across videos. To address some of the challenges, we discuss properties that actions should follow as well as relevant architectural choices and evaluations. We find that continuous, but constrained, latent actions are able to capture the complexity of actions from in-the-wild videos, something that the common vector quantization does not. We for example find that changes in the environment coming from agents, such as humans entering the room, can be transferred across videos. This highlights the capability of learning actions that are specific to in-the-wild videos. In the absence of a common embodiment across videos, we are mainly able to learn latent actions that become localized in space, relative to the camera. Nonetheless, we are able to train a controller that maps known actions to latent ones, allowing us to use latent actions as a universal interface and solve planning tasks with our world model with similar performance as action-conditioned baselines. Our analyses and experiments provide a step towards scaling latent action models to the real world.", "url": "http://arxiv.org/abs/2601.05230v1", "authors": ["Quentin Garrido", "Tushar Nagarajan", "Basile Terver", "Nicolas Ballas", "Yann LeCun", "Michael Rabbat"], "keywords": []},{"title": "MineNPC-Task: Task Suite for Memory-Aware Minecraft Agents", "summary": "We present \\textsc{MineNPC-Task}, a user-authored benchmark and evaluation harness for testing memory-aware, mixed-initiative LLM agents in open-world \\emph{Minecraft}. Rather than relying on synthetic prompts, tasks are elicited from formative and summative co-play with expert players, normalized into parametric templates with explicit preconditions and dependency structure, and paired with machine-checkable validators under a bounded-knowledge policy that forbids out-of-world shortcuts. The harness captures plan/act/memory events-including plan previews, targeted clarifications, memory reads and writes, precondition checks, and repair attempts and reports outcomes relative to the total number of attempted subtasks, derived from in-world evidence.\n  As an initial snapshot, we instantiate the framework with GPT-4o and evaluate \\textbf{216} subtasks across \\textbf{8} experienced players. We observe recurring breakdown patterns in code execution, inventory/tool handling, referencing, and navigation, alongside recoveries supported by mixed-initiative clarifications and lightweight memory. Participants rated interaction quality and interface usability positively, while highlighting the need for stronger memory persistence across tasks. We release the complete task suite, validators, logs, and harness to support transparent, reproducible evaluation of future memory-aware embodied agents.", "url": "http://arxiv.org/abs/2601.05215v1", "authors": ["Tamil Sudaravan Mohan Doss", "Michael Xu", "Sudha Rao", "Andrew D. Wilson", "Balasaravanan Thoravi Kumaravel"], "keywords": []},{"title": "Internal Representations as Indicators of Hallucinations in Agent Tool Selection", "summary": "Large Language Models (LLMs) have shown remarkable capabilities in tool calling and tool usage, but suffer from hallucinations where they choose incorrect tools, provide malformed parameters and exhibit \u0027tool bypass\u0027 behavior by performing simulations and generating outputs instead of invoking specialized tools or external systems. This undermines the reliability of LLM based agents in production systems as it leads to inconsistent results, and bypasses security and audit controls. Such hallucinations in agent tool selection require early detection and error handling. Unlike existing hallucination detection methods that require multiple forward passes or external validation, we present a computationally efficient framework that detects tool-calling hallucinations in real-time by leveraging LLMs\u0027 internal representations during the same forward pass used for generation. We evaluate this approach on reasoning tasks across multiple domains, demonstrating strong detection performance (up to 86.4\\% accuracy) while maintaining real-time inference capabilities with minimal computational overhead, particularly excelling at detecting parameter-level hallucinations and inappropriate tool selections, critical for reliable agent deployment.", "url": "http://arxiv.org/abs/2601.05214v1", "authors": ["Kait Healy", "Bharathi Srinivasan", "Visakh Madathil", "Jing Wu"], "keywords": []},{"title": "SimuAgent: An LLM-Based Simulink Modeling Assistant Enhanced with Reinforcement Learning", "summary": "Large language models (LLMs) have revolutionized text-based code automation, but their potential in graph-oriented engineering workflows remains under-explored. We introduce SimuAgent, an LLM-powered modeling and simulation agent tailored for Simulink. SimuAgent replaces verbose XML with a concise, dictionary-style Python representation, dramatically cutting token counts, improving interpretability, and enabling fast, in-process simulation. A lightweight plan-execute architecture, trained in two stages, equips the agent with both low-level tool skills and high-level design reasoning. To tackle sparse rewards in long-horizon tasks, we propose Reflection-GRPO (ReGRPO), which augments Group Relative Policy Optimization (GRPO) with self-reflection traces that supply rich intermediate feedback, accelerating convergence and boosting robustness. Experiments on SimuBench, our newly released benchmark comprising 5300 multi-domain modeling tasks, show that a Qwen2.5-7B model fine-tuned with SimuAgent converges faster and achieves higher modeling accuracy than standard RL baselines, and even surpasses GPT-4o when evaluated with few-shot prompting on the same benchmark. Ablations confirm that the two-stage curriculum and abstract-reconstruct data augmentation further enhance generalization. SimuAgent trains and runs entirely on-premise with modest hardware, delivering a privacy-preserving, cost-effective solution for industrial model-driven engineering. SimuAgent bridges the gap between LLMs and graphical modeling environments, offering a practical solution for AI-assisted engineering design in industrial settings.", "url": "http://arxiv.org/abs/2601.05187v1", "authors": ["Yanchang Liang", "Xiaowei Zhao"], "keywords": []},{"title": "Pixel-Perfect Visual Geometry Estimation", "summary": "Recovering clean and accurate geometry from images is essential for robotics and augmented reality. However, existing geometry foundation models still suffer severely from flying pixels and the loss of fine details. In this paper, we present pixel-perfect visual geometry models that can predict high-quality, flying-pixel-free point clouds by leveraging generative modeling in the pixel space. We first introduce Pixel-Perfect Depth (PPD), a monocular depth foundation model built upon pixel-space diffusion transformers (DiT). To address the high computational complexity associated with pixel-space diffusion, we propose two key designs: 1) Semantics-Prompted DiT, which incorporates semantic representations from vision foundation models to prompt the diffusion process, preserving global semantics while enhancing fine-grained visual details; and 2) Cascade DiT architecture that progressively increases the number of image tokens, improving both efficiency and accuracy. To further extend PPD to video (PPVD), we introduce a new Semantics-Consistent DiT, which extracts temporally consistent semantics from a multi-view geometry foundation model. We then perform reference-guided token propagation within the DiT to maintain temporal coherence with minimal computational and memory overhead. Our models achieve the best performance among all generative monocular and video depth estimation models and produce significantly cleaner point clouds than all other models.", "url": "http://arxiv.org/abs/2601.05246v1", "authors": ["Gangwei Xu", "Haotong Lin", "Hongcheng Luo", "Haiyang Sun", "Bing Wang", "Guang Chen", "Sida Peng", "Hangjun Ye", "Xin Yang"], "keywords": []},{"title": "ObjectForesight: Predicting Future 3D Object Trajectories from Human Videos", "summary": "Humans can effortlessly anticipate how objects might move or change through interaction--imagining a cup being lifted, a knife slicing, or a lid being closed. We aim to endow computational systems with a similar ability to predict plausible future object motions directly from passive visual observation. We introduce ObjectForesight, a 3D object-centric dynamics model that predicts future 6-DoF poses and trajectories of rigid objects from short egocentric video sequences. Unlike conventional world or dynamics models that operate in pixel or latent space, ObjectForesight represents the world explicitly in 3D at the object level, enabling geometrically grounded and temporally coherent predictions that capture object affordances and trajectories. To train such a model at scale, we leverage recent advances in segmentation, mesh reconstruction, and 3D pose estimation to curate a dataset of 2 million plus short clips with pseudo-ground-truth 3D object trajectories. Through extensive experiments, we show that ObjectForesight achieves significant gains in accuracy, geometric consistency, and generalization to unseen objects and scenes, establishing a scalable framework for learning physically grounded, object-centric dynamics models directly from observation. objectforesight.github.io", "url": "http://arxiv.org/abs/2601.05237v1", "authors": ["Rustin Soraki", "Homanga Bharadhwaj", "Ali Farhadi", "Roozbeh Mottaghi"], "keywords": []},{"title": "Cutting AI Research Costs: How Task-Aware Compression Makes Large Language Model Agents Affordable", "summary": "When researchers deploy large language models for autonomous tasks like reviewing literature or generating hypotheses, the computational bills add up quickly. A single research session using a 70-billion parameter model can cost around $127 in cloud fees, putting these tools out of reach for many academic labs. We developed AgentCompress to tackle this problem head-on. The core idea came from a simple observation during our own work: writing a novel hypothesis clearly demands more from the model than reformatting a bibliography. Why should both tasks run at full precision? Our system uses a small neural network to gauge how hard each incoming task will be, based only on its opening words, then routes it to a suitably compressed model variant. The decision happens in under a millisecond. Testing across 500 research workflows in four scientific fields, we cut compute costs by 68.3% while keeping 96.2% of the original success rate. For labs watching their budgets, this could mean the difference between running experiments and sitting on the sidelines", "url": "http://arxiv.org/abs/2601.05191v1", "authors": ["Zuhair Ahmed Khan Taha", "Mohammed Mudassir Uddin", "Shahnawaz Alam"], "keywords": []},{"title": "VideoAuto-R1: Video Auto Reasoning via Thinking Once, Answering Twice", "summary": "Chain-of-thought (CoT) reasoning has emerged as a powerful tool for multimodal large language models on video understanding tasks. However, its necessity and advantages over direct answering remain underexplored. In this paper, we first demonstrate that for RL-trained video models, direct answering often matches or even surpasses CoT performance, despite CoT producing step-by-step analyses at a higher computational cost. Motivated by this, we propose VideoAuto-R1, a video understanding framework that adopts a reason-when-necessary strategy. During training, our approach follows a Thinking Once, Answering Twice paradigm: the model first generates an initial answer, then performs reasoning, and finally outputs a reviewed answer. Both answers are supervised via verifiable rewards. During inference, the model uses the confidence score of the initial answer to determine whether to proceed with reasoning. Across video QA and grounding benchmarks, VideoAuto-R1 achieves state-of-the-art accuracy with significantly improved efficiency, reducing the average response length by ~3.3x, e.g., from 149 to just 44 tokens. Moreover, we observe a low rate of thinking-mode activation on perception-oriented tasks, but a higher rate on reasoning-intensive tasks. This suggests that explicit language-based reasoning is generally beneficial but not always necessary.", "url": "http://arxiv.org/abs/2601.05175v1", "authors": ["Shuming Liu", "Mingchen Zhuge", "Changsheng Zhao", "Jun Chen", "Lemeng Wu", "Zechun Liu", "Chenchen Zhu", "Zhipeng Cai", "Chong Zhou", "Haozhe Liu", "Ernie Chang", "Saksham Suri", "Hongyu Xu", "Qi Qian", "Wei Wen", "Balakrishnan Varadarajan", "Zhuang Liu", "Hu Xu", "Florian Bordes", "Raghuraman Krishnamoorthi", "Bernard Ghanem", "Vikas Chandra", "Yunyang Xiong"], "keywords": []},{"title": "Generate, Transfer, Adapt: Learning Functional Dexterous Grasping from a Single Human Demonstration", "summary": "Functional grasping with dexterous robotic hands is a key capability for enabling tool use and complex manipulation, yet progress has been constrained by two persistent bottlenecks: the scarcity of large-scale datasets and the absence of integrated semantic and geometric reasoning in learned models. In this work, we present CorDex, a framework that robustly learns dexterous functional grasps of novel objects from synthetic data generated from just a single human demonstration. At the core of our approach is a correspondence-based data engine that generates diverse, high-quality training data in simulation. Based on the human demonstration, our data engine generates diverse object instances of the same category, transfers the expert grasp to the generated objects through correspondence estimation, and adapts the grasp through optimization. Building on the generated data, we introduce a multimodal prediction network that integrates visual and geometric information. By devising a local-global fusion module and an importance-aware sampling mechanism, we enable robust and computationally efficient prediction of functional dexterous grasps. Through extensive experiments across various object categories, we demonstrate that CorDex generalizes well to unseen object instances and significantly outperforms state-of-the-art baselines.", "url": "http://arxiv.org/abs/2601.05243v1", "authors": ["Xingyi He", "Adhitya Polavaram", "Yunhao Cao", "Om Deshmukh", "Tianrui Wang", "Xiaowei Zhou", "Kuan Fang"], "keywords": []},{"title": "RL-AWB: Deep Reinforcement Learning for Auto White Balance Correction in Low-Light Night-time Scenes", "summary": "Nighttime color constancy remains a challenging problem in computational photography due to low-light noise and complex illumination conditions. We present RL-AWB, a novel framework combining statistical methods with deep reinforcement learning for nighttime white balance. Our method begins with a statistical algorithm tailored for nighttime scenes, integrating salient gray pixel detection with novel illumination estimation. Building on this foundation, we develop the first deep reinforcement learning approach for color constancy that leverages the statistical algorithm as its core, mimicking professional AWB tuning experts by dynamically optimizing parameters for each image. To facilitate cross-sensor evaluation, we introduce the first multi-sensor nighttime dataset. Experiment results demonstrate that our method achieves superior generalization capability across low-light and well-illuminated images. Project page: https://ntuneillee.github.io/research/rl-awb/", "url": "http://arxiv.org/abs/2601.05249v1", "authors": ["Yuan-Kang Lee", "Kuan-Lin Chen", "Chia-Che Chang", "Yu-Lun Liu"], "keywords": []},{"title": "Plenoptic Video Generation", "summary": "Camera-controlled generative video re-rendering methods, such as ReCamMaster, have achieved remarkable progress. However, despite their success in single-view setting, these works often struggle to maintain consistency across multi-view scenarios. Ensuring spatio-temporal coherence in hallucinated regions remains challenging due to the inherent stochasticity of generative models. To address it, we introduce PlenopticDreamer, a framework that synchronizes generative hallucinations to maintain spatio-temporal memory. The core idea is to train a multi-in-single-out video-conditioned model in an autoregressive manner, aided by a camera-guided video retrieval strategy that adaptively selects salient videos from previous generations as conditional inputs. In addition, Our training incorporates progressive context-scaling to improve convergence, self-conditioning to enhance robustness against long-range visual degradation caused by error accumulation, and a long-video conditioning mechanism to support extended video generation. Extensive experiments on the Basic and Agibot benchmarks demonstrate that PlenopticDreamer achieves state-of-the-art video re-rendering, delivering superior view synchronization, high-fidelity visuals, accurate camera control, and diverse view transformations (e.g., third-person to third-person, and head-view to gripper-view in robotic manipulation). Project page: https://research.nvidia.com/labs/dir/plenopticdreamer/", "url": "http://arxiv.org/abs/2601.05239v1", "authors": ["Xiao Fu", "Shitao Tang", "Min Shi", "Xian Liu", "Jinwei Gu", "Ming-Yu Liu", "Dahua Lin", "Chen-Hsuan Lin"], "keywords": []},{"title": "Mesh4D: 4D Mesh Reconstruction and Tracking from Monocular Video", "summary": "We propose Mesh4D, a feed-forward model for monocular 4D mesh reconstruction. Given a monocular video of a dynamic object, our model reconstructs the object\u0027s complete 3D shape and motion, represented as a deformation field. Our key contribution is a compact latent space that encodes the entire animation sequence in a single pass. This latent space is learned by an autoencoder that, during training, is guided by the skeletal structure of the training objects, providing strong priors on plausible deformations. Crucially, skeletal information is not required at inference time. The encoder employs spatio-temporal attention, yielding a more stable representation of the object\u0027s overall deformation. Building on this representation, we train a latent diffusion model that, conditioned on the input video and the mesh reconstructed from the first frame, predicts the full animation in one shot. We evaluate Mesh4D on reconstruction and novel view synthesis benchmarks, outperforming prior methods in recovering accurate 3D shape and deformation.", "url": "http://arxiv.org/abs/2601.05251v1", "authors": ["Zeren Jiang", "Chuanxia Zheng", "Iro Laina", "Diane Larlus", "Andrea Vedaldi"], "keywords": []},{"title": "EARL: Energy-Aware Optimization of Liquid State Machines for Pervasive AI", "summary": "Pervasive AI increasingly depends on on-device learning systems that deliver low-latency and energy-efficient computation under strict resource constraints. Liquid State Machines (LSMs) offer a promising approach for low-power temporal processing in pervasive and neuromorphic systems, but their deployment remains challenging due to high hyperparameter sensitivity and the computational cost of traditional optimization methods that ignore energy constraints. This work presents EARL, an energy-aware reinforcement learning framework that integrates Bayesian optimization with an adaptive reinforcement learning based selection policy to jointly optimize accuracy and energy consumption. EARL employs surrogate modeling for global exploration, reinforcement learning for dynamic candidate prioritization, and an early termination mechanism to eliminate redundant evaluations, substantially reducing computational overhead. Experiments on three benchmark datasets demonstrate that EARL achieves 6 to 15 percent higher accuracy, 60 to 80 percent lower energy consumption, and up to an order of magnitude reduction in optimization time compared to leading hyperparameter tuning frameworks. These results highlight the effectiveness of energy-aware adaptive search in improving the efficiency and scalability of LSMs for resource-constrained on-device AI applications.", "url": "http://arxiv.org/abs/2601.05205v1", "authors": ["Zain Iqbal", "Lorenzo Valerio"], "keywords": []},{"title": "CAOS: Conformal Aggregation of One-Shot Predictors", "summary": "One-shot prediction enables rapid adaptation of pretrained foundation models to new tasks using only one labeled example, but lacks principled uncertainty quantification. While conformal prediction provides finite-sample coverage guarantees, standard split conformal methods are inefficient in the one-shot setting due to data splitting and reliance on a single predictor. We propose Conformal Aggregation of One-Shot Predictors (CAOS), a conformal framework that adaptively aggregates multiple one-shot predictors and uses a leave-one-out calibration scheme to fully exploit scarce labeled data. Despite violating classical exchangeability assumptions, we prove that CAOS achieves valid marginal coverage using a monotonicity-based argument. Experiments on one-shot facial landmarking and RAFT text classification tasks show that CAOS produces substantially smaller prediction sets than split conformal baselines while maintaining reliable coverage.", "url": "http://arxiv.org/abs/2601.05219v1", "authors": ["Maja Waldron"], "keywords": []}]</script>
+
+    <!-- SparkMD5: Zotero's WebDAV format requires md5; SubtleCrypto can't do MD5 -->
+    <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
+    <!-- JSZip: needed to build the <key>.zip wrapper Zotero expects on WebDAV -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="../js/zotero.js"></script>
+    <script src="../js/webdav.js"></script>
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
 </body>
 </html>

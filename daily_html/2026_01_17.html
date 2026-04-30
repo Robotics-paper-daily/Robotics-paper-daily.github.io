@@ -32,38 +32,6 @@
             line-height: 1.6;
         }
 
-        .quick-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            align-items: center;
-            width: fit-content;
-            margin: 0.9rem auto 0;
-            padding: 0;
-            border: none;
-            background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-        }
-
-        .quick-nav a {
-            color: var(--highlight-primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 0.35rem 0.75rem;
-            border-radius: 999px;
-            border: 1px solid rgba(226, 232, 240, 0.95);
-            background: rgba(255, 255, 255, 0.86);
-            box-shadow: 0 2px 6px var(--shadow-color);
-            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-        }
-
-        .quick-nav a:hover {
-            background-color: rgba(123, 44, 159, 0.12);
-            color: #6B1F8F;
-            transform: translateY(-1px);
-        }
 
         .bento-grid {
             display: grid;
@@ -103,10 +71,25 @@
         }
 
         .paper-summary {
-            font-size: 0.875rem; /* Tailwind text-sm */
+            font-size: 0.85rem;
             color: var(--text-muted-color);
-            margin-bottom: 1.25rem; /* Tailwind mb-5 */
+            margin-bottom: 1.25rem;
             line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
         }
 
         .paper-link {
@@ -195,12 +178,25 @@
         }
 
         .paper-tldr {
-            font-size: 0.95rem; /* Slightly bigger than summary */
-            color: #475569; /* Changed to Tailwind slate-600 (slightly darker than summary) */
-            margin-top: 0.75rem; /* Tailwind mt-3 */
-            margin-bottom: 0.75rem; /* Tailwind mb-2 */
-            /* font-style: italic; */
-            font-weight: bold;
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
         }
 
         .paper-rating {
@@ -276,6 +272,222 @@
             font-size: 0.88rem;
         }
 
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link.
+           Shown only when body.zotero-mode is set (which like.js does after
+           confirming sessionStorage has decrypted credentials). Guests never
+           see it. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn i {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover i {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
@@ -289,11 +501,6 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>January 17, 2026</p>
-        <nav class="quick-nav">
-            <a href="../index.html" target="_top">首页</a>
-            <a href="../list.html" target="_top">报告列表</a>
-            <a href="../search.html" target="_top">论文检索</a>
-        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -307,16 +514,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">See Less, Drive Better: Generalizable End-to-End Autonomous Driving via Foundation Models Stochastic Patch Selection</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Recent advances in end-to-end autonomous driving show that policies trained on patch-aligned features extracted from foundation models generalize better to Out-of-Distribution (OOD). We hypothesize that due to the self-attention mechanism, each patch feature implicitly embeds/contains information from all other patches, represented in a different way and intensity, making these descriptors highly redundant. We quantify redundancy in such (BLIP2) features via PCA and cross-patch similarity: $90$% of variance is captured by $17/64$ principal components, and strong inter-token correlations are pervasive. Training on such overlapping information leads the policy to overfit spurious correlations, hurting OOD robustness. We present Stochastic-Patch-Selection (SPS), a simple yet effective approach for learning policies that are more robust, generalizable, and efficient. For every frame, SPS randomly masks a fraction of patch descriptors, not feeding them to the policy model, while preserving the spatial layout of the remaining patches. Thus, the policy is provided with different stochastic but complete views of the (same) scene: every random subset of patches acts like a different, yet still sensible, coherent projection of the world. The policy thus bases its decisions on features that are invariant to which specific tokens survive. Extensive experiments confirm that across all OOD scenarios, our method outperforms the state of the art (SOTA), achieving a $6.2$% average improvement and up to $20.4$% in closed-loop simulations, while being $2.4\times$ faster. We conduct ablations over masking rates and patch-feature reorganization, training and evaluating 9 systems, with 8 of them surpassing prior SOTA. Finally, we show that the same learned policy transfers to a physical, real-world car without any tuning.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 端到端自动驾驶的最新进展表明，在从基础模型提取的对齐块特征上训练的策略，能更好地泛化到分布外(OOD)场景。我们假设，由于自注意力机制，每个块特征隐式地嵌入/包含来自所有其他块的信息，以不同的方式和强度表示，从而使这些描述符高度冗余。我们通过PCA和跨块相似性来量化此类(BLIP2)特征中的冗余性：$90$%的方差由$17/64$个主成分捕获，并且普遍存在强大的token间相关性。基于这种重叠信息的训练会导致策略过度拟合虚假相关性，从而损害OOD鲁棒性。我们提出了随机块选择(SPS)，这是一种简单而有效的方法，用于学习更稳健、更具泛化性和更高效的策略。对于每一帧，SPS随机屏蔽一部分块描述符，不将其馈送到策略模型，同时保持剩余块的空间布局。因此，策略获得对（相同）场景的不同随机但完整的视角：每个随机的块子集都像一个不同的、但仍然合理的、连贯的世界投影。因此，该策略基于对哪些特定token存活不变的特征做出决策。大量实验证实，在所有OOD场景中，我们的方法优于现有技术(SOTA)，在闭环仿真中实现了平均$6.2$%的改进，最高可达$20.4$%，同时速度提高了$2.4\times$。我们对屏蔽率和块特征重组进行了消融实验，训练和评估了9个系统，其中8个系统超过了之前的SOTA。最后，我们表明，相同的学习策略无需任何调整即可转移到物理的真实车辆上。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces Stochastic-Patch-Selection (SPS) to improve the robustness and generalizability of end-to-end autonomous driving policies by randomly masking redundant patch descriptors from vision foundation models, achieving state-of-the-art performance and real-world transferability.</p>
+            <h2 class="paper-title">
+                See Less, Drive Better: Generalizable End-to-End Autonomous Driving via Foundation Models Stochastic Patch Selection
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了一种随机块选择 (SPS) 方法，通过随机屏蔽视觉基础模型中冗余的块描述符，以提高端到端自动驾驶策略的鲁棒性和泛化能力，实现了最先进的性能和现实世界的迁移能力。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文介绍了一种随机块选择 (SPS) 方法，通过随机屏蔽视觉基础模型中冗余的块描述符，以提高端到端自动驾驶策略的鲁棒性和泛化能力，实现了最先进的性能和现实世界的迁移能力。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces Stochastic-Patch-Selection (SPS) to improve the robustness and generalizability of end-to-end autonomous driving policies by randomly masking redundant patch descriptors from vision foundation models, achieving state-of-the-art performance and real-world transferability.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Recent advances in end-to-end autonomous driving show that policies trained on patch-aligned features extracted from foundation models generalize better to Out-of-Distribution (OOD). We hypothesize that due to the self-attention mechanism, each patch feature implicitly embeds/contains information from all other patches, represented in a different way and intensity, making these descriptors highly redundant. We quantify redundancy in such (BLIP2) features via PCA and cross-patch similarity: $90$% of variance is captured by $17/64$ principal components, and strong inter-token correlations are pervasive. Training on such overlapping information leads the policy to overfit spurious correlations, hurting OOD robustness. We present Stochastic-Patch-Selection (SPS), a simple yet effective approach for learning policies that are more robust, generalizable, and efficient. For every frame, SPS randomly masks a fraction of patch descriptors, not feeding them to the policy model, while preserving the spatial layout of the remaining patches. Thus, the policy is provided with different stochastic but complete views of the (same) scene: every random subset of patches acts like a different, yet still sensible, coherent projection of the world. The policy thus bases its decisions on features that are invariant to which specific tokens survive. Extensive experiments confirm that across all OOD scenarios, our method outperforms the state of the art (SOTA), achieving a $6.2$% average improvement and up to $20.4$% in closed-loop simulations, while being $2.4\times$ faster. We conduct ablations over masking rates and patch-feature reorganization, training and evaluating 9 systems, with 8 of them surpassing prior SOTA. Finally, we show that the same learned policy transfers to a physical, real-world car without any tuning.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>端到端自动驾驶的最新进展表明，在从基础模型提取的对齐块特征上训练的策略，能更好地泛化到分布外(OOD)场景。我们假设，由于自注意力机制，每个块特征隐式地嵌入/包含来自所有其他块的信息，以不同的方式和强度表示，从而使这些描述符高度冗余。我们通过PCA和跨块相似性来量化此类(BLIP2)特征中的冗余性：$90$%的方差由$17/64$个主成分捕获，并且普遍存在强大的token间相关性。基于这种重叠信息的训练会导致策略过度拟合虚假相关性，从而损害OOD鲁棒性。我们提出了随机块选择(SPS)，这是一种简单而有效的方法，用于学习更稳健、更具泛化性和更高效的策略。对于每一帧，SPS随机屏蔽一部分块描述符，不将其馈送到策略模型，同时保持剩余块的空间布局。因此，策略获得对（相同）场景的不同随机但完整的视角：每个随机的块子集都像一个不同的、但仍然合理的、连贯的世界投影。因此，该策略基于对哪些特定token存活不变的特征做出决策。大量实验证实，在所有OOD场景中，我们的方法优于现有技术(SOTA)，在闭环仿真中实现了平均$6.2$%的改进，最高可达$20.4$%，同时速度提高了$2.4\times$。我们对屏蔽率和块特征重组进行了消融实验，训练和评估了9个系统，其中8个系统超过了之前的SOTA。最后，我们表明，相同的学习策略无需任何调整即可转移到物理的真实车辆上。</p>
             
 
             
@@ -390,6 +601,14 @@
             <a href="http://arxiv.org/abs/2601.10707v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Amir Mallak, Erfan Aasi, Shiva Sreeram, Tsun-Hsuan Wang, Daniela Rus, Alaa Maalouf</p>
             
@@ -403,16 +622,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">MatchTIR: Fine-Grained Supervision for Tool-Integrated Reasoning via Bipartite Matching</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Tool-Integrated Reasoning (TIR) empowers large language models (LLMs) to tackle complex tasks by interleaving reasoning steps with external tool interactions. However, existing reinforcement learning methods typically rely on outcome- or trajectory-level rewards, assigning uniform advantages to all steps within a trajectory. This coarse-grained credit assignment fails to distinguish effective tool calls from redundant or erroneous ones, particularly in long-horizon multi-turn scenarios. To address this, we propose MatchTIR, a framework that introduces fine-grained supervision via bipartite matching-based turn-level reward assignment and dual-level advantage estimation. Specifically, we formulate credit assignment as a bipartite matching problem between predicted and ground-truth traces, utilizing two assignment strategies to derive dense turn-level rewards. Furthermore, to balance local step precision with global task success, we introduce a dual-level advantage estimation scheme that integrates turn-level and trajectory-level signals, assigning distinct advantage values to individual interaction turns. Extensive experiments on three benchmarks demonstrate the superiority of MatchTIR. Notably, our 4B model surpasses the majority of 8B competitors, particularly in long-horizon and multi-turn tasks. Our codes are available at https://github.com/quchangle1/MatchTIR.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 工具集成推理(TIR)赋能大型语言模型(LLM)，使其能够通过将推理步骤与外部工具交互交错使用来处理复杂任务。然而，现有的强化学习方法通常依赖于结果级别或轨迹级别的奖励，将统一的优势分配给轨迹中的所有步骤。这种粗粒度的信用分配无法区分有效的工具调用与冗余的或错误的工具调用，尤其是在长程多轮场景中。为了解决这个问题，我们提出了MatchTIR，一个框架，通过基于二分匹配的回合级别奖励分配和双层优势估计，引入细粒度的监督。具体而言，我们将信用分配表述为预测轨迹和真实轨迹之间的二分匹配问题，利用两种分配策略来导出密集的的回合级别奖励。此外，为了平衡局部步骤精度与全局任务成功，我们引入了一种双层优势估计方案，该方案集成了回合级别和轨迹级别的信号，为各个交互回合分配不同的优势值。在三个基准测试上的大量实验表明了MatchTIR的优越性。值得注意的是，我们的4B模型超越了大多数8B竞争者，尤其是在长程和多轮任务中。我们的代码可在https://github.com/quchangle1/MatchTIR获取。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: MatchTIR addresses the coarse-grained credit assignment problem in tool-integrated reasoning by using bipartite matching to provide fine-grained, turn-level rewards and dual-level advantage estimation, leading to improved performance, especially in long-horizon tasks.</p>
+            <h2 class="paper-title">
+                MatchTIR: Fine-Grained Supervision for Tool-Integrated Reasoning via Bipartite Matching
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: MatchTIR通过使用二分匹配来提供细粒度的、turn级别的奖励和双层优势估计，解决了工具集成推理中粗粒度的信用分配问题，从而提高了性能，尤其是在长程任务中。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>MatchTIR通过使用二分匹配来提供细粒度的、turn级别的奖励和双层优势估计，解决了工具集成推理中粗粒度的信用分配问题，从而提高了性能，尤其是在长程任务中。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> MatchTIR addresses the coarse-grained credit assignment problem in tool-integrated reasoning by using bipartite matching to provide fine-grained, turn-level rewards and dual-level advantage estimation, leading to improved performance, especially in long-horizon tasks.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Tool-Integrated Reasoning (TIR) empowers large language models (LLMs) to tackle complex tasks by interleaving reasoning steps with external tool interactions. However, existing reinforcement learning methods typically rely on outcome- or trajectory-level rewards, assigning uniform advantages to all steps within a trajectory. This coarse-grained credit assignment fails to distinguish effective tool calls from redundant or erroneous ones, particularly in long-horizon multi-turn scenarios. To address this, we propose MatchTIR, a framework that introduces fine-grained supervision via bipartite matching-based turn-level reward assignment and dual-level advantage estimation. Specifically, we formulate credit assignment as a bipartite matching problem between predicted and ground-truth traces, utilizing two assignment strategies to derive dense turn-level rewards. Furthermore, to balance local step precision with global task success, we introduce a dual-level advantage estimation scheme that integrates turn-level and trajectory-level signals, assigning distinct advantage values to individual interaction turns. Extensive experiments on three benchmarks demonstrate the superiority of MatchTIR. Notably, our 4B model surpasses the majority of 8B competitors, particularly in long-horizon and multi-turn tasks. Our codes are available at https://github.com/quchangle1/MatchTIR.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>工具集成推理(TIR)赋能大型语言模型(LLM)，使其能够通过将推理步骤与外部工具交互交错使用来处理复杂任务。然而，现有的强化学习方法通常依赖于结果级别或轨迹级别的奖励，将统一的优势分配给轨迹中的所有步骤。这种粗粒度的信用分配无法区分有效的工具调用与冗余的或错误的工具调用，尤其是在长程多轮场景中。为了解决这个问题，我们提出了MatchTIR，一个框架，通过基于二分匹配的回合级别奖励分配和双层优势估计，引入细粒度的监督。具体而言，我们将信用分配表述为预测轨迹和真实轨迹之间的二分匹配问题，利用两种分配策略来导出密集的的回合级别奖励。此外，为了平衡局部步骤精度与全局任务成功，我们引入了一种双层优势估计方案，该方案集成了回合级别和轨迹级别的信号，为各个交互回合分配不同的优势值。在三个基准测试上的大量实验表明了MatchTIR的优越性。值得注意的是，我们的4B模型超越了大多数8B竞争者，尤其是在长程和多轮任务中。我们的代码可在https://github.com/quchangle1/MatchTIR获取。</p>
             
 
             
@@ -486,6 +709,14 @@
             <a href="http://arxiv.org/abs/2601.10712v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="1" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="1" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Changle Qu, Sunhao Dai, Hengyi Cai, Jun Xu, Shuaiqiang Wang, Dawei Yin</p>
             
@@ -499,18 +730,22 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Grounding Agent Memory in Contextual Intent</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Deploying large language models in long-horizon, goal-oriented interactions remains challenging because similar entities and facts recur under different latent goals and constraints, causing memory systems to retrieve context-mismatched evidence. We propose STITCH (Structured Intent Tracking in Contextual History), an agentic memory system that indexes each trajectory step with a structured retrieval cue, contextual intent, and retrieves history by matching the current step's intent. Contextual intent provides compact signals that disambiguate repeated mentions and reduce interference: (1) the current latent goal defining a thematic segment, (2) the action type, and (3) the salient entity types anchoring which attributes matter. During inference, STITCH filters and prioritizes memory snippets by intent compatibility, suppressing semantically similar but context-incompatible history.
+            <h2 class="paper-title">
+                Grounding Agent Memory in Contextual Intent
+                
+            </h2>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了一种名为STITCH的智能体记忆系统，该系统使用上下文意图索引轨迹步骤，以用于LLM的长期推理。该系统在一个新的基准（CAME-Bench）上进行了演示，结果显示与现有方法相比性能有显著提升。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces STITCH, an agentic memory system that indexes trajectory steps with contextual intent for long-horizon reasoning using LLMs, demonstrated on a new benchmark (CAME-Bench) showing significant performance gains over existing methods.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Deploying large language models in long-horizon, goal-oriented interactions remains challenging because similar entities and facts recur under different latent goals and constraints, causing memory systems to retrieve context-mismatched evidence. We propose STITCH (Structured Intent Tracking in Contextual History), an agentic memory system that indexes each trajectory step with a structured retrieval cue, contextual intent, and retrieves history by matching the current step's intent. Contextual intent provides compact signals that disambiguate repeated mentions and reduce interference: (1) the current latent goal defining a thematic segment, (2) the action type, and (3) the salient entity types anchoring which attributes matter. During inference, STITCH filters and prioritizes memory snippets by intent compatibility, suppressing semantically similar but context-incompatible history.
   For evaluation, we introduce CAME-Bench, a benchmark for context-aware retrieval in realistic, dynamic, goal-oriented trajectories. Across CAME-Bench and LongMemEval, STITCH achieves state-of-the-art performance, outperforming the strongest baseline by 35.6%, with the largest gains as trajectory length increases. Our analysis shows that intent indexing substantially reduces retrieval noise, supporting intent-aware memory for robust long-horizon reasoning.</p>
             
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 在长时程、目标导向的交互中部署大型语言模型仍然具有挑战性，因为相似的实体和事实会在不同的潜在目标和约束下重复出现，导致记忆系统检索到上下文不匹配的证据。我们提出 STITCH（上下文历史中的结构化意图追踪），一个代理式的记忆系统，它使用结构化的检索提示、上下文意图来索引每个轨迹步骤，并通过匹配当前步骤的意图来检索历史。上下文意图提供了紧凑的信号来消除重复提及的歧义并减少干扰：（1）定义主题段的当前潜在目标，（2）动作类型，以及（3）锚定哪些属性重要的显著实体类型。在推理期间，STITCH 通过意图兼容性来过滤和优先排序记忆片段，抑制语义相似但上下文不兼容的历史。
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>在长时程、目标导向的交互中部署大型语言模型仍然具有挑战性，因为相似的实体和事实会在不同的潜在目标和约束下重复出现，导致记忆系统检索到上下文不匹配的证据。我们提出 STITCH（上下文历史中的结构化意图追踪），一个代理式的记忆系统，它使用结构化的检索提示、上下文意图来索引每个轨迹步骤，并通过匹配当前步骤的意图来检索历史。上下文意图提供了紧凑的信号来消除重复提及的歧义并减少干扰：（1）定义主题段的当前潜在目标，（2）动作类型，以及（3）锚定哪些属性重要的显著实体类型。在推理期间，STITCH 通过意图兼容性来过滤和优先排序记忆片段，抑制语义相似但上下文不兼容的历史。
   为了评估，我们引入了 CAME-Bench，一个用于在真实的、动态的、目标导向的轨迹中进行上下文感知检索的基准。在 CAME-Bench 和 LongMemEval 上，STITCH 取得了最先进的性能，优于最强的基线 35.6%，并且随着轨迹长度的增加，收益最大。我们的分析表明，意图索引显著降低了检索噪声，从而支持用于稳健长时程推理的意图感知记忆。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces STITCH, an agentic memory system that indexes trajectory steps with contextual intent for long-horizon reasoning using LLMs, demonstrated on a new benchmark (CAME-Bench) showing significant performance gains over existing methods.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一种名为STITCH的智能体记忆系统，该系统使用上下文意图索引轨迹步骤，以用于LLM的长期推理。该系统在一个新的基准（CAME-Bench）上进行了演示，结果显示与现有方法相比性能有显著提升。</p>
             
 
             
@@ -584,6 +819,14 @@
             <a href="http://arxiv.org/abs/2601.10702v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="2" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="2" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Ruozhen Yang, Yucheng Jiang, Yueqi Jiang, Priyanka Kargupta, Yunyi Zhang, Jiawei Han</p>
             
@@ -597,16 +840,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">PACEvolve: Enabling Long-Horizon Progress-Aware Consistent Evolution</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Large Language Models (LLMs) have emerged as powerful operators for evolutionary search, yet the design of efficient search scaffolds remains ad hoc. While promising, current LLM-in-the-loop systems lack a systematic approach to managing the evolutionary process. We identify three distinct failure modes: Context Pollution, where experiment history biases future candidate generation; Mode Collapse, where agents stagnate in local minima due to poor exploration-exploitation balance; and Weak Collaboration, where rigid crossover strategies fail to leverage parallel search trajectories effectively. We introduce Progress-Aware Consistent Evolution (PACEvolve), a framework designed to robustly govern the agent's context and search dynamics, to address these challenges. PACEvolve combines hierarchical context management (HCM) with pruning to address context pollution; momentum-based backtracking (MBB) to escape local minima; and a self-adaptive sampling policy that unifies backtracking and crossover for dynamic search coordination (CE), allowing agents to balance internal refinement with cross-trajectory collaboration. We demonstrate that PACEvolve provides a systematic path to consistent, long-horizon self-improvement, achieving state-of-the-art results on LLM-SR and KernelBench, while discovering solutions surpassing the record on Modded NanoGPT.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 大型语言模型（LLMs）已经成为进化搜索的强大算子，但高效搜索框架的设计仍然是临时性的。尽管当前循环内使用LLM的系统充满希望，但它们缺乏管理进化过程的系统方法。我们识别了三个明显的失效模式：上下文污染，即实验历史会偏置未来的候选生成；模式崩溃，即由于不良的探索-利用平衡，Agent在局部最小值处停滞不前；以及弱协同，即僵化的交叉策略无法有效利用并行搜索轨迹。我们引入了进度感知一致进化（PACEvolve），这是一个旨在稳健地控制Agent的上下文和搜索动态的框架，以应对这些挑战。PACEvolve结合了分层上下文管理（HCM）与剪枝来解决上下文污染；基于动量的回溯（MBB）来逃脱局部最小值；以及一种自适应抽样策略，它统一了用于动态搜索协调的回溯和交叉（CE），从而使Agent能够在内部改进与跨轨迹协同之间实现平衡。 我们证明了PACEvolve为一致的、长期的自我改进提供了一条系统化的路径，在LLM-SR和KernelBench上取得了最先进的结果，同时发现了超越Modded NanoGPT记录的解决方案。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces PACEvolve, a framework for improving LLM-driven evolutionary search by addressing context pollution, mode collapse, and weak collaboration through hierarchical context management, momentum-based backtracking, and self-adaptive sampling. It achieves state-of-the-art results on multiple benchmarks.</p>
+            <h2 class="paper-title">
+                PACEvolve: Enabling Long-Horizon Progress-Aware Consistent Evolution
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了PACEvolve，一个通过分层上下文管理、基于动量的回溯和自适应采样来解决上下文污染、模式崩溃和弱协作问题的LLM驱动的进化搜索框架。它在多个基准测试中取得了最先进的结果。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文介绍了PACEvolve，一个通过分层上下文管理、基于动量的回溯和自适应采样来解决上下文污染、模式崩溃和弱协作问题的LLM驱动的进化搜索框架。它在多个基准测试中取得了最先进的结果。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces PACEvolve, a framework for improving LLM-driven evolutionary search by addressing context pollution, mode collapse, and weak collaboration through hierarchical context management, momentum-based backtracking, and self-adaptive sampling. It achieves state-of-the-art results on multiple benchmarks.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Large Language Models (LLMs) have emerged as powerful operators for evolutionary search, yet the design of efficient search scaffolds remains ad hoc. While promising, current LLM-in-the-loop systems lack a systematic approach to managing the evolutionary process. We identify three distinct failure modes: Context Pollution, where experiment history biases future candidate generation; Mode Collapse, where agents stagnate in local minima due to poor exploration-exploitation balance; and Weak Collaboration, where rigid crossover strategies fail to leverage parallel search trajectories effectively. We introduce Progress-Aware Consistent Evolution (PACEvolve), a framework designed to robustly govern the agent's context and search dynamics, to address these challenges. PACEvolve combines hierarchical context management (HCM) with pruning to address context pollution; momentum-based backtracking (MBB) to escape local minima; and a self-adaptive sampling policy that unifies backtracking and crossover for dynamic search coordination (CE), allowing agents to balance internal refinement with cross-trajectory collaboration. We demonstrate that PACEvolve provides a systematic path to consistent, long-horizon self-improvement, achieving state-of-the-art results on LLM-SR and KernelBench, while discovering solutions surpassing the record on Modded NanoGPT.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>大型语言模型（LLMs）已经成为进化搜索的强大算子，但高效搜索框架的设计仍然是临时性的。尽管当前循环内使用LLM的系统充满希望，但它们缺乏管理进化过程的系统方法。我们识别了三个明显的失效模式：上下文污染，即实验历史会偏置未来的候选生成；模式崩溃，即由于不良的探索-利用平衡，Agent在局部最小值处停滞不前；以及弱协同，即僵化的交叉策略无法有效利用并行搜索轨迹。我们引入了进度感知一致进化（PACEvolve），这是一个旨在稳健地控制Agent的上下文和搜索动态的框架，以应对这些挑战。PACEvolve结合了分层上下文管理（HCM）与剪枝来解决上下文污染；基于动量的回溯（MBB）来逃脱局部最小值；以及一种自适应抽样策略，它统一了用于动态搜索协调的回溯和交叉（CE），从而使Agent能够在内部改进与跨轨迹协同之间实现平衡。 我们证明了PACEvolve为一致的、长期的自我改进提供了一条系统化的路径，在LLM-SR和KernelBench上取得了最先进的结果，同时发现了超越Modded NanoGPT记录的解决方案。</p>
             
 
             
@@ -680,6 +927,14 @@
             <a href="http://arxiv.org/abs/2601.10657v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="3" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="3" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Minghao Yan, Bo Peng, Benjamin Coleman, Ziqi Chen, Zhouhang Xie, Zhankui He, Noveen Sachdeva, Isabella Ye, Weili Wang, Chi Wang, Ed H. Chi, Wang-Cheng Kang, Derek Zhiyuan Cheng, Beidou Wang</p>
             
@@ -688,7 +943,7 @@
     </div>
 
     <section class="filtered-section">
-        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
         <div class="filtered-grid">
             
             <div class="filtered-item">
@@ -698,9 +953,32 @@
         </div>
     </section>
 
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <p>没有一级过滤未通过的论文。</p>
+            </div>
+            
+        </div>
+    </section>
+
     <footer class="footer">
-        Generated on 2026-04-08 07:41:50 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-30 18:17:57 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
+    
+    
+    <script type="application/json" id="papers-data">[{"title": "See Less, Drive Better: Generalizable End-to-End Autonomous Driving via Foundation Models Stochastic Patch Selection", "summary": "Recent advances in end-to-end autonomous driving show that policies trained on patch-aligned features extracted from foundation models generalize better to Out-of-Distribution (OOD). We hypothesize that due to the self-attention mechanism, each patch feature implicitly embeds/contains information from all other patches, represented in a different way and intensity, making these descriptors highly redundant. We quantify redundancy in such (BLIP2) features via PCA and cross-patch similarity: $90$% of variance is captured by $17/64$ principal components, and strong inter-token correlations are pervasive. Training on such overlapping information leads the policy to overfit spurious correlations, hurting OOD robustness. We present Stochastic-Patch-Selection (SPS), a simple yet effective approach for learning policies that are more robust, generalizable, and efficient. For every frame, SPS randomly masks a fraction of patch descriptors, not feeding them to the policy model, while preserving the spatial layout of the remaining patches. Thus, the policy is provided with different stochastic but complete views of the (same) scene: every random subset of patches acts like a different, yet still sensible, coherent projection of the world. The policy thus bases its decisions on features that are invariant to which specific tokens survive. Extensive experiments confirm that across all OOD scenarios, our method outperforms the state of the art (SOTA), achieving a $6.2$% average improvement and up to $20.4$% in closed-loop simulations, while being $2.4\\times$ faster. We conduct ablations over masking rates and patch-feature reorganization, training and evaluating 9 systems, with 8 of them surpassing prior SOTA. Finally, we show that the same learned policy transfers to a physical, real-world car without any tuning.", "url": "http://arxiv.org/abs/2601.10707v1", "authors": ["Amir Mallak", "Erfan Aasi", "Shiva Sreeram", "Tsun-Hsuan Wang", "Daniela Rus", "Alaa Maalouf"], "keywords": []},{"title": "MatchTIR: Fine-Grained Supervision for Tool-Integrated Reasoning via Bipartite Matching", "summary": "Tool-Integrated Reasoning (TIR) empowers large language models (LLMs) to tackle complex tasks by interleaving reasoning steps with external tool interactions. However, existing reinforcement learning methods typically rely on outcome- or trajectory-level rewards, assigning uniform advantages to all steps within a trajectory. This coarse-grained credit assignment fails to distinguish effective tool calls from redundant or erroneous ones, particularly in long-horizon multi-turn scenarios. To address this, we propose MatchTIR, a framework that introduces fine-grained supervision via bipartite matching-based turn-level reward assignment and dual-level advantage estimation. Specifically, we formulate credit assignment as a bipartite matching problem between predicted and ground-truth traces, utilizing two assignment strategies to derive dense turn-level rewards. Furthermore, to balance local step precision with global task success, we introduce a dual-level advantage estimation scheme that integrates turn-level and trajectory-level signals, assigning distinct advantage values to individual interaction turns. Extensive experiments on three benchmarks demonstrate the superiority of MatchTIR. Notably, our 4B model surpasses the majority of 8B competitors, particularly in long-horizon and multi-turn tasks. Our codes are available at https://github.com/quchangle1/MatchTIR.", "url": "http://arxiv.org/abs/2601.10712v1", "authors": ["Changle Qu", "Sunhao Dai", "Hengyi Cai", "Jun Xu", "Shuaiqiang Wang", "Dawei Yin"], "keywords": []},{"title": "Grounding Agent Memory in Contextual Intent", "summary": "Deploying large language models in long-horizon, goal-oriented interactions remains challenging because similar entities and facts recur under different latent goals and constraints, causing memory systems to retrieve context-mismatched evidence. We propose STITCH (Structured Intent Tracking in Contextual History), an agentic memory system that indexes each trajectory step with a structured retrieval cue, contextual intent, and retrieves history by matching the current step\u0027s intent. Contextual intent provides compact signals that disambiguate repeated mentions and reduce interference: (1) the current latent goal defining a thematic segment, (2) the action type, and (3) the salient entity types anchoring which attributes matter. During inference, STITCH filters and prioritizes memory snippets by intent compatibility, suppressing semantically similar but context-incompatible history.\n  For evaluation, we introduce CAME-Bench, a benchmark for context-aware retrieval in realistic, dynamic, goal-oriented trajectories. Across CAME-Bench and LongMemEval, STITCH achieves state-of-the-art performance, outperforming the strongest baseline by 35.6%, with the largest gains as trajectory length increases. Our analysis shows that intent indexing substantially reduces retrieval noise, supporting intent-aware memory for robust long-horizon reasoning.", "url": "http://arxiv.org/abs/2601.10702v1", "authors": ["Ruozhen Yang", "Yucheng Jiang", "Yueqi Jiang", "Priyanka Kargupta", "Yunyi Zhang", "Jiawei Han"], "keywords": []},{"title": "PACEvolve: Enabling Long-Horizon Progress-Aware Consistent Evolution", "summary": "Large Language Models (LLMs) have emerged as powerful operators for evolutionary search, yet the design of efficient search scaffolds remains ad hoc. While promising, current LLM-in-the-loop systems lack a systematic approach to managing the evolutionary process. We identify three distinct failure modes: Context Pollution, where experiment history biases future candidate generation; Mode Collapse, where agents stagnate in local minima due to poor exploration-exploitation balance; and Weak Collaboration, where rigid crossover strategies fail to leverage parallel search trajectories effectively. We introduce Progress-Aware Consistent Evolution (PACEvolve), a framework designed to robustly govern the agent\u0027s context and search dynamics, to address these challenges. PACEvolve combines hierarchical context management (HCM) with pruning to address context pollution; momentum-based backtracking (MBB) to escape local minima; and a self-adaptive sampling policy that unifies backtracking and crossover for dynamic search coordination (CE), allowing agents to balance internal refinement with cross-trajectory collaboration. We demonstrate that PACEvolve provides a systematic path to consistent, long-horizon self-improvement, achieving state-of-the-art results on LLM-SR and KernelBench, while discovering solutions surpassing the record on Modded NanoGPT.", "url": "http://arxiv.org/abs/2601.10657v1", "authors": ["Minghao Yan", "Bo Peng", "Benjamin Coleman", "Ziqi Chen", "Zhouhang Xie", "Zhankui He", "Noveen Sachdeva", "Isabella Ye", "Weili Wang", "Chi Wang", "Ed H. Chi", "Wang-Cheng Kang", "Derek Zhiyuan Cheng", "Beidou Wang"], "keywords": []}]</script>
+
+    <!-- SparkMD5: Zotero's WebDAV format requires md5; SubtleCrypto can't do MD5 -->
+    <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
+    <!-- JSZip: needed to build the <key>.zip wrapper Zotero expects on WebDAV -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="../js/zotero.js"></script>
+    <script src="../js/webdav.js"></script>
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
 </body>
 </html>

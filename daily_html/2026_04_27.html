@@ -32,38 +32,6 @@
             line-height: 1.6;
         }
 
-        .quick-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            align-items: center;
-            width: fit-content;
-            margin: 0.9rem auto 0;
-            padding: 0;
-            border: none;
-            background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-        }
-
-        .quick-nav a {
-            color: var(--highlight-primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 0.35rem 0.75rem;
-            border-radius: 999px;
-            border: 1px solid rgba(226, 232, 240, 0.95);
-            background: rgba(255, 255, 255, 0.86);
-            box-shadow: 0 2px 6px var(--shadow-color);
-            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-        }
-
-        .quick-nav a:hover {
-            background-color: rgba(123, 44, 159, 0.12);
-            color: #6B1F8F;
-            transform: translateY(-1px);
-        }
 
         .bento-grid {
             display: grid;
@@ -103,10 +71,25 @@
         }
 
         .paper-summary {
-            font-size: 0.875rem; /* Tailwind text-sm */
+            font-size: 0.85rem;
             color: var(--text-muted-color);
-            margin-bottom: 1.25rem; /* Tailwind mb-5 */
+            margin-bottom: 1.25rem;
             line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
         }
 
         .paper-link {
@@ -195,12 +178,25 @@
         }
 
         .paper-tldr {
-            font-size: 0.95rem; /* Slightly bigger than summary */
-            color: #475569; /* Changed to Tailwind slate-600 (slightly darker than summary) */
-            margin-top: 0.75rem; /* Tailwind mt-3 */
-            margin-bottom: 0.75rem; /* Tailwind mb-2 */
-            /* font-style: italic; */
-            font-weight: bold;
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
         }
 
         .paper-rating {
@@ -276,6 +272,222 @@
             font-size: 0.88rem;
         }
 
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link.
+           Shown only when body.zotero-mode is set (which like.js does after
+           confirming sessionStorage has decrypted credentials). Guests never
+           see it. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn i {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover i {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
@@ -289,11 +501,6 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>April 27, 2026</p>
-        <nav class="quick-nav">
-            <a href="../index.html" target="_top">首页</a>
-            <a href="../list.html" target="_top">报告列表</a>
-            <a href="../search.html" target="_top">论文检索</a>
-        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -307,16 +514,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Tube Diffusion Policy: Reactive Visual-Tactile Policy Learning for Contact-rich Manipulation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Contact-rich manipulation is central to many everyday human activities, requiring continuous adaptation to contact uncertainty and external disturbances through multi-modal perception, particularly vision and tactile feedback. While imitation learning has shown strong potential for learning complex manipulation behaviors, most existing approaches rely on action chunking, which fundamentally limits their ability to react to unforeseen observations during execution. This limitation becomes especially critical in contact-rich scenarios, where physical uncertainty and high-frequency tactile feedback demand rapid, reactive control. To address this challenge, we propose Tube Diffusion Policy (TDP), a novel reactive visual-tactile policy learning framework that bridges diffusion-based imitation learning with tube-based feedback control. By leveraging the expressive power of generative models, TDP learns an observation-conditioned feedback flow around nominal action chunks, forming an action tube that enables fast and adaptive reactions during execution. We evaluate TDP on the widely used Push-T benchmark and three additional challenging visual-tactile dexterous manipulation tasks. Across all benchmarks, TDP consistently outperforms state-of-the-art imitation learning baselines. Two real-world experiments further validate its robust reactivity under contact uncertainty and external disturbances. Moreover, the step-wise correction mechanism enabled by action tube significantly reduces the required denoising steps, making TDP well suited for real-time, high-frequency feedback control in contact-rich manipulation.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 基于触觉的灵巧操作是日常人类活动的核心，需要通过对多模态感知（尤其是视觉与触觉反馈）的持续适应来应对接触不确定性与外部干扰。尽管模仿学习已展现出学习复杂操作行为的巨大潜力，但现有方法大多依赖于动作分块处理，这从根本上限制了其在执行过程中应对意外观察的能力。在接触密集型场景中，这一局限尤为突出，因为物理不确定性与高频触觉反馈要求快速、反应式的控制。针对这一挑战，我们提出管道扩散策略（TDP）——一种创新的反应式视觉-触觉策略学习框架，该框架将基于扩散模型的模仿学习与基于管道理论的反馈控制相结合。通过发挥生成模型的表达能力，TDP学习到围绕标称动作块的观测条件化反馈流，形成动作管道，从而在执行过程中实现快速自适应反应。我们在广泛使用的Push-T基准测试以及三项额外具有挑战性的视觉-触觉灵巧操作任务上评估TDP。在所有基准测试中，TDP均持续优于当前最先进的模仿学习基线方法。两项真实世界实验进一步验证了其在接触不确定性和外部干扰下具有的鲁棒反应能力。此外，动作管道实现的步进式修正机制显著减少了所需去噪步骤，使TDP特别适用于接触密集型操作中需要实时高频反馈控制的场景。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces Tube Diffusion Policy (TDP), a reactive imitation learning method for contact-rich robotic manipulation that combines diffusion models with tube-based feedback control, enabling fast, adaptive responses to vision and tactile feedback during execution.</p>
+            <h2 class="paper-title">
+                Tube Diffusion Policy: Reactive Visual-Tactile Policy Learning for Contact-rich Manipulation
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了Tube Diffusion Policy (TDP)，一种用于接触式操作的反应式模仿学习方法，通过结合扩散模型和基于管的反馈控制，利用视觉和触觉反馈在任务执行中实现快速、自适应的响应。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文提出了Tube Diffusion Policy (TDP)，一种用于接触式操作的反应式模仿学习方法，通过结合扩散模型和基于管的反馈控制，利用视觉和触觉反馈在任务执行中实现快速、自适应的响应。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper introduces Tube Diffusion Policy (TDP), a reactive imitation learning method for contact-rich robotic manipulation that combines diffusion models with tube-based feedback control, enabling fast, adaptive responses to vision and tactile feedback during execution.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Contact-rich manipulation is central to many everyday human activities, requiring continuous adaptation to contact uncertainty and external disturbances through multi-modal perception, particularly vision and tactile feedback. While imitation learning has shown strong potential for learning complex manipulation behaviors, most existing approaches rely on action chunking, which fundamentally limits their ability to react to unforeseen observations during execution. This limitation becomes especially critical in contact-rich scenarios, where physical uncertainty and high-frequency tactile feedback demand rapid, reactive control. To address this challenge, we propose Tube Diffusion Policy (TDP), a novel reactive visual-tactile policy learning framework that bridges diffusion-based imitation learning with tube-based feedback control. By leveraging the expressive power of generative models, TDP learns an observation-conditioned feedback flow around nominal action chunks, forming an action tube that enables fast and adaptive reactions during execution. We evaluate TDP on the widely used Push-T benchmark and three additional challenging visual-tactile dexterous manipulation tasks. Across all benchmarks, TDP consistently outperforms state-of-the-art imitation learning baselines. Two real-world experiments further validate its robust reactivity under contact uncertainty and external disturbances. Moreover, the step-wise correction mechanism enabled by action tube significantly reduces the required denoising steps, making TDP well suited for real-time, high-frequency feedback control in contact-rich manipulation.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>基于触觉的灵巧操作是日常人类活动的核心，需要通过对多模态感知（尤其是视觉与触觉反馈）的持续适应来应对接触不确定性与外部干扰。尽管模仿学习已展现出学习复杂操作行为的巨大潜力，但现有方法大多依赖于动作分块处理，这从根本上限制了其在执行过程中应对意外观察的能力。在接触密集型场景中，这一局限尤为突出，因为物理不确定性与高频触觉反馈要求快速、反应式的控制。针对这一挑战，我们提出管道扩散策略（TDP）——一种创新的反应式视觉-触觉策略学习框架，该框架将基于扩散模型的模仿学习与基于管道理论的反馈控制相结合。通过发挥生成模型的表达能力，TDP学习到围绕标称动作块的观测条件化反馈流，形成动作管道，从而在执行过程中实现快速自适应反应。我们在广泛使用的Push-T基准测试以及三项额外具有挑战性的视觉-触觉灵巧操作任务上评估TDP。在所有基准测试中，TDP均持续优于当前最先进的模仿学习基线方法。两项真实世界实验进一步验证了其在接触不确定性和外部干扰下具有的鲁棒反应能力。此外，动作管道实现的步进式修正机制显著减少了所需去噪步骤，使TDP特别适用于接触密集型操作中需要实时高频反馈控制的场景。</p>
             
 
             
@@ -390,6 +601,14 @@
             <a href="http://arxiv.org/abs/2604.23609v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Teng Xue, Alberto Rigo, Bingjian Huang, Jiayi Shen, Zhengtong Xu, Nick Colonnese, Amirhossein H. Memar</p>
             
@@ -403,16 +622,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Vision-Language-Action Safety: Threats, Challenges, Evaluations, and Mechanisms</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Vision-Language-Action (VLA) models are emerging as a unified substrate for embodied intelligence. This shift raises a new class of safety challenges, stemming from the embodied nature of VLA systems, including irreversible physical consequences, a multimodal attack surface across vision, language, and state, real-time latency constraints on defense, error propagation over long-horizon trajectories, and vulnerabilities in the data supply chain. Yet the literature remains fragmented across robotic learning, adversarial machine learning, AI alignment, and autonomous systems safety. This survey provides a unified and up-to-date overview of safety in Vision-Language-Action models. We organize the field along two parallel timing axes, attack timing (training-time vs. inference-time and defense timing (training-time vs. inference-time, linking each class of threat to the stage at which it can be mitigated. We first define the scope of VLA safety, distinguishing it from text-only LLM safety and classical robotic safety, and review the foundations of VLA models, including architectures, training paradigms, and inference mechanisms. We then examine the literature through four lenses: Attacks, Defenses, Evaluation, and Deployment. We survey training-time threats such as data poisoning and backdoors, as well as inference-time attacks including adversarial patches, cross-modal perturbations, semantic jailbreaks, and freezing attacks. We review training-time and runtime defenses, analyze existing benchmarks and metrics, and discuss safety challenges across six deployment domains. Finally, we highlight key open problems, including certified robustness for embodied trajectories, physically realizable defenses, safety-aware training, unified runtime safety architectures, and standardized evaluation.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 视觉-语言-动作（VLA）模型正逐渐成为具身智能的统一基础平台。这一转变引发了一系列新的安全挑战，这些挑战源于VLA系统的具身特性，包括不可逆的物理后果、覆盖视觉、语言和状态的多模态攻击面、防御的实时延迟约束、长时序轨迹上的错误传播以及数据供应链中的漏洞。然而，现有研究分散在机器人学习、对抗性机器学习、人工智能对齐和自主系统安全等多个领域，尚未形成统一体系。本文综述旨在为视觉-语言-动作模型的安全问题提供统一且前沿的概览。我们通过两条并行的时间轴线（攻击时机——训练时与推理时；防御时机——训练时与推理时）对这一领域进行梳理，将每类威胁与其可被缓解的实施阶段相关联。首先，我们界定了VLA安全的范畴，将其与纯文本LLM安全和传统机器人安全区分开来，并回顾了VLA模型的基础架构，包括模型结构、训练范式和推理机制。随后，我们通过四个维度对现有文献进行系统分析：攻击、防御、评估与部署。我们调研了训练阶段的威胁（如数据投毒和后门攻击）以及推理阶段的攻击手段（包括对抗性补丁、跨模态扰动、语义越狱和冻结攻击），梳理了训练时和运行时的防御策略，分析了现有基准测试与评估指标，并探讨了六大部署领域的安全挑战。最后，我们提出关键开放性问题，包括具身轨迹的认证鲁棒性、物理可实现的防御机制、安全感知训练、统一的运行时安全架构以及标准化评估体系。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This survey paper provides a unified overview of safety challenges specific to Vision-Language-Action models, focusing on the unique threats and defenses arising from their embodied and multimodal nature in robotics and embodied AI applications.</p>
+            <h2 class="paper-title">
+                Vision-Language-Action Safety: Threats, Challenges, Evaluations, and Mechanisms
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 这篇综述文章提供了关于Vision-Language-Action模型安全性的统一概述，重点关注其在机器人学和具身AI应用中因其具身和多模态特性而产生的独特威胁与防御机制。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>这篇综述文章提供了关于Vision-Language-Action模型安全性的统一概述，重点关注其在机器人学和具身AI应用中因其具身和多模态特性而产生的独特威胁与防御机制。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This survey paper provides a unified overview of safety challenges specific to Vision-Language-Action models, focusing on the unique threats and defenses arising from their embodied and multimodal nature in robotics and embodied AI applications.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Vision-Language-Action (VLA) models are emerging as a unified substrate for embodied intelligence. This shift raises a new class of safety challenges, stemming from the embodied nature of VLA systems, including irreversible physical consequences, a multimodal attack surface across vision, language, and state, real-time latency constraints on defense, error propagation over long-horizon trajectories, and vulnerabilities in the data supply chain. Yet the literature remains fragmented across robotic learning, adversarial machine learning, AI alignment, and autonomous systems safety. This survey provides a unified and up-to-date overview of safety in Vision-Language-Action models. We organize the field along two parallel timing axes, attack timing (training-time vs. inference-time and defense timing (training-time vs. inference-time, linking each class of threat to the stage at which it can be mitigated. We first define the scope of VLA safety, distinguishing it from text-only LLM safety and classical robotic safety, and review the foundations of VLA models, including architectures, training paradigms, and inference mechanisms. We then examine the literature through four lenses: Attacks, Defenses, Evaluation, and Deployment. We survey training-time threats such as data poisoning and backdoors, as well as inference-time attacks including adversarial patches, cross-modal perturbations, semantic jailbreaks, and freezing attacks. We review training-time and runtime defenses, analyze existing benchmarks and metrics, and discuss safety challenges across six deployment domains. Finally, we highlight key open problems, including certified robustness for embodied trajectories, physically realizable defenses, safety-aware training, unified runtime safety architectures, and standardized evaluation.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>视觉-语言-动作（VLA）模型正逐渐成为具身智能的统一基础平台。这一转变引发了一系列新的安全挑战，这些挑战源于VLA系统的具身特性，包括不可逆的物理后果、覆盖视觉、语言和状态的多模态攻击面、防御的实时延迟约束、长时序轨迹上的错误传播以及数据供应链中的漏洞。然而，现有研究分散在机器人学习、对抗性机器学习、人工智能对齐和自主系统安全等多个领域，尚未形成统一体系。本文综述旨在为视觉-语言-动作模型的安全问题提供统一且前沿的概览。我们通过两条并行的时间轴线（攻击时机——训练时与推理时；防御时机——训练时与推理时）对这一领域进行梳理，将每类威胁与其可被缓解的实施阶段相关联。首先，我们界定了VLA安全的范畴，将其与纯文本LLM安全和传统机器人安全区分开来，并回顾了VLA模型的基础架构，包括模型结构、训练范式和推理机制。随后，我们通过四个维度对现有文献进行系统分析：攻击、防御、评估与部署。我们调研了训练阶段的威胁（如数据投毒和后门攻击）以及推理阶段的攻击手段（包括对抗性补丁、跨模态扰动、语义越狱和冻结攻击），梳理了训练时和运行时的防御策略，分析了现有基准测试与评估指标，并探讨了六大部署领域的安全挑战。最后，我们提出关键开放性问题，包括具身轨迹的认证鲁棒性、物理可实现的防御机制、安全感知训练、统一的运行时安全架构以及标准化评估体系。</p>
             
 
             
@@ -486,6 +709,14 @@
             <a href="http://arxiv.org/abs/2604.23775v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="1" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="1" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Qi Li, Bo Yin, Weiqi Huang, Ruhao Liu, Bojun Zou, Runpeng Yu, Jingwen Ye, Weihao Yu, Xinchao Wang</p>
             
@@ -499,16 +730,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Unleashing the Agility of Wheeled-Legged Robots for High-Dynamic Reflexive Obstacle Evasion</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Wheeled-legged robots combine the energy efficiency of wheeled locomotion with the terrain adaptability of legged systems, making them promising platforms for agile mobility in complex and dynamic environments. However, enabling high-dynamic reflexive evasion against fast-moving obstacles remains challenging due to the hybrid morphology, mode coupling, and non-holonomic constraints of such platforms. In this work, we propose AWARE, Adaptive Wheeled-Legged Avoidance and Reflexive Evasion, a hierarchical reinforcement learning framework for high-dynamic obstacle avoidance in wheeled-legged robots. The proposed system naturally exhibits diverse emergent gaits and evasive behaviors, including forward lunge and lateral dodge, thereby leveraging the robot's hybrid morphology to enhance agility under highly dynamic threats. Extensive experiments in Isaac Lab simulation and real-world deployment on the M20 platform across diverse dynamic scenarios demonstrate that AWARE achieves robust and agile obstacle avoidance while revealing behaviorally distinct evasive strategies. These results highlight both the practical effectiveness of AWARE and the intrinsic reflexive agility of wheeled-legged robots.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 轮腿式机器人融合了轮式运动的高效性与腿式系统的地形适应能力，成为复杂动态环境中实现敏捷移动的理想平台。然而，由于其混合形态、模式耦合以及非完整约束等特性，在面对快速移动障碍物时实现高动态反射性避障仍具挑战。本研究提出AWARE（自适应轮腿式避障与反射规避）——一种面向轮腿式机器人的分层强化学习框架，用于实现高动态环境下的避障。该系统能自然涌现出多样化的步态与规避行为，包括前冲步与侧向闪避，从而充分利用机器人的混合形态提升在高度动态威胁下的敏捷性。通过在Isaac Lab仿真环境及M20实体平台上的多场景动态实验验证，AWARE在实现鲁棒敏捷避障的同时，展现出行为特征鲜明的规避策略。这些结果既证明了AWARE的实际效能，也揭示了轮腿式机器人固有的反射性敏捷潜力。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: A hierarchical reinforcement learning framework for high-dynamic obstacle avoidance, enabling wheeled-legged robots to exhibit agile, reflexive evasion behaviors like lunging and dodging.</p>
+            <h2 class="paper-title">
+                Unleashing the Agility of Wheeled-Legged Robots for High-Dynamic Reflexive Obstacle Evasion
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 一个用于轮腿机器人的分层强化学习框架，可实现高动态避障，使机器人能做出前冲和侧闪等敏捷的反射性规避动作。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>一个用于轮腿机器人的分层强化学习框架，可实现高动态避障，使机器人能做出前冲和侧闪等敏捷的反射性规避动作。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> A hierarchical reinforcement learning framework for high-dynamic obstacle avoidance, enabling wheeled-legged robots to exhibit agile, reflexive evasion behaviors like lunging and dodging.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Wheeled-legged robots combine the energy efficiency of wheeled locomotion with the terrain adaptability of legged systems, making them promising platforms for agile mobility in complex and dynamic environments. However, enabling high-dynamic reflexive evasion against fast-moving obstacles remains challenging due to the hybrid morphology, mode coupling, and non-holonomic constraints of such platforms. In this work, we propose AWARE, Adaptive Wheeled-Legged Avoidance and Reflexive Evasion, a hierarchical reinforcement learning framework for high-dynamic obstacle avoidance in wheeled-legged robots. The proposed system naturally exhibits diverse emergent gaits and evasive behaviors, including forward lunge and lateral dodge, thereby leveraging the robot's hybrid morphology to enhance agility under highly dynamic threats. Extensive experiments in Isaac Lab simulation and real-world deployment on the M20 platform across diverse dynamic scenarios demonstrate that AWARE achieves robust and agile obstacle avoidance while revealing behaviorally distinct evasive strategies. These results highlight both the practical effectiveness of AWARE and the intrinsic reflexive agility of wheeled-legged robots.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>轮腿式机器人融合了轮式运动的高效性与腿式系统的地形适应能力，成为复杂动态环境中实现敏捷移动的理想平台。然而，由于其混合形态、模式耦合以及非完整约束等特性，在面对快速移动障碍物时实现高动态反射性避障仍具挑战。本研究提出AWARE（自适应轮腿式避障与反射规避）——一种面向轮腿式机器人的分层强化学习框架，用于实现高动态环境下的避障。该系统能自然涌现出多样化的步态与规避行为，包括前冲步与侧向闪避，从而充分利用机器人的混合形态提升在高度动态威胁下的敏捷性。通过在Isaac Lab仿真环境及M20实体平台上的多场景动态实验验证，AWARE在实现鲁棒敏捷避障的同时，展现出行为特征鲜明的规避策略。这些结果既证明了AWARE的实际效能，也揭示了轮腿式机器人固有的反射性敏捷潜力。</p>
             
 
             
@@ -582,6 +817,14 @@
             <a href="http://arxiv.org/abs/2604.23761v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="2" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="2" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Yongen Zhao, Zihao Xu, Wenzhi Lu, Zhen Chu, Ce Hao</p>
             
@@ -595,16 +838,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">QuietWalk: Physics-Informed Reinforcement Learning for Ground Reaction Force-Aware Humanoid Locomotion Under Diverse Footwear</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Humanoid robots operating in human-centered environments (e.g., homes, hospitals, and offices) must mitigate foot--ground impact transients, as impact-induced vibration and noise degrade user experience and repeated impacts accelerate hardware wear. However, existing low-noise locomotion training often relies on kinematic proxy objectives or fragile force sensors, and footwear-induced changes in contact dynamics introduce distribution shifts that hinder policy generalization.We present QuietWalk, a physics-informed reinforcement learning framework for ground-reaction-force-aware humanoid locomotion under diverse footwear conditions. QuietWalk employs an inverse-dynamics-constrained physics-informed neural network (PINN) to estimate per-foot vertical ground reaction forces (GRFs) from proprioceptive signals, and integrates the frozen predictor into the RL training loop to penalize predicted impact forces without requiring force sensors at deployment.On a held-out real-robot dataset, enforcing inverse-dynamics consistency reduces vertical GRF prediction errors by 82%-86% compared with a purely supervised predictor and improves the coefficient of determination from 0.39/0.67 to 0.99/0.99 for the left/right feet. On hardware at 1.2 m/s (barefoot; averaged over four floor materials), QuietWalk reduces mean A-weighted noise level by 7.17 dB and peak noise level by 4.98 dB under a consistent recording setup. Cross-footwear experiments (barefoot, skate shoes, athletic sneakers, and high heels) across multiple surfaces further demonstrate robust adaptation to footwear-induced contact variations.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 在人本环境中（如家庭、医院和办公室）运行的仿人机器人必须减轻足—地面冲击瞬态，因为冲击引发的振动与噪声会降低用户体验，且反复冲击会加速硬件磨损。然而，现有的低噪声步态训练通常依赖运动学代理目标或易损的力传感器，而鞋具引起的接触动力学变化会带来分布偏移，阻碍策略的泛化。本文提出QuietWalk，一个基于物理信息的强化学习框架，用于在不同鞋具条件下实现足—地面反作用力感知的仿人机器人步态。QuietWalk采用一个受逆动力学约束的物理信息神经网络（PINN），通过本体感知信号估计每只足的垂直地面反作用力，并将该冻结的预测器集成到强化学习训练循环中，以惩罚预测的冲击力，而无需在部署时使用力传感器。在一个预留的真实机器人数据集上，通过强制逆动力学一致性，相较于纯监督预测器，垂直地面反作用力预测误差降低了82%–86%，左/右足的确定系数从0.39/0.67提升至0.99/0.99。在1.2米/秒的硬件测试中（赤足；四种地面材料平均），在一致的记录设置下，QuietWalk将平均A加权噪声水平降低了7.17分贝，峰值噪声水平降低了4.98分贝。跨鞋具实验（赤足、滑板鞋、运动鞋和高跟鞋）在多种地面上的进一步测试表明，该方法能稳健适应鞋具引起的接触变化。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents QuietWalk, a reinforcement learning framework that uses a physics-informed neural network to estimate ground reaction forces from proprioception, enabling humanoid robots to learn low-impact, quiet locomotion that adapts to different types of footwear.</p>
+            <h2 class="paper-title">
+                QuietWalk: Physics-Informed Reinforcement Learning for Ground Reaction Force-Aware Humanoid Locomotion Under Diverse Footwear
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了QuietWalk，一个利用物理信息神经网络从本体感知信号中估计地面反作用力的强化学习框架，使人形机器人能够学习适应不同鞋类的低冲击、静音步态。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文介绍了QuietWalk，一个利用物理信息神经网络从本体感知信号中估计地面反作用力的强化学习框架，使人形机器人能够学习适应不同鞋类的低冲击、静音步态。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper presents QuietWalk, a reinforcement learning framework that uses a physics-informed neural network to estimate ground reaction forces from proprioception, enabling humanoid robots to learn low-impact, quiet locomotion that adapts to different types of footwear.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Humanoid robots operating in human-centered environments (e.g., homes, hospitals, and offices) must mitigate foot--ground impact transients, as impact-induced vibration and noise degrade user experience and repeated impacts accelerate hardware wear. However, existing low-noise locomotion training often relies on kinematic proxy objectives or fragile force sensors, and footwear-induced changes in contact dynamics introduce distribution shifts that hinder policy generalization.We present QuietWalk, a physics-informed reinforcement learning framework for ground-reaction-force-aware humanoid locomotion under diverse footwear conditions. QuietWalk employs an inverse-dynamics-constrained physics-informed neural network (PINN) to estimate per-foot vertical ground reaction forces (GRFs) from proprioceptive signals, and integrates the frozen predictor into the RL training loop to penalize predicted impact forces without requiring force sensors at deployment.On a held-out real-robot dataset, enforcing inverse-dynamics consistency reduces vertical GRF prediction errors by 82%-86% compared with a purely supervised predictor and improves the coefficient of determination from 0.39/0.67 to 0.99/0.99 for the left/right feet. On hardware at 1.2 m/s (barefoot; averaged over four floor materials), QuietWalk reduces mean A-weighted noise level by 7.17 dB and peak noise level by 4.98 dB under a consistent recording setup. Cross-footwear experiments (barefoot, skate shoes, athletic sneakers, and high heels) across multiple surfaces further demonstrate robust adaptation to footwear-induced contact variations.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>在人本环境中（如家庭、医院和办公室）运行的仿人机器人必须减轻足—地面冲击瞬态，因为冲击引发的振动与噪声会降低用户体验，且反复冲击会加速硬件磨损。然而，现有的低噪声步态训练通常依赖运动学代理目标或易损的力传感器，而鞋具引起的接触动力学变化会带来分布偏移，阻碍策略的泛化。本文提出QuietWalk，一个基于物理信息的强化学习框架，用于在不同鞋具条件下实现足—地面反作用力感知的仿人机器人步态。QuietWalk采用一个受逆动力学约束的物理信息神经网络（PINN），通过本体感知信号估计每只足的垂直地面反作用力，并将该冻结的预测器集成到强化学习训练循环中，以惩罚预测的冲击力，而无需在部署时使用力传感器。在一个预留的真实机器人数据集上，通过强制逆动力学一致性，相较于纯监督预测器，垂直地面反作用力预测误差降低了82%–86%，左/右足的确定系数从0.39/0.67提升至0.99/0.99。在1.2米/秒的硬件测试中（赤足；四种地面材料平均），在一致的记录设置下，QuietWalk将平均A加权噪声水平降低了7.17分贝，峰值噪声水平降低了4.98分贝。跨鞋具实验（赤足、滑板鞋、运动鞋和高跟鞋）在多种地面上的进一步测试表明，该方法能稳健适应鞋具引起的接触变化。</p>
             
 
             
@@ -678,6 +925,14 @@
             <a href="http://arxiv.org/abs/2604.23702v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="3" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="3" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Hanze Hu, Luying Feng, Silu Chen, Tianjiang Zheng, Dexin Jiang, Wei Chen, Chi Zhang, Guilin Yang, Yaochu Jin</p>
             
@@ -691,16 +946,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Decentralized Heterogeneous Multi-Robot Collaborative Exploration for Indoor and Outdoor 3D Environments</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Heterogeneous multi-robot systems feature significant adaptability for complex environments. However, effective collaboration that fully exploits the robots' potential remains a core challenge. This paper proposes a decentralized collaborative framework for heterogeneous multi-robot systems to autonomously explore indoor and outdoor 3D environments. First, a basic perception map that integrates terrain and observation metrics is designed. Improved supervoxel segmentation is developed to simplify the map structure and form a high-level representation that supports lightweight communication. Second, the traversal and observation capabilities of heterogeneous robots are modeled to evaluate the requirements of task views derived from incomplete supervoxels. These task views are grouped by requirements and clustered to streamline assignment. Subsequently, the view-cluster assignment is formulated as a heterogeneous multi-depot multi-traveling salesman problem (HMDMTSP) that incorporates constraints between view-cluster requirements and robot capabilities. An improved genetic algorithm is developed to efficiently solve this problem while ensuring global consistency. Based on the assignments, redundant views within clusters are eliminated to refine exploration routes. Finally, conflicts between robots' motion paths are resolved. Simulations and field experiments in cluttered indoor and outdoor environments demonstrate that our approach effectively coordinates exploration tasks among heterogeneous robots, achieving superior exploration efficiency and communication savings compared to state-of-the-art approaches.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 异构多机器人系统在复杂环境中展现出显著适应性，然而如何通过有效协作充分发挥机器人潜力仍是核心挑战。本文提出一种面向异构多机器人系统的分散式协作框架，可实现室内外三维环境的自主探索。首先设计融合地形与观测指标的基础感知地图，通过改进超体素分割方法简化地图结构，形成支持轻量通信的高层表征。其次，建立异构机器人穿越与观测能力模型，用于评估从不完整超体素生成的任务视点需求。这些任务视点按需求分组并聚类以简化分配流程。随后，将视点簇分配问题建模为异构多车场多旅行商问题，其中纳入视点簇需求与机器人能力间的约束关系。开发改进遗传算法以高效求解该问题，同时保障全局一致性。基于分配结果，消除聚类内的冗余视点以优化探索路径。最后，解决机器人运动路径间的冲突问题。在杂乱室内外环境中的仿真与实地实验表明，本方法能有效协调异构机器人间的探索任务，相较于前沿方法具有更优的探索效率与通信节省优势。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper proposes a decentralized collaborative framework for heterogeneous multi-robot systems for efficient 3D exploration of indoor and outdoor environments, focusing on perception map simplification, task view clustering, and optimized task assignment.</p>
+            <h2 class="paper-title">
+                Decentralized Heterogeneous Multi-Robot Collaborative Exploration for Indoor and Outdoor 3D Environments
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文为异构多机器人系统提出了一种去中心化协作框架，用于高效探索室内外3D环境，重点包括感知地图简化、任务视图聚类和优化任务分配。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文为异构多机器人系统提出了一种去中心化协作框架，用于高效探索室内外3D环境，重点包括感知地图简化、任务视图聚类和优化任务分配。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper proposes a decentralized collaborative framework for heterogeneous multi-robot systems for efficient 3D exploration of indoor and outdoor environments, focusing on perception map simplification, task view clustering, and optimized task assignment.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Heterogeneous multi-robot systems feature significant adaptability for complex environments. However, effective collaboration that fully exploits the robots' potential remains a core challenge. This paper proposes a decentralized collaborative framework for heterogeneous multi-robot systems to autonomously explore indoor and outdoor 3D environments. First, a basic perception map that integrates terrain and observation metrics is designed. Improved supervoxel segmentation is developed to simplify the map structure and form a high-level representation that supports lightweight communication. Second, the traversal and observation capabilities of heterogeneous robots are modeled to evaluate the requirements of task views derived from incomplete supervoxels. These task views are grouped by requirements and clustered to streamline assignment. Subsequently, the view-cluster assignment is formulated as a heterogeneous multi-depot multi-traveling salesman problem (HMDMTSP) that incorporates constraints between view-cluster requirements and robot capabilities. An improved genetic algorithm is developed to efficiently solve this problem while ensuring global consistency. Based on the assignments, redundant views within clusters are eliminated to refine exploration routes. Finally, conflicts between robots' motion paths are resolved. Simulations and field experiments in cluttered indoor and outdoor environments demonstrate that our approach effectively coordinates exploration tasks among heterogeneous robots, achieving superior exploration efficiency and communication savings compared to state-of-the-art approaches.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>异构多机器人系统在复杂环境中展现出显著适应性，然而如何通过有效协作充分发挥机器人潜力仍是核心挑战。本文提出一种面向异构多机器人系统的分散式协作框架，可实现室内外三维环境的自主探索。首先设计融合地形与观测指标的基础感知地图，通过改进超体素分割方法简化地图结构，形成支持轻量通信的高层表征。其次，建立异构机器人穿越与观测能力模型，用于评估从不完整超体素生成的任务视点需求。这些任务视点按需求分组并聚类以简化分配流程。随后，将视点簇分配问题建模为异构多车场多旅行商问题，其中纳入视点簇需求与机器人能力间的约束关系。开发改进遗传算法以高效求解该问题，同时保障全局一致性。基于分配结果，消除聚类内的冗余视点以优化探索路径。最后，解决机器人运动路径间的冲突问题。在杂乱室内外环境中的仿真与实地实验表明，本方法能有效协调异构机器人间的探索任务，相较于前沿方法具有更优的探索效率与通信节省优势。</p>
             
 
             
@@ -774,6 +1033,14 @@
             <a href="http://arxiv.org/abs/2604.23693v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="4" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="4" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Yuxiang Li, Kun Chen, Jiancheng Wang, Shihao Fang, Haoyao Chen, Yunhui Liu</p>
             
@@ -787,16 +1054,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Safe Navigation in Unknown and Cluttered Environments via Direction-Aware Convex Free-Region Generation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Convex free regions provide a structured and optimization-friendly representation of collision-free space for robot navigation in unknown and cluttered environments. However, existing methods typically enlarge local collision-free regions mainly according to surrounding obstacle geometry. In cluttered environments, such strategies may fail to generate regions that both accommodate robot geometry and preserve traversable extension along candidate motion directions, thereby limiting downstream traversal, especially in narrow passages. Even when such a region is available, safe motion generation remains challenging, because safety checking at discretized trajectory samples does not guarantee continuously collision-free motion when robot geometry is modeled explicitly. To address these issues, we propose a navigation framework that jointly incorporates candidate motion directions and robot geometry into convex free-region generation, and achieves continuously collision-free motion through continuous-safe trajectory generation. Within each region, the framework performs geometry-aware target pose selection and trajectory generation, together with Lipschitz-based continuous safety certification and local refinement. The resulting free regions and candidate motions are maintained in a region-based graph to support incremental planning. Quantitative results in cluttered 2D navigation scenarios show that the proposed method generates free regions better aligned with downstream traversal and enables reliable collision-free navigation, while additional 3D and real-world experiments on a quadrupedal robot and a UAV demonstrate the extensibility and practical applicability of the framework. The open-source project can be found at https://github.com/ZhichengSong6/FRGraph.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 凸自由区域为机器人在未知复杂环境中的导航提供了结构化且利于优化的无碰撞空间表示方法。然而，现有方法通常主要根据周围障碍物几何结构来扩展局部无碰撞区域。在复杂环境中，此类策略可能难以生成既能容纳机器人几何结构，又能沿候选运动方向保持可通行延伸的区域，从而限制了后续路径通过能力，尤其在狭窄通道中。即使存在此类区域，安全运动生成仍具挑战性，因为当显式建模机器人几何结构时，在离散轨迹样本点进行安全检测并不能保证连续无碰撞运动。为解决这些问题，我们提出一种导航框架，将候选运动方向与机器人几何结构共同融入凸自由区域生成过程，并通过连续安全轨迹生成实现持续无碰撞运动。在每个区域内，该框架执行几何感知的目标位姿选择与轨迹生成，结合基于Lipschitz连续性的安全认证机制与局部优化。生成的无障碍区域与候选运动被存储在区域图结构中，以支持增量式规划。在复杂二维导航场景中的定量结果表明，所提方法生成的自由区域能更好地适应下游路径通过需求，并实现可靠的无碰撞导航；同时在四足机器人与无人机上进行的额外三维仿真与实物实验验证了该框架的扩展性与实际应用价值。开源项目地址：https://github.com/ZhichengSong6/FRGraph。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: A navigation framework for robots in unknown cluttered environments that generates direction-aware convex free regions and continuous-safe trajectories, validated in 2D/3D simulations and on a quadruped and UAV.</p>
+            <h2 class="paper-title">
+                Safe Navigation in Unknown and Cluttered Environments via Direction-Aware Convex Free-Region Generation
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 用于未知杂乱环境的机器人导航框架，通过生成方向感知的凸自由区域和连续安全轨迹，在2D/3D仿真及四足机器人和无人机上验证。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>用于未知杂乱环境的机器人导航框架，通过生成方向感知的凸自由区域和连续安全轨迹，在2D/3D仿真及四足机器人和无人机上验证。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> A navigation framework for robots in unknown cluttered environments that generates direction-aware convex free regions and continuous-safe trajectories, validated in 2D/3D simulations and on a quadruped and UAV.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Convex free regions provide a structured and optimization-friendly representation of collision-free space for robot navigation in unknown and cluttered environments. However, existing methods typically enlarge local collision-free regions mainly according to surrounding obstacle geometry. In cluttered environments, such strategies may fail to generate regions that both accommodate robot geometry and preserve traversable extension along candidate motion directions, thereby limiting downstream traversal, especially in narrow passages. Even when such a region is available, safe motion generation remains challenging, because safety checking at discretized trajectory samples does not guarantee continuously collision-free motion when robot geometry is modeled explicitly. To address these issues, we propose a navigation framework that jointly incorporates candidate motion directions and robot geometry into convex free-region generation, and achieves continuously collision-free motion through continuous-safe trajectory generation. Within each region, the framework performs geometry-aware target pose selection and trajectory generation, together with Lipschitz-based continuous safety certification and local refinement. The resulting free regions and candidate motions are maintained in a region-based graph to support incremental planning. Quantitative results in cluttered 2D navigation scenarios show that the proposed method generates free regions better aligned with downstream traversal and enables reliable collision-free navigation, while additional 3D and real-world experiments on a quadrupedal robot and a UAV demonstrate the extensibility and practical applicability of the framework. The open-source project can be found at https://github.com/ZhichengSong6/FRGraph.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>凸自由区域为机器人在未知复杂环境中的导航提供了结构化且利于优化的无碰撞空间表示方法。然而，现有方法通常主要根据周围障碍物几何结构来扩展局部无碰撞区域。在复杂环境中，此类策略可能难以生成既能容纳机器人几何结构，又能沿候选运动方向保持可通行延伸的区域，从而限制了后续路径通过能力，尤其在狭窄通道中。即使存在此类区域，安全运动生成仍具挑战性，因为当显式建模机器人几何结构时，在离散轨迹样本点进行安全检测并不能保证连续无碰撞运动。为解决这些问题，我们提出一种导航框架，将候选运动方向与机器人几何结构共同融入凸自由区域生成过程，并通过连续安全轨迹生成实现持续无碰撞运动。在每个区域内，该框架执行几何感知的目标位姿选择与轨迹生成，结合基于Lipschitz连续性的安全认证机制与局部优化。生成的无障碍区域与候选运动被存储在区域图结构中，以支持增量式规划。在复杂二维导航场景中的定量结果表明，所提方法生成的自由区域能更好地适应下游路径通过需求，并实现可靠的无碰撞导航；同时在四足机器人与无人机上进行的额外三维仿真与实物实验验证了该框架的扩展性与实际应用价值。开源项目地址：https://github.com/ZhichengSong6/FRGraph。</p>
             
 
             
@@ -870,6 +1141,14 @@
             <a href="http://arxiv.org/abs/2604.23648v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="5" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="5" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Zhicheng Song, Yongjian Li, Kai Chen, Yulin Li, Fan Shi, Jun Ma</p>
             
@@ -883,16 +1162,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Move-Then-Operate: Behavioral Phasing for Human-Like Robotic Manipulation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> We present Move-Then-Operate, a Vision language action framework that explicitly decouples robotic manipulation into two distinct behavioral phases: coarse relocation (move) and contact-critical interaction (operate). Unlike monolithic policies that conflate these heterogeneous regimes, our architecture employs a dual-expert policy routed by a learnable phase selector, introducing a structural inductive bias that isolates phase-specific dynamics. Phase labels are automatically generated via an MLLM-based pipeline conditioned on lightweight contextual cues such as end-effector velocity and subtask decomposition to ensure alignment with human motor patterns. Evaluated on the RoboTwin2 benchmark, our method achieves an average success rate of $68.9\%$, outperforming the monolithic $π_0$ baseline by $24\%$. It matches or exceeds models trained on $10\times$ more data and reaches peak performance in $40\%$ fewer training steps, demonstrating that architectural disentanglement of move and operate phases is a highly effective and efficient strategy for mastering high-precision manipulation.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 本文提出一种视觉语言动作框架——“移动后操作”，该框架将机器人操控行为明确解耦为两个不同的阶段：粗略重定位（移动）和接触关键型交互（操作）。与将这两种异质行为模式混为一体的单块策略不同，我们的架构采用由可学习阶段选择器调度的双专家策略，通过引入结构化归纳偏置来实现各阶段特定动态的隔离。阶段标签通过基于多模态大语言模型的自动化流水线生成，该流水线以末端执行器速度及子任务分解等轻量级上下文线索为条件，确保与人类运动模式保持一致。在RoboTwin2基准测试中，我们的方法平均成功率达到$68.9\%$，较单块策略基线$π_0$提升$24\%$。其性能与训练数据量多$10$倍的模型相当甚至更优，并在训练步数减少$40\%$的情况下达到峰值性能，证明通过架构分离移动与操作阶段是实现高精度操控任务高效掌握的有效策略。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: A dual-phase robot manipulation framework that separates coarse relocation from precise interaction, using a vision-language-action model and MLLM-generated phase labels to improve efficiency and performance on high-precision tasks.</p>
+            <h2 class="paper-title">
+                Move-Then-Operate: Behavioral Phasing for Human-Like Robotic Manipulation
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 一种将机器人操作分离为粗定位和精操作的双阶段框架，采用视觉-语言-动作模型和MLLM生成的阶段标签，在RoboTwin2基准测试中显著提升了高精度任务的成功率和训练效率。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>一种将机器人操作分离为粗定位和精操作的双阶段框架，采用视觉-语言-动作模型和MLLM生成的阶段标签，在RoboTwin2基准测试中显著提升了高精度任务的成功率和训练效率。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> A dual-phase robot manipulation framework that separates coarse relocation from precise interaction, using a vision-language-action model and MLLM-generated phase labels to improve efficiency and performance on high-precision tasks.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> We present Move-Then-Operate, a Vision language action framework that explicitly decouples robotic manipulation into two distinct behavioral phases: coarse relocation (move) and contact-critical interaction (operate). Unlike monolithic policies that conflate these heterogeneous regimes, our architecture employs a dual-expert policy routed by a learnable phase selector, introducing a structural inductive bias that isolates phase-specific dynamics. Phase labels are automatically generated via an MLLM-based pipeline conditioned on lightweight contextual cues such as end-effector velocity and subtask decomposition to ensure alignment with human motor patterns. Evaluated on the RoboTwin2 benchmark, our method achieves an average success rate of $68.9\%$, outperforming the monolithic $π_0$ baseline by $24\%$. It matches or exceeds models trained on $10\times$ more data and reaches peak performance in $40\%$ fewer training steps, demonstrating that architectural disentanglement of move and operate phases is a highly effective and efficient strategy for mastering high-precision manipulation.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>本文提出一种视觉语言动作框架——“移动后操作”，该框架将机器人操控行为明确解耦为两个不同的阶段：粗略重定位（移动）和接触关键型交互（操作）。与将这两种异质行为模式混为一体的单块策略不同，我们的架构采用由可学习阶段选择器调度的双专家策略，通过引入结构化归纳偏置来实现各阶段特定动态的隔离。阶段标签通过基于多模态大语言模型的自动化流水线生成，该流水线以末端执行器速度及子任务分解等轻量级上下文线索为条件，确保与人类运动模式保持一致。在RoboTwin2基准测试中，我们的方法平均成功率达到$68.9\%$，较单块策略基线$π_0$提升$24\%$。其性能与训练数据量多$10$倍的模型相当甚至更优，并在训练步数减少$40\%$的情况下达到峰值性能，证明通过架构分离移动与操作阶段是实现高精度操控任务高效掌握的有效策略。</p>
             
 
             
@@ -966,6 +1249,14 @@
             <a href="http://arxiv.org/abs/2604.23620v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="6" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="6" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Haoming Xu, Lei Lei, Jie Gu, Chu Tang, Jingmin Chen, Ruiqi Wang</p>
             
@@ -979,16 +1270,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">PhysCodeBench: Benchmarking Physics-Aware Symbolic Simulation of 3D Scenes via Self-Corrective Multi-Agent Refinement</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Physics-aware symbolic simulation of 3D scenes is critical for robotics, embodied AI, and scientific computing, requiring models to understand natural language descriptions of physical phenomena and translate them into executable simulation environments. While large language models (LLMs) excel at general code generation, they struggle with the semantic gap between physical descriptions and simulation implementation. We introduce PhysCodeBench, the first comprehensive benchmark for evaluating physics-aware symbolic simulation, comprising 700 manually-crafted diverse samples across mechanics, fluid dynamics, and soft-body physics with expert annotations. Our evaluation framework measures both code executability and physical accuracy through automated and visual assessment. Building on this, we propose a Self-Corrective Multi-Agent Refinement Framework (SMRF) with three specialized agents (simulation generator, error corrector, and simulation refiner) that collaborate iteratively with domain-specific validation to produce physically accurate simulations. SMRF achieves 67.7 points overall performance compared to 36.3 points for the best baseline among evaluated SOTA models, representing a 31.4-point improvement. Our analysis demonstrates that error correction is critical for accurate physics-aware symbolic simulation and that specialized multi-agent approaches significantly outperform single-agent methods across the tested physical domains.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 面向三维场景的物理感知符号仿真是机器人学、具身人工智能与科学计算的关键技术，需要模型理解物理现象的自然语言描述并将其转化为可执行的仿真环境。尽管大语言模型在通用代码生成方面表现出色，但其在物理描述与仿真实现之间仍存在语义鸿沟。本文提出PhysCodeBench——首个用于评估物理感知符号仿真的综合性基准测试，涵盖力学、流体动力学和软体物理三大领域，包含700个专家标注的多样化手工构建样本。我们的评估框架通过自动化测试与可视化验证，同时衡量代码可执行性与物理准确性。基于此，我们进一步提出自校正多智能体优化框架（SMRF），该框架包含三个专项智能体（仿真生成器、错误校正器与仿真优化器），通过领域特定的迭代协同验证生成物理精确的仿真。SMRF在测试中取得67.7分的综合性能，较当前最优基线的36.3分提升31.4分。分析表明，错误校正对实现精确的物理感知符号仿真至关重要，且专业化的多智能体方法在测试的所有物理领域均显著优于单智能体方法。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces PhysCodeBench, a benchmark for physics-aware symbolic simulation of 3D scenes, and proposes a multi-agent refinement framework to improve the accuracy of simulations generated from natural language descriptions.</p>
+            <h2 class="paper-title">
+                PhysCodeBench: Benchmarking Physics-Aware Symbolic Simulation of 3D Scenes via Self-Corrective Multi-Agent Refinement
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文提出了PhysCodeBench，一个用于物理感知符号模拟3D场景的基准测试，并提出了一个多智能体细化框架，以提高从自然语言描述生成的模拟的准确性。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文提出了PhysCodeBench，一个用于物理感知符号模拟3D场景的基准测试，并提出了一个多智能体细化框架，以提高从自然语言描述生成的模拟的准确性。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces PhysCodeBench, a benchmark for physics-aware symbolic simulation of 3D scenes, and proposes a multi-agent refinement framework to improve the accuracy of simulations generated from natural language descriptions.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Physics-aware symbolic simulation of 3D scenes is critical for robotics, embodied AI, and scientific computing, requiring models to understand natural language descriptions of physical phenomena and translate them into executable simulation environments. While large language models (LLMs) excel at general code generation, they struggle with the semantic gap between physical descriptions and simulation implementation. We introduce PhysCodeBench, the first comprehensive benchmark for evaluating physics-aware symbolic simulation, comprising 700 manually-crafted diverse samples across mechanics, fluid dynamics, and soft-body physics with expert annotations. Our evaluation framework measures both code executability and physical accuracy through automated and visual assessment. Building on this, we propose a Self-Corrective Multi-Agent Refinement Framework (SMRF) with three specialized agents (simulation generator, error corrector, and simulation refiner) that collaborate iteratively with domain-specific validation to produce physically accurate simulations. SMRF achieves 67.7 points overall performance compared to 36.3 points for the best baseline among evaluated SOTA models, representing a 31.4-point improvement. Our analysis demonstrates that error correction is critical for accurate physics-aware symbolic simulation and that specialized multi-agent approaches significantly outperform single-agent methods across the tested physical domains.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>面向三维场景的物理感知符号仿真是机器人学、具身人工智能与科学计算的关键技术，需要模型理解物理现象的自然语言描述并将其转化为可执行的仿真环境。尽管大语言模型在通用代码生成方面表现出色，但其在物理描述与仿真实现之间仍存在语义鸿沟。本文提出PhysCodeBench——首个用于评估物理感知符号仿真的综合性基准测试，涵盖力学、流体动力学和软体物理三大领域，包含700个专家标注的多样化手工构建样本。我们的评估框架通过自动化测试与可视化验证，同时衡量代码可执行性与物理准确性。基于此，我们进一步提出自校正多智能体优化框架（SMRF），该框架包含三个专项智能体（仿真生成器、错误校正器与仿真优化器），通过领域特定的迭代协同验证生成物理精确的仿真。SMRF在测试中取得67.7分的综合性能，较当前最优基线的36.3分提升31.4分。分析表明，错误校正对实现精确的物理感知符号仿真至关重要，且专业化的多智能体方法在测试的所有物理领域均显著优于单智能体方法。</p>
             
 
             
@@ -1062,6 +1357,14 @@
             <a href="http://arxiv.org/abs/2604.23580v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="7" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="7" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Tianyidan Xie, Peiyu Wang, Yuyi Qian, Yuxuan Wang, Rui Ma, Ying Tai, Song Wu, Qian Wang, Lanjun Wang, Zili Yi</p>
             
@@ -1075,16 +1378,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">EgoLive: A Large-Scale Egocentric Dataset from Real-World Human Tasks</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> The advancement of robot learning is currently hindered by the scarcity of large-scale, high-quality datasets. While established data collection methods such as teleoperation and universal manipulation interfaces dominate current datasets, they suffer from inherent limitations in scalability and real-world deployability. Human egocentric video collection, by contrast, has emerged as a promising approach to enable scalable, natural and in-the-wild data collection. As such, we present EgoLive, a large-scale, high-quality egocentric dataset designed explicitly for robot manipulation learning. EgoLive establishes three distinctive technical advantages over existing egocentric datasets: first, it represents the largest open-source annotated egocentric dataset focused on real-world task-oriented human routines to date; second, it delivers leading data quality via a customized head-mounted capture device and comprehensive high-precision multi-modal annotations; third, all data is collected exclusively in unconstrained real-world scenarios and encompasses vertical field human working data, including home service, retail, and other practical work scenarios, providing superior diversity and ecological validity. With the introduction of EgoLive, we aim to provide the research community with a scalable, high-quality dataset that accelerates breakthroughs in generalizable robotic models and facilitates the real-world deployment of robot systems.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 机器人学习领域的发展目前正受限于大规模、高质量数据集的稀缺性。尽管遥操作和通用操控界面等现有数据采集方法在当前数据集中占据主导地位，但其在可扩展性和实际部署能力方面存在固有局限性。相比之下，以人类第一视角视频采集为代表的新兴方法，展现出实现规模化、自然化及真实场景数据采集的巨大潜力。为此，我们推出EgoLive——一个专为机器人操作学习设计的大规模、高质量第一视角数据集。EgoLive在技术上实现了三大突破性优势：其一，该数据集是目前规模最大的开源标注第一视角数据集，专注于真实世界中面向任务的人类日常行为；其二，通过定制化头戴式采集设备与全面的高精度多模态标注体系，实现了业界领先的数据质量；其三，所有数据均在非受限真实场景中采集，涵盖家庭服务、零售及其他实际工作场景中的垂直领域人类作业数据，具备卓越的多样性与生态效度。我们期望通过推出EgoLive数据集，为研究界提供一个可扩展的高质量数据资源，以加速通用化机器人模型的突破性进展，并推动机器人系统在真实世界的部署应用。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: EgoLive is a large-scale, high-quality, annotated egocentric dataset collected from real-world human tasks, designed explicitly to advance robot manipulation learning.</p>
+            <h2 class="paper-title">
+                EgoLive: A Large-Scale Egocentric Dataset from Real-World Human Tasks
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: EgoLive是一个大规模、高质量、标注的自我中心视角数据集，从真实世界人类任务中收集，旨在专门推动机器人操作学习的发展。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>EgoLive是一个大规模、高质量、标注的自我中心视角数据集，从真实世界人类任务中收集，旨在专门推动机器人操作学习的发展。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> EgoLive is a large-scale, high-quality, annotated egocentric dataset collected from real-world human tasks, designed explicitly to advance robot manipulation learning.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> The advancement of robot learning is currently hindered by the scarcity of large-scale, high-quality datasets. While established data collection methods such as teleoperation and universal manipulation interfaces dominate current datasets, they suffer from inherent limitations in scalability and real-world deployability. Human egocentric video collection, by contrast, has emerged as a promising approach to enable scalable, natural and in-the-wild data collection. As such, we present EgoLive, a large-scale, high-quality egocentric dataset designed explicitly for robot manipulation learning. EgoLive establishes three distinctive technical advantages over existing egocentric datasets: first, it represents the largest open-source annotated egocentric dataset focused on real-world task-oriented human routines to date; second, it delivers leading data quality via a customized head-mounted capture device and comprehensive high-precision multi-modal annotations; third, all data is collected exclusively in unconstrained real-world scenarios and encompasses vertical field human working data, including home service, retail, and other practical work scenarios, providing superior diversity and ecological validity. With the introduction of EgoLive, we aim to provide the research community with a scalable, high-quality dataset that accelerates breakthroughs in generalizable robotic models and facilitates the real-world deployment of robot systems.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>机器人学习领域的发展目前正受限于大规模、高质量数据集的稀缺性。尽管遥操作和通用操控界面等现有数据采集方法在当前数据集中占据主导地位，但其在可扩展性和实际部署能力方面存在固有局限性。相比之下，以人类第一视角视频采集为代表的新兴方法，展现出实现规模化、自然化及真实场景数据采集的巨大潜力。为此，我们推出EgoLive——一个专为机器人操作学习设计的大规模、高质量第一视角数据集。EgoLive在技术上实现了三大突破性优势：其一，该数据集是目前规模最大的开源标注第一视角数据集，专注于真实世界中面向任务的人类日常行为；其二，通过定制化头戴式采集设备与全面的高精度多模态标注体系，实现了业界领先的数据质量；其三，所有数据均在非受限真实场景中采集，涵盖家庭服务、零售及其他实际工作场景中的垂直领域人类作业数据，具备卓越的多样性与生态效度。我们期望通过推出EgoLive数据集，为研究界提供一个可扩展的高质量数据资源，以加速通用化机器人模型的突破性进展，并推动机器人系统在真实世界的部署应用。</p>
             
 
             
@@ -1158,6 +1465,14 @@
             <a href="http://arxiv.org/abs/2604.23570v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="8" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="8" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Yihang Li, Xuelong Wei, Jingzhou Luo, Yingjing Xiao, Yibo Bai, Guangyuan Zhou, Teng Zou, Chenguang Gui, Jiajun Wen, He Zhang, Kangliang Chen, Xing Pan, Shuaiyan Liu, Daming Wang, Tao An, Jiayi Li, Shibo Jin, Wanwan Zhang, Tianyu Wang, Boren Wei, Zhixuan Huang, Fangsheng Liu, Ruodai Li, Hui Zhang, Anson Li, Yicheng Gong, Peng Cao, Jiaming Liang, Liang Lin</p>
             
@@ -1171,16 +1486,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Sphere-Depth: A Benchmark for Depth Estimation Methods with Varying Spherical Camera Orientations</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Reliable depth estimation from spherical images is crucial for 360° vision in robotic navigation and immersive scene understanding. However, the onboard spherical camera can experience unintentional pose variations in real-world robotic platforms that, along with the geometric distortions inherent in equirectangular projections, significantly impact the effectiveness of depth estimation. To study this issue, a novel public benchmark, called Sphere-Depth, is introduced to systematically evaluate the robustness of monocular depth estimation models from equirectangular images in a reproducible way. Camera pose perturbations are simulated and used to assess the performance of a popular perspective-based model, Depth Anything, and of spherical-aware models such as Depth Anywhere, ACDNet, Bifuse++, and SliceNet. Furthermore, to ensure meaningful evaluation across models, a depth calibration-based error protocol is proposed to convert predicted relative depth values into metric depth values using supervised learned scaling factors for each model. Experiments show that even models explicitly designed to process spherical images exhibit substantial performance degradation when variations in the camera pose are observed with respect to the canonical pose. The full benchmark, evaluation protocol, and dataset splits are made publicly available at: https://github.com/sgazzeh/Sphere_depth</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 可靠的球面图像深度估计对于机器人导航中的360°视觉和沉浸式场景理解至关重要。然而，在实际机器人平台中，搭载的球面相机可能会发生非预期的姿态变化，加之等距柱状投影固有的几何畸变，这些因素会严重影响深度估计的有效性。为研究这一问题，本研究引入了一个名为Sphere-Depth的新型公开基准，旨在以可复现的方式系统评估等距柱状图像单目深度估计模型的鲁棒性。通过模拟相机姿态扰动，评估了基于透视的流行模型Depth Anything，以及球面感知模型如Depth Anywhere、ACDNet、Bifuse++和SliceNet的性能。此外，为确保跨模型评估的有效性，提出了一种基于深度校准的误差评估方案，通过为每个模型学习有监督的缩放因子，将预测的相对深度值转换为度量深度值。实验表明，即使是为处理球面图像而显式设计的模型，在相机姿态相对于标准姿态发生变化时，也表现出显著的性能下降。完整的基准测试、评估方案和数据集划分已公开于：https://github.com/sgazzeh/Sphere_depth</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces Sphere-Depth, a benchmark for evaluating monocular depth estimation methods on spherical images under camera pose perturbations, with application to robotic navigation and 360° vision.</p>
+            <h2 class="paper-title">
+                Sphere-Depth: A Benchmark for Depth Estimation Methods with Varying Spherical Camera Orientations
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了Sphere-Depth，这是一个用于评估球形图像单目深度估计方法在相机姿态扰动下性能的基准，应用于机器人导航和360°视觉。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了Sphere-Depth，这是一个用于评估球形图像单目深度估计方法在相机姿态扰动下性能的基准，应用于机器人导航和360°视觉。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces Sphere-Depth, a benchmark for evaluating monocular depth estimation methods on spherical images under camera pose perturbations, with application to robotic navigation and 360° vision.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Reliable depth estimation from spherical images is crucial for 360° vision in robotic navigation and immersive scene understanding. However, the onboard spherical camera can experience unintentional pose variations in real-world robotic platforms that, along with the geometric distortions inherent in equirectangular projections, significantly impact the effectiveness of depth estimation. To study this issue, a novel public benchmark, called Sphere-Depth, is introduced to systematically evaluate the robustness of monocular depth estimation models from equirectangular images in a reproducible way. Camera pose perturbations are simulated and used to assess the performance of a popular perspective-based model, Depth Anything, and of spherical-aware models such as Depth Anywhere, ACDNet, Bifuse++, and SliceNet. Furthermore, to ensure meaningful evaluation across models, a depth calibration-based error protocol is proposed to convert predicted relative depth values into metric depth values using supervised learned scaling factors for each model. Experiments show that even models explicitly designed to process spherical images exhibit substantial performance degradation when variations in the camera pose are observed with respect to the canonical pose. The full benchmark, evaluation protocol, and dataset splits are made publicly available at: https://github.com/sgazzeh/Sphere_depth</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>可靠的球面图像深度估计对于机器人导航中的360°视觉和沉浸式场景理解至关重要。然而，在实际机器人平台中，搭载的球面相机可能会发生非预期的姿态变化，加之等距柱状投影固有的几何畸变，这些因素会严重影响深度估计的有效性。为研究这一问题，本研究引入了一个名为Sphere-Depth的新型公开基准，旨在以可复现的方式系统评估等距柱状图像单目深度估计模型的鲁棒性。通过模拟相机姿态扰动，评估了基于透视的流行模型Depth Anything，以及球面感知模型如Depth Anywhere、ACDNet、Bifuse++和SliceNet的性能。此外，为确保跨模型评估的有效性，提出了一种基于深度校准的误差评估方案，通过为每个模型学习有监督的缩放因子，将预测的相对深度值转换为度量深度值。实验表明，即使是为处理球面图像而显式设计的模型，在相机姿态相对于标准姿态发生变化时，也表现出显著的性能下降。完整的基准测试、评估方案和数据集划分已公开于：https://github.com/sgazzeh/Sphere_depth</p>
             
 
             
@@ -1254,6 +1573,14 @@
             <a href="http://arxiv.org/abs/2604.23432v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="9" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="9" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Soulayma Gazzeh, Giuseppe Mazzola, Liliana Lo Presti, Marco La Cascia</p>
             
@@ -1272,12 +1599,24 @@
                         Learning to Identify Out-of-Distribution Objects for 3D LiDAR Anomaly Segmentation
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="10" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="10" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Simone Mosco, Daniel Fusaro, Alberto Pretto</p>
                 
                 <p><strong>TLDR-CN:</strong> 提出一种新的3D LiDAR异常分割方法和数据集，专注于自动驾驶和机器人感知中识别未知物体。</p>
+                
+                <p><strong>Overall:</strong> 5/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1287,12 +1626,24 @@
                         DLM: Unified Decision Language Models for Offline Multi-Agent Sequential Decision Making
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="11" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="11" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Zhuohui Zhang, Bin Cheng, Bin He</p>
                 
                 <p><strong>TLDR-CN:</strong> DLM将多智能体决策制定为序列预测问题，利用LLM通过监督微调和策略优化进行训练，在多个基准测试中超越现有离线MARL方法，并展示出零样本泛化能力。</p>
+                
+                <p><strong>Overall:</strong> 5/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1302,12 +1653,24 @@
                         Otherness as a Quality in Designing Expressive Robotic Touch
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="12" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="12" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Ran Zhou, Laurens Boer, Daniel Leithinger, Madeline Balaam</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文提出将机器人触觉固有的'他者性'作为一种设计质量，借鉴艺术和设计研究案例，开发超越真实感、创造表达性和唤起性触觉交互的设计策略。</p>
+                
+                <p><strong>Overall:</strong> 4/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1317,12 +1680,24 @@
                         Structural Enforcement of Goal Integrity in AI Agents via Separation-of-Powers Architecture
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="13" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="13" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Rong Xiang</p>
                 
                 <p><strong>TLDR-CN:</strong> 提出了一种'权力分离'架构（PEA），通过密码学隔离的层来强制实现AI代理的目标完整性与安全性，侧重于系统级保障而非模型级对齐。</p>
+                
+                <p><strong>Overall:</strong> 4/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1332,12 +1707,24 @@
                         CAPSULE: Control-Theoretic Action Perturbations for Safe Uncertainty-Aware Reinforcement Learning
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="14" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="14" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Rahul Narava, Siddharth Verma, Ojas Jain, Shashi Shekhar Jha, Mayank Shekhar Jha</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文提出一个安全强化学习框架，通过离线学习概率控制仿射动力学模型，构建考虑模型不确定性的控制屏障函数，并在在线阶段通过基于约束的动作修正来实现安全探索。</p>
+                
+                <p><strong>Overall:</strong> 4/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1347,12 +1734,24 @@
                         IndustryAssetEQA: A Neurosymbolic Operational Intelligence System for Embodied Question Answering in Industrial Asset Maintenance
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="15" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="15" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Chathurangi Shyalika, Dhaval Patel, Amit Sheth</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文提出了IndustryAssetEQA，一个用于工业资产维护的神经符号系统，通过结合遥测数据和知识图谱进行具身问答，相比纯大语言模型基线，显著提高了解释的结构有效性、反事实准确性和可验证性。</p>
+                
+                <p><strong>Overall:</strong> 4/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1362,12 +1761,24 @@
                         Resource-Constrained UAV-Based Weed Detection for Site-Specific Management on Edge Devices
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="16" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="16" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Linyuan Wang, Haibo Yao, Te-Ming Tseng, Kelvin Betitame, Xin Sun, Hanbo Huang, Dong Chen</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文提出了一个用于在无人机机载边缘设备上部署实时杂草检测模型的框架，评估了多种目标检测架构在不同Jetson硬件上的精度-延迟权衡。</p>
+                
+                <p><strong>Overall:</strong> 4/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1377,12 +1788,24 @@
                         Real-Time Non-Contact Force Compensation for Wrist-Mounted Force/Torque Sensors in Haptic-Enabled Robotic Surgery Training
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="17" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="17" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Walid Shaker, Mustafa Suphi Erden</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文提出了一种用于低成本机器人手术训练系统的实时补偿方法，采用递归最小二乘（RLS）算法对腕部安装的力/扭矩传感器中的非接触力进行补偿。</p>
+                
+                <p><strong>Overall:</strong> 3/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1392,12 +1815,24 @@
                         Large Language Model based Interactive Decision-Making for Autonomous Driving
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="18" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="18" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Xinwei Dong, Jiyang Li, Jiabin Xie, Yang Yi, Tianshang Jia, Shiyu Fang, Ye Tian, Peng Hang</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文提出了一种基于大语言模型的自动驾驶交互决策框架，利用语义场景建模和意图推理生成安全高效的机动决策，并通过外部人机接口的自然语言进行决策通信。</p>
+                
+                <p><strong>Overall:</strong> 3/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1407,12 +1842,24 @@
                         Emotion-Conditioned Short-Horizon Human Pose Forecasting with a Lightweight Predictive World Model
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="19" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="19" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Jingni Huang, Peter Bloodsworth</p>
                 
                 <p><strong>TLDR-CN:</strong> 本研究探索利用面部表情情感嵌入作为条件信号进行短期人体姿态预测，并提出一个带有门控机制的轻量级预测世界模型进行多模态融合。</p>
+                
+                <p><strong>Overall:</strong> 3/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1422,12 +1869,24 @@
                         Bringing a Personal Point of View: Evaluating Dynamic 3D Gaussian Splatting for Egocentric Scene Reconstruction
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="20" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="20" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Jan Warchocki, Xi Wang, Jonas Kulhanek, Jan van Gemert</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文评估了动态3D高斯溅射模型在第一人称（egocentric）视频中的场景重建性能，发现其表现不如第三人称视角，并强调了针对AR和机器人等应用开发第一人称特定方法的必要性。</p>
+                
+                <p><strong>Overall:</strong> 3/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1437,12 +1896,24 @@
                         MIRAGE: A Micro-Interaction Relational Architecture for Grounded Exploration in Multi-Figure Artworks
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="21" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="21" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Jui-Cheng Chiu, Yu-Chao Wang, Shengyang Luo, Tongyan Wang, Qi Yang, Nabin Khanal, Yingjie Victor Chen</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文介绍了MIRAGE框架，它通过创建视觉线索（如目光和姿态）的结构化中间表示，来分析多人物绘画，以提高叙事生成的可解释性和事实依据，从而解决标准视觉语言模型的局限性。</p>
+                
+                <p><strong>Overall:</strong> 3/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1452,12 +1923,24 @@
                         A Pose-only Geometric Constraint for Multi-Camera Pose Adjustment
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="22" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="22" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Shunkun Liang, Banglei Guan, Bin Li, Qifeng Yu, Yang Shang</p>
                 
                 <p><strong>TLDR-CN:</strong> 该论文提出了一种用于多相机系统的新型纯位姿几何约束，以减少光束法平差中的计算成本，在不牺牲精度的情况下提高效率。</p>
+                
+                <p><strong>Overall:</strong> 3/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1467,12 +1950,24 @@
                         AIPsy-Affect: A Keyword-Free Clinical Stimulus Battery for Mechanistic Interpretability of Emotion in Language Models
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="23" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="23" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Michael Keeman</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文介绍了一种用于语言模型中情感研究的刺激数据集，通过消除情感关键词，更好地解释模型的情感表征。</p>
+                
+                <p><strong>Overall:</strong> 2/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1482,12 +1977,24 @@
                         Thinking Like a Clinician: A Cognitive AI Agent for Clinical Diagnosis via Panoramic Profiling and Adversarial Debate
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="24" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="24" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Zhiqi Lv, Duofan Tu, Jun Li, Mingyue Zhao, Heqin Zhu, Wenliang Li, Shaohua Kevin Zhou</p>
                 
                 <p><strong>TLDR-CN:</strong> 该论文提出DxChain，一个用于医疗诊断的链式临床推理框架，采用“先画像后计划”范式、医疗思维树算法和对抗性辩论进行诊断验证，基于大型语言模型。</p>
+                
+                <p><strong>Overall:</strong> 2/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1497,12 +2004,24 @@
                         Automating Categorization of Scientific Texts with In-Context Learning and Prompt-Chaining in Large Language Models
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="25" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="25" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Gautam Kishore Shahi, Oliver Hummel</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文评估了使用大型语言模型（LLM），结合上下文学习和提示链技术，根据分层分类法对科学文本进行自动分类，发现提示链能提高分类准确性。</p>
+                
+                <p><strong>Overall:</strong> 2/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1512,12 +2031,24 @@
                         SolarFCD: A Large-Scale Dataset and Benchmark for Solar Fault Classification in Photovoltaic Systems
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="26" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="26" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Misbah Ijaz, Saif Ur Rehman Khan, Abd Ur Rehman, Arooj Zaib, Sebastian Vollmer, Andreas Dengel, Muhammad Nabeel Asim</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文介绍了SolarFCD，一个用于太阳能电池板缺陷分类的大规模多模态数据集和基准测试，主要使用RGB/无人机和热红外图像。</p>
+                
+                <p><strong>Overall:</strong> 2/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1527,12 +2058,24 @@
                         SFT-then-RL Outperforms Mixed-Policy Methods for LLM Reasoning
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="27" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="27" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Alexis Limozin, Eduard Durech, Torsten Hoefler, Imanol Schlag, Valentina Pyatkin</p>
                 
                 <p><strong>TLDR-CN:</strong> 该论文指出，当修正了广泛使用的优化框架中的两个关键 bug 后，用于 LLM 推理的标准 SFT-then-RL 流程优于最近提出的混合策略方法。</p>
+                
+                <p><strong>Overall:</strong> 1/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1542,12 +2085,24 @@
                         AI Safety Training Can be Clinically Harmful
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="28" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="28" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Suhas BN, Andrew M. Sherrill, Rosa I. Arriaga, Chris W. Wiese, Saeed Abdullah</p>
                 
                 <p><strong>TLDR-CN:</strong> 该论文评估了用作心理健康支持代理的大语言模型的安全性和临床有效性，发现在高严重性场景下，RLHF等标准安全对齐方法会破坏治疗协议并造成伤害。论文提出了一个用于AI心理健康系统的多轴评估框架。</p>
+                
+                <p><strong>Overall:</strong> 1/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1557,12 +2112,24 @@
                         Agentic Fusion of Large Atomic and Language Models to Accelerate Materials Discovery
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="29" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="29" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Mingze Li, Yu Rong, Songyou Li, Lihong Wang, Jiacheng Cen, Liming Wu, Anyi Li, Zongzhao Li, Qiuliang Liu, Rui Jiao, Tian Bian, Pengju Wang, Hao Sun, Jianfeng Zhang, Ji-Rong Wen, Deli Zhao, Shifeng Jin, Tingyang Xu, Wenbing Huang</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文提出了一种用于材料发现的智能体框架，结合了大型原子模型和大型语言模型，实现了新超导体的高通量筛选和实验验证，但研究重点在材料科学，而非机器人学。</p>
+                
+                <p><strong>Overall:</strong> 1/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1572,12 +2139,24 @@
                         Do Synthetic Trajectories Reflect Real Reward Hacking? A Systematic Study on Monitoring In-the-Wild Hacking in Code Generation
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="30" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="30" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Lichen Li, Hengguang Zhou, Yijun Liang, Tianyi Zhou, Cho-Jui Hsieh</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文研究代码生成任务中RL训练时合成与自然出现的'奖励黑客'行为之间的差异，发现基于合成数据训练的监控器无法泛化到真实世界中的黑客行为。</p>
+                
+                <p><strong>Overall:</strong> 1/10</p>
+                
             </div>
             
         </div>
@@ -1599,7 +2178,7 @@
                 
                 <p><strong>Authors:</strong> Haosen Li, Wenshuo Chen, Shaofeng Liang, Lei Wang, Kaishen Yuan, Yutao Yue</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: physical]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -1644,7 +2223,7 @@
                 
                 <p><strong>Authors:</strong> Md. Afzalur Rahaman, Tahmid Rahman</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -1674,7 +2253,7 @@
                 
                 <p><strong>Authors:</strong> Peng Chen, Wenxuan He, Feng Qian, Guangyao Shi, Jingwen Yan</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -1689,7 +2268,7 @@
                 
                 <p><strong>Authors:</strong> William Ratcliff</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: control, planning]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -1704,7 +2283,7 @@
                 
                 <p><strong>Authors:</strong> Mazal Bethany, Kim-Kwang Raymond Choo, Nishant Vishwamitra, Peyman Najafirad</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: agent, large language model]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -1719,7 +2298,7 @@
                 
                 <p><strong>Authors:</strong> Wentao Zhang, Qi Zhang, Mingkun Xu, Mu You, Henghua Shen, Zhongzhi He, Keyan Jin, Derek F. Wong, Tao Fang</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: vision-language model]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -1734,7 +2313,7 @@
                 
                 <p><strong>Authors:</strong> Ahmad Mohammad Saber, Ahmed Saber Refae, Davor Svetinovic, Hatem Zeineldin, Amr Youssef, Ehab F. El-Saadany, Deepa Kundur</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: physical]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -1779,7 +2358,7 @@
                 
                 <p><strong>Authors:</strong> Ben Hagag, William L. Anderson, Christian Schroeder de Witt, Sarah Scheffler</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: agent, planning]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -1794,7 +2373,7 @@
                 
                 <p><strong>Authors:</strong> Jennifer Kleiman, Yizhu Gao, Xin Xia, Zhaoji Wang, Zipei Zhu, Jongchan Park, Xiaoming Zhai</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: agent]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -1884,7 +2463,7 @@
                 
                 <p><strong>Authors:</strong> Dong Huo, Tristan Aumentado-Armstrong, Samrudhdhi B. Rangrej, Maitreya Suin, Angela Ning Ye, Zhiming Hu, Amanpreet Walia, Amirhossein Kazerouni, Konstantinos G. Derpanis, Iqbal Mohomed, Alex Levinshtein</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: control]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -1974,7 +2553,7 @@
                 
                 <p><strong>Authors:</strong> Ryuki Tsukuba, Kazutoshi Ando</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -1989,7 +2568,7 @@
                 
                 <p><strong>Authors:</strong> Fanqing Meng, Lingxiao Du, Zijian Wu, Guanzheng Chen, Xiangyan Liu, Jiaqi Liao, Chonghe Jiang, Zhenglin Wan, Jiawei Gu, Pengfei Zhou, Rui Huang, Ziqi Zhao, Shengyuan Ding, Ailing Yu, Bo Peng, Bowei Xia, Hao Sun, Haotian Liang, Ji Xie, Jiajun Chen, Jiajun Song, Liu Yang, Ming Xu, Qionglin Qiu, Runhao Fu, Shengfang Zhai, Shijian Wang, Tengfei Ma, Tianyi Wu, Weiyang Jin, Yan Wang, Yang Dai, Yao Lai, Youwei Shu, Yue Liu, Yunzhuo Hao, Yuwei Niu, Jinkai Huang, Jiayuan Zhuo, Zhennan Shen, Linyu Wu, Cihang Xie, Yuyin Zhou, Jiaheng Zhang, Zeyu Zheng, Mengkang Hu, Michael Qizhe Shieh</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: agent, multimodal]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2019,7 +2598,7 @@
                 
                 <p><strong>Authors:</strong> Dongxin Guo, Jikun Wu, Siu Ming Yiu</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2034,7 +2613,7 @@
                 
                 <p><strong>Authors:</strong> Safayat Bin Hakim, Aniqa Afzal, Qi Zhao, Vigna Majmundar, Pawel Sloboda, Houbing Herbert Song</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2064,7 +2643,7 @@
                 
                 <p><strong>Authors:</strong> Francesco Olivato, Cigdem Beyan, Vittorio Murino</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: control]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2094,7 +2673,7 @@
                 
                 <p><strong>Authors:</strong> Ankur Malik</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action, policy]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2109,7 +2688,7 @@
                 
                 <p><strong>Authors:</strong> Yanqi Wu, Xinhua Lu, Runhe Lai, Qichao Chen, Jia-Xin Zhuang, Wei-Shi Zheng, Ruixuan Wang</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: vision-language model]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2139,7 +2718,7 @@
                 
                 <p><strong>Authors:</strong> Yanping Wu, Meiting Dang, Lin Wu, Edmond S. L. Ho, Zhenghua Chen, Chongfeng Wei</p>
                 
-                <p><strong>Stage1:</strong> excluded domain hit (1)</p>
+                <p><strong>Stage1:</strong> excluded domain hit (1) <span style="opacity: 0.7;">[hits: action, agent]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2184,7 +2763,7 @@
                 
                 <p><strong>Authors:</strong> Ziyang Liu, Xinyan Guo, Xuchen Wei, Han Hao, Liu Yang</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: agent]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2199,7 +2778,7 @@
                 
                 <p><strong>Authors:</strong> Divakar Kumar Yadav, Tian Zhao, Deepak Kumar</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2229,7 +2808,7 @@
                 
                 <p><strong>Authors:</strong> Jungmin Choi, Keisuke Sakaguchi, Hiroaki Yamada</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: large language model]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2259,7 +2838,7 @@
                 
                 <p><strong>Authors:</strong> Sophie Chiang, Tom Brennan, Fethiye Irmak Dogan, Jiaee Cheong, Hatice Gunes</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: multimodal, vision-language model]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2304,7 +2883,7 @@
                 
                 <p><strong>Authors:</strong> Peng Xie, Ke Xue, Yunqi Shi, Ruo-Tong Chen, Chengrui Gao, Siyuan Xu, Chenjian Ding, Mingxuan Yuan, Chao Qian</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: physical]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2319,7 +2898,7 @@
                 
                 <p><strong>Authors:</strong> Jainum Sanghavi</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: control]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2349,7 +2928,7 @@
                 
                 <p><strong>Authors:</strong> Varad Vishwarupe, Ivan Flechais, Marina Jirotka, Nigel Shadbolt</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2394,7 +2973,7 @@
                 
                 <p><strong>Authors:</strong> Regina Zhang, Zongru Li, Honggang Wen, Xiaofeng Liu, Siu-Ming Yiu, Pietro Liò, Kwok-Yan Lam</p>
                 
-                <p><strong>Stage1:</strong> excluded domain hit (1)</p>
+                <p><strong>Stage1:</strong> excluded domain hit (1) <span style="opacity: 0.7;">[hits: action, physical]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2424,7 +3003,7 @@
                 
                 <p><strong>Authors:</strong> Khouloud Gaaloul, Zaid Ghazal, Madhu Latha Pulimi, Sam Emmanuel Kathiravan</p>
                 
-                <p><strong>Stage1:</strong> excluded domain hit (1)</p>
+                <p><strong>Stage1:</strong> excluded domain hit (1) <span style="opacity: 0.7;">[hits: control, large language model, physical]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2469,7 +3048,7 @@
                 
                 <p><strong>Authors:</strong> Ru Geng, Panayotis Kevrekidis, Yixian Gao, Hong-Kun Zhang, Jian Zu</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action, physical]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2529,7 +3108,7 @@
                 
                 <p><strong>Authors:</strong> Divakar Kumar Yadav, Tian Zhao</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: large language model, multimodal]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2589,7 +3168,7 @@
                 
                 <p><strong>Authors:</strong> Nikolaos Al. Papadopoulos, Konstantinos E. Psannis</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: agent]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2604,7 +3183,7 @@
                 
                 <p><strong>Authors:</strong> Md Abubakkar, Sajib Debnath, Md. Uzzal Mia</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2649,7 +3228,7 @@
                 
                 <p><strong>Authors:</strong> Fanjin Meng, Jingtao Ding, Nian Li, Yizhou Sun, Yong Li</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: large language model]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2709,7 +3288,7 @@
                 
                 <p><strong>Authors:</strong> Yiqun Zhang, Hao Li, Zihan Wang, Shi Feng, Xiaocui Yang, Daling Wang, Bo Zhang, Lei Bai, Shuyue Hu</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action, large language model]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2724,7 +3303,7 @@
                 
                 <p><strong>Authors:</strong> Dan Liu, Fida K. Dankar, Jennifer C. deBruyn, Amanda Ricciuto, Anne M. Griffiths, Thomas D. Walters, Khaled EI Emam</p>
                 
-                <p><strong>Stage1:</strong> excluded domain hit (1)</p>
+                <p><strong>Stage1:</strong> excluded domain hit (1) <span style="opacity: 0.7;">[hits: control]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2754,7 +3333,7 @@
                 
                 <p><strong>Authors:</strong> Haoxuan Zhang, Ruochi Li, Yang Zhang, Zhenni Liang, Junhua Ding, Ting Xiao, Haihua Chen</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: agent]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2769,7 +3348,7 @@
                 
                 <p><strong>Authors:</strong> Nastaran Dab, Raziyeh Zall, Mohammadreza Kangavari</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action, multimodal]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2919,7 +3498,7 @@
                 
                 <p><strong>Authors:</strong> Xuangeng Chu, Yu Han, Wei Mao, Shih-En Wei</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2934,7 +3513,7 @@
                 
                 <p><strong>Authors:</strong> Tianyidan Xie, Zhentao Huang, Mingjie Wang, Xin Huang, Jun Zhou, Minglun Gong, Zili Yi</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action, control, physical]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2949,7 +3528,7 @@
                 
                 <p><strong>Authors:</strong> Imranul Ashrafi, Inigo Jauregi Unanue, Massimo Piccardi</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: control, large language model]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -2979,7 +3558,7 @@
                 
                 <p><strong>Authors:</strong> Shengzhi Li, Jiarun Chen, Karun Sharma, Jiaqi Su, Shichao Pei</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: vision-language model]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3024,7 +3603,7 @@
                 
                 <p><strong>Authors:</strong> Pritesh Jha</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3084,7 +3663,7 @@
                 
                 <p><strong>Authors:</strong> Rabee Al-Qasem</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: planning]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3099,7 +3678,7 @@
                 
                 <p><strong>Authors:</strong> Dongxin Guo, Jikun Wu, Siu Ming Yiu</p>
                 
-                <p><strong>Stage1:</strong> excluded domain hit (1)</p>
+                <p><strong>Stage1:</strong> excluded domain hit (1) <span style="opacity: 0.7;">[hits: large language model]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3114,7 +3693,7 @@
                 
                 <p><strong>Authors:</strong> Minghan Li, Junjie Zou, Xinxuan Lv, Chao Zhang, Guodong Zhou</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: control]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3129,7 +3708,7 @@
                 
                 <p><strong>Authors:</strong> Prajwal Panth, Nishant Nigam</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3159,7 +3738,7 @@
                 
                 <p><strong>Authors:</strong> Zichun Guo, Yuling Shi, Wenhao Zeng, Chao Hu, Haotian Lin, Terry Yue Zhuo, Jiawei Chen, Xiaodong Gu, Wenping Ma</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: large language model, multimodal]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3174,7 +3753,7 @@
                 
                 <p><strong>Authors:</strong> Shaohua Liu, Ning Gao, Zuoya Gu, Hongkun Dou, Yue Deng, Hongjue Li</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: physical]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3204,7 +3783,7 @@
                 
                 <p><strong>Authors:</strong> Aditi De</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: control, physical]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3234,7 +3813,7 @@
                 
                 <p><strong>Authors:</strong> Xinxing Wu</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: multimodal]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3249,7 +3828,7 @@
                 
                 <p><strong>Authors:</strong> Zichuan Fu, Xian Wu, Guojing Li, Yejing Wang, Yijun Chen, Zihao Zhao, Yixuan Luo, Hanyu Yan, Yefeng Zheng, Xiangyu Zhao</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: large language model]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3264,7 +3843,7 @@
                 
                 <p><strong>Authors:</strong> Yuanming Shi, Andreas Haupt</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: large language model]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3309,7 +3888,7 @@
                 
                 <p><strong>Authors:</strong> Jinming Yang, Shaoyu Huang, Zongyuan Huang, Yaohui Jin, Xiaokang Yang, Marta C. Gonzalez, Yanyan Xu</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: planning]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3324,7 +3903,7 @@
                 
                 <p><strong>Authors:</strong> Huadong Liao</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3339,7 +3918,7 @@
                 
                 <p><strong>Authors:</strong> Sharan Ramjee</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: large language model, planning]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3354,7 +3933,7 @@
                 
                 <p><strong>Authors:</strong> Boming Xia, Liming Zhu, Erdun Gao, Qinghua Lu, Minhui Xue, Dino Sejdinovic</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: large language model]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3384,7 +3963,7 @@
                 
                 <p><strong>Authors:</strong> Zihao Wu, Steven Xu, Bowen Chen, Shaowen Wan, Yiwei Li, Wei Ruan, Yanjun Lyu, Siyuan Li, Dajiang Zhu, Tianming Liu, Lin Zhao</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: agent, large language model]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3444,7 +4023,7 @@
                 
                 <p><strong>Authors:</strong> Jialiang Wang, Yuchen Liu, Hang Xu, Kaichun Hu, Shimin Di, Wangze Ni, Linan Yue, Min-Ling Zhang, Kui Ren, Lei Chen</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: control, large language model]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3459,7 +4038,7 @@
                 
                 <p><strong>Authors:</strong> Yijiashun Qi, Xiang Xu, Yuxuan Li</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: action]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3489,7 +4068,7 @@
                 
                 <p><strong>Authors:</strong> Sifan Wang, Shawn Koohy, Yiping Lu, Paris Perdikaris</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: physical]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3504,7 +4083,7 @@
                 
                 <p><strong>Authors:</strong> Xinheng Li, Minghao Chen, Mengqing Wu, Yan Liu, Guanying Huo</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: physical]</span></p>
             </div>
             
             <div class="filtered-item">
@@ -3519,15 +4098,27 @@
                 
                 <p><strong>Authors:</strong> Xiaowei Mao, Bowen Sui, Weijie Zhang, Yawen Yang, Shengnan Guo, Shilong Zhao, Jiaqi Lin, Tingrui Wu, Youfang Lin, Huaiyu Wa</p>
                 
-                <p><strong>Stage1:</strong> insufficient robotics signal</p>
+                <p><strong>Stage1:</strong> insufficient robotics signal <span style="opacity: 0.7;">[hits: vision-language model]</span></p>
             </div>
             
         </div>
     </section>
 
     <footer class="footer">
-        Generated on 2026-04-28 03:35:57 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-30 18:18:00 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
+    
+    
+    <script type="application/json" id="papers-data">[{"title": "Tube Diffusion Policy: Reactive Visual-Tactile Policy Learning for Contact-rich Manipulation", "summary": "Contact-rich manipulation is central to many everyday human activities, requiring continuous adaptation to contact uncertainty and external disturbances through multi-modal perception, particularly vision and tactile feedback. While imitation learning has shown strong potential for learning complex manipulation behaviors, most existing approaches rely on action chunking, which fundamentally limits their ability to react to unforeseen observations during execution. This limitation becomes especially critical in contact-rich scenarios, where physical uncertainty and high-frequency tactile feedback demand rapid, reactive control. To address this challenge, we propose Tube Diffusion Policy (TDP), a novel reactive visual-tactile policy learning framework that bridges diffusion-based imitation learning with tube-based feedback control. By leveraging the expressive power of generative models, TDP learns an observation-conditioned feedback flow around nominal action chunks, forming an action tube that enables fast and adaptive reactions during execution. We evaluate TDP on the widely used Push-T benchmark and three additional challenging visual-tactile dexterous manipulation tasks. Across all benchmarks, TDP consistently outperforms state-of-the-art imitation learning baselines. Two real-world experiments further validate its robust reactivity under contact uncertainty and external disturbances. Moreover, the step-wise correction mechanism enabled by action tube significantly reduces the required denoising steps, making TDP well suited for real-time, high-frequency feedback control in contact-rich manipulation.", "url": "http://arxiv.org/abs/2604.23609v1", "authors": ["Teng Xue", "Alberto Rigo", "Bingjian Huang", "Jiayi Shen", "Zhengtong Xu", "Nick Colonnese", "Amirhossein H. Memar"], "keywords": []},{"title": "Vision-Language-Action Safety: Threats, Challenges, Evaluations, and Mechanisms", "summary": "Vision-Language-Action (VLA) models are emerging as a unified substrate for embodied intelligence. This shift raises a new class of safety challenges, stemming from the embodied nature of VLA systems, including irreversible physical consequences, a multimodal attack surface across vision, language, and state, real-time latency constraints on defense, error propagation over long-horizon trajectories, and vulnerabilities in the data supply chain. Yet the literature remains fragmented across robotic learning, adversarial machine learning, AI alignment, and autonomous systems safety. This survey provides a unified and up-to-date overview of safety in Vision-Language-Action models. We organize the field along two parallel timing axes, attack timing (training-time vs. inference-time and defense timing (training-time vs. inference-time, linking each class of threat to the stage at which it can be mitigated. We first define the scope of VLA safety, distinguishing it from text-only LLM safety and classical robotic safety, and review the foundations of VLA models, including architectures, training paradigms, and inference mechanisms. We then examine the literature through four lenses: Attacks, Defenses, Evaluation, and Deployment. We survey training-time threats such as data poisoning and backdoors, as well as inference-time attacks including adversarial patches, cross-modal perturbations, semantic jailbreaks, and freezing attacks. We review training-time and runtime defenses, analyze existing benchmarks and metrics, and discuss safety challenges across six deployment domains. Finally, we highlight key open problems, including certified robustness for embodied trajectories, physically realizable defenses, safety-aware training, unified runtime safety architectures, and standardized evaluation.", "url": "http://arxiv.org/abs/2604.23775v1", "authors": ["Qi Li", "Bo Yin", "Weiqi Huang", "Ruhao Liu", "Bojun Zou", "Runpeng Yu", "Jingwen Ye", "Weihao Yu", "Xinchao Wang"], "keywords": []},{"title": "Unleashing the Agility of Wheeled-Legged Robots for High-Dynamic Reflexive Obstacle Evasion", "summary": "Wheeled-legged robots combine the energy efficiency of wheeled locomotion with the terrain adaptability of legged systems, making them promising platforms for agile mobility in complex and dynamic environments. However, enabling high-dynamic reflexive evasion against fast-moving obstacles remains challenging due to the hybrid morphology, mode coupling, and non-holonomic constraints of such platforms. In this work, we propose AWARE, Adaptive Wheeled-Legged Avoidance and Reflexive Evasion, a hierarchical reinforcement learning framework for high-dynamic obstacle avoidance in wheeled-legged robots. The proposed system naturally exhibits diverse emergent gaits and evasive behaviors, including forward lunge and lateral dodge, thereby leveraging the robot\u0027s hybrid morphology to enhance agility under highly dynamic threats. Extensive experiments in Isaac Lab simulation and real-world deployment on the M20 platform across diverse dynamic scenarios demonstrate that AWARE achieves robust and agile obstacle avoidance while revealing behaviorally distinct evasive strategies. These results highlight both the practical effectiveness of AWARE and the intrinsic reflexive agility of wheeled-legged robots.", "url": "http://arxiv.org/abs/2604.23761v1", "authors": ["Yongen Zhao", "Zihao Xu", "Wenzhi Lu", "Zhen Chu", "Ce Hao"], "keywords": []},{"title": "QuietWalk: Physics-Informed Reinforcement Learning for Ground Reaction Force-Aware Humanoid Locomotion Under Diverse Footwear", "summary": "Humanoid robots operating in human-centered environments (e.g., homes, hospitals, and offices) must mitigate foot--ground impact transients, as impact-induced vibration and noise degrade user experience and repeated impacts accelerate hardware wear. However, existing low-noise locomotion training often relies on kinematic proxy objectives or fragile force sensors, and footwear-induced changes in contact dynamics introduce distribution shifts that hinder policy generalization.We present QuietWalk, a physics-informed reinforcement learning framework for ground-reaction-force-aware humanoid locomotion under diverse footwear conditions. QuietWalk employs an inverse-dynamics-constrained physics-informed neural network (PINN) to estimate per-foot vertical ground reaction forces (GRFs) from proprioceptive signals, and integrates the frozen predictor into the RL training loop to penalize predicted impact forces without requiring force sensors at deployment.On a held-out real-robot dataset, enforcing inverse-dynamics consistency reduces vertical GRF prediction errors by 82%-86% compared with a purely supervised predictor and improves the coefficient of determination from 0.39/0.67 to 0.99/0.99 for the left/right feet. On hardware at 1.2 m/s (barefoot; averaged over four floor materials), QuietWalk reduces mean A-weighted noise level by 7.17 dB and peak noise level by 4.98 dB under a consistent recording setup. Cross-footwear experiments (barefoot, skate shoes, athletic sneakers, and high heels) across multiple surfaces further demonstrate robust adaptation to footwear-induced contact variations.", "url": "http://arxiv.org/abs/2604.23702v1", "authors": ["Hanze Hu", "Luying Feng", "Silu Chen", "Tianjiang Zheng", "Dexin Jiang", "Wei Chen", "Chi Zhang", "Guilin Yang", "Yaochu Jin"], "keywords": []},{"title": "Decentralized Heterogeneous Multi-Robot Collaborative Exploration for Indoor and Outdoor 3D Environments", "summary": "Heterogeneous multi-robot systems feature significant adaptability for complex environments. However, effective collaboration that fully exploits the robots\u0027 potential remains a core challenge. This paper proposes a decentralized collaborative framework for heterogeneous multi-robot systems to autonomously explore indoor and outdoor 3D environments. First, a basic perception map that integrates terrain and observation metrics is designed. Improved supervoxel segmentation is developed to simplify the map structure and form a high-level representation that supports lightweight communication. Second, the traversal and observation capabilities of heterogeneous robots are modeled to evaluate the requirements of task views derived from incomplete supervoxels. These task views are grouped by requirements and clustered to streamline assignment. Subsequently, the view-cluster assignment is formulated as a heterogeneous multi-depot multi-traveling salesman problem (HMDMTSP) that incorporates constraints between view-cluster requirements and robot capabilities. An improved genetic algorithm is developed to efficiently solve this problem while ensuring global consistency. Based on the assignments, redundant views within clusters are eliminated to refine exploration routes. Finally, conflicts between robots\u0027 motion paths are resolved. Simulations and field experiments in cluttered indoor and outdoor environments demonstrate that our approach effectively coordinates exploration tasks among heterogeneous robots, achieving superior exploration efficiency and communication savings compared to state-of-the-art approaches.", "url": "http://arxiv.org/abs/2604.23693v1", "authors": ["Yuxiang Li", "Kun Chen", "Jiancheng Wang", "Shihao Fang", "Haoyao Chen", "Yunhui Liu"], "keywords": []},{"title": "Safe Navigation in Unknown and Cluttered Environments via Direction-Aware Convex Free-Region Generation", "summary": "Convex free regions provide a structured and optimization-friendly representation of collision-free space for robot navigation in unknown and cluttered environments. However, existing methods typically enlarge local collision-free regions mainly according to surrounding obstacle geometry. In cluttered environments, such strategies may fail to generate regions that both accommodate robot geometry and preserve traversable extension along candidate motion directions, thereby limiting downstream traversal, especially in narrow passages. Even when such a region is available, safe motion generation remains challenging, because safety checking at discretized trajectory samples does not guarantee continuously collision-free motion when robot geometry is modeled explicitly. To address these issues, we propose a navigation framework that jointly incorporates candidate motion directions and robot geometry into convex free-region generation, and achieves continuously collision-free motion through continuous-safe trajectory generation. Within each region, the framework performs geometry-aware target pose selection and trajectory generation, together with Lipschitz-based continuous safety certification and local refinement. The resulting free regions and candidate motions are maintained in a region-based graph to support incremental planning. Quantitative results in cluttered 2D navigation scenarios show that the proposed method generates free regions better aligned with downstream traversal and enables reliable collision-free navigation, while additional 3D and real-world experiments on a quadrupedal robot and a UAV demonstrate the extensibility and practical applicability of the framework. The open-source project can be found at https://github.com/ZhichengSong6/FRGraph.", "url": "http://arxiv.org/abs/2604.23648v1", "authors": ["Zhicheng Song", "Yongjian Li", "Kai Chen", "Yulin Li", "Fan Shi", "Jun Ma"], "keywords": []},{"title": "Move-Then-Operate: Behavioral Phasing for Human-Like Robotic Manipulation", "summary": "We present Move-Then-Operate, a Vision language action framework that explicitly decouples robotic manipulation into two distinct behavioral phases: coarse relocation (move) and contact-critical interaction (operate). Unlike monolithic policies that conflate these heterogeneous regimes, our architecture employs a dual-expert policy routed by a learnable phase selector, introducing a structural inductive bias that isolates phase-specific dynamics. Phase labels are automatically generated via an MLLM-based pipeline conditioned on lightweight contextual cues such as end-effector velocity and subtask decomposition to ensure alignment with human motor patterns. Evaluated on the RoboTwin2 benchmark, our method achieves an average success rate of $68.9\\%$, outperforming the monolithic $\u03c0_0$ baseline by $24\\%$. It matches or exceeds models trained on $10\\times$ more data and reaches peak performance in $40\\%$ fewer training steps, demonstrating that architectural disentanglement of move and operate phases is a highly effective and efficient strategy for mastering high-precision manipulation.", "url": "http://arxiv.org/abs/2604.23620v1", "authors": ["Haoming Xu", "Lei Lei", "Jie Gu", "Chu Tang", "Jingmin Chen", "Ruiqi Wang"], "keywords": []},{"title": "PhysCodeBench: Benchmarking Physics-Aware Symbolic Simulation of 3D Scenes via Self-Corrective Multi-Agent Refinement", "summary": "Physics-aware symbolic simulation of 3D scenes is critical for robotics, embodied AI, and scientific computing, requiring models to understand natural language descriptions of physical phenomena and translate them into executable simulation environments. While large language models (LLMs) excel at general code generation, they struggle with the semantic gap between physical descriptions and simulation implementation. We introduce PhysCodeBench, the first comprehensive benchmark for evaluating physics-aware symbolic simulation, comprising 700 manually-crafted diverse samples across mechanics, fluid dynamics, and soft-body physics with expert annotations. Our evaluation framework measures both code executability and physical accuracy through automated and visual assessment. Building on this, we propose a Self-Corrective Multi-Agent Refinement Framework (SMRF) with three specialized agents (simulation generator, error corrector, and simulation refiner) that collaborate iteratively with domain-specific validation to produce physically accurate simulations. SMRF achieves 67.7 points overall performance compared to 36.3 points for the best baseline among evaluated SOTA models, representing a 31.4-point improvement. Our analysis demonstrates that error correction is critical for accurate physics-aware symbolic simulation and that specialized multi-agent approaches significantly outperform single-agent methods across the tested physical domains.", "url": "http://arxiv.org/abs/2604.23580v1", "authors": ["Tianyidan Xie", "Peiyu Wang", "Yuyi Qian", "Yuxuan Wang", "Rui Ma", "Ying Tai", "Song Wu", "Qian Wang", "Lanjun Wang", "Zili Yi"], "keywords": []},{"title": "EgoLive: A Large-Scale Egocentric Dataset from Real-World Human Tasks", "summary": "The advancement of robot learning is currently hindered by the scarcity of large-scale, high-quality datasets. While established data collection methods such as teleoperation and universal manipulation interfaces dominate current datasets, they suffer from inherent limitations in scalability and real-world deployability. Human egocentric video collection, by contrast, has emerged as a promising approach to enable scalable, natural and in-the-wild data collection. As such, we present EgoLive, a large-scale, high-quality egocentric dataset designed explicitly for robot manipulation learning. EgoLive establishes three distinctive technical advantages over existing egocentric datasets: first, it represents the largest open-source annotated egocentric dataset focused on real-world task-oriented human routines to date; second, it delivers leading data quality via a customized head-mounted capture device and comprehensive high-precision multi-modal annotations; third, all data is collected exclusively in unconstrained real-world scenarios and encompasses vertical field human working data, including home service, retail, and other practical work scenarios, providing superior diversity and ecological validity. With the introduction of EgoLive, we aim to provide the research community with a scalable, high-quality dataset that accelerates breakthroughs in generalizable robotic models and facilitates the real-world deployment of robot systems.", "url": "http://arxiv.org/abs/2604.23570v1", "authors": ["Yihang Li", "Xuelong Wei", "Jingzhou Luo", "Yingjing Xiao", "Yibo Bai", "Guangyuan Zhou", "Teng Zou", "Chenguang Gui", "Jiajun Wen", "He Zhang", "Kangliang Chen", "Xing Pan", "Shuaiyan Liu", "Daming Wang", "Tao An", "Jiayi Li", "Shibo Jin", "Wanwan Zhang", "Tianyu Wang", "Boren Wei", "Zhixuan Huang", "Fangsheng Liu", "Ruodai Li", "Hui Zhang", "Anson Li", "Yicheng Gong", "Peng Cao", "Jiaming Liang", "Liang Lin"], "keywords": []},{"title": "Sphere-Depth: A Benchmark for Depth Estimation Methods with Varying Spherical Camera Orientations", "summary": "Reliable depth estimation from spherical images is crucial for 360\u00b0 vision in robotic navigation and immersive scene understanding. However, the onboard spherical camera can experience unintentional pose variations in real-world robotic platforms that, along with the geometric distortions inherent in equirectangular projections, significantly impact the effectiveness of depth estimation. To study this issue, a novel public benchmark, called Sphere-Depth, is introduced to systematically evaluate the robustness of monocular depth estimation models from equirectangular images in a reproducible way. Camera pose perturbations are simulated and used to assess the performance of a popular perspective-based model, Depth Anything, and of spherical-aware models such as Depth Anywhere, ACDNet, Bifuse++, and SliceNet. Furthermore, to ensure meaningful evaluation across models, a depth calibration-based error protocol is proposed to convert predicted relative depth values into metric depth values using supervised learned scaling factors for each model. Experiments show that even models explicitly designed to process spherical images exhibit substantial performance degradation when variations in the camera pose are observed with respect to the canonical pose. The full benchmark, evaluation protocol, and dataset splits are made publicly available at: https://github.com/sgazzeh/Sphere_depth", "url": "http://arxiv.org/abs/2604.23432v1", "authors": ["Soulayma Gazzeh", "Giuseppe Mazzola", "Liliana Lo Presti", "Marco La Cascia"], "keywords": []},{"title": "Learning to Identify Out-of-Distribution Objects for 3D LiDAR Anomaly Segmentation", "summary": "Understanding the surrounding environment is fundamental in autonomous driving and robotic perception. Distinguishing between known classes and previously unseen objects is crucial in real-world environments, as done in Anomaly Segmentation. However, research in the 3D field remains limited, with most existing approaches applying post-processing techniques from 2D vision. To cover this lack, we propose a new efficient approach that directly operates in the feature space, modeling the feature distribution of inlier classes to constrain anomalous samples. Moreover, the only publicly available 3D LiDAR anomaly segmentation dataset contains simple scenarios, with few anomaly instances, and exhibits a severe domain gap due to its sensor resolution. To bridge this gap, we introduce a set of mixed real-synthetic datasets for 3D LiDAR anomaly segmentation, built upon established semantic segmentation benchmarks, with multiple out-of-distribution objects and diverse, complex environments. Extensive experiments demonstrate that our approach achieves state-of-the-art and competitive results on the existing real-world dataset and the newly introduced mixed datasets, respectively, validating the effectiveness of our method and the utility of the proposed datasets. Code and datasets are available at https://simom0.github.io/lido-page/.", "url": "http://arxiv.org/abs/2604.23604v1", "authors": ["Simone Mosco", "Daniel Fusaro", "Alberto Pretto"], "keywords": []},{"title": "DLM: Unified Decision Language Models for Offline Multi-Agent Sequential Decision Making", "summary": "Building scalable and reusable multi-agent decision policies from offline datasets remains a challenge in offline multi-agent reinforcement learning (MARL), as existing methods often rely on fixed observation formats and action spaces that limit generalization. In contrast, large language models (LLMs) offer a flexible modeling interface that can naturally accommodate heterogeneous observations and actions. Motivated by this, we propose the Decision Language Model (DLM), which formulates multi-agent decision making as a dialogue-style sequence prediction problem under the centralized training with decentralized execution paradigm. DLM is trained in two stages: a supervised fine-tuning phase, which leverages dialogue-style datasets for centralized training with inter-agent context and generates executable actions from offline trajectories, followed by a group relative policy optimization phase to enhance robustness to out-of-distribution actions through lightweight reward functions. Experiments on multiple benchmarks show that a unified DLM outperforms strong offline MARL baselines and LLM-based conversational decision-making methods, while demonstrating strong zero-shot generalization to unseen scenarios across tasks.", "url": "http://arxiv.org/abs/2604.23557v1", "authors": ["Zhuohui Zhang", "Bin Cheng", "Bin He"], "keywords": []},{"title": "Otherness as a Quality in Designing Expressive Robotic Touch", "summary": "Haptic technologies have advanced rapidly, yet exploration of robotic touch remains dominated by replicating realistic environmental cues or hand gestures, which narrows the design space and risks social resistance. This paper argues for alternatives: grounded in the notion of \"otherness\" from human-robot interaction (HRI), we propose treating robotic touch\u0027s inherent otherness as a design quality. Instead of being a limitation in pursuing realism, otherness can be embraced to elicit ambiguity and provoke alternative interpretations, fostering expressive and evocative robotic touch design. To develop this perspective, we analyze inspirational art and design precedents and four design research cases through a reflective Research through Design (RtD) approach. Through this analysis, we articulate a set of design languages structured around why otherness matters for touch meaning-making, how it can be shaped through design strategies, and where it can be embedded within robotic touch systems. We conclude by reflecting on the tensions and risks involved in designing robotic touch with otherness in mind.", "url": "http://arxiv.org/abs/2604.23402v1", "authors": ["Ran Zhou", "Laurens Boer", "Daniel Leithinger", "Madeline Balaam"], "keywords": []},{"title": "Structural Enforcement of Goal Integrity in AI Agents via Separation-of-Powers Architecture", "summary": "Recent evidence suggests that frontier AI systems can exhibit agentic misalignment, generating and executing harmful actions derived from internally constructed goals, even without explicit user requests. Existing mitigation methods, such as Reinforcement Learning from Human Feedback (RLHF) and constitutional prompting, operate primarily at the model level and provide only probabilistic safety guarantees. We propose the Policy-Execution-Authorization (PEA) architecture, a \"separation-of-powers\" design that enforces safety at the system level. PEA decouples intent generation, authorization, and execution into independent, isolated layers connected via cryptographically constrained capability tokens. We present five core contributions: (C1) an Intent Verification Layer (IVL) for ensuring capability-intent consistency; (C2) Intent Lineage Tracking (ILT), which binds all executable intents to the originating user request via cryptographic anchors; (C3) Goal Drift Detection, which rejects semantically divergent intents below a configurable threshold; (C4) an Output Semantic Gate (OSG) that detects implicit coercion using a structured $K \\times I \\times P$ threat calculus (Knowledge, Influence, Policy); and (C5) a formal verification framework proving that goal integrity is maintained even under adversarial model compromise. By shifting agent alignment from a behavioral property to a structurally enforced system constraint, PEA provides a robust foundation for the governance of autonomous agents.", "url": "http://arxiv.org/abs/2604.23646v1", "authors": ["Rong Xiang"], "keywords": []},{"title": "CAPSULE: Control-Theoretic Action Perturbations for Safe Uncertainty-Aware Reinforcement Learning", "summary": "Ensuring safe exploration in high-dimensional systems with unknown dynamics remains a significant challenge. Existing safe reinforcement learning methods often provide safety guarantees only in expectation, which can still lead to safety violations. Control-theoretic approaches, in contrast, offer hard constraint-based safety guarantees but typically assume access to known system dynamics or require accurate estimation of control-affine models. In this paper, we propose a safe reinforcement learning framework that learns a probabilistic control-affine dynamics model in an offline setting. The learned model is leveraged to explicitly construct control barrier functions (CBFs) that incorporate model uncertainty to provide conservative safety constraints. These CBF constraints are enforced through an online constraint-based action correction mechanism, enabling safe exploration without overly restricting task performance. Empirical evaluations on nonlinear, complex continuous-control benchmarks demonstrate that our approach achieves returns comparable to those of existing baselines while significantly reducing safety violations.", "url": "http://arxiv.org/abs/2604.23576v1", "authors": ["Rahul Narava", "Siddharth Verma", "Ojas Jain", "Shashi Shekhar Jha", "Mayank Shekhar Jha"], "keywords": []},{"title": "IndustryAssetEQA: A Neurosymbolic Operational Intelligence System for Embodied Question Answering in Industrial Asset Maintenance", "summary": "Industrial maintenance environments increasingly rely on AI systems to assist operators in understanding asset behavior, diagnosing failures, and evaluating interventions. Although large language models (LLMs) enable fluent natural-language interaction, deployed maintenance assistants routinely produce generic explanations that are weakly grounded in telemetry, omit verifiable provenance, and offer no testable support for counterfactual or action-oriented reasoning that undermine trust in safety-critical settings. We present IndustryAssetEQA, a neurosymbolic operational intelligence system that combines episodic telemetry representations with a Failure Mode Effects Analysis Knowledge Graph (FMEA-KG) to enable Embodied Question Answering (EQA) over industrial assets. We evaluate on four datasets covering four industrial asset types, including rotating machinery, turbofan engines, hydraulic systems, and cyber-physical production systems. Compared to LLM-only baselines, IndustryAssetEQA improves structural validity by up to 0.51, counterfactual accuracy by up to 0.47, and explanation entailment by 0.64, while reducing severe expert-rated overclaims from 28% to 2% (approximately 93% reduction). Code, datasets, and the FMEA-KG are available at https://github.com/IBM/AssetOpsBench/tree/IndustryAssetEQA/IndustryAssetEQA.", "url": "http://arxiv.org/abs/2604.23446v1", "authors": ["Chathurangi Shyalika", "Dhaval Patel", "Amit Sheth"], "keywords": []},{"title": "Resource-Constrained UAV-Based Weed Detection for Site-Specific Management on Edge Devices", "summary": "Weeds compete with crops for light, water, and nutrients, reducing yield and crop quality. Efficient weed detection is essential for site-specific weed management (SSWM). Although deep learning models have been deployed on UAV-based edge systems, a systematic understanding of how different model architectures perform under real-world resource constraints is still lacking. To address this gap, this study proposes a deployment-oriented framework for real-time UAV-based weed detection on resource-constrained edge platforms. The framework integrates UAV data acquisition, model development, and on-device inference, with a focus on balancing detection accuracy and computational efficiency. A diverse set of state-of-the-art object detection models is evaluated, including convolution-based YOLO models (v8-v12) and transformer-based RT-DETR models (v1-v2). Experiments on three edge devices (Jetson Orin Nano, Jetson AGX Xavier, and Jetson AGX Orin) demonstrate clear trade-offs between accuracy and inference latency across models and hardware configurations. Results show that high-capacity models achieve up to 86.9% mAP50 but suffer from high latency, limiting real-time deployment. In contrast, lightweight models achieve 66%-71% mAP50 with significantly lower latency, enabling real-time performance. Among all models, RT-DETRv2-R50-M achieves competitive accuracy (79% mAP50) with improved efficiency, while YOLOv10n provides the fastest inference speed. YOLOv11s and RT-DETRv2-R50-M offer the best balance between accuracy and speed, making them strong candidates for real-time UAV deployment.", "url": "http://arxiv.org/abs/2604.23442v1", "authors": ["Linyuan Wang", "Haibo Yao", "Te-Ming Tseng", "Kelvin Betitame", "Xin Sun", "Hanbo Huang", "Dong Chen"], "keywords": []},{"title": "Real-Time Non-Contact Force Compensation for Wrist-Mounted Force/Torque Sensors in Haptic-Enabled Robotic Surgery Training", "summary": "Haptic feedback has been a long-missed feature in robotic-assisted surgery, one that would allow surgeons to perceive tissue properties and apply controlled forces during delicate procedures. Although commercial robotic systems have begun to integrate haptic technologies, their high costs limit accessibility for training and research purposes. To address this gap, we extend our previously developed low-cost robotic surgery training setup, RoboScope, by incorporating a wrist-mounted force/torque (F/T) sensor for haptic feedback training. Wrist-mounted sensing avoids many challenges associated with tip-mounted sensors but introduces additional non-contact forces, such as gravity, sensor bias, installation offsets, and associated torques, which compromise measurement accuracy. In this paper, we propose a robust real-time compensation method based on recursive least squares (RLS). This method eliminates the need for dataset collection and frequent recalibration while adapting to changing operating conditions. Experimental validation demonstrates that the proposed approach achieves over 95% error reduction in non-contact force compensation and more than 91% in non-contact torque compensation, significantly outperforming existing methods. These results highlight the potential of our approach for providing reliable haptic feedback in robotic surgery training and research.", "url": "http://arxiv.org/abs/2604.23696v1", "authors": ["Walid Shaker", "Mustafa Suphi Erden"], "keywords": []},{"title": "Large Language Model based Interactive Decision-Making for Autonomous Driving", "summary": "In high-conflict mixed-traffic scenarios involving human-driven and autonomous vehicles, most existing autonomous driving systems default to overly conservative behaviors, lack proactive interaction, and consequently suffer from limited public acceptance. To mitigate intent misunderstandings and decision failures, we present a Large Language Model based interactive decision-making framework that augments scene understanding and intent-aware interaction to jointly improve safety and efficiency. The approach uses Object-Process Methodology to semantically model complex multi-vehicle scenes, abstracting low-level perceptual data into objects, processes, and relations, thereby streamlining reasoning over latent causal structure. Building on this representation, the Large Language Model parses both explicit and implicit intents of surrounding agents and, under jointly enforced safety and efficiency constraints, selects candidate maneuvers. We further generate perturbed trajectory candidates via Monte Carlo sampling and evaluate them to obtain an optimized executable trajectory. To foster transparency and coordination with nearby road users, the final decision is translated by the Large Language Model into concise natural-language messages and broadcast through an external Human-Machine Interface, completing a closed loop from scene understanding to action to language. Experiments in a cluster driving simulator demonstrate that the proposed method outperforms traditional baselines across safety, comfort, and efficiency metrics, while a Turing-test-style evaluation indicates a high degree of human-likeness in decision making. Besides, these results suggest that coupling semantic scene abstraction with Large Language Model mediated intent reasoning and language-based eHMI communication offers a practical pathway toward interactive, trustworthy autonomous driving in dense mixed traffic.", "url": "http://arxiv.org/abs/2604.23513v1", "authors": ["Xinwei Dong", "Jiyang Li", "Jiabin Xie", "Yang Yi", "Tianshang Jia", "Shiyu Fang", "Ye Tian", "Peng Hang"], "keywords": []},{"title": "Emotion-Conditioned Short-Horizon Human Pose Forecasting with a Lightweight Predictive World Model", "summary": "Short-term human pose prediction plays a crucial role in interactive systems, assistive robots, and emotion-aware human-computer interaction[1-3]. While current trajectory prediction models primarily rely on geometric motion cues, they often overlook the underlying emotional signals influencing human motion dynamics[4-5]. This paper investigates whether facial expression-derived emotion embeddings can provide auxiliary conditional signals for short-term pose prediction. To further evaluate multimodal conditionation in a recursive prediction setting, we propose a lightweight autoregressive predictive world model that performs 15-step rolling pose prediction. This framework combines pose keypoints with emotion embeddings through a learnable gating mechanism and performs autoregressive unfolding prediction using a recurrent sequence model based on a two-layer LSTM architecture. Experiments were conducted on two small-scale pose-emotion video datasets: controlled motion sequences with minimal facial expression changes and, natural emotion-driven motion sequences with considerable facial expression changes. The results show that simple multimodal fusion does not consistently improve prediction accuracy, while normalized gating fusion significantly enhances the performance of emotion-driven motion sequences. Furthermore, counterfactual perturbation experiments demonstrate that the predicted trajectory exhibits measurable sensitivity to changes in multimodal input, suggesting that facial expression embeddings act as auxiliary conditional signals rather than redundant features. In summary, these results indicate that incorporating facial expression-derived emotion embeddings into emotion-conditional short-term pose prediction based on a lightweight predictive world model architecture is a feasible approach.", "url": "http://arxiv.org/abs/2604.23532v1", "authors": ["Jingni Huang", "Peter Bloodsworth"], "keywords": []},{"title": "Bringing a Personal Point of View: Evaluating Dynamic 3D Gaussian Splatting for Egocentric Scene Reconstruction", "summary": "Egocentric video provides a unique view into human perception and interaction, with growing relevance for augmented reality, robotics, and assistive technologies. However, rapid camera motion and complex scene dynamics pose major challenges for 3D reconstruction from this perspective. While 3D Gaussian Splatting (3DGS) has become a state-of-the-art method for efficient, high-quality novel view synthesis, variants, that focus on reconstructing dynamic scenes from monocular video are rarely evaluated on egocentric video. It remains unclear whether existing models generalize to this setting or if egocentric-specific solutions are needed. In this work, we evaluate dynamic monocular 3DGS models on egocentric and exocentric video using paired ego-exo recordings from the EgoExo4D dataset. We find that reconstruction quality is consistently lower in egocentric views. Analysis reveals that the difference in reconstruction quality, measured in peak signal-to-noise ratio, stems from the reconstruction of static, not dynamic, content. Our findings underscore current limitations and motivate the development of egocentric-specific approaches, while also highlighting the value of separately evaluating static and dynamic regions of a video.", "url": "http://arxiv.org/abs/2604.23803v1", "authors": ["Jan Warchocki", "Xi Wang", "Jonas Kulhanek", "Jan van Gemert"], "keywords": []},{"title": "MIRAGE: A Micro-Interaction Relational Architecture for Grounded Exploration in Multi-Figure Artworks", "summary": "Appreciating multi-figure paintings requires understanding how characters relate through subtle cues like gaze alignment, gesture, and spatial arrangement. We present MIRAGE, an evidence-centric framework designed to scaffold the exploration of these \"micro-interactions\" in multi-figure artworks. While such cues are essential for deep narrative appreciation, they are often distributed across complex scenes and difficult for viewers to systematically identify. Existing vision-language models (VLMs) frequently fail to provide reliable assistance, offering ungrounded interpretations that lack traceable visual evidence.\n  MIRAGE addresses this by constructing a structured intermediate representation capturing identities, pose cues, and gaze hypotheses. However, the challenge extends beyond extracting these cues to coordinating them during interpretation. Without an explicit mechanism to organize and reconcile relational evidence, models often collapse multiple interaction hypotheses into a single unstable or weakly grounded narrative, even when low-level signals are available. This representation allows users to verify how high-level interpretations are anchored in low-level visual facts.\n  By separating spatial grounding from narrative generation, MIRAGE enables users to inspect and reason about figure-to-figure relationships through a verifiable evidence layer. We evaluate MIRAGE against painting-only VLM baselines using a blind assessment protocol. Results show that MIRAGE significantly improves identity consistency, reduces relational hallucinations, and increases the coverage of subtle interactions. These findings suggest that structured grounding can serve as a critical interaction control layer, providing the necessary scaffolding for a more reliable, transparent, and human-led understanding of complex visual narratives.", "url": "http://arxiv.org/abs/2604.23788v1", "authors": ["Jui-Cheng Chiu", "Yu-Chao Wang", "Shengyang Luo", "Tongyan Wang", "Qi Yang", "Nabin Khanal", "Yingjie Victor Chen"], "keywords": []},{"title": "A Pose-only Geometric Constraint for Multi-Camera Pose Adjustment", "summary": "Multi-camera systems offer rich observation capabilities for visual navigation and 3D scene reconstruction; however, the resulting feature redundancy often compromises computational efficiency. This challenge is particularly pronounced during bundle adjustment, where the non-linear optimization of both system poses and scene points incurs substantial computational overhead. To address this challenge, this paper introduces a pose-only geometric constraint for multi-camera systems and proposes a corresponding pose adjustment algorithm. Specifically, we use generalized camera model to establish a unified representation of the multi-camera system. Building upon this model, we formulate the multi-camera pose-only constraint, which implicitly represents a 3D scene point using two base observations and their associated poses, thereby achieving a pose-only representation of the projection geometry. Subsequently, we introduce a multi-camera pose adjustment algorithm that eliminates 3D points from the parameter space, thereby achieving efficient and focused pose optimization. Experimental results on both synthetic and real-world datasets demonstrate that the proposed algorithm outperforms baseline bundle adjustment methods in computational efficiency, while maintaining or even improving pose estimation accuracy.", "url": "http://arxiv.org/abs/2604.23704v1", "authors": ["Shunkun Liang", "Banglei Guan", "Bin Li", "Qifeng Yu", "Yang Shang"], "keywords": []},{"title": "AIPsy-Affect: A Keyword-Free Clinical Stimulus Battery for Mechanistic Interpretability of Emotion in Language Models", "summary": "Mechanistic interpretability research on emotion in large language models -- linear probing, activation patching, sparse autoencoder (SAE) feature analysis, causal ablation, steering vector extraction -- depends on stimuli that contain the words for the emotions they test. When a probe fires on \"I am furious\", it is unclear whether the model has detected anger or detected the word \"furious\". The two readings have very different consequences for every downstream claim about emotion circuits, features, and interventions. We release AIPsy-Affect, a 480-item clinical stimulus battery that removes the confound at the stimulus level: 192 keyword-free vignettes evoking each of Plutchik\u0027s eight primary emotions through narrative situation alone, 192 matched neutral controls that share characters, setting, length, and surface structure with the affect surgically removed, plus moderate-intensity and discriminant-validity splits. The matched-pair structure supports linear probing, activation patching, SAE feature analysis, causal ablation, and steering vector extraction under a strong methodological guarantee: any internal representation that distinguishes a clinical item from its matched neutral cannot be doing so on the basis of emotion-keyword presence. A three-method NLP defense battery -- bag-of-words sentiment, an emotion-category lexicon, and a contextual transformer classifier -- confirms the property: bag-of-words methods see only situational vocabulary, and a contextual classifier detects affect (p \u003c 10^-15) but cannot identify the category (5.2% top-1 vs. 82.5% on a keyword-rich control). AIPsy-Affect extends our earlier 96-item battery (arXiv:2603.22295) by a factor of four and is released openly under MIT license.", "url": "http://arxiv.org/abs/2604.23719v1", "authors": ["Michael Keeman"], "keywords": []},{"title": "Thinking Like a Clinician: A Cognitive AI Agent for Clinical Diagnosis via Panoramic Profiling and Adversarial Debate", "summary": "The application of large language models (LLMs) in clinical decision support faces significant challenges of \"tunnel vision\" and diagnostic hallucinations present in their processing unstructured electronic health records (EHRs). To address these challenges, we propose a novel chain-based clinical reasoning framework, called DxChain, which transforms the diagnostic workflow into an iterative process by mirroring a clinician\u0027s cognitive trajectory that consists of \"Memory Anchoring\", \"Navigation\" and \"Verification\" phases. DxChain introduces three key methodological innovations to elicit the potential of LLM: (i) a Profile-Then-Plan paradigm to mitigate cold-start hallucinations by establishing a panoramic patient baseline, (ii) a Medical Tree-of-Thoughts (Med-ToT) algorithm for strategic look ahead planning and resource aware navigation, and (iii) a Dialectical Diagnostic Verification procedure utilizing \"Angel-Devil\" adversarial debates to resolve complex evidence conflicts. Evaluated on two real world benchmarks, MIMIC-IV-Ext Cardiac Disease and MIMIC-IV-Ext CDM, DxChain achieves state-of-the-art performances in both diagnostic accuracy and logical consistency, offering a modular and reliable architecture for next-generation clinical AI. The code is at https://anonymous.4open.science/r/Dx-Chain.", "url": "http://arxiv.org/abs/2604.23605v1", "authors": ["Zhiqi Lv", "Duofan Tu", "Jun Li", "Mingyue Zhao", "Heqin Zhu", "Wenliang Li", "Shaohua Kevin Zhou"], "keywords": []},{"title": "Automating Categorization of Scientific Texts with In-Context Learning and Prompt-Chaining in Large Language Models", "summary": "The relentless expansion of scientific literature presents significant challenges for navigation and knowledge discovery. Within Research Information Retrieval, established tasks such as text summarization and classification remain crucial for enabling researchers and practitioners to effectively navigate this vast landscape, so that efforts have increasingly been focused on developing advanced research information systems. These systems aim not only to provide standard keyword-based search functionalities but also to incorporate capabilities for automatic content categorization within knowledge-intensive organizations across academia and industry. This study systematically evaluates the performance of off-the-shelf Large Language Models (LLMs) in analyzing scientific texts according to a given classification scheme. We utilized the hierarchical ORKG taxonomy as a classification framework, employing the FORC dataset as ground truth. We investigated the effectiveness of advanced prompt engineering strategies, namely In-Context Learning (ICL) and Prompt Chaining, and experimentally explored the influence of the LLMs\u0027 temperature hyperparameter on classification accuracy. Our experiments demonstrate that Prompt Chaining yields superior classification accuracy compared to pure ICL, particularly when applied to the nested structure of the ORKG taxonomy. LLMs with prompt chaining outperform the state-of-the-art models for domain (1st level) prediction and show even better performance for subject (2nd level) prediction compared to the older BERT model. However, LLMs are not yet able to perform well in classifying the topic (3rd level) of research areas based on this specific hierarchical taxonomy, as they only reach about 50% accuracy even with prompt chaining.", "url": "http://arxiv.org/abs/2604.23430v1", "authors": ["Gautam Kishore Shahi", "Oliver Hummel"], "keywords": []},{"title": "SolarFCD: A Large-Scale Dataset and Benchmark for Solar Fault Classification in Photovoltaic Systems", "summary": "The increasing global deployment of solar photovoltaic (PV) systems needs robust, scalable, and automated inspection technologies capable of detecting a wide range of panel flaws under a variety of operating situations. The lack of large-scale, multi-modal, publicly available annotated datasets is a major obstacle preventing advancement in this field. We introduce SolarFCD, an extensive dataset of solar panel defects created by methodically combining and reconciling three publicly accessible datasets covering two imaging modalities: RGB/Drone images and Thermal Infrared. The dataset consist of 4,435 images arranged under four unified defect classes such as: healthy images, Surface Obstruction, structural fault, and electrical fault. The dataset was divided into training, validation, and test splits at an 80:10:10 ratio through methodical label mapping, near-duplicate removal, and targeted augmentation of minority classes. Sixteen classification architectures from five design families were trained and assessed on the dataset to provide repeatable benchmark baselines. With an accuracy of 86.68%, precision of 88.65%, recall of 88.62%, and F1-score of 88.17%, ResNet101V2 performed the best overall. Per-class results showed balanced detection across all four defect categories within a narrow performance band of less than 1.2 percentage points. To promote open and repeatable research in automated PV inspection and solar energy operations and maintenance, the dataset, annotation files, and baseline code are made openly available.", "url": "http://arxiv.org/abs/2604.23662v1", "authors": ["Misbah Ijaz", "Saif Ur Rehman Khan", "Abd Ur Rehman", "Arooj Zaib", "Sebastian Vollmer", "Andreas Dengel", "Muhammad Nabeel Asim"], "keywords": []},{"title": "SFT-then-RL Outperforms Mixed-Policy Methods for LLM Reasoning", "summary": "Recent mixed-policy optimization methods for LLM reasoning that interleave or blend supervised and reinforcement learning signals report improvements over the standard SFT-then-RL pipeline. We show that numerous recently published research papers rely on a faulty baseline caused by two distinct bugs: a CPU-offloaded optimizer bug in DeepSpeed that silently drops intermediate micro-batches during gradient accumulation (affecting multiple downstream frameworks including TRL, OpenRLHF and Llama-Factory), and a loss aggregation bug in OpenRLHF that incorrectly weights per-mini-batch losses. Together they suppress SFT performance, with the optimizer bug accounting for most of the gap and the loss aggregation bug contributing a smaller additional effect. Once corrected, the standard SFT-then-RL pipeline surpasses every published mixed-policy method we evaluate by +3.8 points on math benchmarks with Qwen2.5-Math-7B and by +22.2 points with Llama-3.1-8B. Even a truncated variant with just 50 RL steps outperforms mixed-policy methods on math benchmarks while using fewer FLOPs.", "url": "http://arxiv.org/abs/2604.23747v1", "authors": ["Alexis Limozin", "Eduard Durech", "Torsten Hoefler", "Imanol Schlag", "Valentina Pyatkin"], "keywords": []},{"title": "AI Safety Training Can be Clinically Harmful", "summary": "Large language models are being deployed as mental health support agents at scale, yet only 16% of LLM-based chatbot interventions have undergone rigorous clinical efficacy testing, and simulations reveal psychological deterioration in over one-third of cases. We evaluate four generative models on 250 Prolonged Exposure (PE) therapy scenarios and 146 CBT cognitive restructuring exercises (plus 29 severity-escalated variants), scored by a three-judge LLM panel. All models scored near-perfectly on surface acknowledgment (~0.91-1.00) while therapeutic appropriateness collapsed to 0.22-0.33 at the highest severity for three of four models, with protocol fidelity reaching zero for two. Under CBT severity escalation, one model\u0027s task completeness dropped from 92% to 71% while the frontier model\u0027s safety-interference score fell from 0.99 to 0.61. We identify a systematic, modality-spanning failure: RLHF safety alignment disrupts the therapeutic mechanism of action by grounding patients during imaginal exposure, offering false reassurance, inserting crisis resources into controlled exercises, and refusing to challenge distorted cognitions mentioning self-harm in PE; and through task abandonment or safety-preamble insertion during CBT cognitive restructuring. These findings motivate a five-axis evaluation framework (protocol fidelity, hallucination risk, behavioral consistency, crisis safety, demographic robustness), mapped onto FDA SaMD and EU AI Act requirements. We argue that no AI mental health system should proceed to deployment without passing multi-axis evaluation across all five dimensions.", "url": "http://arxiv.org/abs/2604.23445v1", "authors": ["Suhas BN", "Andrew M. Sherrill", "Rosa I. Arriaga", "Chris W. Wiese", "Saeed Abdullah"], "keywords": []},{"title": "Agentic Fusion of Large Atomic and Language Models to Accelerate Materials Discovery", "summary": "The discovery of novel materials is critical for global energy and quantum technology transitions. While deep learning has fundamentally reshaped this landscape, existing predictive or generative models typically operate in isolation, lacking the autonomous orchestration required to execute the full discovery process. Here we present ElementsClaw, an agentic framework for materials discovery that synergizes Large Atomic Models (LAMs) with Large Language Models (LLMs). In response to varied human requirements, ElementsClaw dynamically orchestrates a suite of LAM tools finetuned from our proposed model Elements for atomic-scale numerical computation, while leveraging LLMs for high-level semantic reasoning. This shift moves AI-driven materials science from isolated processes toward integrated and human interactive discovery. In the demanding domain of superconductors, our agentic system guides the experimental synthesis of four new superconductors, including Zr3ScRe8 with a transition temperature of 6.8 K and HfZrRe4 at 6.7 K. At scale, ElementsClaw screens more than 2.4 million stable crystals within only 28 GPU hours, identifying 68,000 high-confidence superconducting candidates and vastly expanding the known superconducting space. These results demonstrate how our agent accelerates materials discovery with high physical fidelity.", "url": "http://arxiv.org/abs/2604.23758v1", "authors": ["Mingze Li", "Yu Rong", "Songyou Li", "Lihong Wang", "Jiacheng Cen", "Liming Wu", "Anyi Li", "Zongzhao Li", "Qiuliang Liu", "Rui Jiao", "Tian Bian", "Pengju Wang", "Hao Sun", "Jianfeng Zhang", "Ji-Rong Wen", "Deli Zhao", "Shifeng Jin", "Tingyang Xu", "Wenbing Huang"], "keywords": []},{"title": "Do Synthetic Trajectories Reflect Real Reward Hacking? A Systematic Study on Monitoring In-the-Wild Hacking in Code Generation", "summary": "Reward hacking in code generation, where models exploit evaluation loopholes to obtain full reward without correctly solving the tasks, poses a critical challenge for Reinforcement Learning (RL) and the deployment of reasoning models. Existing studies have been conducted primarily on synthetic hacking trajectories. However, whether these synthetic behaviors faithfully represent naturally emerging hacking in the wild remains unclear. In this work, we present a systematic analysis of the synthetic vs. in-the-wild discrepancy in reward hacking. We examine to what extent hacking behaviors induced by prompting resemble those emerging during RL training, and whether monitors trained on synthetic trajectories generalize to naturally arising but previously unseen hacking. To scale up the curation of in-the-wild reward hacking trajectories, we modified Group Relative Policy Optimization (GRPO) by injecting conflicting unit tests as tracers and applying a \"resampling-until-hack\" mechanism. Through controlled comparisons between monitors trained on synthetic versus in-the-wild data, we find that (1) synthetic-data-trained monitors fail to generalize to \"in-the-wild\" hacking, and (2) monitors trained on our \"in-the-wild\" trajectories demonstrate stronger generalizability to unseen hacking types. Our results indicate that synthetic reward hacking data may not fully reflect natural reward hacking behaviors, and that relying solely on synthetic data can lead to misleading conclusions. The codebase is available at https://github.com/LichenLillc/CoTMonitoring.git", "url": "http://arxiv.org/abs/2604.23488v1", "authors": ["Lichen Li", "Hengguang Zhou", "Yijun Liang", "Tianyi Zhou", "Cho-Jui Hsieh"], "keywords": []}]</script>
+
+    <!-- SparkMD5: Zotero's WebDAV format requires md5; SubtleCrypto can't do MD5 -->
+    <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
+    <!-- JSZip: needed to build the <key>.zip wrapper Zotero expects on WebDAV -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="../js/zotero.js"></script>
+    <script src="../js/webdav.js"></script>
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
 </body>
 </html>

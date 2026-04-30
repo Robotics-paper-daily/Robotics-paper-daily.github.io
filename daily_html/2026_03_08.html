@@ -32,38 +32,6 @@
             line-height: 1.6;
         }
 
-        .quick-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            align-items: center;
-            width: fit-content;
-            margin: 0.9rem auto 0;
-            padding: 0;
-            border: none;
-            background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-        }
-
-        .quick-nav a {
-            color: var(--highlight-primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 0.35rem 0.75rem;
-            border-radius: 999px;
-            border: 1px solid rgba(226, 232, 240, 0.95);
-            background: rgba(255, 255, 255, 0.86);
-            box-shadow: 0 2px 6px var(--shadow-color);
-            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-        }
-
-        .quick-nav a:hover {
-            background-color: rgba(123, 44, 159, 0.12);
-            color: #6B1F8F;
-            transform: translateY(-1px);
-        }
 
         .bento-grid {
             display: grid;
@@ -103,10 +71,25 @@
         }
 
         .paper-summary {
-            font-size: 0.875rem; /* Tailwind text-sm */
+            font-size: 0.85rem;
             color: var(--text-muted-color);
-            margin-bottom: 1.25rem; /* Tailwind mb-5 */
+            margin-bottom: 1.25rem;
             line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
         }
 
         .paper-link {
@@ -195,12 +178,25 @@
         }
 
         .paper-tldr {
-            font-size: 0.95rem; /* Slightly bigger than summary */
-            color: #475569; /* Changed to Tailwind slate-600 (slightly darker than summary) */
-            margin-top: 0.75rem; /* Tailwind mt-3 */
-            margin-bottom: 0.75rem; /* Tailwind mb-2 */
-            /* font-style: italic; */
-            font-weight: bold;
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
         }
 
         .paper-rating {
@@ -276,6 +272,222 @@
             font-size: 0.88rem;
         }
 
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link.
+           Shown only when body.zotero-mode is set (which like.js does after
+           confirming sessionStorage has decrypted credentials). Guests never
+           see it. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn i {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover i {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
@@ -289,11 +501,6 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>March 08, 2026</p>
-        <nav class="quick-nav">
-            <a href="../index.html" target="_top">首页</a>
-            <a href="../list.html" target="_top">报告列表</a>
-            <a href="../search.html" target="_top">论文检索</a>
-        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -307,16 +514,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">BEVLM: Distilling Semantic Knowledge from LLMs into Bird's-Eye View Representations</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> The integration of Large Language Models (LLMs) into autonomous driving has attracted growing interest for their strong reasoning and semantic understanding abilities, which are essential for handling complex decision-making and long-tail scenarios. However, existing methods typically feed LLMs with tokens from multi-view and multi-frame images independently, leading to redundant computation and limited spatial consistency. This separation in visual processing hinders accurate 3D spatial reasoning and fails to maintain geometric coherence across views. On the other hand, Bird's-Eye View (BEV) representations learned from geometrically annotated tasks (e.g., object detection) provide spatial structure but lack the semantic richness of foundation vision encoders. To bridge this gap, we propose BEVLM, a framework that connects a spatially consistent and semantically distilled BEV representation with LLMs. Through extensive experiments, we show that BEVLM enables LLMs to reason more effectively in cross-view driving scenes, improving accuracy by 46%, by leveraging BEV features as unified inputs. Furthermore, by distilling semantic knowledge from LLMs into BEV representations, BEVLM significantly improves closed-loop end-to-end driving performance by 29% in safety-critical scenarios.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 将大型语言模型（LLM）集成到自动驾驶中，因其强大的推理能力和语义理解能力而受到日益增长的关注，这对于处理复杂决策和长尾场景至关重要。然而，现有方法通常独立地将多视角和多帧图像中的tokens输入LLM，导致冗余计算和有限的空间一致性。这种视觉处理的分离阻碍了精确的3D空间推理，并且无法维持跨视角的几何连贯性。另一方面，从几何标注任务（例如，目标检测）中学习到的鸟瞰图（BEV）表示提供了空间结构，但缺乏基础视觉编码器的语义丰富性。为了弥合这一差距，我们提出了BEVLM，一个将空间一致且语义精炼的BEV表示与LLM连接的框架。通过大量实验，我们表明BEVLM使LLM能够更有效地在跨视角驾驶场景中进行推理，通过利用BEV特征作为统一输入，将准确率提高了46%。此外，通过将来自LLM的语义知识提炼到BEV表示中，BEVLM在安全攸关的场景中显著提高了29%的闭环端到端驾驶性能。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces BEVLM, a framework that combines Bird's-Eye View (BEV) representations with Large Language Models (LLMs) to improve reasoning and driving performance in autonomous vehicles by distilling semantic knowledge to BEV and leveraging BEV features as LLM input.</p>
+            <h2 class="paper-title">
+                BEVLM: Distilling Semantic Knowledge from LLMs into Bird's-Eye View Representations
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了BEVLM，一个将鸟瞰图（BEV）表示与大型语言模型（LLM）相结合的框架，通过将语义知识提炼到BEV并利用BEV特征作为LLM输入，从而提高自动驾驶汽车的推理和驾驶性能。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了BEVLM，一个将鸟瞰图（BEV）表示与大型语言模型（LLM）相结合的框架，通过将语义知识提炼到BEV并利用BEV特征作为LLM输入，从而提高自动驾驶汽车的推理和驾驶性能。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces BEVLM, a framework that combines Bird's-Eye View (BEV) representations with Large Language Models (LLMs) to improve reasoning and driving performance in autonomous vehicles by distilling semantic knowledge to BEV and leveraging BEV features as LLM input.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> The integration of Large Language Models (LLMs) into autonomous driving has attracted growing interest for their strong reasoning and semantic understanding abilities, which are essential for handling complex decision-making and long-tail scenarios. However, existing methods typically feed LLMs with tokens from multi-view and multi-frame images independently, leading to redundant computation and limited spatial consistency. This separation in visual processing hinders accurate 3D spatial reasoning and fails to maintain geometric coherence across views. On the other hand, Bird's-Eye View (BEV) representations learned from geometrically annotated tasks (e.g., object detection) provide spatial structure but lack the semantic richness of foundation vision encoders. To bridge this gap, we propose BEVLM, a framework that connects a spatially consistent and semantically distilled BEV representation with LLMs. Through extensive experiments, we show that BEVLM enables LLMs to reason more effectively in cross-view driving scenes, improving accuracy by 46%, by leveraging BEV features as unified inputs. Furthermore, by distilling semantic knowledge from LLMs into BEV representations, BEVLM significantly improves closed-loop end-to-end driving performance by 29% in safety-critical scenarios.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>将大型语言模型（LLM）集成到自动驾驶中，因其强大的推理能力和语义理解能力而受到日益增长的关注，这对于处理复杂决策和长尾场景至关重要。然而，现有方法通常独立地将多视角和多帧图像中的tokens输入LLM，导致冗余计算和有限的空间一致性。这种视觉处理的分离阻碍了精确的3D空间推理，并且无法维持跨视角的几何连贯性。另一方面，从几何标注任务（例如，目标检测）中学习到的鸟瞰图（BEV）表示提供了空间结构，但缺乏基础视觉编码器的语义丰富性。为了弥合这一差距，我们提出了BEVLM，一个将空间一致且语义精炼的BEV表示与LLM连接的框架。通过大量实验，我们表明BEVLM使LLM能够更有效地在跨视角驾驶场景中进行推理，通过利用BEV特征作为统一输入，将准确率提高了46%。此外，通过将来自LLM的语义知识提炼到BEV表示中，BEVLM在安全攸关的场景中显著提高了29%的闭环端到端驾驶性能。</p>
             
 
             
@@ -390,6 +601,14 @@
             <a href="http://arxiv.org/abs/2603.06576v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Thomas Monninger, Shaoyuan Xie, Qi Alfred Chen, Sihao Ding</p>
             
@@ -403,16 +622,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">SUREON: A Benchmark and Vision-Language-Model for Surgical Reasoning</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Surgeons don't just see -- they interpret. When an expert observes a surgical scene, they understand not only what instrument is being used, but why it was chosen, what risk it poses, and what comes next. Current surgical AI cannot answer such questions, largely because training data that explicitly encodes surgical reasoning is immensely difficult to annotate at scale. Yet surgical video lectures already contain exactly this -- explanations of intent, rationale, and anticipation, narrated by experts for the purpose of teaching. Though inherently noisy and unstructured, these narrations encode the reasoning that surgical AI currently lacks. We introduce SUREON, a large-scale video QA dataset that systematically harvests this training signal from surgical academic videos. SUREON defines 12 question categories covering safety assessment, decision rationale, and forecasting, and uses a multi-agent pipeline to extract and structure supervision at scale. Across 134.7K clips and 170 procedure types, SUREON yields 206.8k QA pairs and an expert-validated benchmark of 354 examples. To evaluate the extent to which this supervision translates to surgical reasoning ability, we introduce two models: SureonVLM, a vision-language model adapted through supervised fine-tuning, and SureonVLM-R1, a reasoning model trained with Group Relative Policy Optimization. Both models can answer complex questions about surgery and substantially outperform larger general-domain models, exceeding 84% accuracy on the SUREON benchmark while outperforming general-domain models on standard surgical perception tasks. Qualitative analysis of SureonVLM-R1 reveals explicit reasoning behavior, such as inferring operative intent from visual context.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 外科医生不仅仅是观察，他们更是解读。当专家观察手术场景时，他们不仅能理解正在使用的器械，还能明白选择该器械的原因、它带来的风险以及下一步的操作。当前的 surgical AI 无法回答这类问题，主要是因为显式编码手术推理的训练数据难以大规模添加标注。然而，外科手术视频讲座已经包含这些内容 —— 对意图、原理和预判的解释，由专家为了教学目的进行讲解。尽管这些解说本质上是嘈杂且非结构化的，但它们编码了surgical AI 当前所欠缺的推理过程。我们介绍了 SUREON，这是一个大规模视频问答数据集，系统地从外科手术学术视频中获取这种训练信号。SUREON 定义了 12 个问题类别，涵盖安全评估、决策依据和预测，并使用多代理流水线来大规模提取和构建监督信息。 在包含 134.7K 个片段和 170 种手术类型的视频中，SUREON 产生了 206.8k 个问答对和一个包含 354 个示例的专家验证基准。为了评估这种监督信息在多大程度上转化为手术推理能力，我们引入了两个模型：SureonVLM，一个通过监督式微调调整的视觉-语言模型，以及 SureonVLM-R1，一个用群体相对策略优化训练的推理模型。这两个模型都能回答关于手术的复杂问题，并且大幅超越了更大的通用领域模型，在 SUREON 基准上超过 84% 的准确率，同时在标准手术感知任务上也优于通用领域模型。对 SureonVLM-R1 的定性分析揭示了明确的推理行为，例如从视觉背景中推断手术意图。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces SUREON, a large-scale video QA dataset for surgical reasoning, along with vision-language models trained on it that demonstrate improved performance in surgical reasoning tasks compared to general-domain models.</p>
+            <h2 class="paper-title">
+                SUREON: A Benchmark and Vision-Language-Model for Surgical Reasoning
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了SUREON，一个用于外科推理的大规模视频问答数据集，以及基于该数据集训练的视觉语言模型，这些模型在外科推理任务中表现出比通用模型更好的性能。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了SUREON，一个用于外科推理的大规模视频问答数据集，以及基于该数据集训练的视觉语言模型，这些模型在外科推理任务中表现出比通用模型更好的性能。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces SUREON, a large-scale video QA dataset for surgical reasoning, along with vision-language models trained on it that demonstrate improved performance in surgical reasoning tasks compared to general-domain models.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Surgeons don't just see -- they interpret. When an expert observes a surgical scene, they understand not only what instrument is being used, but why it was chosen, what risk it poses, and what comes next. Current surgical AI cannot answer such questions, largely because training data that explicitly encodes surgical reasoning is immensely difficult to annotate at scale. Yet surgical video lectures already contain exactly this -- explanations of intent, rationale, and anticipation, narrated by experts for the purpose of teaching. Though inherently noisy and unstructured, these narrations encode the reasoning that surgical AI currently lacks. We introduce SUREON, a large-scale video QA dataset that systematically harvests this training signal from surgical academic videos. SUREON defines 12 question categories covering safety assessment, decision rationale, and forecasting, and uses a multi-agent pipeline to extract and structure supervision at scale. Across 134.7K clips and 170 procedure types, SUREON yields 206.8k QA pairs and an expert-validated benchmark of 354 examples. To evaluate the extent to which this supervision translates to surgical reasoning ability, we introduce two models: SureonVLM, a vision-language model adapted through supervised fine-tuning, and SureonVLM-R1, a reasoning model trained with Group Relative Policy Optimization. Both models can answer complex questions about surgery and substantially outperform larger general-domain models, exceeding 84% accuracy on the SUREON benchmark while outperforming general-domain models on standard surgical perception tasks. Qualitative analysis of SureonVLM-R1 reveals explicit reasoning behavior, such as inferring operative intent from visual context.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>外科医生不仅仅是观察，他们更是解读。当专家观察手术场景时，他们不仅能理解正在使用的器械，还能明白选择该器械的原因、它带来的风险以及下一步的操作。当前的 surgical AI 无法回答这类问题，主要是因为显式编码手术推理的训练数据难以大规模添加标注。然而，外科手术视频讲座已经包含这些内容 —— 对意图、原理和预判的解释，由专家为了教学目的进行讲解。尽管这些解说本质上是嘈杂且非结构化的，但它们编码了surgical AI 当前所欠缺的推理过程。我们介绍了 SUREON，这是一个大规模视频问答数据集，系统地从外科手术学术视频中获取这种训练信号。SUREON 定义了 12 个问题类别，涵盖安全评估、决策依据和预测，并使用多代理流水线来大规模提取和构建监督信息。 在包含 134.7K 个片段和 170 种手术类型的视频中，SUREON 产生了 206.8k 个问答对和一个包含 354 个示例的专家验证基准。为了评估这种监督信息在多大程度上转化为手术推理能力，我们引入了两个模型：SureonVLM，一个通过监督式微调调整的视觉-语言模型，以及 SureonVLM-R1，一个用群体相对策略优化训练的推理模型。这两个模型都能回答关于手术的复杂问题，并且大幅超越了更大的通用领域模型，在 SUREON 基准上超过 84% 的准确率，同时在标准手术感知任务上也优于通用领域模型。对 SureonVLM-R1 的定性分析揭示了明确的推理行为，例如从视觉背景中推断手术意图。</p>
             
 
             
@@ -486,6 +709,14 @@
             <a href="http://arxiv.org/abs/2603.06570v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="1" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="1" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Alejandra Perez, Anita Rau, Lee White, Busisiwe Mlambo, Chinedu Nwoye, Muhammad Abdullah Jamal, Omid Mohareri</p>
             
@@ -499,16 +730,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Boosting deep Reinforcement Learning using pretraining with Logical Options</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Deep reinforcement learning agents are often misaligned, as they over-exploit early reward signals. Recently, several symbolic approaches have addressed these challenges by encoding sparse objectives along with aligned plans. However, purely symbolic architectures are complex to scale and difficult to apply to continuous settings. Hence, we propose a hybrid approach, inspired by humans' ability to acquire new skills. We use a two-stage framework that injects symbolic structure into neural-based reinforcement learning agents without sacrificing the expressivity of deep policies. Our method, called Hybrid Hierarchical RL (H^2RL), introduces a logical option-based pretraining strategy to steer the learning policy away from short-term reward loops and toward goal-directed behavior while allowing the final policy to be refined via standard environment interaction. Empirically, we show that this approach consistently improves long-horizon decision-making and yields agents that outperform strong neural, symbolic, and neuro-symbolic baselines.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 深度强化学习智能体经常出现目标错位问题，因为它们过度利用早期的奖励信号。最近，一些符号方法通过编码稀疏目标以及对齐的计划来解决这些挑战。然而，纯粹的符号架构难以扩展且难以应用于连续环境中。因此，我们提出了一种混合方法，其灵感来源于人类获取新技能的能力。我们使用一个两阶段框架，将符号结构注入到基于神经网络的强化学习智能体中，而不牺牲深度策略的表达能力。我们的方法，称为混合分层强化学习（H²RL），引入了一种基于逻辑选项的预训练策略，以引导学习策略远离短期奖励循环，并朝着目标导向的行为发展，同时允许通过标准环境交互来优化最终策略。在实验中，我们证明了该方法能够持续改进长时域决策，并生成优于强大的神经、符号和神经符号基线的智能体。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces Hybrid Hierarchical RL (H^2RL), a neuro-symbolic approach that uses logical option-based pretraining to improve long-horizon decision-making in deep reinforcement learning by guiding policies towards goal-directed behavior and avoiding short-term reward loops.</p>
+            <h2 class="paper-title">
+                Boosting deep Reinforcement Learning using pretraining with Logical Options
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了混合分层强化学习 (H^2RL)，这是一种神经符号方法，它使用基于逻辑选项的预训练来提高深度强化学习中长时决策的性能，通过引导策略朝着目标导向的行为并避免短期奖励循环。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文介绍了混合分层强化学习 (H^2RL)，这是一种神经符号方法，它使用基于逻辑选项的预训练来提高深度强化学习中长时决策的性能，通过引导策略朝着目标导向的行为并避免短期奖励循环。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces Hybrid Hierarchical RL (H^2RL), a neuro-symbolic approach that uses logical option-based pretraining to improve long-horizon decision-making in deep reinforcement learning by guiding policies towards goal-directed behavior and avoiding short-term reward loops.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Deep reinforcement learning agents are often misaligned, as they over-exploit early reward signals. Recently, several symbolic approaches have addressed these challenges by encoding sparse objectives along with aligned plans. However, purely symbolic architectures are complex to scale and difficult to apply to continuous settings. Hence, we propose a hybrid approach, inspired by humans' ability to acquire new skills. We use a two-stage framework that injects symbolic structure into neural-based reinforcement learning agents without sacrificing the expressivity of deep policies. Our method, called Hybrid Hierarchical RL (H^2RL), introduces a logical option-based pretraining strategy to steer the learning policy away from short-term reward loops and toward goal-directed behavior while allowing the final policy to be refined via standard environment interaction. Empirically, we show that this approach consistently improves long-horizon decision-making and yields agents that outperform strong neural, symbolic, and neuro-symbolic baselines.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>深度强化学习智能体经常出现目标错位问题，因为它们过度利用早期的奖励信号。最近，一些符号方法通过编码稀疏目标以及对齐的计划来解决这些挑战。然而，纯粹的符号架构难以扩展且难以应用于连续环境中。因此，我们提出了一种混合方法，其灵感来源于人类获取新技能的能力。我们使用一个两阶段框架，将符号结构注入到基于神经网络的强化学习智能体中，而不牺牲深度策略的表达能力。我们的方法，称为混合分层强化学习（H²RL），引入了一种基于逻辑选项的预训练策略，以引导学习策略远离短期奖励循环，并朝着目标导向的行为发展，同时允许通过标准环境交互来优化最终策略。在实验中，我们证明了该方法能够持续改进长时域决策，并生成优于强大的神经、符号和神经符号基线的智能体。</p>
             
 
             
@@ -582,6 +817,14 @@
             <a href="http://arxiv.org/abs/2603.06565v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="2" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="2" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Zihan Ye, Phil Chau, Raban Emunds, Jannis Blüml, Cedric Derstroff, Quentin Delfosse, Oleg Arenz, Kristian Kersting</p>
             
@@ -595,16 +838,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Omni-Diffusion: Unified Multimodal Understanding and Generation with Masked Discrete Diffusion</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> While recent multimodal large language models (MLLMs) have made impressive strides, they predominantly employ a conventional autoregressive architecture as their backbone, leaving significant room to explore effective and efficient alternatives in architectural design. Concurrently, recent studies have successfully applied discrete diffusion models to various domains, such as visual understanding and image generation, revealing their considerable potential as a promising backbone for multimodal systems. Drawing inspiration from these pioneering research, we introduce Omni-Diffusion, the first any-to-any multimodal language model built entirely on mask-based discrete diffusion models, which unifies understanding and generation across text, speech, and images. Omni-Diffusion employs a unified mask-based discrete diffusion model to directly capture the joint distribution over discrete multimodal tokens. This approach supports not only bimodal tasks but also more complex scenarios involving multiple modalities. On a diverse set of benchmarks, our method outperforms or performs on par with existing multimodal systems that process two or more modalities, highlighting the significant promise of diffusion models in powering the next generation of multimodal foundation models. Project webpage: https://omni-diffusion.github.io.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 尽管最近的多模态大型语言模型(MLLM)取得了令人瞩目的进展，但它们主要采用传统的自回归架构作为骨干，这在架构设计中留下了探索有效且高效替代方案的巨大空间。与此同时，最近的研究已成功将离散扩散模型应用于视觉理解和图像生成等各个领域，揭示了其作为多模态系统有前途的骨干的巨大潜力。受这些开创性研究的启发，我们推出了Omni-Diffusion，这是第一个完全基于掩码离散扩散模型的任意到任意多模态语言模型，它统一了文本、语音和图像的理解和生成。Omni-Diffusion采用统一的基于掩码的离散扩散模型，直接捕获离散多模态token的联合分布。这种方法不仅支持双模态任务，还支持涉及多种模态的更复杂场景。在一系列不同的基准测试中，我们的方法优于或媲美现有的处理两种或多种模态的多模态系统，突显了扩散模型在推动下一代多模态基础模型方面的巨大潜力。项目网页：https://omni-diffusion.github.io。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: Omni-Diffusion introduces a novel any-to-any multimodal language model based on masked discrete diffusion, unifying understanding and generation across text, speech, and images, and demonstrating competitive performance on multimodal benchmarks. It presents a promising alternative to autoregressive architectures for multimodal foundation models.</p>
+            <h2 class="paper-title">
+                Omni-Diffusion: Unified Multimodal Understanding and Generation with Masked Discrete Diffusion
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: Omni-Diffusion 提出了一个基于掩码离散扩散的新型任意到任意多模态语言模型，统一了文本、语音和图像的理解和生成，并在多模态基准测试中表现出竞争力的性能。它为多模态基础模型提供了一种有前途的替代自回归架构方案。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>Omni-Diffusion 提出了一个基于掩码离散扩散的新型任意到任意多模态语言模型，统一了文本、语音和图像的理解和生成，并在多模态基准测试中表现出竞争力的性能。它为多模态基础模型提供了一种有前途的替代自回归架构方案。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> Omni-Diffusion introduces a novel any-to-any multimodal language model based on masked discrete diffusion, unifying understanding and generation across text, speech, and images, and demonstrating competitive performance on multimodal benchmarks. It presents a promising alternative to autoregressive architectures for multimodal foundation models.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> While recent multimodal large language models (MLLMs) have made impressive strides, they predominantly employ a conventional autoregressive architecture as their backbone, leaving significant room to explore effective and efficient alternatives in architectural design. Concurrently, recent studies have successfully applied discrete diffusion models to various domains, such as visual understanding and image generation, revealing their considerable potential as a promising backbone for multimodal systems. Drawing inspiration from these pioneering research, we introduce Omni-Diffusion, the first any-to-any multimodal language model built entirely on mask-based discrete diffusion models, which unifies understanding and generation across text, speech, and images. Omni-Diffusion employs a unified mask-based discrete diffusion model to directly capture the joint distribution over discrete multimodal tokens. This approach supports not only bimodal tasks but also more complex scenarios involving multiple modalities. On a diverse set of benchmarks, our method outperforms or performs on par with existing multimodal systems that process two or more modalities, highlighting the significant promise of diffusion models in powering the next generation of multimodal foundation models. Project webpage: https://omni-diffusion.github.io.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>尽管最近的多模态大型语言模型(MLLM)取得了令人瞩目的进展，但它们主要采用传统的自回归架构作为骨干，这在架构设计中留下了探索有效且高效替代方案的巨大空间。与此同时，最近的研究已成功将离散扩散模型应用于视觉理解和图像生成等各个领域，揭示了其作为多模态系统有前途的骨干的巨大潜力。受这些开创性研究的启发，我们推出了Omni-Diffusion，这是第一个完全基于掩码离散扩散模型的任意到任意多模态语言模型，它统一了文本、语音和图像的理解和生成。Omni-Diffusion采用统一的基于掩码的离散扩散模型，直接捕获离散多模态token的联合分布。这种方法不仅支持双模态任务，还支持涉及多种模态的更复杂场景。在一系列不同的基准测试中，我们的方法优于或媲美现有的处理两种或多种模态的多模态系统，突显了扩散模型在推动下一代多模态基础模型方面的巨大潜力。项目网页：https://omni-diffusion.github.io。</p>
             
 
             
@@ -678,6 +925,14 @@
             <a href="http://arxiv.org/abs/2603.06577v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="3" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="3" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Lijiang Li, Zuwei Long, Yunhang Shen, Heting Gao, Haoyu Cao, Xing Sun, Caifeng Shan, Ran He, Chaoyou Fu</p>
             
@@ -691,16 +946,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Penguin-VL: Exploring the Efficiency Limits of VLM with LLM-based Vision Encoders</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Vision Language Model (VLM) development has largely relied on scaling model size, which hinders deployment on compute-constrained mobile and edge devices such as smartphones and robots. In this work, we explore the performance limits of compact (e.g., 2B and 8B) VLMs. We challenge the prevailing practice that state-of-the-art VLMs must rely on vision encoders initialized via massive contrastive pretraining (e.g., CLIP/SigLIP). We identify an objective mismatch: contrastive learning, optimized for discrimination, enforces coarse and category-level invariances that suppress fine-grained visual cues needed for dense captioning and complex VLM reasoning. To address this issue, we present Penguin-VL, whose vision encoder is initialized from a text-only LLM. Our experiments reveal that Penguin-Encoder serves as a superior alternative to traditional contrastive pretraining, unlocking a higher degree of visual fidelity and data efficiency for multimodal understanding. Across various image and video benchmarks, Penguin-VL achieves performance comparable to leading VLMs (e.g., Qwen3-VL) in mathematical reasoning and surpasses them in tasks such as document understanding, visual knowledge, and multi-perspective video understanding. Notably, these gains are achieved with a lightweight architecture, demonstrating that improved visual representation rather than model scaling is the primary driver of performance. Our ablations show that Penguin-Encoder consistently outperforms contrastive-pretrained encoders, preserving fine-grained spatial and temporal cues that are critical for dense perception and complex reasoning. This makes it a strong drop-in alternative for compute-efficient VLMs and enables high performance in resource-constrained settings. Code: https://github.com/tencent-ailab/Penguin-VL</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 视觉语言模型（VLM）的发展很大程度上依赖于模型规模的扩展，这阻碍了其在算力受限的移动和边缘设备（如智能手机和机器人）上的部署。 在这项工作中，我们探索了紧凑型（例如，2B和8B）VLM的性能极限。 我们挑战了目前的主流做法，即最先进的VLM必须依赖于通过大规模对比预训练（例如，CLIP/SigLIP）初始化的视觉编码器。 我们发现了一个目标不匹配：针对判别进行优化的对比学习，强制执行粗略的类别级别不变性，这抑制了密集字幕和复杂 VLM 推理所需的细粒度视觉线索。 为了解决这个问题，我们提出了 Penguin-VL，其视觉编码器是从仅文本的 LLM 初始化。 我们的实验表明，Penguin-Encoder 是传统对比预训练的更好替代方案，可为多模态理解解锁更高程度的视觉保真度和数据效率。 在各种图像和视频基准测试中，Penguin-VL 在数学推理方面取得了与领先 VLM（例如，Qwen3-VL）相当的性能，并在文档理解、视觉知识和多视角视频理解等任务中超越了它们。 值得注意的是，这些优势是通过轻量级架构实现的，表明改进的视觉表示而不是模型缩放是性能的主要驱动因素。 我们的消融实验表明，Penguin-Encoder 始终优于对比预训练编码器，保留了对密集感知和复杂推理至关重要的细粒度空间和时间线索。 这使其成为算力高效VLM的强大替代方案，并能够在资源受限的环境中实现高性能。 代码：https://github.com/tencent-ailab/Penguin-VL</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: Penguin-VL presents a compute-efficient VLM that initializes its vision encoder from a text-only LLM instead of contrastive pretraining, achieving comparable or superior performance to larger VLMs in several tasks while preserving fine-grained visual cues.</p>
+            <h2 class="paper-title">
+                Penguin-VL: Exploring the Efficiency Limits of VLM with LLM-based Vision Encoders
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: Penguin-VL 提出了一种计算效率高的 VLM，它使用纯文本 LLM 初始化其视觉编码器，而不是对比预训练，从而在多个任务中实现与更大规模 VLM 相当甚至更优越的性能，同时保留了细粒度的视觉线索。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>Penguin-VL 提出了一种计算效率高的 VLM，它使用纯文本 LLM 初始化其视觉编码器，而不是对比预训练，从而在多个任务中实现与更大规模 VLM 相当甚至更优越的性能，同时保留了细粒度的视觉线索。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> Penguin-VL presents a compute-efficient VLM that initializes its vision encoder from a text-only LLM instead of contrastive pretraining, achieving comparable or superior performance to larger VLMs in several tasks while preserving fine-grained visual cues.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Vision Language Model (VLM) development has largely relied on scaling model size, which hinders deployment on compute-constrained mobile and edge devices such as smartphones and robots. In this work, we explore the performance limits of compact (e.g., 2B and 8B) VLMs. We challenge the prevailing practice that state-of-the-art VLMs must rely on vision encoders initialized via massive contrastive pretraining (e.g., CLIP/SigLIP). We identify an objective mismatch: contrastive learning, optimized for discrimination, enforces coarse and category-level invariances that suppress fine-grained visual cues needed for dense captioning and complex VLM reasoning. To address this issue, we present Penguin-VL, whose vision encoder is initialized from a text-only LLM. Our experiments reveal that Penguin-Encoder serves as a superior alternative to traditional contrastive pretraining, unlocking a higher degree of visual fidelity and data efficiency for multimodal understanding. Across various image and video benchmarks, Penguin-VL achieves performance comparable to leading VLMs (e.g., Qwen3-VL) in mathematical reasoning and surpasses them in tasks such as document understanding, visual knowledge, and multi-perspective video understanding. Notably, these gains are achieved with a lightweight architecture, demonstrating that improved visual representation rather than model scaling is the primary driver of performance. Our ablations show that Penguin-Encoder consistently outperforms contrastive-pretrained encoders, preserving fine-grained spatial and temporal cues that are critical for dense perception and complex reasoning. This makes it a strong drop-in alternative for compute-efficient VLMs and enables high performance in resource-constrained settings. Code: https://github.com/tencent-ailab/Penguin-VL</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>视觉语言模型（VLM）的发展很大程度上依赖于模型规模的扩展，这阻碍了其在算力受限的移动和边缘设备（如智能手机和机器人）上的部署。 在这项工作中，我们探索了紧凑型（例如，2B和8B）VLM的性能极限。 我们挑战了目前的主流做法，即最先进的VLM必须依赖于通过大规模对比预训练（例如，CLIP/SigLIP）初始化的视觉编码器。 我们发现了一个目标不匹配：针对判别进行优化的对比学习，强制执行粗略的类别级别不变性，这抑制了密集字幕和复杂 VLM 推理所需的细粒度视觉线索。 为了解决这个问题，我们提出了 Penguin-VL，其视觉编码器是从仅文本的 LLM 初始化。 我们的实验表明，Penguin-Encoder 是传统对比预训练的更好替代方案，可为多模态理解解锁更高程度的视觉保真度和数据效率。 在各种图像和视频基准测试中，Penguin-VL 在数学推理方面取得了与领先 VLM（例如，Qwen3-VL）相当的性能，并在文档理解、视觉知识和多视角视频理解等任务中超越了它们。 值得注意的是，这些优势是通过轻量级架构实现的，表明改进的视觉表示而不是模型缩放是性能的主要驱动因素。 我们的消融实验表明，Penguin-Encoder 始终优于对比预训练编码器，保留了对密集感知和复杂推理至关重要的细粒度空间和时间线索。 这使其成为算力高效VLM的强大替代方案，并能够在资源受限的环境中实现高性能。 代码：https://github.com/tencent-ailab/Penguin-VL</p>
             
 
             
@@ -774,6 +1033,14 @@
             <a href="http://arxiv.org/abs/2603.06569v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="4" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="4" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Boqiang Zhang, Lei Ke, Ruihan Yang, Qi Gao, Tianyuan Qu, Rossell Chen, Dong Yu, Leoweiliang</p>
             
@@ -787,16 +1054,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">EgoReasoner: Learning Egocentric 4D Reasoning via Task-Adaptive Structured Thinking</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Egocentric video understanding is inherently complex due to the dynamic 4D nature of the environment, where camera motion and object displacements necessitate a continuous re-evaluation of spatial relations. In this work, we target a suite of under-explored egocentric 4D reasoning tasks, including fixture interaction counting, viewpoint-relative fixture location, object movement itinerary tracking, and stationary object localization, that require fundamentally different cognitive operations: spatial anchoring, temporal tracking, and duration reasoning. We observe that these structural differences make task-agnostic approaches insufficient: generic Chain-of-Thought methods lack task-appropriate reasoning primitives, and uniform reinforcement learning actively destabilizes performance on spatial tasks. To address this, we propose EgoReasoner, a two-stage framework that aligns both the reasoning scaffold and the reward signal to each task's cognitive structure. In the first stage, Task-Adaptive Thinking Templates guide the synthesis of structured CoT traces that teach the model to reason adaptively across task types via supervised fine-tuning. In the second stage, task-aware reward functions verify entity grounding, temporal alignment, and task-adaptive logical consistency, selectively strengthening each reasoning pathway via reinforcement fine-tuning with GRPO. Our 3B-parameter model, trained on only 16K samples, achieves 37.5% average accuracy on the challenging HD-EPIC benchmark, surpassing Qwen2.5-VL-7B (25.7%) by over 10 points.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 由于环境的动态4D特性，自我中心视频理解本质上是复杂的，其中相机运动和物体位移需要连续地重新评估空间关系。在这项工作中，我们关注一系列未被充分探索的自我中心4D推理任务，包括固定装置交互计数、视点相关的固定装置定位、物体移动轨迹跟踪和静止物体定位，这些任务需要根本不同的认知操作：空间锚定、时间跟踪和持续时间推理。我们观察到这些结构性差异使得任务无关的方法不够有效：通用的思维链（Chain-of-Thought）方法缺乏适合任务的推理原语，而统一的强化学习会积极地破坏空间任务的性能。为了解决这个问题，我们提出了EgoReasoner，一个两阶段框架，该框架将推理支架和奖励信号与每个任务的认知结构对齐。在第一阶段，任务自适应思维模板指导结构化CoT轨迹的合成，通过监督微调教导模型跨任务类型自适应地进行推理。在第二阶段，任务感知奖励函数验证实体定位、时间对齐和任务自适应逻辑一致性，通过GRPO强化微调选择性地加强每个推理路径。我们30亿参数的模型仅在1.6万个样本上训练，在具有挑战性的HD-EPIC基准测试中实现了37.5%的平均准确率，超过了Qwen2.5-VL-7B（25.7%）超过10个点。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces EgoReasoner, a framework for egocentric 4D reasoning that uses task-adaptive thinking templates and reinforcement learning to improve performance on tasks requiring spatial anchoring, temporal tracking, and duration reasoning. Their 3B-parameter model outperforms Qwen2.5-VL-7B on the HD-EPIC benchmark.</p>
+            <h2 class="paper-title">
+                EgoReasoner: Learning Egocentric 4D Reasoning via Task-Adaptive Structured Thinking
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了EgoReasoner，一个用于以自我为中心的4D推理的框架，它使用任务自适应的思维模板和强化学习来提高在需要空间锚定、时间跟踪和持续时间推理的任务上的性能。他们30亿参数的模型在HD-EPIC基准测试中优于Qwen2.5-VL-7B。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了EgoReasoner，一个用于以自我为中心的4D推理的框架，它使用任务自适应的思维模板和强化学习来提高在需要空间锚定、时间跟踪和持续时间推理的任务上的性能。他们30亿参数的模型在HD-EPIC基准测试中优于Qwen2.5-VL-7B。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces EgoReasoner, a framework for egocentric 4D reasoning that uses task-adaptive thinking templates and reinforcement learning to improve performance on tasks requiring spatial anchoring, temporal tracking, and duration reasoning. Their 3B-parameter model outperforms Qwen2.5-VL-7B on the HD-EPIC benchmark.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Egocentric video understanding is inherently complex due to the dynamic 4D nature of the environment, where camera motion and object displacements necessitate a continuous re-evaluation of spatial relations. In this work, we target a suite of under-explored egocentric 4D reasoning tasks, including fixture interaction counting, viewpoint-relative fixture location, object movement itinerary tracking, and stationary object localization, that require fundamentally different cognitive operations: spatial anchoring, temporal tracking, and duration reasoning. We observe that these structural differences make task-agnostic approaches insufficient: generic Chain-of-Thought methods lack task-appropriate reasoning primitives, and uniform reinforcement learning actively destabilizes performance on spatial tasks. To address this, we propose EgoReasoner, a two-stage framework that aligns both the reasoning scaffold and the reward signal to each task's cognitive structure. In the first stage, Task-Adaptive Thinking Templates guide the synthesis of structured CoT traces that teach the model to reason adaptively across task types via supervised fine-tuning. In the second stage, task-aware reward functions verify entity grounding, temporal alignment, and task-adaptive logical consistency, selectively strengthening each reasoning pathway via reinforcement fine-tuning with GRPO. Our 3B-parameter model, trained on only 16K samples, achieves 37.5% average accuracy on the challenging HD-EPIC benchmark, surpassing Qwen2.5-VL-7B (25.7%) by over 10 points.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>由于环境的动态4D特性，自我中心视频理解本质上是复杂的，其中相机运动和物体位移需要连续地重新评估空间关系。在这项工作中，我们关注一系列未被充分探索的自我中心4D推理任务，包括固定装置交互计数、视点相关的固定装置定位、物体移动轨迹跟踪和静止物体定位，这些任务需要根本不同的认知操作：空间锚定、时间跟踪和持续时间推理。我们观察到这些结构性差异使得任务无关的方法不够有效：通用的思维链（Chain-of-Thought）方法缺乏适合任务的推理原语，而统一的强化学习会积极地破坏空间任务的性能。为了解决这个问题，我们提出了EgoReasoner，一个两阶段框架，该框架将推理支架和奖励信号与每个任务的认知结构对齐。在第一阶段，任务自适应思维模板指导结构化CoT轨迹的合成，通过监督微调教导模型跨任务类型自适应地进行推理。在第二阶段，任务感知奖励函数验证实体定位、时间对齐和任务自适应逻辑一致性，通过GRPO强化微调选择性地加强每个推理路径。我们30亿参数的模型仅在1.6万个样本上训练，在具有挑战性的HD-EPIC基准测试中实现了37.5%的平均准确率，超过了Qwen2.5-VL-7B（25.7%）超过10个点。</p>
             
 
             
@@ -870,6 +1141,14 @@
             <a href="http://arxiv.org/abs/2603.06561v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="5" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="5" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Fangrui Zhu, Yunfeng Xi, Jianmo Ni, Mu Cai, Boqing Gong, Long Zhao, Chen Qu, Ian Miao, Yi Li, Cheng Zhong, Huaizu Jiang, Shwetak Patel</p>
             
@@ -883,16 +1162,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Fly360: Omnidirectional Obstacle Avoidance within Drone View</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Obstacle avoidance in unmanned aerial vehicles (UAVs), as a fundamental capability, has gained increasing attention with the growing focus on spatial intelligence. However, current obstacle-avoidance methods mainly depend on limited field-of-view sensors and are ill-suited for UAV scenarios which require full-spatial awareness when the movement direction differs from the UAV's heading. This limitation motivates us to explore omnidirectional obstacle avoidance for panoramic drones with full-view perception. We first study an under explored problem setting in which a UAV must generate collision-free motion in environments with obstacles from arbitrary directions, and then construct a benchmark that consists of three representative flight tasks. Based on such settings, we propose Fly360, a two-stage perception-decision pipeline with a fixed random-yaw training strategy. At the perception stage, panoramic RGB observations are input and converted into depth maps as a robust intermediate representation. For the policy network, it is lightweight and used to output body-frame velocity commands from depth inputs. Extensive simulation and real-world experiments demonstrate that Fly360 achieves stable omnidirectional obstacle avoidance and outperforms forward-view baselines across all tasks. Our model is available at https://zxkai.github.io/fly360/</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 无人驾驶飞行器(UAV)的避障作为一项基本能力，随着对空间智能的日益关注而受到越来越多的重视。然而，当前的避障方法主要依赖于有限视角的传感器，并且不适用于UAV场景，在这些场景中，当运动方向与UAV的航向不同时，需要完全的空间感知能力。这种局限性促使我们探索具有全景感知的全向无人机避障。我们首先研究了一个未充分探索的问题设置，即UAV必须在来自任意方向障碍物的环境中生成无碰撞运动，然后构建一个包含三个代表性飞行任务的基准测试。基于这样的设置，我们提出了Fly360，一个具有固定随机偏航训练策略的两阶段感知-决策流程。在感知阶段，输入全景RGB观测，并将其转换为深度图，作为一种鲁棒的中间表示。对于策略网络，它很轻量级，用于从深度输入输出机体坐标系速度指令。大量的仿真和真实世界实验表明，Fly360实现了稳定的全向避障，并在所有任务中优于前视基线。我们的模型可在https://zxkai.github.io/fly360/获取。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces Fly360, a two-stage perception-decision pipeline for omnidirectional obstacle avoidance in drones using panoramic RGB and depth map inputs, demonstrating superior performance compared to forward-view methods.</p>
+            <h2 class="paper-title">
+                Fly360: Omnidirectional Obstacle Avoidance within Drone View
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了Fly360，一个用于无人机全方位避障的两阶段感知-决策流程，它使用全景RGB和深度图输入，并且展示了比前视方法更优越的性能。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了Fly360，一个用于无人机全方位避障的两阶段感知-决策流程，它使用全景RGB和深度图输入，并且展示了比前视方法更优越的性能。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces Fly360, a two-stage perception-decision pipeline for omnidirectional obstacle avoidance in drones using panoramic RGB and depth map inputs, demonstrating superior performance compared to forward-view methods.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Obstacle avoidance in unmanned aerial vehicles (UAVs), as a fundamental capability, has gained increasing attention with the growing focus on spatial intelligence. However, current obstacle-avoidance methods mainly depend on limited field-of-view sensors and are ill-suited for UAV scenarios which require full-spatial awareness when the movement direction differs from the UAV's heading. This limitation motivates us to explore omnidirectional obstacle avoidance for panoramic drones with full-view perception. We first study an under explored problem setting in which a UAV must generate collision-free motion in environments with obstacles from arbitrary directions, and then construct a benchmark that consists of three representative flight tasks. Based on such settings, we propose Fly360, a two-stage perception-decision pipeline with a fixed random-yaw training strategy. At the perception stage, panoramic RGB observations are input and converted into depth maps as a robust intermediate representation. For the policy network, it is lightweight and used to output body-frame velocity commands from depth inputs. Extensive simulation and real-world experiments demonstrate that Fly360 achieves stable omnidirectional obstacle avoidance and outperforms forward-view baselines across all tasks. Our model is available at https://zxkai.github.io/fly360/</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>无人驾驶飞行器(UAV)的避障作为一项基本能力，随着对空间智能的日益关注而受到越来越多的重视。然而，当前的避障方法主要依赖于有限视角的传感器，并且不适用于UAV场景，在这些场景中，当运动方向与UAV的航向不同时，需要完全的空间感知能力。这种局限性促使我们探索具有全景感知的全向无人机避障。我们首先研究了一个未充分探索的问题设置，即UAV必须在来自任意方向障碍物的环境中生成无碰撞运动，然后构建一个包含三个代表性飞行任务的基准测试。基于这样的设置，我们提出了Fly360，一个具有固定随机偏航训练策略的两阶段感知-决策流程。在感知阶段，输入全景RGB观测，并将其转换为深度图，作为一种鲁棒的中间表示。对于策略网络，它很轻量级，用于从深度输入输出机体坐标系速度指令。大量的仿真和真实世界实验表明，Fly360实现了稳定的全向避障，并在所有任务中优于前视基线。我们的模型可在https://zxkai.github.io/fly360/获取。</p>
             
 
             
@@ -966,6 +1249,14 @@
             <a href="http://arxiv.org/abs/2603.06573v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="6" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="6" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Xiangkai Zhang, Dizhe Zhang, WenZhuo Cao, Zhaoliang Wan, Yingjie Niu, Lu Qi, Xu Yang, Zhiyong Liu</p>
             
@@ -979,16 +1270,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Uncertainty-Aware Adaptive Dynamics For Underwater Vehicle-Manipulator Robots</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Accurate and adaptive dynamic models are critical for underwater vehicle-manipulator systems where hydrodynamic effects induce time-varying parameters. This paper introduces a novel uncertainty-aware adaptive dynamics model framework that remains linear in lumped vehicle and manipulator parameters, and embeds convex physical consistency constraints during online estimation. Moving horizon estimation is used to stack horizon regressors, enforce realizable inertia, damping, friction, and hydrostatics, and quantify uncertainty from parameter evolution. Experiments on a BlueROV2 Heavy with a 4-DOF manipulator demonstrate rapid convergence and calibrated predictions. Manipulator fits achieve R2 = 0.88 to 0.98 with slopes near unity, while vehicle surge, heave, and roll are reproduced with good fidelity under stronger coupling and noise. Median solver time is approximately 0.023 s per update, confirming online feasibility. A comparison against a fixed parameter model shows consistent reductions in MAE and RMSE across degrees of freedom. Results indicate physically plausible parameters and confidence intervals with near 100% coverage, enabling reliable feedforward control and simulation in underwater environments.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 水下航行器-机械臂系统的精确自适应动力学模型至关重要，因为水动力效应会引起时变参数。本文提出了一种新颖的具有不确定性意识的自适应动力学模型框架，该框架对集总的航行器和机械臂参数保持线性，并在在线估计期间嵌入凸物理一致性约束。采用移动视界估计来堆叠视界回归量，强制实现惯性、阻尼、摩擦和静水力，并量化参数演变带来的不确定性。在配备4自由度机械臂的BlueROV2 Heavy上的实验表明，模型具有快速收敛性和校准的预测能力。机械臂拟合的R2范围为0.88到0.98，斜率接近1，而航行器的纵荡、垂荡和横滚在更强的耦合和噪声下也能以良好的保真度重现。中位求解器时间大约为每次更新0.023秒，证实了在线可行性。与固定参数模型的比较表明，各种自由度的平均绝对误差（MAE）和均方根误差（RMSE）均得到持续降低。结果表明，该模型能够产生物理上合理的参数和置信区间，置信区间覆盖率接近100%，从而能够在水下环境中实现可靠的前馈控制和仿真。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces an uncertainty-aware adaptive dynamics model for underwater vehicle-manipulator systems, using moving horizon estimation with physical consistency constraints for parameter estimation and uncertainty quantification, demonstrating promising results in experiments.</p>
+            <h2 class="paper-title">
+                Uncertainty-Aware Adaptive Dynamics For Underwater Vehicle-Manipulator Robots
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文提出了一种针对水下机器人操作系统的，不确定性感知的自适应动力学模型。该模型利用移动地平线估计和物理一致性约束来进行参数估计和不确定性量化，并在实验中表现出良好的效果。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文提出了一种针对水下机器人操作系统的，不确定性感知的自适应动力学模型。该模型利用移动地平线估计和物理一致性约束来进行参数估计和不确定性量化，并在实验中表现出良好的效果。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces an uncertainty-aware adaptive dynamics model for underwater vehicle-manipulator systems, using moving horizon estimation with physical consistency constraints for parameter estimation and uncertainty quantification, demonstrating promising results in experiments.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Accurate and adaptive dynamic models are critical for underwater vehicle-manipulator systems where hydrodynamic effects induce time-varying parameters. This paper introduces a novel uncertainty-aware adaptive dynamics model framework that remains linear in lumped vehicle and manipulator parameters, and embeds convex physical consistency constraints during online estimation. Moving horizon estimation is used to stack horizon regressors, enforce realizable inertia, damping, friction, and hydrostatics, and quantify uncertainty from parameter evolution. Experiments on a BlueROV2 Heavy with a 4-DOF manipulator demonstrate rapid convergence and calibrated predictions. Manipulator fits achieve R2 = 0.88 to 0.98 with slopes near unity, while vehicle surge, heave, and roll are reproduced with good fidelity under stronger coupling and noise. Median solver time is approximately 0.023 s per update, confirming online feasibility. A comparison against a fixed parameter model shows consistent reductions in MAE and RMSE across degrees of freedom. Results indicate physically plausible parameters and confidence intervals with near 100% coverage, enabling reliable feedforward control and simulation in underwater environments.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>水下航行器-机械臂系统的精确自适应动力学模型至关重要，因为水动力效应会引起时变参数。本文提出了一种新颖的具有不确定性意识的自适应动力学模型框架，该框架对集总的航行器和机械臂参数保持线性，并在在线估计期间嵌入凸物理一致性约束。采用移动视界估计来堆叠视界回归量，强制实现惯性、阻尼、摩擦和静水力，并量化参数演变带来的不确定性。在配备4自由度机械臂的BlueROV2 Heavy上的实验表明，模型具有快速收敛性和校准的预测能力。机械臂拟合的R2范围为0.88到0.98，斜率接近1，而航行器的纵荡、垂荡和横滚在更强的耦合和噪声下也能以良好的保真度重现。中位求解器时间大约为每次更新0.023秒，证实了在线可行性。与固定参数模型的比较表明，各种自由度的平均绝对误差（MAE）和均方根误差（RMSE）均得到持续降低。结果表明，该模型能够产生物理上合理的参数和置信区间，置信区间覆盖率接近100%，从而能够在水下环境中实现可靠的前馈控制和仿真。</p>
             
 
             
@@ -1062,6 +1357,14 @@
             <a href="http://arxiv.org/abs/2603.06548v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="7" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="7" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Edward Morgan, Nenyi K Dadson, Corina Barbalata</p>
             
@@ -1075,16 +1378,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Unified Learning of Temporal Task Structure and Action Timing for Bimanual Robot Manipulation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Temporal task structure is fundamental for bimanual manipulation: a robot must not only know that one action precedes or overlaps another, but also when each action should occur and how long it should take. While symbolic temporal relations enable high-level reasoning about task structure and alternative execution sequences, concrete timing parameters are equally essential for coordinating two hands at the execution level. Existing approaches address these two levels in isolation, leaving a gap between high-level task planning and low-level movement synchronization. This work presents an approach for learning both symbolic and subsymbolic temporal task constraints from human demonstrations and deriving executable, temporally parametrized plans for bimanual manipulation. Our contributions are (i) a 3-dimensional representation of timings between two actions with methods based on multivariate Gaussian Mixture Models to represent temporal relationships between actions on a subsymbolic level, (ii) a method based on the Davis-Putnam-Logemann-Loveland (DPLL) algorithm that finds and ranks all contradiction-free assignments of Allen relations to action pairs, representing different modes of a task, and (iii) an optimization-based planning system that combines the identified symbolic and subsymbolic temporal task constraints to derive temporally parametrized plans for robot execution. We evaluate our approach on several datasets, demonstrating that our method generates temporally parametrized plans closer to human demonstrations than the most characteristic demonstration baseline.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 时序任务结构对于双手操作至关重要：机器人不仅必须知道一个动作先于或重叠于另一个动作，还必须知道每个动作何时发生以及应该持续多久。虽然符号时序关系能够对任务结构和替代执行序列进行高级推理，但具体的时序参数对于在执行层协调双手同样重要。现有方法孤立地处理这两个层次，在高层次任务规划和低层次运动同步之间留下了空白。本工作提出了一种从人类演示中学习符号和亚符号时序任务约束，并推导出可执行的、时序参数化的双手操作计划的方法。我们的贡献包括：（i）基于多元高斯混合模型的三维双手动作时序关系表示方法，以亚符号层级表示动作之间的时序关系；（ii）一种基于Davis-Putnam-Logemann-Loveland（DPLL）算法的方法，用于寻找并排序所有无矛盾的Allen关系对动作对的分配情况，从而表示任务的不同模式；（iii）一个基于优化的规划系统，该系统结合了已识别的符号和亚符号时序任务约束，以推导出用于机器人执行的时序参数化计划。我们在多个数据集上评估了我们的方法，结果表明，与最具代表性的演示基线相比，我们的方法生成的时序参数化计划更接近于人类演示。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper proposes a method to learn both symbolic and subsymbolic temporal constraints for bimanual robot manipulation from human demonstrations, ultimately generating more human-like plans.</p>
+            <h2 class="paper-title">
+                Unified Learning of Temporal Task Structure and Action Timing for Bimanual Robot Manipulation
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种从人类演示中学习双臂机器人操作的符号和亚符号时间约束的方法，最终生成更像人类的计划。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文提出了一种从人类演示中学习双臂机器人操作的符号和亚符号时间约束的方法，最终生成更像人类的计划。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper proposes a method to learn both symbolic and subsymbolic temporal constraints for bimanual robot manipulation from human demonstrations, ultimately generating more human-like plans.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Temporal task structure is fundamental for bimanual manipulation: a robot must not only know that one action precedes or overlaps another, but also when each action should occur and how long it should take. While symbolic temporal relations enable high-level reasoning about task structure and alternative execution sequences, concrete timing parameters are equally essential for coordinating two hands at the execution level. Existing approaches address these two levels in isolation, leaving a gap between high-level task planning and low-level movement synchronization. This work presents an approach for learning both symbolic and subsymbolic temporal task constraints from human demonstrations and deriving executable, temporally parametrized plans for bimanual manipulation. Our contributions are (i) a 3-dimensional representation of timings between two actions with methods based on multivariate Gaussian Mixture Models to represent temporal relationships between actions on a subsymbolic level, (ii) a method based on the Davis-Putnam-Logemann-Loveland (DPLL) algorithm that finds and ranks all contradiction-free assignments of Allen relations to action pairs, representing different modes of a task, and (iii) an optimization-based planning system that combines the identified symbolic and subsymbolic temporal task constraints to derive temporally parametrized plans for robot execution. We evaluate our approach on several datasets, demonstrating that our method generates temporally parametrized plans closer to human demonstrations than the most characteristic demonstration baseline.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>时序任务结构对于双手操作至关重要：机器人不仅必须知道一个动作先于或重叠于另一个动作，还必须知道每个动作何时发生以及应该持续多久。虽然符号时序关系能够对任务结构和替代执行序列进行高级推理，但具体的时序参数对于在执行层协调双手同样重要。现有方法孤立地处理这两个层次，在高层次任务规划和低层次运动同步之间留下了空白。本工作提出了一种从人类演示中学习符号和亚符号时序任务约束，并推导出可执行的、时序参数化的双手操作计划的方法。我们的贡献包括：（i）基于多元高斯混合模型的三维双手动作时序关系表示方法，以亚符号层级表示动作之间的时序关系；（ii）一种基于Davis-Putnam-Logemann-Loveland（DPLL）算法的方法，用于寻找并排序所有无矛盾的Allen关系对动作对的分配情况，从而表示任务的不同模式；（iii）一个基于优化的规划系统，该系统结合了已识别的符号和亚符号时序任务约束，以推导出用于机器人执行的时序参数化计划。我们在多个数据集上评估了我们的方法，结果表明，与最具代表性的演示基线相比，我们的方法生成的时序参数化计划更接近于人类演示。</p>
             
 
             
@@ -1158,6 +1465,14 @@
             <a href="http://arxiv.org/abs/2603.06538v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="8" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="8" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Christian Dreher, Patrick Dormanns, Andre Meixner, Tamim Asfour</p>
             
@@ -1171,16 +1486,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">SCOPE: Scene-Contextualized Incremental Few-Shot 3D Segmentation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Incremental Few-Shot (IFS) segmentation aims to learn new categories over time from only a few annotations. Although widely studied in 2D, it remains underexplored for 3D point clouds. Existing methods suffer from catastrophic forgetting or fail to learn discriminative prototypes under sparse supervision, and often overlook a key cue: novel categories frequently appear as unlabelled background in base-training scenes. We introduce SCOPE (Scene-COntextualised Prototype Enrichment), a plug-and-play background-guided prototype enrichment framework that integrates with any prototype-based 3D segmentation method. After base training, a class-agnostic segmentation model extracts high-confidence pseudo-instances from background regions to build a prototype pool. When novel classes arrive with few labelled samples, relevant background prototypes are retrieved and fused with few-shot prototypes to form enriched representations without retraining the backbone or adding parameters. Experiments on ScanNet and S3DIS show that SCOPE achieves SOTA performance, improving novel-class IoU by up to 6.98% and 3.61%, and mean IoU by 2.25% and 1.70%, respectively, while maintaining low forgetting. Code is available https://github.com/Surrey-UP-Lab/SCOPE.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 增量少样本(IFS)分割旨在随着时间的推移，仅从少量标注中学习新的类别。尽管在二维领域得到了广泛研究，但在三维点云领域仍未得到充分探索。现有方法存在灾难性遗忘问题，或者无法在稀疏监督下学习判别性原型，并且常常忽略一个关键线索：新类别经常作为未标注的背景出现在基础训练场景中。我们引入了SCOPE（场景上下文原型富集），这是一个即插即用型的背景引导原型富集框架，可与任何基于原型的三维分割方法集成。在基础训练之后，一个类别无关的分割模型从背景区域提取高置信度的伪实例以构建原型池。当新类别到来且只有少量标注样本时，检索相关的背景原型并将其与少样本原型融合，从而形成丰富的表示，而无需重新训练骨干网络或添加参数。在ScanNet和S3DIS上的实验表明，SCOPE实现了最先进的性能，将新类别IoU分别提高了高达6.98％和3.61％，并将平均IoU分别提高了2.25％和1.70％，同时保持了较低的遗忘率。代码可在https://github.com/Surrey-UP-Lab/SCOPE 获取。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces SCOPE, a novel background-guided prototype enrichment framework for incremental few-shot 3D segmentation, achieving state-of-the-art performance by leveraging unlabelled background regions in base training scenes to improve novel class segmentation without retraining the backbone.</p>
+            <h2 class="paper-title">
+                SCOPE: Scene-Contextualized Incremental Few-Shot 3D Segmentation
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一种名为SCOPE的新型背景引导原型增强框架，用于增量少样本3D分割。通过利用基础训练场景中未标记的背景区域，该框架实现了最先进的性能，并在不重新训练骨干网络的情况下改进了新类别分割。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了一种名为SCOPE的新型背景引导原型增强框架，用于增量少样本3D分割。通过利用基础训练场景中未标记的背景区域，该框架实现了最先进的性能，并在不重新训练骨干网络的情况下改进了新类别分割。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces SCOPE, a novel background-guided prototype enrichment framework for incremental few-shot 3D segmentation, achieving state-of-the-art performance by leveraging unlabelled background regions in base training scenes to improve novel class segmentation without retraining the backbone.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Incremental Few-Shot (IFS) segmentation aims to learn new categories over time from only a few annotations. Although widely studied in 2D, it remains underexplored for 3D point clouds. Existing methods suffer from catastrophic forgetting or fail to learn discriminative prototypes under sparse supervision, and often overlook a key cue: novel categories frequently appear as unlabelled background in base-training scenes. We introduce SCOPE (Scene-COntextualised Prototype Enrichment), a plug-and-play background-guided prototype enrichment framework that integrates with any prototype-based 3D segmentation method. After base training, a class-agnostic segmentation model extracts high-confidence pseudo-instances from background regions to build a prototype pool. When novel classes arrive with few labelled samples, relevant background prototypes are retrieved and fused with few-shot prototypes to form enriched representations without retraining the backbone or adding parameters. Experiments on ScanNet and S3DIS show that SCOPE achieves SOTA performance, improving novel-class IoU by up to 6.98% and 3.61%, and mean IoU by 2.25% and 1.70%, respectively, while maintaining low forgetting. Code is available https://github.com/Surrey-UP-Lab/SCOPE.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>增量少样本(IFS)分割旨在随着时间的推移，仅从少量标注中学习新的类别。尽管在二维领域得到了广泛研究，但在三维点云领域仍未得到充分探索。现有方法存在灾难性遗忘问题，或者无法在稀疏监督下学习判别性原型，并且常常忽略一个关键线索：新类别经常作为未标注的背景出现在基础训练场景中。我们引入了SCOPE（场景上下文原型富集），这是一个即插即用型的背景引导原型富集框架，可与任何基于原型的三维分割方法集成。在基础训练之后，一个类别无关的分割模型从背景区域提取高置信度的伪实例以构建原型池。当新类别到来且只有少量标注样本时，检索相关的背景原型并将其与少样本原型融合，从而形成丰富的表示，而无需重新训练骨干网络或添加参数。在ScanNet和S3DIS上的实验表明，SCOPE实现了最先进的性能，将新类别IoU分别提高了高达6.98％和3.61％，并将平均IoU分别提高了2.25％和1.70％，同时保持了较低的遗忘率。代码可在https://github.com/Surrey-UP-Lab/SCOPE 获取。</p>
             
 
             
@@ -1254,6 +1573,14 @@
             <a href="http://arxiv.org/abs/2603.06572v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="9" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="9" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Vishal Thengane, Zhaochong An, Tianjin Huang, Son Lam Phung, Abdesselam Bouzerdoum, Lu Yin, Na Zhao, Xiatian Zhu</p>
             
@@ -1267,16 +1594,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Modeling and Measuring Redundancy in Multisource Multimodal Data for Autonomous Driving</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Next-generation autonomous vehicles (AVs) rely on large volumes of multisource and multimodal ($M^2$) data to support real-time decision-making. In practice, data quality (DQ) varies across sources and modalities due to environmental conditions and sensor limitations, yet AV research has largely prioritized algorithm design over DQ analysis. This work focuses on redundancy as a fundamental but underexplored DQ issue in AV datasets. Using the nuScenes and Argoverse 2 (AV2) datasets, we model and measure redundancy in multisource camera data and multimodal image-LiDAR data, and evaluate how removing redundant labels affects the YOLOv8 object detection task. Experimental results show that selectively removing redundant multisource image object labels from cameras with shared fields of view improves detection. In nuScenes, mAP${50}$ gains from $0.66$ to $0.70$, $0.64$ to $0.67$, and from $0.53$ to $0.55$, on three representative overlap regions, while detection on other overlapping camera pairs remains at the baseline even under stronger pruning. In AV2, $4.1$-$8.6\%$ of labels are removed, and mAP${50}$ stays near the $0.64$ baseline. Multimodal analysis also reveals substantial redundancy between image and LiDAR data. These findings demonstrate that redundancy is a measurable and actionable DQ factor with direct implications for AV performance. This work highlights the role of redundancy as a data quality factor in AV perception and motivates a data-centric perspective for evaluating and improving AV datasets. Code, data, and implementation details are publicly available at: https://github.com/yhZHOU515/RedundancyAD</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 下一代自动驾驶汽车（AV）依赖大量的多源、多模态（$M^2$）数据来支持实时决策。实践中，由于环境条件和传感器限制，数据质量（DQ）在不同来源和模态之间存在差异，然而自动驾驶汽车研究主要侧重于算法设计，而忽视了数据质量分析。本工作重点关注冗余，将其作为自动驾驶汽车数据集中一个基础但未被充分探索的数据质量问题。我们使用nuScenes和Argoverse 2（AV2）数据集，对多源相机数据和多模态图像-激光雷达数据中的冗余进行建模和测量，并评估移除冗余标签对YOLOv8目标检测任务的影响。实验结果表明，选择性地移除来自具有共享视野的相机的冗余多源图像目标标签可以提高检测性能。在nuScenes中，在三个具有代表性的重叠区域，mAP${50}$分别从$0.66$提升至$0.70$，从$0.64$提升至$0.67$，以及从$0.53$提升至$0.55$，而其他重叠相机对上的检测性能即使在更强的剪枝下也保持在基准水平。在AV2中，移除了$4.1$-$8.6\%$的标签，且mAP${50}$保持在接近$0.64$的基准水平。多模态分析也揭示了图像和激光雷达数据之间存在大量冗余。这些发现表明，冗余是一个可测量且可操作的数据质量因素，对自动驾驶汽车性能具有直接影响。这项工作强调了冗余作为自动驾驶汽车感知中的一个数据质量因素的作用，并推动了一种以数据为中心的视角来评估和改进自动驾驶汽车数据集。代码、数据和实现细节可在以下网址公开获取：https://github.com/yhZHOU515/RedundancyAD</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper investigates redundancy in multisource, multimodal autonomous driving datasets (nuScenes and Argoverse 2), showing that removing redundant labels can improve object detection performance, highlighting data quality's importance.</p>
+            <h2 class="paper-title">
+                Modeling and Measuring Redundancy in Multisource Multimodal Data for Autonomous Driving
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文研究了多源、多模态自动驾驶数据集（nuScenes 和 Argoverse 2）中的冗余问题，表明删除冗余标签可以提高目标检测性能，强调了数据质量的重要性。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文研究了多源、多模态自动驾驶数据集（nuScenes 和 Argoverse 2）中的冗余问题，表明删除冗余标签可以提高目标检测性能，强调了数据质量的重要性。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper investigates redundancy in multisource, multimodal autonomous driving datasets (nuScenes and Argoverse 2), showing that removing redundant labels can improve object detection performance, highlighting data quality's importance.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Next-generation autonomous vehicles (AVs) rely on large volumes of multisource and multimodal ($M^2$) data to support real-time decision-making. In practice, data quality (DQ) varies across sources and modalities due to environmental conditions and sensor limitations, yet AV research has largely prioritized algorithm design over DQ analysis. This work focuses on redundancy as a fundamental but underexplored DQ issue in AV datasets. Using the nuScenes and Argoverse 2 (AV2) datasets, we model and measure redundancy in multisource camera data and multimodal image-LiDAR data, and evaluate how removing redundant labels affects the YOLOv8 object detection task. Experimental results show that selectively removing redundant multisource image object labels from cameras with shared fields of view improves detection. In nuScenes, mAP${50}$ gains from $0.66$ to $0.70$, $0.64$ to $0.67$, and from $0.53$ to $0.55$, on three representative overlap regions, while detection on other overlapping camera pairs remains at the baseline even under stronger pruning. In AV2, $4.1$-$8.6\%$ of labels are removed, and mAP${50}$ stays near the $0.64$ baseline. Multimodal analysis also reveals substantial redundancy between image and LiDAR data. These findings demonstrate that redundancy is a measurable and actionable DQ factor with direct implications for AV performance. This work highlights the role of redundancy as a data quality factor in AV perception and motivates a data-centric perspective for evaluating and improving AV datasets. Code, data, and implementation details are publicly available at: https://github.com/yhZHOU515/RedundancyAD</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>下一代自动驾驶汽车（AV）依赖大量的多源、多模态（$M^2$）数据来支持实时决策。实践中，由于环境条件和传感器限制，数据质量（DQ）在不同来源和模态之间存在差异，然而自动驾驶汽车研究主要侧重于算法设计，而忽视了数据质量分析。本工作重点关注冗余，将其作为自动驾驶汽车数据集中一个基础但未被充分探索的数据质量问题。我们使用nuScenes和Argoverse 2（AV2）数据集，对多源相机数据和多模态图像-激光雷达数据中的冗余进行建模和测量，并评估移除冗余标签对YOLOv8目标检测任务的影响。实验结果表明，选择性地移除来自具有共享视野的相机的冗余多源图像目标标签可以提高检测性能。在nuScenes中，在三个具有代表性的重叠区域，mAP${50}$分别从$0.66$提升至$0.70$，从$0.64$提升至$0.67$，以及从$0.53$提升至$0.55$，而其他重叠相机对上的检测性能即使在更强的剪枝下也保持在基准水平。在AV2中，移除了$4.1$-$8.6\%$的标签，且mAP${50}$保持在接近$0.64$的基准水平。多模态分析也揭示了图像和激光雷达数据之间存在大量冗余。这些发现表明，冗余是一个可测量且可操作的数据质量因素，对自动驾驶汽车性能具有直接影响。这项工作强调了冗余作为自动驾驶汽车感知中的一个数据质量因素的作用，并推动了一种以数据为中心的视角来评估和改进自动驾驶汽车数据集。代码、数据和实现细节可在以下网址公开获取：https://github.com/yhZHOU515/RedundancyAD</p>
             
 
             
@@ -1350,6 +1681,14 @@
             <a href="http://arxiv.org/abs/2603.06544v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="10" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="10" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Yuhan Zhou, Mehri Sattari, Haihua Chen, Kewei Sha</p>
             
@@ -1358,7 +1697,7 @@
     </div>
 
     <section class="filtered-section">
-        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
         <div class="filtered-grid">
             
             <div class="filtered-item">
@@ -1368,12 +1707,24 @@
                         LiveSense: A Real-Time Wi-Fi Sensing Platform for Range-Doppler on COTS Laptop
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="11" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="11" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Jessica Sanson, Rahul C. Shah, Maximilian Pinaroc, Cagri Tanriover, Valerio Frascolla</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文介绍LiveSense，该系统将配备Wi-Fi 6E/7的商用笔记本电脑转变为实时测距-多普勒传感器，能够利用Wi-Fi信号检测距离、速度、微动和手势。</p>
+                
+                <p><strong>Overall:</strong> 5/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1383,12 +1734,24 @@
                         SurgFormer: Scalable Learning of Organ Deformation with Resection Support and Real-Time Inference
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="12" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="12" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Ashkan Shahbazi, Elaheh Akbari, Kyvia Pereira, Jon S. Heiselman, Annie C. Benson, Garrison L. H. Johnston, Jie Ying Wu, Nabil Simaan, Michael I. Miga, Soheil Kolouri</p>
                 
                 <p><strong>TLDR-CN:</strong> SurgFormer是一个多分辨率门控Transformer，它在求解器生成的数据上进行训练，用于近乎实时的软组织模拟，包括切除，并附带手术模拟数据集。</p>
+                
+                <p><strong>Overall:</strong> 5/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1398,12 +1761,24 @@
                         Spatial Calibration of Diffuse LiDARs
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="13" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="13" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Nikhil Behari, Ramesh Raskar</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文提出了一种用于漫反射激光雷达的空间标定方法，估计每个像素的足迹和在相应RGB图像平面中的空间灵敏度。它使用扫描的回射反射片来实现激光雷达到RGB的对应。</p>
+                
+                <p><strong>Overall:</strong> 4/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1413,20 +1788,55 @@
                         Underactuated multimodal jumping robot for extraterrestrial exploration
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="14" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="14" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Neil R. Wagner, Justin K. Yim</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文介绍了一种小型、欠驱动的单足机器人，该机器人能够滚动、跳跃和自扶正，专为低重力环境下的多模态运动而设计。它仅使用两个反作用轮和简单的控制器来实现有目标的跳跃和着陆。</p>
+                
+                <p><strong>Overall:</strong> 4/10</p>
+                
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <p>没有一级过滤未通过的论文。</p>
             </div>
             
         </div>
     </section>
 
     <footer class="footer">
-        Generated on 2026-04-08 07:41:52 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-30 18:17:59 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
+    
+    
+    <script type="application/json" id="papers-data">[{"title": "BEVLM: Distilling Semantic Knowledge from LLMs into Bird\u0027s-Eye View Representations", "summary": "The integration of Large Language Models (LLMs) into autonomous driving has attracted growing interest for their strong reasoning and semantic understanding abilities, which are essential for handling complex decision-making and long-tail scenarios. However, existing methods typically feed LLMs with tokens from multi-view and multi-frame images independently, leading to redundant computation and limited spatial consistency. This separation in visual processing hinders accurate 3D spatial reasoning and fails to maintain geometric coherence across views. On the other hand, Bird\u0027s-Eye View (BEV) representations learned from geometrically annotated tasks (e.g., object detection) provide spatial structure but lack the semantic richness of foundation vision encoders. To bridge this gap, we propose BEVLM, a framework that connects a spatially consistent and semantically distilled BEV representation with LLMs. Through extensive experiments, we show that BEVLM enables LLMs to reason more effectively in cross-view driving scenes, improving accuracy by 46%, by leveraging BEV features as unified inputs. Furthermore, by distilling semantic knowledge from LLMs into BEV representations, BEVLM significantly improves closed-loop end-to-end driving performance by 29% in safety-critical scenarios.", "url": "http://arxiv.org/abs/2603.06576v1", "authors": ["Thomas Monninger", "Shaoyuan Xie", "Qi Alfred Chen", "Sihao Ding"], "keywords": []},{"title": "SUREON: A Benchmark and Vision-Language-Model for Surgical Reasoning", "summary": "Surgeons don\u0027t just see -- they interpret. When an expert observes a surgical scene, they understand not only what instrument is being used, but why it was chosen, what risk it poses, and what comes next. Current surgical AI cannot answer such questions, largely because training data that explicitly encodes surgical reasoning is immensely difficult to annotate at scale. Yet surgical video lectures already contain exactly this -- explanations of intent, rationale, and anticipation, narrated by experts for the purpose of teaching. Though inherently noisy and unstructured, these narrations encode the reasoning that surgical AI currently lacks. We introduce SUREON, a large-scale video QA dataset that systematically harvests this training signal from surgical academic videos. SUREON defines 12 question categories covering safety assessment, decision rationale, and forecasting, and uses a multi-agent pipeline to extract and structure supervision at scale. Across 134.7K clips and 170 procedure types, SUREON yields 206.8k QA pairs and an expert-validated benchmark of 354 examples. To evaluate the extent to which this supervision translates to surgical reasoning ability, we introduce two models: SureonVLM, a vision-language model adapted through supervised fine-tuning, and SureonVLM-R1, a reasoning model trained with Group Relative Policy Optimization. Both models can answer complex questions about surgery and substantially outperform larger general-domain models, exceeding 84% accuracy on the SUREON benchmark while outperforming general-domain models on standard surgical perception tasks. Qualitative analysis of SureonVLM-R1 reveals explicit reasoning behavior, such as inferring operative intent from visual context.", "url": "http://arxiv.org/abs/2603.06570v1", "authors": ["Alejandra Perez", "Anita Rau", "Lee White", "Busisiwe Mlambo", "Chinedu Nwoye", "Muhammad Abdullah Jamal", "Omid Mohareri"], "keywords": []},{"title": "Boosting deep Reinforcement Learning using pretraining with Logical Options", "summary": "Deep reinforcement learning agents are often misaligned, as they over-exploit early reward signals. Recently, several symbolic approaches have addressed these challenges by encoding sparse objectives along with aligned plans. However, purely symbolic architectures are complex to scale and difficult to apply to continuous settings. Hence, we propose a hybrid approach, inspired by humans\u0027 ability to acquire new skills. We use a two-stage framework that injects symbolic structure into neural-based reinforcement learning agents without sacrificing the expressivity of deep policies. Our method, called Hybrid Hierarchical RL (H^2RL), introduces a logical option-based pretraining strategy to steer the learning policy away from short-term reward loops and toward goal-directed behavior while allowing the final policy to be refined via standard environment interaction. Empirically, we show that this approach consistently improves long-horizon decision-making and yields agents that outperform strong neural, symbolic, and neuro-symbolic baselines.", "url": "http://arxiv.org/abs/2603.06565v1", "authors": ["Zihan Ye", "Phil Chau", "Raban Emunds", "Jannis Bl\u00fcml", "Cedric Derstroff", "Quentin Delfosse", "Oleg Arenz", "Kristian Kersting"], "keywords": []},{"title": "Omni-Diffusion: Unified Multimodal Understanding and Generation with Masked Discrete Diffusion", "summary": "While recent multimodal large language models (MLLMs) have made impressive strides, they predominantly employ a conventional autoregressive architecture as their backbone, leaving significant room to explore effective and efficient alternatives in architectural design. Concurrently, recent studies have successfully applied discrete diffusion models to various domains, such as visual understanding and image generation, revealing their considerable potential as a promising backbone for multimodal systems. Drawing inspiration from these pioneering research, we introduce Omni-Diffusion, the first any-to-any multimodal language model built entirely on mask-based discrete diffusion models, which unifies understanding and generation across text, speech, and images. Omni-Diffusion employs a unified mask-based discrete diffusion model to directly capture the joint distribution over discrete multimodal tokens. This approach supports not only bimodal tasks but also more complex scenarios involving multiple modalities. On a diverse set of benchmarks, our method outperforms or performs on par with existing multimodal systems that process two or more modalities, highlighting the significant promise of diffusion models in powering the next generation of multimodal foundation models. Project webpage: https://omni-diffusion.github.io.", "url": "http://arxiv.org/abs/2603.06577v1", "authors": ["Lijiang Li", "Zuwei Long", "Yunhang Shen", "Heting Gao", "Haoyu Cao", "Xing Sun", "Caifeng Shan", "Ran He", "Chaoyou Fu"], "keywords": []},{"title": "Penguin-VL: Exploring the Efficiency Limits of VLM with LLM-based Vision Encoders", "summary": "Vision Language Model (VLM) development has largely relied on scaling model size, which hinders deployment on compute-constrained mobile and edge devices such as smartphones and robots. In this work, we explore the performance limits of compact (e.g., 2B and 8B) VLMs. We challenge the prevailing practice that state-of-the-art VLMs must rely on vision encoders initialized via massive contrastive pretraining (e.g., CLIP/SigLIP). We identify an objective mismatch: contrastive learning, optimized for discrimination, enforces coarse and category-level invariances that suppress fine-grained visual cues needed for dense captioning and complex VLM reasoning. To address this issue, we present Penguin-VL, whose vision encoder is initialized from a text-only LLM. Our experiments reveal that Penguin-Encoder serves as a superior alternative to traditional contrastive pretraining, unlocking a higher degree of visual fidelity and data efficiency for multimodal understanding. Across various image and video benchmarks, Penguin-VL achieves performance comparable to leading VLMs (e.g., Qwen3-VL) in mathematical reasoning and surpasses them in tasks such as document understanding, visual knowledge, and multi-perspective video understanding. Notably, these gains are achieved with a lightweight architecture, demonstrating that improved visual representation rather than model scaling is the primary driver of performance. Our ablations show that Penguin-Encoder consistently outperforms contrastive-pretrained encoders, preserving fine-grained spatial and temporal cues that are critical for dense perception and complex reasoning. This makes it a strong drop-in alternative for compute-efficient VLMs and enables high performance in resource-constrained settings. Code: https://github.com/tencent-ailab/Penguin-VL", "url": "http://arxiv.org/abs/2603.06569v1", "authors": ["Boqiang Zhang", "Lei Ke", "Ruihan Yang", "Qi Gao", "Tianyuan Qu", "Rossell Chen", "Dong Yu", "Leoweiliang"], "keywords": []},{"title": "EgoReasoner: Learning Egocentric 4D Reasoning via Task-Adaptive Structured Thinking", "summary": "Egocentric video understanding is inherently complex due to the dynamic 4D nature of the environment, where camera motion and object displacements necessitate a continuous re-evaluation of spatial relations. In this work, we target a suite of under-explored egocentric 4D reasoning tasks, including fixture interaction counting, viewpoint-relative fixture location, object movement itinerary tracking, and stationary object localization, that require fundamentally different cognitive operations: spatial anchoring, temporal tracking, and duration reasoning. We observe that these structural differences make task-agnostic approaches insufficient: generic Chain-of-Thought methods lack task-appropriate reasoning primitives, and uniform reinforcement learning actively destabilizes performance on spatial tasks. To address this, we propose EgoReasoner, a two-stage framework that aligns both the reasoning scaffold and the reward signal to each task\u0027s cognitive structure. In the first stage, Task-Adaptive Thinking Templates guide the synthesis of structured CoT traces that teach the model to reason adaptively across task types via supervised fine-tuning. In the second stage, task-aware reward functions verify entity grounding, temporal alignment, and task-adaptive logical consistency, selectively strengthening each reasoning pathway via reinforcement fine-tuning with GRPO. Our 3B-parameter model, trained on only 16K samples, achieves 37.5% average accuracy on the challenging HD-EPIC benchmark, surpassing Qwen2.5-VL-7B (25.7%) by over 10 points.", "url": "http://arxiv.org/abs/2603.06561v1", "authors": ["Fangrui Zhu", "Yunfeng Xi", "Jianmo Ni", "Mu Cai", "Boqing Gong", "Long Zhao", "Chen Qu", "Ian Miao", "Yi Li", "Cheng Zhong", "Huaizu Jiang", "Shwetak Patel"], "keywords": []},{"title": "Fly360: Omnidirectional Obstacle Avoidance within Drone View", "summary": "Obstacle avoidance in unmanned aerial vehicles (UAVs), as a fundamental capability, has gained increasing attention with the growing focus on spatial intelligence. However, current obstacle-avoidance methods mainly depend on limited field-of-view sensors and are ill-suited for UAV scenarios which require full-spatial awareness when the movement direction differs from the UAV\u0027s heading. This limitation motivates us to explore omnidirectional obstacle avoidance for panoramic drones with full-view perception. We first study an under explored problem setting in which a UAV must generate collision-free motion in environments with obstacles from arbitrary directions, and then construct a benchmark that consists of three representative flight tasks. Based on such settings, we propose Fly360, a two-stage perception-decision pipeline with a fixed random-yaw training strategy. At the perception stage, panoramic RGB observations are input and converted into depth maps as a robust intermediate representation. For the policy network, it is lightweight and used to output body-frame velocity commands from depth inputs. Extensive simulation and real-world experiments demonstrate that Fly360 achieves stable omnidirectional obstacle avoidance and outperforms forward-view baselines across all tasks. Our model is available at https://zxkai.github.io/fly360/", "url": "http://arxiv.org/abs/2603.06573v1", "authors": ["Xiangkai Zhang", "Dizhe Zhang", "WenZhuo Cao", "Zhaoliang Wan", "Yingjie Niu", "Lu Qi", "Xu Yang", "Zhiyong Liu"], "keywords": []},{"title": "Uncertainty-Aware Adaptive Dynamics For Underwater Vehicle-Manipulator Robots", "summary": "Accurate and adaptive dynamic models are critical for underwater vehicle-manipulator systems where hydrodynamic effects induce time-varying parameters. This paper introduces a novel uncertainty-aware adaptive dynamics model framework that remains linear in lumped vehicle and manipulator parameters, and embeds convex physical consistency constraints during online estimation. Moving horizon estimation is used to stack horizon regressors, enforce realizable inertia, damping, friction, and hydrostatics, and quantify uncertainty from parameter evolution. Experiments on a BlueROV2 Heavy with a 4-DOF manipulator demonstrate rapid convergence and calibrated predictions. Manipulator fits achieve R2 = 0.88 to 0.98 with slopes near unity, while vehicle surge, heave, and roll are reproduced with good fidelity under stronger coupling and noise. Median solver time is approximately 0.023 s per update, confirming online feasibility. A comparison against a fixed parameter model shows consistent reductions in MAE and RMSE across degrees of freedom. Results indicate physically plausible parameters and confidence intervals with near 100% coverage, enabling reliable feedforward control and simulation in underwater environments.", "url": "http://arxiv.org/abs/2603.06548v1", "authors": ["Edward Morgan", "Nenyi K Dadson", "Corina Barbalata"], "keywords": []},{"title": "Unified Learning of Temporal Task Structure and Action Timing for Bimanual Robot Manipulation", "summary": "Temporal task structure is fundamental for bimanual manipulation: a robot must not only know that one action precedes or overlaps another, but also when each action should occur and how long it should take. While symbolic temporal relations enable high-level reasoning about task structure and alternative execution sequences, concrete timing parameters are equally essential for coordinating two hands at the execution level. Existing approaches address these two levels in isolation, leaving a gap between high-level task planning and low-level movement synchronization. This work presents an approach for learning both symbolic and subsymbolic temporal task constraints from human demonstrations and deriving executable, temporally parametrized plans for bimanual manipulation. Our contributions are (i) a 3-dimensional representation of timings between two actions with methods based on multivariate Gaussian Mixture Models to represent temporal relationships between actions on a subsymbolic level, (ii) a method based on the Davis-Putnam-Logemann-Loveland (DPLL) algorithm that finds and ranks all contradiction-free assignments of Allen relations to action pairs, representing different modes of a task, and (iii) an optimization-based planning system that combines the identified symbolic and subsymbolic temporal task constraints to derive temporally parametrized plans for robot execution. We evaluate our approach on several datasets, demonstrating that our method generates temporally parametrized plans closer to human demonstrations than the most characteristic demonstration baseline.", "url": "http://arxiv.org/abs/2603.06538v1", "authors": ["Christian Dreher", "Patrick Dormanns", "Andre Meixner", "Tamim Asfour"], "keywords": []},{"title": "SCOPE: Scene-Contextualized Incremental Few-Shot 3D Segmentation", "summary": "Incremental Few-Shot (IFS) segmentation aims to learn new categories over time from only a few annotations. Although widely studied in 2D, it remains underexplored for 3D point clouds. Existing methods suffer from catastrophic forgetting or fail to learn discriminative prototypes under sparse supervision, and often overlook a key cue: novel categories frequently appear as unlabelled background in base-training scenes. We introduce SCOPE (Scene-COntextualised Prototype Enrichment), a plug-and-play background-guided prototype enrichment framework that integrates with any prototype-based 3D segmentation method. After base training, a class-agnostic segmentation model extracts high-confidence pseudo-instances from background regions to build a prototype pool. When novel classes arrive with few labelled samples, relevant background prototypes are retrieved and fused with few-shot prototypes to form enriched representations without retraining the backbone or adding parameters. Experiments on ScanNet and S3DIS show that SCOPE achieves SOTA performance, improving novel-class IoU by up to 6.98% and 3.61%, and mean IoU by 2.25% and 1.70%, respectively, while maintaining low forgetting. Code is available https://github.com/Surrey-UP-Lab/SCOPE.", "url": "http://arxiv.org/abs/2603.06572v1", "authors": ["Vishal Thengane", "Zhaochong An", "Tianjin Huang", "Son Lam Phung", "Abdesselam Bouzerdoum", "Lu Yin", "Na Zhao", "Xiatian Zhu"], "keywords": []},{"title": "Modeling and Measuring Redundancy in Multisource Multimodal Data for Autonomous Driving", "summary": "Next-generation autonomous vehicles (AVs) rely on large volumes of multisource and multimodal ($M^2$) data to support real-time decision-making. In practice, data quality (DQ) varies across sources and modalities due to environmental conditions and sensor limitations, yet AV research has largely prioritized algorithm design over DQ analysis. This work focuses on redundancy as a fundamental but underexplored DQ issue in AV datasets. Using the nuScenes and Argoverse 2 (AV2) datasets, we model and measure redundancy in multisource camera data and multimodal image-LiDAR data, and evaluate how removing redundant labels affects the YOLOv8 object detection task. Experimental results show that selectively removing redundant multisource image object labels from cameras with shared fields of view improves detection. In nuScenes, mAP${50}$ gains from $0.66$ to $0.70$, $0.64$ to $0.67$, and from $0.53$ to $0.55$, on three representative overlap regions, while detection on other overlapping camera pairs remains at the baseline even under stronger pruning. In AV2, $4.1$-$8.6\\%$ of labels are removed, and mAP${50}$ stays near the $0.64$ baseline. Multimodal analysis also reveals substantial redundancy between image and LiDAR data. These findings demonstrate that redundancy is a measurable and actionable DQ factor with direct implications for AV performance. This work highlights the role of redundancy as a data quality factor in AV perception and motivates a data-centric perspective for evaluating and improving AV datasets. Code, data, and implementation details are publicly available at: https://github.com/yhZHOU515/RedundancyAD", "url": "http://arxiv.org/abs/2603.06544v1", "authors": ["Yuhan Zhou", "Mehri Sattari", "Haihua Chen", "Kewei Sha"], "keywords": []},{"title": "LiveSense: A Real-Time Wi-Fi Sensing Platform for Range-Doppler on COTS Laptop", "summary": "We present LiveSense - a cross-platform that transforms a commercial off-the-shelf (COTS) Wi-Fi Network Interface Card (NIC) on a laptop into a centimeter-level Range-Doppler sensor while preserving simultaneous communication capability. The laptops are equipped with COTS Intel AX211 (Wi-Fi 6E) or Intel BE201 (Wi-Fi 7) NICs. LiveSense can (i) Extract fully-synchronized channel state information (CSI) at \u003e= 40 Hz, (ii) Perform time-phase alignment and self-interference cancellation on-device, and (iii) Provide a real-time stream of range, Doppler, subcarrier magnitude/phase and annotated video frames to a Python/Qt Graphical User Interface (GUI). The demo will showcase the ability to detect (i) Distance and radial velocity of attendees within a few meters of the device, (ii) Micro-motion (respiration), and (iii) Hand-gesture ranging. To the best of our knowledge, this is the first-ever demo to obtain accurate range information of targets from commercial Wi-Fi, despite the limited 160 MHz bandwidth.", "url": "http://arxiv.org/abs/2603.06545v1", "authors": ["Jessica Sanson", "Rahul C. Shah", "Maximilian Pinaroc", "Cagri Tanriover", "Valerio Frascolla"], "keywords": []},{"title": "SurgFormer: Scalable Learning of Organ Deformation with Resection Support and Real-Time Inference", "summary": "We introduce SurgFormer, a multiresolution gated transformer for data driven soft tissue simulation on volumetric meshes. High fidelity biomechanical solvers are often too costly for interactive use, so we train SurgFormer on solver generated data to predict nodewise displacement fields at near real time rates. SurgFormer builds a fixed mesh hierarchy and applies repeated multibranch blocks that combine local message passing, coarse global self attention, and pointwise feedforward updates, fused by learned per node, per channel gates to adaptively integrate local and long range information while remaining scalable on large meshes. For cut conditioned simulation, resection information is encoded as a learned cut embedding and provided as an additional input, enabling a unified model for both standard deformation prediction and topology altering cases. We also introduce two surgical simulation datasets generated under a unified protocol with XFEM based supervision: a cholecystectomy resection dataset and an appendectomy manipulation and resection dataset with cut and uncut cases. To our knowledge, this is the first learned volumetric surrogate setting to study XFEM supervised cut conditioned deformation within the same volumetric pipeline as standard deformation prediction. Across diverse baselines, SurgFormer achieves strong accuracy with favorable efficiency, making it a practical backbone for both tasks. {Code, data, and project page: \\href{https://mint-vu.github.io/SurgFormer/}{available here}}", "url": "http://arxiv.org/abs/2603.06543v1", "authors": ["Ashkan Shahbazi", "Elaheh Akbari", "Kyvia Pereira", "Jon S. Heiselman", "Annie C. Benson", "Garrison L. H. Johnston", "Jie Ying Wu", "Nabil Simaan", "Michael I. Miga", "Soheil Kolouri"], "keywords": []},{"title": "Spatial Calibration of Diffuse LiDARs", "summary": "Diffuse direct time-of-flight LiDARs report per-pixel depth histograms formed by aggregating photon returns over a wide instantaneous field of view, violating the single-ray assumption behind standard LiDAR-RGB calibration. We present a simple spatial calibration procedure that estimates, for each diffuse LiDAR pixel, its footprint (effective support region) and relative spatial sensitivity in a co-located RGB image plane. Using a scanned retroreflective patch with background subtraction, we recover per-pixel response maps that provide an explicit LiDAR-to-RGB correspondence for cross-modal alignment and fusion. We demonstrate the method on the ams OSRAM TMF8828.", "url": "http://arxiv.org/abs/2603.06531v1", "authors": ["Nikhil Behari", "Ramesh Raskar"], "keywords": []},{"title": "Underactuated multimodal jumping robot for extraterrestrial exploration", "summary": "We present a rolling and jumping underactuated monopedal robot designed to explore multimodal locomotion on low-gravity bodies. It uses only two reaction wheels to control its spatial orientation with two controllers: a balancing controller which can aim the robot\u0027s jump direction on the ground, and an aerial reorientation controller which can aim the robot\u0027s leg for landing after flight. We demonstrate rolling, targeted jumping and landing, and self-righting using only three actuators total, keeping system size to 0.33m and 1.25kg. Simple switching between locomotion modes enables the system to deal with differing landscapes and environmental conditions.", "url": "http://arxiv.org/abs/2603.06525v1", "authors": ["Neil R. Wagner", "Justin K. Yim"], "keywords": []}]</script>
+
+    <!-- SparkMD5: Zotero's WebDAV format requires md5; SubtleCrypto can't do MD5 -->
+    <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
+    <!-- JSZip: needed to build the <key>.zip wrapper Zotero expects on WebDAV -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="../js/zotero.js"></script>
+    <script src="../js/webdav.js"></script>
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
 </body>
 </html>

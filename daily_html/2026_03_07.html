@@ -32,38 +32,6 @@
             line-height: 1.6;
         }
 
-        .quick-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            align-items: center;
-            width: fit-content;
-            margin: 0.9rem auto 0;
-            padding: 0;
-            border: none;
-            background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-        }
-
-        .quick-nav a {
-            color: var(--highlight-primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 0.35rem 0.75rem;
-            border-radius: 999px;
-            border: 1px solid rgba(226, 232, 240, 0.95);
-            background: rgba(255, 255, 255, 0.86);
-            box-shadow: 0 2px 6px var(--shadow-color);
-            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-        }
-
-        .quick-nav a:hover {
-            background-color: rgba(123, 44, 159, 0.12);
-            color: #6B1F8F;
-            transform: translateY(-1px);
-        }
 
         .bento-grid {
             display: grid;
@@ -103,10 +71,25 @@
         }
 
         .paper-summary {
-            font-size: 0.875rem; /* Tailwind text-sm */
+            font-size: 0.85rem;
             color: var(--text-muted-color);
-            margin-bottom: 1.25rem; /* Tailwind mb-5 */
+            margin-bottom: 1.25rem;
             line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
         }
 
         .paper-link {
@@ -195,12 +178,25 @@
         }
 
         .paper-tldr {
-            font-size: 0.95rem; /* Slightly bigger than summary */
-            color: #475569; /* Changed to Tailwind slate-600 (slightly darker than summary) */
-            margin-top: 0.75rem; /* Tailwind mt-3 */
-            margin-bottom: 0.75rem; /* Tailwind mb-2 */
-            /* font-style: italic; */
-            font-weight: bold;
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
         }
 
         .paper-rating {
@@ -276,6 +272,222 @@
             font-size: 0.88rem;
         }
 
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link.
+           Shown only when body.zotero-mode is set (which like.js does after
+           confirming sessionStorage has decrypted credentials). Guests never
+           see it. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn i {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover i {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
@@ -289,11 +501,6 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>March 07, 2026</p>
-        <nav class="quick-nav">
-            <a href="../index.html" target="_top">首页</a>
-            <a href="../list.html" target="_top">报告列表</a>
-            <a href="../search.html" target="_top">论文检索</a>
-        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -307,16 +514,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">RoboPocket: Improve Robot Policies Instantly with Your Phone</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Scaling imitation learning is fundamentally constrained by the efficiency of data collection. While handheld interfaces have emerged as a scalable solution for in-the-wild data acquisition, they predominantly operate in an open-loop manner: operators blindly collect demonstrations without knowing the underlying policy's weaknesses, leading to inefficient coverage of critical state distributions. Conversely, interactive methods like DAgger effectively address covariate shift but rely on physical robot execution, which is costly and difficult to scale. To reconcile this trade-off, we introduce RoboPocket, a portable system that enables Robot-Free Instant Policy Iteration using single consumer smartphones. Its core innovation is a Remote Inference framework that visualizes the policy's predicted trajectory via Augmented Reality (AR) Visual Foresight. This immersive feedback allows collectors to proactively identify potential failures and focus data collection on the policy's weak regions without requiring a physical robot. Furthermore, we implement an asynchronous Online Finetuning pipeline that continuously updates the policy with incoming data, effectively closing the learning loop in minutes. Extensive experiments demonstrate that RoboPocket adheres to data scaling laws and doubles the data efficiency compared to offline scaling strategies, overcoming their long-standing efficiency bottleneck. Moreover, our instant iteration loop also boosts sample efficiency by up to 2$\times$ in distributed environments a small number of interactive corrections per person. Project page and videos: https://robo-pocket.github.io.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 模仿学习的规模化受限于数据收集的效率。手持界面作为一种可扩展的野外数据采集方案已崭露头角，但它们主要以开环方式运行：操作员盲目地收集演示数据，而不知道底层策略的弱点，导致对关键状态分布的覆盖效率低下。相反，像DAgger这样的交互式方法可以有效地解决协变量偏移问题，但依赖于物理机器人的执行，这成本高昂且难以规模化。为了协调这种权衡，我们引入了 RoboPocket，这是一种便携式系统，可以使用单个消费级智能手机实现无需机器人的即时策略迭代。其核心创新是一个远程推理框架，通过增强现实 (AR) 视觉预测可视化策略的预测轨迹。这种沉浸式反馈使数据采集者能够主动识别潜在的失败，并将数据收集集中在策略的薄弱区域，而无需物理机器人。此外，我们实现了一个异步在线微调流程，该流程使用传入的数据持续更新策略，从而有效地在几分钟内闭合学习循环。大量的实验表明，RoboPocket 遵循数据缩放定律，与离线缩放策略相比，数据效率提高了一倍，克服了它们长期存在的效率瓶颈。此外，我们的即时迭代循环还在分布式环境中将样本效率提高了高达 2 倍——每个人只需进行少量交互式校正。项目主页和视频：https://robo-pocket.github.io。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: RoboPocket uses AR visual foresight on smartphones for robot-free policy iteration, enabling efficient data collection by focusing on policy weaknesses without needing a physical robot, surpassing offline scaling and boosting sample efficiency.</p>
+            <h2 class="paper-title">
+                RoboPocket: Improve Robot Policies Instantly with Your Phone
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: RoboPocket利用智能手机上的AR视觉预测进行无机器人策略迭代，通过关注策略弱点来实现高效的数据收集，无需物理机器人即可超越离线缩放并提高样本效率。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>RoboPocket利用智能手机上的AR视觉预测进行无机器人策略迭代，通过关注策略弱点来实现高效的数据收集，无需物理机器人即可超越离线缩放并提高样本效率。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> RoboPocket uses AR visual foresight on smartphones for robot-free policy iteration, enabling efficient data collection by focusing on policy weaknesses without needing a physical robot, surpassing offline scaling and boosting sample efficiency.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Scaling imitation learning is fundamentally constrained by the efficiency of data collection. While handheld interfaces have emerged as a scalable solution for in-the-wild data acquisition, they predominantly operate in an open-loop manner: operators blindly collect demonstrations without knowing the underlying policy's weaknesses, leading to inefficient coverage of critical state distributions. Conversely, interactive methods like DAgger effectively address covariate shift but rely on physical robot execution, which is costly and difficult to scale. To reconcile this trade-off, we introduce RoboPocket, a portable system that enables Robot-Free Instant Policy Iteration using single consumer smartphones. Its core innovation is a Remote Inference framework that visualizes the policy's predicted trajectory via Augmented Reality (AR) Visual Foresight. This immersive feedback allows collectors to proactively identify potential failures and focus data collection on the policy's weak regions without requiring a physical robot. Furthermore, we implement an asynchronous Online Finetuning pipeline that continuously updates the policy with incoming data, effectively closing the learning loop in minutes. Extensive experiments demonstrate that RoboPocket adheres to data scaling laws and doubles the data efficiency compared to offline scaling strategies, overcoming their long-standing efficiency bottleneck. Moreover, our instant iteration loop also boosts sample efficiency by up to 2$\times$ in distributed environments a small number of interactive corrections per person. Project page and videos: https://robo-pocket.github.io.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>模仿学习的规模化受限于数据收集的效率。手持界面作为一种可扩展的野外数据采集方案已崭露头角，但它们主要以开环方式运行：操作员盲目地收集演示数据，而不知道底层策略的弱点，导致对关键状态分布的覆盖效率低下。相反，像DAgger这样的交互式方法可以有效地解决协变量偏移问题，但依赖于物理机器人的执行，这成本高昂且难以规模化。为了协调这种权衡，我们引入了 RoboPocket，这是一种便携式系统，可以使用单个消费级智能手机实现无需机器人的即时策略迭代。其核心创新是一个远程推理框架，通过增强现实 (AR) 视觉预测可视化策略的预测轨迹。这种沉浸式反馈使数据采集者能够主动识别潜在的失败，并将数据收集集中在策略的薄弱区域，而无需物理机器人。此外，我们实现了一个异步在线微调流程，该流程使用传入的数据持续更新策略，从而有效地在几分钟内闭合学习循环。大量的实验表明，RoboPocket 遵循数据缩放定律，与离线缩放策略相比，数据效率提高了一倍，克服了它们长期存在的效率瓶颈。此外，我们的即时迭代循环还在分布式环境中将样本效率提高了高达 2 倍——每个人只需进行少量交互式校正。项目主页和视频：https://robo-pocket.github.io。</p>
             
 
             
@@ -390,6 +601,14 @@
             <a href="http://arxiv.org/abs/2603.05504v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Junjie Fang, Wendi Chen, Han Xue, Fangyuan Zhou, Tian Le, Yi Wang, Yuting Zhang, Jun Lv, Chuan Wen, Cewu Lu</p>
             
@@ -403,16 +622,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">cuRoboV2: Dynamics-Aware Motion Generation with Depth-Fused Distance Fields for High-DoF Robots</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Effective robot autonomy requires motion generation that is safe, feasible, and reactive. Current methods are fragmented: fast planners output physically unexecutable trajectories, reactive controllers struggle with high-fidelity perception, and existing solvers fail on high-DoF systems. We present cuRoboV2, a unified framework with three key innovations: (1) B-spline trajectory optimization that enforces smoothness and torque limits; (2) a GPU-native TSDF/ESDF perception pipeline that generates dense signed distance fields covering the full workspace, unlike existing methods that only provide distances within sparsely allocated blocks, up to 10x faster and in 8x less memory than the state-of-the-art at manipulation scale, with up to 99% collision recall; and (3) scalable GPU-native whole-body computation, namely topology-aware kinematics, differentiable inverse dynamics, and map-reduce self-collision, that achieves up to 61x speedup while also extending to high-DoF humanoids (where previous GPU implementations fail). On benchmarks, cuRoboV2 achieves 99.7% success under 3kg payload (where baselines achieve only 72--77%), 99.6% collision-free IK on a 48-DoF humanoid (where prior methods fail entirely), and 89.5% retargeting constraint satisfaction (vs. 61% for PyRoki); these collision-free motions yield locomotion policies with 21% lower tracking error than PyRoki and 12x lower cross-seed variance than mink. A ground-up codebase redesign for discoverability enabled LLM coding assistants to author up to 73% of new modules, including hand-optimized CUDA kernels, demonstrating that well-structured robotics code can unlock productive human--LLM collaboration. Together, these advances provide a unified, dynamics-aware motion generation stack that scales from single-arm manipulators to full humanoids.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 有效的机器人自主能力需要安全、可行且具有反应性的运动生成。目前的方法是分散的：快速规划器输出物理上无法执行的轨迹，反应式控制器在面对高保真感知时表现不佳，而现有的求解器在高自由度系统上失效。我们提出了cuRoboV2，这是一个统一的框架，具有三个关键创新：(1) B样条轨迹优化，可强制平滑性和扭矩限制；(2) GPU原生TSDF/ESDF感知管线，可生成覆盖整个工作空间的密集符号距离场，与现有方法不同，现有方法仅提供稀疏分配块内的距离，但该管线速度提升高达10倍，内存占用减少8倍（在操作尺度下），碰撞召回率高达99%；(3) 可扩展的GPU原生全身计算，即拓扑感知运动学、可微逆动力学和map-reduce自碰撞，速度提升高达61倍，同时还扩展到了高自由度人形机器人（之前的GPU实现失败）。在基准测试中，cuRoboV2在3kg有效载荷下成功率达到99.7%（基线仅达到72-77%），在48自由度人形机器人上实现99.6%的无碰撞逆运动学（之前的算法完全失败），并实现89.5%的重定向约束满足度（PyRoki为61%）；这些无碰撞运动产生的运动策略比PyRoki降低了21%的跟踪误差，比mink降低了12倍的跨种子方差。一个自底向上的代码库重新设计以实现可发现性，使得LLM编码助手能够编写高达73%的新模块，包括手工优化的CUDA内核，这表明结构良好的机器人代码可以释放生产力高的人-LLM协作。 这些进展共同提供了一个统一的、动力学感知的运动生成堆栈，可从单臂机械手扩展到完整的人形机器人。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: cuRoboV2 presents a unified, GPU-accelerated framework for dynamics-aware motion generation for robots, from manipulators to humanoids, featuring fast and memory-efficient perception, scalable whole-body computation, and improved LLM-assisted code development.</p>
+            <h2 class="paper-title">
+                cuRoboV2: Dynamics-Aware Motion Generation with Depth-Fused Distance Fields for High-DoF Robots
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: cuRoboV2提出了一个统一的、GPU加速的机器人动力学感知运动生成框架，适用于从机械臂到人形机器人的各种机器人。该框架具有快速高效的感知，可扩展的全身计算，以及改进的LLM辅助代码开发。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>cuRoboV2提出了一个统一的、GPU加速的机器人动力学感知运动生成框架，适用于从机械臂到人形机器人的各种机器人。该框架具有快速高效的感知，可扩展的全身计算，以及改进的LLM辅助代码开发。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> cuRoboV2 presents a unified, GPU-accelerated framework for dynamics-aware motion generation for robots, from manipulators to humanoids, featuring fast and memory-efficient perception, scalable whole-body computation, and improved LLM-assisted code development.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Effective robot autonomy requires motion generation that is safe, feasible, and reactive. Current methods are fragmented: fast planners output physically unexecutable trajectories, reactive controllers struggle with high-fidelity perception, and existing solvers fail on high-DoF systems. We present cuRoboV2, a unified framework with three key innovations: (1) B-spline trajectory optimization that enforces smoothness and torque limits; (2) a GPU-native TSDF/ESDF perception pipeline that generates dense signed distance fields covering the full workspace, unlike existing methods that only provide distances within sparsely allocated blocks, up to 10x faster and in 8x less memory than the state-of-the-art at manipulation scale, with up to 99% collision recall; and (3) scalable GPU-native whole-body computation, namely topology-aware kinematics, differentiable inverse dynamics, and map-reduce self-collision, that achieves up to 61x speedup while also extending to high-DoF humanoids (where previous GPU implementations fail). On benchmarks, cuRoboV2 achieves 99.7% success under 3kg payload (where baselines achieve only 72--77%), 99.6% collision-free IK on a 48-DoF humanoid (where prior methods fail entirely), and 89.5% retargeting constraint satisfaction (vs. 61% for PyRoki); these collision-free motions yield locomotion policies with 21% lower tracking error than PyRoki and 12x lower cross-seed variance than mink. A ground-up codebase redesign for discoverability enabled LLM coding assistants to author up to 73% of new modules, including hand-optimized CUDA kernels, demonstrating that well-structured robotics code can unlock productive human--LLM collaboration. Together, these advances provide a unified, dynamics-aware motion generation stack that scales from single-arm manipulators to full humanoids.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>有效的机器人自主能力需要安全、可行且具有反应性的运动生成。目前的方法是分散的：快速规划器输出物理上无法执行的轨迹，反应式控制器在面对高保真感知时表现不佳，而现有的求解器在高自由度系统上失效。我们提出了cuRoboV2，这是一个统一的框架，具有三个关键创新：(1) B样条轨迹优化，可强制平滑性和扭矩限制；(2) GPU原生TSDF/ESDF感知管线，可生成覆盖整个工作空间的密集符号距离场，与现有方法不同，现有方法仅提供稀疏分配块内的距离，但该管线速度提升高达10倍，内存占用减少8倍（在操作尺度下），碰撞召回率高达99%；(3) 可扩展的GPU原生全身计算，即拓扑感知运动学、可微逆动力学和map-reduce自碰撞，速度提升高达61倍，同时还扩展到了高自由度人形机器人（之前的GPU实现失败）。在基准测试中，cuRoboV2在3kg有效载荷下成功率达到99.7%（基线仅达到72-77%），在48自由度人形机器人上实现99.6%的无碰撞逆运动学（之前的算法完全失败），并实现89.5%的重定向约束满足度（PyRoki为61%）；这些无碰撞运动产生的运动策略比PyRoki降低了21%的跟踪误差，比mink降低了12倍的跨种子方差。一个自底向上的代码库重新设计以实现可发现性，使得LLM编码助手能够编写高达73%的新模块，包括手工优化的CUDA内核，这表明结构良好的机器人代码可以释放生产力高的人-LLM协作。 这些进展共同提供了一个统一的、动力学感知的运动生成堆栈，可从单臂机械手扩展到完整的人形机器人。</p>
             
 
             
@@ -486,6 +709,14 @@
             <a href="http://arxiv.org/abs/2603.05493v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="1" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="1" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Balakumar Sundaralingam, Adithyavairavan Murali, Stan Birchfield</p>
             
@@ -499,16 +730,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Planning in 8 Tokens: A Compact Discrete Tokenizer for Latent World Model</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> World models provide a powerful framework for simulating environment dynamics conditioned on actions or instructions, enabling downstream tasks such as action planning or policy learning. Recent approaches leverage world models as learned simulators, but its application to decision-time planning remains computationally prohibitive for real-time control. A key bottleneck lies in latent representations: conventional tokenizers encode each observation into hundreds of tokens, making planning both slow and resource-intensive. To address this, we propose CompACT, a discrete tokenizer that compresses each observation into as few as 8 tokens, drastically reducing computational cost while preserving essential information for planning. An action-conditioned world model that occupies CompACT tokenizer achieves competitive planning performance with orders-of-magnitude faster planning, offering a practical step toward real-world deployment of world models.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 世界模型为模拟以动作或指令为条件的环境动力学提供了一个强大的框架，从而支持诸如动作规划或策略学习之类的下游任务。 近期的方法将世界模型作为学习到的模拟器加以利用，但其在决策时规划中的应用仍然受限于实时控制所需的计算量。 一个关键瓶颈在于潜在表征：传统的编码器将每个观测编码成数百个令牌，使得规划既缓慢又消耗资源。 为了解决这个问题，我们提出了CompACT，一种离散编码器，可以将每个观测压缩成仅8个令牌，在大幅降低计算成本的同时，保留了规划所需的基本信息。 采用CompACT编码器的以动作为条件的世界模型实现了具有竞争力的规划性能，同时规划速度提升了数个数量级，为世界模型的实际部署迈出了切实的一步。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces CompACT, a discrete tokenizer that compresses observations into a small number of tokens (8) for faster and more efficient planning within world models, potentially enabling real-time control.</p>
+            <h2 class="paper-title">
+                Planning in 8 Tokens: A Compact Discrete Tokenizer for Latent World Model
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一种名为 CompACT 的离散分词器，它将观测压缩成少量 tokens (8)，从而在世界模型中实现更快、更高效的规划，有可能实现实时的控制。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了一种名为 CompACT 的离散分词器，它将观测压缩成少量 tokens (8)，从而在世界模型中实现更快、更高效的规划，有可能实现实时的控制。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper introduces CompACT, a discrete tokenizer that compresses observations into a small number of tokens (8) for faster and more efficient planning within world models, potentially enabling real-time control.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> World models provide a powerful framework for simulating environment dynamics conditioned on actions or instructions, enabling downstream tasks such as action planning or policy learning. Recent approaches leverage world models as learned simulators, but its application to decision-time planning remains computationally prohibitive for real-time control. A key bottleneck lies in latent representations: conventional tokenizers encode each observation into hundreds of tokens, making planning both slow and resource-intensive. To address this, we propose CompACT, a discrete tokenizer that compresses each observation into as few as 8 tokens, drastically reducing computational cost while preserving essential information for planning. An action-conditioned world model that occupies CompACT tokenizer achieves competitive planning performance with orders-of-magnitude faster planning, offering a practical step toward real-world deployment of world models.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>世界模型为模拟以动作或指令为条件的环境动力学提供了一个强大的框架，从而支持诸如动作规划或策略学习之类的下游任务。 近期的方法将世界模型作为学习到的模拟器加以利用，但其在决策时规划中的应用仍然受限于实时控制所需的计算量。 一个关键瓶颈在于潜在表征：传统的编码器将每个观测编码成数百个令牌，使得规划既缓慢又消耗资源。 为了解决这个问题，我们提出了CompACT，一种离散编码器，可以将每个观测压缩成仅8个令牌，在大幅降低计算成本的同时，保留了规划所需的基本信息。 采用CompACT编码器的以动作为条件的世界模型实现了具有竞争力的规划性能，同时规划速度提升了数个数量级，为世界模型的实际部署迈出了切实的一步。</p>
             
 
             
@@ -582,6 +817,14 @@
             <a href="http://arxiv.org/abs/2603.05438v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="2" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="2" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Dongwon Kim, Gawon Seo, Jinsung Lee, Minsu Cho, Suha Kwak</p>
             
@@ -595,16 +838,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Observing and Controlling Features in Vision-Language-Action Models</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Vision-Language-Action Models (VLAs) have shown remarkable progress towards embodied intelligence. While their architecture partially resembles that of Large Language Models (LLMs), VLAs exhibit higher complexity due to their multi-modal inputs/outputs and often hybrid nature of transformer and diffusion heads. This is part of the reason why insights from mechanistic interpretability in LLMs, which explain how the internal model representations relate to their output behavior, do not trivially transfer to VLA counterparts. In this work, we propose to close this gap by introducing and analyzing two main concepts: feature-observability and feature-controllability. In particular, we first study features that are linearly encoded in representation space, and show how they can be observed by means of a linear classifier. Then, we use a minimal linear intervention grounded in optimal control to accurately place internal representations and steer the VLA's output towards a desired region. Our results show that targeted, lightweight interventions can reliably steer a robot's behavior while preserving closed-loop capabilities. We demonstrate on different VLA architectures ($π_{0.5}$ and OpenVLA) through simulation experiments that VLAs possess interpretable internal structure amenable to online adaptation without fine-tuning, enabling real-time alignment with user preferences and task requirements.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 视觉-语言-动作模型（VLAs）在具身智能方面展现出了显著的进展。尽管它们的架构与大型语言模型（LLMs）部分相似，但由于其多模态输入/输出以及Transformer和扩散头的混合本质，VLAs表现出更高的复杂性。这部分解释了为什么LLMs中机制可解释性的洞察，即解释内部模型表征如何与其输出行为相关联，无法直接转移到VLA对应物上。在这项工作中，我们建议通过引入和分析两个主要概念来弥合这一差距：特征-可观察性和特征-可控性。特别是，我们首先研究以线性方式编码在表征空间中的特征，并展示如何通过线性分类器观察它们。然后，我们使用基于最优控制的最小线性干预来精确放置内部表征，并将VLA的输出导向期望区域。我们的结果表明，有针对性的、轻量级的干预可以可靠地引导机器人的行为，同时保持闭环能力。我们通过仿真实验，在不同的VLA架构（$π_{0.5}$和OpenVLA）上证明，VLAs拥有可解释的内部结构，能够进行在线自适应而无需微调，从而实现与用户偏好和任务要求的实时对齐。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces feature-observability and feature-controllability for Vision-Language-Action models, showing that lightweight linear interventions can reliably steer robot behavior in simulation without fine-tuning, allowing real-time alignment with user needs.</p>
+            <h2 class="paper-title">
+                Observing and Controlling Features in Vision-Language-Action Models
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了视觉-语言-动作模型中的特征可观察性和特征可控性，表明轻量级的线性干预可以可靠地引导机器人行为，而无需微调，从而能够实时地与用户需求对齐。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文介绍了视觉-语言-动作模型中的特征可观察性和特征可控性，表明轻量级的线性干预可以可靠地引导机器人行为，而无需微调，从而能够实时地与用户需求对齐。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper introduces feature-observability and feature-controllability for Vision-Language-Action models, showing that lightweight linear interventions can reliably steer robot behavior in simulation without fine-tuning, allowing real-time alignment with user needs.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Vision-Language-Action Models (VLAs) have shown remarkable progress towards embodied intelligence. While their architecture partially resembles that of Large Language Models (LLMs), VLAs exhibit higher complexity due to their multi-modal inputs/outputs and often hybrid nature of transformer and diffusion heads. This is part of the reason why insights from mechanistic interpretability in LLMs, which explain how the internal model representations relate to their output behavior, do not trivially transfer to VLA counterparts. In this work, we propose to close this gap by introducing and analyzing two main concepts: feature-observability and feature-controllability. In particular, we first study features that are linearly encoded in representation space, and show how they can be observed by means of a linear classifier. Then, we use a minimal linear intervention grounded in optimal control to accurately place internal representations and steer the VLA's output towards a desired region. Our results show that targeted, lightweight interventions can reliably steer a robot's behavior while preserving closed-loop capabilities. We demonstrate on different VLA architectures ($π_{0.5}$ and OpenVLA) through simulation experiments that VLAs possess interpretable internal structure amenable to online adaptation without fine-tuning, enabling real-time alignment with user preferences and task requirements.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>视觉-语言-动作模型（VLAs）在具身智能方面展现出了显著的进展。尽管它们的架构与大型语言模型（LLMs）部分相似，但由于其多模态输入/输出以及Transformer和扩散头的混合本质，VLAs表现出更高的复杂性。这部分解释了为什么LLMs中机制可解释性的洞察，即解释内部模型表征如何与其输出行为相关联，无法直接转移到VLA对应物上。在这项工作中，我们建议通过引入和分析两个主要概念来弥合这一差距：特征-可观察性和特征-可控性。特别是，我们首先研究以线性方式编码在表征空间中的特征，并展示如何通过线性分类器观察它们。然后，我们使用基于最优控制的最小线性干预来精确放置内部表征，并将VLA的输出导向期望区域。我们的结果表明，有针对性的、轻量级的干预可以可靠地引导机器人的行为，同时保持闭环能力。我们通过仿真实验，在不同的VLA架构（$π_{0.5}$和OpenVLA）上证明，VLAs拥有可解释的内部结构，能够进行在线自适应而无需微调，从而实现与用户偏好和任务要求的实时对齐。</p>
             
 
             
@@ -678,6 +925,14 @@
             <a href="http://arxiv.org/abs/2603.05487v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="3" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="3" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Hugo Buurmeijer, Carmen Amo Alonso, Aiden Swann, Marco Pavone</p>
             
@@ -691,16 +946,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">RealWonder: Real-Time Physical Action-Conditioned Video Generation</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Current video generation models cannot simulate physical consequences of 3D actions like forces and robotic manipulations, as they lack structural understanding of how actions affect 3D scenes. We present RealWonder, the first real-time system for action-conditioned video generation from a single image. Our key insight is using physics simulation as an intermediate bridge: instead of directly encoding continuous actions, we translate them through physics simulation into visual representations (optical flow and RGB) that video models can process. RealWonder integrates three components: 3D reconstruction from single images, physics simulation, and a distilled video generator requiring only 4 diffusion steps. Our system achieves 13.2 FPS at 480x832 resolution, enabling interactive exploration of forces, robot actions, and camera controls on rigid objects, deformable bodies, fluids, and granular materials. We envision RealWonder opens new opportunities to apply video models in immersive experiences, AR/VR, and robot learning. Our code and model weights are publicly available in our project website: https://liuwei283.github.io/RealWonder/</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 当前视频生成模型无法模拟3D动作的物理结果，例如力以及机器人操作，因为它们缺乏对动作如何影响3D场景的结构性理解。我们提出了RealWonder，这是第一个从单张图像生成动作条件视频的实时系统。我们的关键见解是使用物理模拟作为中间桥梁：我们没有直接编码连续动作，而是通过物理模拟将它们转化为视频模型可以处理的视觉表示（光流和RGB）。RealWonder集成了三个组件：从单张图像进行3D重建、物理模拟以及只需要4个扩散步骤的蒸馏视频生成器。我们的系统在480x832分辨率下实现了13.2 FPS，从而能够对刚性物体、可变形物体、流体和颗粒材料进行力的交互式探索、机器人动作和相机控制。我们设想RealWonder为在沉浸式体验、AR/VR和机器人学习中应用视频模型开辟了新的机会。我们的代码和模型权重在我们的项目网站上公开提供：https://liuwei283.github.io/RealWonder/</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: RealWonder is a real-time system for action-conditioned video generation that leverages physics simulation as an intermediate step to bridge the gap between actions and visual representations, achieving interactive frame rates.</p>
+            <h2 class="paper-title">
+                RealWonder: Real-Time Physical Action-Conditioned Video Generation
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: RealWonder是一个实时的动作条件视频生成系统，它利用物理模拟作为中间步骤来弥合动作和视觉表示之间的差距，从而实现交互式帧速率。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>RealWonder是一个实时的动作条件视频生成系统，它利用物理模拟作为中间步骤来弥合动作和视觉表示之间的差距，从而实现交互式帧速率。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> RealWonder is a real-time system for action-conditioned video generation that leverages physics simulation as an intermediate step to bridge the gap between actions and visual representations, achieving interactive frame rates.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Current video generation models cannot simulate physical consequences of 3D actions like forces and robotic manipulations, as they lack structural understanding of how actions affect 3D scenes. We present RealWonder, the first real-time system for action-conditioned video generation from a single image. Our key insight is using physics simulation as an intermediate bridge: instead of directly encoding continuous actions, we translate them through physics simulation into visual representations (optical flow and RGB) that video models can process. RealWonder integrates three components: 3D reconstruction from single images, physics simulation, and a distilled video generator requiring only 4 diffusion steps. Our system achieves 13.2 FPS at 480x832 resolution, enabling interactive exploration of forces, robot actions, and camera controls on rigid objects, deformable bodies, fluids, and granular materials. We envision RealWonder opens new opportunities to apply video models in immersive experiences, AR/VR, and robot learning. Our code and model weights are publicly available in our project website: https://liuwei283.github.io/RealWonder/</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>当前视频生成模型无法模拟3D动作的物理结果，例如力以及机器人操作，因为它们缺乏对动作如何影响3D场景的结构性理解。我们提出了RealWonder，这是第一个从单张图像生成动作条件视频的实时系统。我们的关键见解是使用物理模拟作为中间桥梁：我们没有直接编码连续动作，而是通过物理模拟将它们转化为视频模型可以处理的视觉表示（光流和RGB）。RealWonder集成了三个组件：从单张图像进行3D重建、物理模拟以及只需要4个扩散步骤的蒸馏视频生成器。我们的系统在480x832分辨率下实现了13.2 FPS，从而能够对刚性物体、可变形物体、流体和颗粒材料进行力的交互式探索、机器人动作和相机控制。我们设想RealWonder为在沉浸式体验、AR/VR和机器人学习中应用视频模型开辟了新的机会。我们的代码和模型权重在我们的项目网站上公开提供：https://liuwei283.github.io/RealWonder/</p>
             
 
             
@@ -774,6 +1033,14 @@
             <a href="http://arxiv.org/abs/2603.05449v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="4" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="4" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Wei Liu, Ziyu Chen, Zizhang Li, Yue Wang, Hong-Xing Yu, Jiajun Wu</p>
             
@@ -787,16 +1054,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Towards Multimodal Lifelong Understanding: A Dataset and Agentic Baseline</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> While datasets for video understanding have scaled to hour-long durations, they typically consist of densely concatenated clips that differ from natural, unscripted daily life. To bridge this gap, we introduce MM-Lifelong, a dataset designed for Multimodal Lifelong Understanding. Comprising 181.1 hours of footage, it is structured across Day, Week, and Month scales to capture varying temporal densities. Extensive evaluations reveal two critical failure modes in current paradigms: end-to-end MLLMs suffer from a Working Memory Bottleneck due to context saturation, while representative agentic baselines experience Global Localization Collapse when navigating sparse, month-long timelines. To address this, we propose the Recursive Multimodal Agent (ReMA), which employs dynamic memory management to iteratively update a recursive belief state, significantly outperforming existing methods. Finally, we establish dataset splits designed to isolate temporal and domain biases, providing a rigorous foundation for future research in supervised learning and out-of-distribution generalization.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 视频理解的数据集已经扩展到数小时的时长，但它们通常由密集串联的片段组成，这与自然的、无脚本的日常生活不同。为了弥补这一差距，我们引入了MM-Lifelong，一个为多模态终身理解设计的数据集。它包含181.1小时的素材，在日、周和月的时间尺度上进行组织，以捕捉不同的时间密度。广泛的评估揭示了当前范式的两种关键失效模式：端到端多模态大型语言模型(MLLMs)由于上下文饱和而遭受工作记忆瓶颈，而具有代表性的智能体基线在导航稀疏的、长达一个月的的时间线时，会经历全局定位崩溃。为了解决这个问题，我们提出了递归多模态智能体 (ReMA)，它采用动态内存管理来迭代更新递归信念状态，显著优于现有方法。最后，我们建立了旨在隔离时间和领域偏差的数据集划分，为未来在监督学习和分布外泛化方面的研究提供了坚实的基础。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces MM-Lifelong, a large-scale multimodal dataset for lifelong video understanding, highlighting limitations of current MLLMs and agentic baselines, and proposes ReMA, a recursive multimodal agent, to address these issues.</p>
+            <h2 class="paper-title">
+                Towards Multimodal Lifelong Understanding: A Dataset and Agentic Baseline
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了用于终身视频理解的大规模多模态数据集 MM-Lifelong，强调了当前 MLLM 和代理基线的局限性，并提出了 ReMA，一种递归多模态代理，以解决这些问题。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了用于终身视频理解的大规模多模态数据集 MM-Lifelong，强调了当前 MLLM 和代理基线的局限性，并提出了 ReMA，一种递归多模态代理，以解决这些问题。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces MM-Lifelong, a large-scale multimodal dataset for lifelong video understanding, highlighting limitations of current MLLMs and agentic baselines, and proposes ReMA, a recursive multimodal agent, to address these issues.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> While datasets for video understanding have scaled to hour-long durations, they typically consist of densely concatenated clips that differ from natural, unscripted daily life. To bridge this gap, we introduce MM-Lifelong, a dataset designed for Multimodal Lifelong Understanding. Comprising 181.1 hours of footage, it is structured across Day, Week, and Month scales to capture varying temporal densities. Extensive evaluations reveal two critical failure modes in current paradigms: end-to-end MLLMs suffer from a Working Memory Bottleneck due to context saturation, while representative agentic baselines experience Global Localization Collapse when navigating sparse, month-long timelines. To address this, we propose the Recursive Multimodal Agent (ReMA), which employs dynamic memory management to iteratively update a recursive belief state, significantly outperforming existing methods. Finally, we establish dataset splits designed to isolate temporal and domain biases, providing a rigorous foundation for future research in supervised learning and out-of-distribution generalization.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>视频理解的数据集已经扩展到数小时的时长，但它们通常由密集串联的片段组成，这与自然的、无脚本的日常生活不同。为了弥补这一差距，我们引入了MM-Lifelong，一个为多模态终身理解设计的数据集。它包含181.1小时的素材，在日、周和月的时间尺度上进行组织，以捕捉不同的时间密度。广泛的评估揭示了当前范式的两种关键失效模式：端到端多模态大型语言模型(MLLMs)由于上下文饱和而遭受工作记忆瓶颈，而具有代表性的智能体基线在导航稀疏的、长达一个月的的时间线时，会经历全局定位崩溃。为了解决这个问题，我们提出了递归多模态智能体 (ReMA)，它采用动态内存管理来迭代更新递归信念状态，显著优于现有方法。最后，我们建立了旨在隔离时间和领域偏差的数据集划分，为未来在监督学习和分布外泛化方面的研究提供了坚实的基础。</p>
             
 
             
@@ -870,6 +1141,14 @@
             <a href="http://arxiv.org/abs/2603.05484v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="5" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="5" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Guo Chen, Lidong Lu, Yicheng Liu, Liangrui Dong, Lidong Zou, Jixin Lv, Zhenquan Li, Xinyi Mao, Baoqi Pei, Shihao Wang, Zhiqi Li, Karan Sapra, Fuxiao Liu, Yin-Dong Zheng, Yifei Huang, Limin Wang, Zhiding Yu, Andrew Tao, Guilin Liu, Tong Lu</p>
             
@@ -883,16 +1162,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Safe-SAGE: Social-Semantic Adaptive Guidance for Safe Engagement through Laplace-Modulated Poisson Safety Functions</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Traditional safety-critical control methods, such as control barrier functions, suffer from semantic blindness, exhibiting the same behavior around obstacles regardless of contextual significance. This limitation leads to the uniform treatment of all obstacles, despite their differing semantic meanings. We present Safe-SAGE (Social-Semantic Adaptive Guidance for Safe Engagement), a unified framework that bridges the gap between high-level semantic understanding and low-level safety-critical control through a Poisson safety function (PSF) modulated using a Laplace guidance field. Our approach perceives the environment by fusing multi-sensor point clouds with vision-based instance segmentation and persistent object tracking to maintain up-to-date semantics beyond the camera's field of view. A multi-layer safety filter is then used to modulate system inputs to achieve safe navigation using this semantic understanding of the environment. This safety filter consists of both a model predictive control layer and a control barrier function layer. Both layers utilize the PSF and flux modulation of the guidance field to introduce varying levels of conservatism and multi-agent passing norms for different obstacles in the environment. Our framework enables legged robots to navigate semantically rich, dynamic environments with context-dependent safety margins while maintaining rigorous safety guarantees.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 传统的安全关键控制方法，例如控制屏障函数，存在语义盲视问题，对障碍物的反应行为一致，忽略了其上下文重要性。这种局限性导致所有障碍物被同等对待，尽管它们的语义含义不同。我们提出 Safe-SAGE（用于安全交互的社交-语义自适应引导），一个统一框架，通过泊松安全函数（PSF）和使用拉普拉斯引导场进行调制，弥合了高层语义理解与底层安全关键控制之间的差距。我们的方法通过融合多传感器点云与基于视觉的实例分割和持久对象跟踪来感知环境，以保持相机视野之外的最新的语义信息。然后使用一个多层安全滤波器来调节系统输入，从而利用对环境的语义理解实现安全导航。该安全滤波器由模型预测控制层和控制屏障函数层组成。这两层都利用 PSF 和引导场的通量调制，针对环境中不同的障碍物引入不同程度的保守性和多智能体通行规范。我们的框架使具有腿的机器人在语义丰富的动态环境中能够进行导航，具有上下文相关的安全裕度，同时保持严格的安全保证。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: Safe-SAGE introduces a novel safety-critical control framework for robots that incorporates semantic understanding to enable safer and more context-aware navigation in dynamic environments by using a Laplace-modulated Poisson safety function.</p>
+            <h2 class="paper-title">
+                Safe-SAGE: Social-Semantic Adaptive Guidance for Safe Engagement through Laplace-Modulated Poisson Safety Functions
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: Safe-SAGE 提出了一个新颖的安全关键控制框架，通过整合语义理解，利用拉普拉斯调制的泊松安全函数，使机器人能够在动态环境中实现更安全、更具上下文意识的导航。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>Safe-SAGE 提出了一个新颖的安全关键控制框架，通过整合语义理解，利用拉普拉斯调制的泊松安全函数，使机器人能够在动态环境中实现更安全、更具上下文意识的导航。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> Safe-SAGE introduces a novel safety-critical control framework for robots that incorporates semantic understanding to enable safer and more context-aware navigation in dynamic environments by using a Laplace-modulated Poisson safety function.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Traditional safety-critical control methods, such as control barrier functions, suffer from semantic blindness, exhibiting the same behavior around obstacles regardless of contextual significance. This limitation leads to the uniform treatment of all obstacles, despite their differing semantic meanings. We present Safe-SAGE (Social-Semantic Adaptive Guidance for Safe Engagement), a unified framework that bridges the gap between high-level semantic understanding and low-level safety-critical control through a Poisson safety function (PSF) modulated using a Laplace guidance field. Our approach perceives the environment by fusing multi-sensor point clouds with vision-based instance segmentation and persistent object tracking to maintain up-to-date semantics beyond the camera's field of view. A multi-layer safety filter is then used to modulate system inputs to achieve safe navigation using this semantic understanding of the environment. This safety filter consists of both a model predictive control layer and a control barrier function layer. Both layers utilize the PSF and flux modulation of the guidance field to introduce varying levels of conservatism and multi-agent passing norms for different obstacles in the environment. Our framework enables legged robots to navigate semantically rich, dynamic environments with context-dependent safety margins while maintaining rigorous safety guarantees.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>传统的安全关键控制方法，例如控制屏障函数，存在语义盲视问题，对障碍物的反应行为一致，忽略了其上下文重要性。这种局限性导致所有障碍物被同等对待，尽管它们的语义含义不同。我们提出 Safe-SAGE（用于安全交互的社交-语义自适应引导），一个统一框架，通过泊松安全函数（PSF）和使用拉普拉斯引导场进行调制，弥合了高层语义理解与底层安全关键控制之间的差距。我们的方法通过融合多传感器点云与基于视觉的实例分割和持久对象跟踪来感知环境，以保持相机视野之外的最新的语义信息。然后使用一个多层安全滤波器来调节系统输入，从而利用对环境的语义理解实现安全导航。该安全滤波器由模型预测控制层和控制屏障函数层组成。这两层都利用 PSF 和引导场的通量调制，针对环境中不同的障碍物引入不同程度的保守性和多智能体通行规范。我们的框架使具有腿的机器人在语义丰富的动态环境中能够进行导航，具有上下文相关的安全裕度，同时保持严格的安全保证。</p>
             
 
             
@@ -966,6 +1249,14 @@
             <a href="http://arxiv.org/abs/2603.05497v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="6" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="6" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Lizhi Yang, Ryan M. Bena, Meg Wilkinson, Gilbert Bahati, Andy Navarro Brenes, Ryan K. Cosner, Aaron D. Ames</p>
             
@@ -979,16 +1270,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Latent Wasserstein Adversarial Imitation Learning</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Imitation Learning (IL) enables agents to mimic expert behavior by learning from demonstrations. However, traditional IL methods require large amounts of medium-to-high-quality demonstrations as well as actions of expert demonstrations, both of which are often unavailable. To reduce this need, we propose Latent Wasserstein Adversarial Imitation Learning (LWAIL), a novel adversarial imitation learning framework that focuses on state-only distribution matching. It benefits from the Wasserstein distance computed in a dynamics-aware latent space. This dynamics-aware latent space differs from prior work and is obtained via a pre-training stage, where we train the Intention Conditioned Value Function (ICVF) to capture a dynamics-aware structure of the state space using a small set of randomly generated state-only data. We show that this enhances the policy's understanding of state transitions, enabling the learning process to use only one or a few state-only expert episodes to achieve expert-level performance. Through experiments on multiple MuJoCo environments, we demonstrate that our method outperforms prior Wasserstein-based IL methods and prior adversarial IL methods, achieving better results across various tasks.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 模仿学习（IL）使智能体能够通过从示范中学习来模仿专家行为。然而，传统的IL方法需要大量中等到高质量的示范，以及专家示范的行动，这两者通常都不可用。为了减少这种需求，我们提出了一种新颖的对抗模仿学习框架——潜在Wasserstein对抗模仿学习（LWAIL），它专注于仅状态（state-only）的分布匹配。它受益于在动力学感知的潜在空间中计算的Wasserstein距离。这种动力学感知的潜在空间与先前的工作不同，是通过一个预训练阶段获得的，在该阶段我们训练意图条件价值函数（ICVF），以使用少量随机生成的仅状态数据来捕获状态空间的动力学感知结构。我们表明，这增强了策略对状态转移的理解，使得学习过程能够仅使用一个或几个仅状态的专家片段来实现专家级别的性能。通过在多个MuJoCo环境中的实验，我们证明了我们的方法优于先前的基于Wasserstein的IL方法和先前的对抗IL方法，在各种任务中实现了更好的结果。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces Latent Wasserstein Adversarial Imitation Learning (LWAIL), an imitation learning method which leverages a dynamics-aware latent space to achieve expert-level performance using only a few state-only expert demonstrations.</p>
+            <h2 class="paper-title">
+                Latent Wasserstein Adversarial Imitation Learning
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了潜在Wasserstein对抗模仿学习（LWAIL），一种模仿学习方法，利用动态感知的潜在空间，仅使用少量仅状态的专家演示即可实现专家级性能。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了潜在Wasserstein对抗模仿学习（LWAIL），一种模仿学习方法，利用动态感知的潜在空间，仅使用少量仅状态的专家演示即可实现专家级性能。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces Latent Wasserstein Adversarial Imitation Learning (LWAIL), an imitation learning method which leverages a dynamics-aware latent space to achieve expert-level performance using only a few state-only expert demonstrations.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Imitation Learning (IL) enables agents to mimic expert behavior by learning from demonstrations. However, traditional IL methods require large amounts of medium-to-high-quality demonstrations as well as actions of expert demonstrations, both of which are often unavailable. To reduce this need, we propose Latent Wasserstein Adversarial Imitation Learning (LWAIL), a novel adversarial imitation learning framework that focuses on state-only distribution matching. It benefits from the Wasserstein distance computed in a dynamics-aware latent space. This dynamics-aware latent space differs from prior work and is obtained via a pre-training stage, where we train the Intention Conditioned Value Function (ICVF) to capture a dynamics-aware structure of the state space using a small set of randomly generated state-only data. We show that this enhances the policy's understanding of state transitions, enabling the learning process to use only one or a few state-only expert episodes to achieve expert-level performance. Through experiments on multiple MuJoCo environments, we demonstrate that our method outperforms prior Wasserstein-based IL methods and prior adversarial IL methods, achieving better results across various tasks.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>模仿学习（IL）使智能体能够通过从示范中学习来模仿专家行为。然而，传统的IL方法需要大量中等到高质量的示范，以及专家示范的行动，这两者通常都不可用。为了减少这种需求，我们提出了一种新颖的对抗模仿学习框架——潜在Wasserstein对抗模仿学习（LWAIL），它专注于仅状态（state-only）的分布匹配。它受益于在动力学感知的潜在空间中计算的Wasserstein距离。这种动力学感知的潜在空间与先前的工作不同，是通过一个预训练阶段获得的，在该阶段我们训练意图条件价值函数（ICVF），以使用少量随机生成的仅状态数据来捕获状态空间的动力学感知结构。我们表明，这增强了策略对状态转移的理解，使得学习过程能够仅使用一个或几个仅状态的专家片段来实现专家级别的性能。通过在多个MuJoCo环境中的实验，我们证明了我们的方法优于先前的基于Wasserstein的IL方法和先前的对抗IL方法，在各种任务中实现了更好的结果。</p>
             
 
             
@@ -1062,6 +1357,14 @@
             <a href="http://arxiv.org/abs/2603.05440v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="7" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="7" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Siqi Yang, Kai Yan, Alexander G. Schwing, Yu-Xiong Wang</p>
             
@@ -1075,16 +1378,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Cheap Thrills: Effective Amortized Optimization Using Inexpensive Labels</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> To scale the solution of optimization and simulation problems, prior work has explored machine-learning surrogates that inexpensively map problem parameters to corresponding solutions. Commonly used approaches, including supervised and self-supervised learning with either soft or hard feasibility enforcement, face inherent challenges such as reliance on expensive, high-quality labels or difficult optimization landscapes. To address their trade-offs, we propose a novel framework that first collects "cheap" imperfect labels, then performs supervised pretraining, and finally refines the model through self-supervised learning to improve overall performance. Our theoretical analysis and merit-based criterion show that labeled data need only place the model within a basin of attraction, confirming that only modest numbers of inexact labels and training epochs are required. We empirically validate our simple three-stage strategy across challenging domains, including nonconvex constrained optimization, power-grid operation, and stiff dynamical systems, and show that it yields faster convergence; improved accuracy, feasibility, and optimality; and up to 59x reductions in total offline cost.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 为了扩展优化和仿真问题的求解规模，先前的工作探索了机器学习代理模型，该模型能够以较低的成本将问题参数映射到相应的解。常用的方法，包括采用软约束或硬约束可行性执行的监督学习和自监督学习，都面临着固有的挑战，例如对昂贵的高质量标签的依赖，或者困难的优化空间。为了解决它们的权衡，我们提出了一种新的框架，该框架首先收集“廉价”的不完美标签，然后执行有监督的预训练，最后通过自监督学习细化模型以提高整体性能。我们的理论分析和基于价值的判据表明，带标签的数据只需要将模型放置在一个吸引盆地内，证实了只需要少量的不精确标签和训练周期。我们在具有挑战性的领域中，包括非凸约束优化、电力网运行和刚性动力系统，进行了实证验证，表明我们的简单三阶段策略能够实现更快的收敛速度；更高的准确性、可行性、最优性；并且总离线成本降低高达59倍。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces a three-stage machine learning framework for optimization and simulation that uses cheap, imperfect labels for pretraining and then refines the model self-supervisedly, leading to faster convergence and improved performance.</p>
+            <h2 class="paper-title">
+                Cheap Thrills: Effective Amortized Optimization Using Inexpensive Labels
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一个用于优化和仿真的三阶段机器学习框架，该框架使用廉价、不完美的标签进行预训练，然后以自监督方式改进模型，从而实现更快的收敛和更高的性能。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了一个用于优化和仿真的三阶段机器学习框架，该框架使用廉价、不完美的标签进行预训练，然后以自监督方式改进模型，从而实现更快的收敛和更高的性能。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces a three-stage machine learning framework for optimization and simulation that uses cheap, imperfect labels for pretraining and then refines the model self-supervisedly, leading to faster convergence and improved performance.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> To scale the solution of optimization and simulation problems, prior work has explored machine-learning surrogates that inexpensively map problem parameters to corresponding solutions. Commonly used approaches, including supervised and self-supervised learning with either soft or hard feasibility enforcement, face inherent challenges such as reliance on expensive, high-quality labels or difficult optimization landscapes. To address their trade-offs, we propose a novel framework that first collects "cheap" imperfect labels, then performs supervised pretraining, and finally refines the model through self-supervised learning to improve overall performance. Our theoretical analysis and merit-based criterion show that labeled data need only place the model within a basin of attraction, confirming that only modest numbers of inexact labels and training epochs are required. We empirically validate our simple three-stage strategy across challenging domains, including nonconvex constrained optimization, power-grid operation, and stiff dynamical systems, and show that it yields faster convergence; improved accuracy, feasibility, and optimality; and up to 59x reductions in total offline cost.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>为了扩展优化和仿真问题的求解规模，先前的工作探索了机器学习代理模型，该模型能够以较低的成本将问题参数映射到相应的解。常用的方法，包括采用软约束或硬约束可行性执行的监督学习和自监督学习，都面临着固有的挑战，例如对昂贵的高质量标签的依赖，或者困难的优化空间。为了解决它们的权衡，我们提出了一种新的框架，该框架首先收集“廉价”的不完美标签，然后执行有监督的预训练，最后通过自监督学习细化模型以提高整体性能。我们的理论分析和基于价值的判据表明，带标签的数据只需要将模型放置在一个吸引盆地内，证实了只需要少量的不精确标签和训练周期。我们在具有挑战性的领域中，包括非凸约束优化、电力网运行和刚性动力系统，进行了实证验证，表明我们的简单三阶段策略能够实现更快的收敛速度；更高的准确性、可行性、最优性；并且总离线成本降低高达59倍。</p>
             
 
             
@@ -1158,6 +1465,14 @@
             <a href="http://arxiv.org/abs/2603.05495v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="8" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="8" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Khai Nguyen, Petros Ellinas, Anvita Bhagavathula, Priya Donti</p>
             
@@ -1166,7 +1481,7 @@
     </div>
 
     <section class="filtered-section">
-        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
         <div class="filtered-grid">
             
             <div class="filtered-item">
@@ -1176,12 +1491,24 @@
                         Residual RL--MPC for Robust Microrobotic Cell Pushing Under Time-Varying Flow
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="9" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="9" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Yanda Yang, Sambeeta Das</p>
                 
                 <p><strong>TLDR-CN:</strong> 该论文提出了一种混合RL-MPC控制器，用于在时变流条件下实现鲁棒的微型机器人细胞推动，并证明了与纯MPC和PID控制器相比，其具有更高的跟踪精度和鲁棒性。</p>
+                
+                <p><strong>Overall:</strong> 5/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1191,12 +1518,24 @@
                         EdgeDAM: Real-time Object Tracking for Mobile Devices
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="10" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="10" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Syed Muhammad Raza, Syed Murtaza Hussain Abidi, Khawar Islam, Muhammad Ibrahim, Ajmal Saeed Mian</p>
                 
                 <p><strong>TLDR-CN:</strong> EdgeDAM提出了一种轻量级的检测引导目标跟踪框架，用于边缘设备。它采用了一种新颖的双缓冲内存系统和置信度驱动的切换机制，提高了鲁棒性和实时性能，在DiDi数据集上实现了88.2%的准确率，并在iPhone 15上达到了25 FPS。</p>
+                
+                <p><strong>Overall:</strong> 5/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1206,20 +1545,55 @@
                         Towards 3D Scene Understanding of Gas Plumes in LWIR Hyperspectral Images Using Neural Radiance Fields
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="11" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="11" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Scout Jarman, Zigfried Hampel-Arias, Adra Carr, Kevin R. Moon</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文探讨了使用NeRFs进行LWIR高光谱图像的三维重建，特别是用于气体羽流检测，并展示了使用一种新的自适应损失函数和更少的训练图像所获得的良好性能。</p>
+                
+                <p><strong>Overall:</strong> 4/10</p>
+                
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <p>没有一级过滤未通过的论文。</p>
             </div>
             
         </div>
     </section>
 
     <footer class="footer">
-        Generated on 2026-04-08 07:41:52 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-30 18:17:59 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
+    
+    
+    <script type="application/json" id="papers-data">[{"title": "RoboPocket: Improve Robot Policies Instantly with Your Phone", "summary": "Scaling imitation learning is fundamentally constrained by the efficiency of data collection. While handheld interfaces have emerged as a scalable solution for in-the-wild data acquisition, they predominantly operate in an open-loop manner: operators blindly collect demonstrations without knowing the underlying policy\u0027s weaknesses, leading to inefficient coverage of critical state distributions. Conversely, interactive methods like DAgger effectively address covariate shift but rely on physical robot execution, which is costly and difficult to scale. To reconcile this trade-off, we introduce RoboPocket, a portable system that enables Robot-Free Instant Policy Iteration using single consumer smartphones. Its core innovation is a Remote Inference framework that visualizes the policy\u0027s predicted trajectory via Augmented Reality (AR) Visual Foresight. This immersive feedback allows collectors to proactively identify potential failures and focus data collection on the policy\u0027s weak regions without requiring a physical robot. Furthermore, we implement an asynchronous Online Finetuning pipeline that continuously updates the policy with incoming data, effectively closing the learning loop in minutes. Extensive experiments demonstrate that RoboPocket adheres to data scaling laws and doubles the data efficiency compared to offline scaling strategies, overcoming their long-standing efficiency bottleneck. Moreover, our instant iteration loop also boosts sample efficiency by up to 2$\\times$ in distributed environments a small number of interactive corrections per person. Project page and videos: https://robo-pocket.github.io.", "url": "http://arxiv.org/abs/2603.05504v1", "authors": ["Junjie Fang", "Wendi Chen", "Han Xue", "Fangyuan Zhou", "Tian Le", "Yi Wang", "Yuting Zhang", "Jun Lv", "Chuan Wen", "Cewu Lu"], "keywords": []},{"title": "cuRoboV2: Dynamics-Aware Motion Generation with Depth-Fused Distance Fields for High-DoF Robots", "summary": "Effective robot autonomy requires motion generation that is safe, feasible, and reactive. Current methods are fragmented: fast planners output physically unexecutable trajectories, reactive controllers struggle with high-fidelity perception, and existing solvers fail on high-DoF systems. We present cuRoboV2, a unified framework with three key innovations: (1) B-spline trajectory optimization that enforces smoothness and torque limits; (2) a GPU-native TSDF/ESDF perception pipeline that generates dense signed distance fields covering the full workspace, unlike existing methods that only provide distances within sparsely allocated blocks, up to 10x faster and in 8x less memory than the state-of-the-art at manipulation scale, with up to 99% collision recall; and (3) scalable GPU-native whole-body computation, namely topology-aware kinematics, differentiable inverse dynamics, and map-reduce self-collision, that achieves up to 61x speedup while also extending to high-DoF humanoids (where previous GPU implementations fail). On benchmarks, cuRoboV2 achieves 99.7% success under 3kg payload (where baselines achieve only 72--77%), 99.6% collision-free IK on a 48-DoF humanoid (where prior methods fail entirely), and 89.5% retargeting constraint satisfaction (vs. 61% for PyRoki); these collision-free motions yield locomotion policies with 21% lower tracking error than PyRoki and 12x lower cross-seed variance than mink. A ground-up codebase redesign for discoverability enabled LLM coding assistants to author up to 73% of new modules, including hand-optimized CUDA kernels, demonstrating that well-structured robotics code can unlock productive human--LLM collaboration. Together, these advances provide a unified, dynamics-aware motion generation stack that scales from single-arm manipulators to full humanoids.", "url": "http://arxiv.org/abs/2603.05493v1", "authors": ["Balakumar Sundaralingam", "Adithyavairavan Murali", "Stan Birchfield"], "keywords": []},{"title": "Planning in 8 Tokens: A Compact Discrete Tokenizer for Latent World Model", "summary": "World models provide a powerful framework for simulating environment dynamics conditioned on actions or instructions, enabling downstream tasks such as action planning or policy learning. Recent approaches leverage world models as learned simulators, but its application to decision-time planning remains computationally prohibitive for real-time control. A key bottleneck lies in latent representations: conventional tokenizers encode each observation into hundreds of tokens, making planning both slow and resource-intensive. To address this, we propose CompACT, a discrete tokenizer that compresses each observation into as few as 8 tokens, drastically reducing computational cost while preserving essential information for planning. An action-conditioned world model that occupies CompACT tokenizer achieves competitive planning performance with orders-of-magnitude faster planning, offering a practical step toward real-world deployment of world models.", "url": "http://arxiv.org/abs/2603.05438v1", "authors": ["Dongwon Kim", "Gawon Seo", "Jinsung Lee", "Minsu Cho", "Suha Kwak"], "keywords": []},{"title": "Observing and Controlling Features in Vision-Language-Action Models", "summary": "Vision-Language-Action Models (VLAs) have shown remarkable progress towards embodied intelligence. While their architecture partially resembles that of Large Language Models (LLMs), VLAs exhibit higher complexity due to their multi-modal inputs/outputs and often hybrid nature of transformer and diffusion heads. This is part of the reason why insights from mechanistic interpretability in LLMs, which explain how the internal model representations relate to their output behavior, do not trivially transfer to VLA counterparts. In this work, we propose to close this gap by introducing and analyzing two main concepts: feature-observability and feature-controllability. In particular, we first study features that are linearly encoded in representation space, and show how they can be observed by means of a linear classifier. Then, we use a minimal linear intervention grounded in optimal control to accurately place internal representations and steer the VLA\u0027s output towards a desired region. Our results show that targeted, lightweight interventions can reliably steer a robot\u0027s behavior while preserving closed-loop capabilities. We demonstrate on different VLA architectures ($\u03c0_{0.5}$ and OpenVLA) through simulation experiments that VLAs possess interpretable internal structure amenable to online adaptation without fine-tuning, enabling real-time alignment with user preferences and task requirements.", "url": "http://arxiv.org/abs/2603.05487v1", "authors": ["Hugo Buurmeijer", "Carmen Amo Alonso", "Aiden Swann", "Marco Pavone"], "keywords": []},{"title": "RealWonder: Real-Time Physical Action-Conditioned Video Generation", "summary": "Current video generation models cannot simulate physical consequences of 3D actions like forces and robotic manipulations, as they lack structural understanding of how actions affect 3D scenes. We present RealWonder, the first real-time system for action-conditioned video generation from a single image. Our key insight is using physics simulation as an intermediate bridge: instead of directly encoding continuous actions, we translate them through physics simulation into visual representations (optical flow and RGB) that video models can process. RealWonder integrates three components: 3D reconstruction from single images, physics simulation, and a distilled video generator requiring only 4 diffusion steps. Our system achieves 13.2 FPS at 480x832 resolution, enabling interactive exploration of forces, robot actions, and camera controls on rigid objects, deformable bodies, fluids, and granular materials. We envision RealWonder opens new opportunities to apply video models in immersive experiences, AR/VR, and robot learning. Our code and model weights are publicly available in our project website: https://liuwei283.github.io/RealWonder/", "url": "http://arxiv.org/abs/2603.05449v1", "authors": ["Wei Liu", "Ziyu Chen", "Zizhang Li", "Yue Wang", "Hong-Xing Yu", "Jiajun Wu"], "keywords": []},{"title": "Towards Multimodal Lifelong Understanding: A Dataset and Agentic Baseline", "summary": "While datasets for video understanding have scaled to hour-long durations, they typically consist of densely concatenated clips that differ from natural, unscripted daily life. To bridge this gap, we introduce MM-Lifelong, a dataset designed for Multimodal Lifelong Understanding. Comprising 181.1 hours of footage, it is structured across Day, Week, and Month scales to capture varying temporal densities. Extensive evaluations reveal two critical failure modes in current paradigms: end-to-end MLLMs suffer from a Working Memory Bottleneck due to context saturation, while representative agentic baselines experience Global Localization Collapse when navigating sparse, month-long timelines. To address this, we propose the Recursive Multimodal Agent (ReMA), which employs dynamic memory management to iteratively update a recursive belief state, significantly outperforming existing methods. Finally, we establish dataset splits designed to isolate temporal and domain biases, providing a rigorous foundation for future research in supervised learning and out-of-distribution generalization.", "url": "http://arxiv.org/abs/2603.05484v1", "authors": ["Guo Chen", "Lidong Lu", "Yicheng Liu", "Liangrui Dong", "Lidong Zou", "Jixin Lv", "Zhenquan Li", "Xinyi Mao", "Baoqi Pei", "Shihao Wang", "Zhiqi Li", "Karan Sapra", "Fuxiao Liu", "Yin-Dong Zheng", "Yifei Huang", "Limin Wang", "Zhiding Yu", "Andrew Tao", "Guilin Liu", "Tong Lu"], "keywords": []},{"title": "Safe-SAGE: Social-Semantic Adaptive Guidance for Safe Engagement through Laplace-Modulated Poisson Safety Functions", "summary": "Traditional safety-critical control methods, such as control barrier functions, suffer from semantic blindness, exhibiting the same behavior around obstacles regardless of contextual significance. This limitation leads to the uniform treatment of all obstacles, despite their differing semantic meanings. We present Safe-SAGE (Social-Semantic Adaptive Guidance for Safe Engagement), a unified framework that bridges the gap between high-level semantic understanding and low-level safety-critical control through a Poisson safety function (PSF) modulated using a Laplace guidance field. Our approach perceives the environment by fusing multi-sensor point clouds with vision-based instance segmentation and persistent object tracking to maintain up-to-date semantics beyond the camera\u0027s field of view. A multi-layer safety filter is then used to modulate system inputs to achieve safe navigation using this semantic understanding of the environment. This safety filter consists of both a model predictive control layer and a control barrier function layer. Both layers utilize the PSF and flux modulation of the guidance field to introduce varying levels of conservatism and multi-agent passing norms for different obstacles in the environment. Our framework enables legged robots to navigate semantically rich, dynamic environments with context-dependent safety margins while maintaining rigorous safety guarantees.", "url": "http://arxiv.org/abs/2603.05497v1", "authors": ["Lizhi Yang", "Ryan M. Bena", "Meg Wilkinson", "Gilbert Bahati", "Andy Navarro Brenes", "Ryan K. Cosner", "Aaron D. Ames"], "keywords": []},{"title": "Latent Wasserstein Adversarial Imitation Learning", "summary": "Imitation Learning (IL) enables agents to mimic expert behavior by learning from demonstrations. However, traditional IL methods require large amounts of medium-to-high-quality demonstrations as well as actions of expert demonstrations, both of which are often unavailable. To reduce this need, we propose Latent Wasserstein Adversarial Imitation Learning (LWAIL), a novel adversarial imitation learning framework that focuses on state-only distribution matching. It benefits from the Wasserstein distance computed in a dynamics-aware latent space. This dynamics-aware latent space differs from prior work and is obtained via a pre-training stage, where we train the Intention Conditioned Value Function (ICVF) to capture a dynamics-aware structure of the state space using a small set of randomly generated state-only data. We show that this enhances the policy\u0027s understanding of state transitions, enabling the learning process to use only one or a few state-only expert episodes to achieve expert-level performance. Through experiments on multiple MuJoCo environments, we demonstrate that our method outperforms prior Wasserstein-based IL methods and prior adversarial IL methods, achieving better results across various tasks.", "url": "http://arxiv.org/abs/2603.05440v1", "authors": ["Siqi Yang", "Kai Yan", "Alexander G. Schwing", "Yu-Xiong Wang"], "keywords": []},{"title": "Cheap Thrills: Effective Amortized Optimization Using Inexpensive Labels", "summary": "To scale the solution of optimization and simulation problems, prior work has explored machine-learning surrogates that inexpensively map problem parameters to corresponding solutions. Commonly used approaches, including supervised and self-supervised learning with either soft or hard feasibility enforcement, face inherent challenges such as reliance on expensive, high-quality labels or difficult optimization landscapes. To address their trade-offs, we propose a novel framework that first collects \"cheap\" imperfect labels, then performs supervised pretraining, and finally refines the model through self-supervised learning to improve overall performance. Our theoretical analysis and merit-based criterion show that labeled data need only place the model within a basin of attraction, confirming that only modest numbers of inexact labels and training epochs are required. We empirically validate our simple three-stage strategy across challenging domains, including nonconvex constrained optimization, power-grid operation, and stiff dynamical systems, and show that it yields faster convergence; improved accuracy, feasibility, and optimality; and up to 59x reductions in total offline cost.", "url": "http://arxiv.org/abs/2603.05495v1", "authors": ["Khai Nguyen", "Petros Ellinas", "Anvita Bhagavathula", "Priya Donti"], "keywords": []},{"title": "Residual RL--MPC for Robust Microrobotic Cell Pushing Under Time-Varying Flow", "summary": "Contact-rich micromanipulation in microfluidic flow is challenging because small disturbances can break pushing contact and induce large lateral drift. We study planar cell pushing with a magnetic rolling microrobot that tracks a waypoint-sampled reference curve under time-varying Poiseuille flow. We propose a hybrid controller that augments a nominal MPC with a learned residual policy trained by SAC. The policy outputs a bounded 2D velocity correction that is contact-gated, so residual actions are applied only during robot--cell contact, preserving reliable approach behavior and stabilizing learning. All methods share the same actuation interface and speed envelope for fair comparisons. Experiments show improved robustness and tracking accuracy over pure MPC and PID under nonstationary flow, with generalization from a clover training curve to unseen circle and square trajectories. A residual-bound sweep identifies an intermediate correction limit as the best trade-off, which we use in all benchmarks.", "url": "http://arxiv.org/abs/2603.05448v1", "authors": ["Yanda Yang", "Sambeeta Das"], "keywords": []},{"title": "EdgeDAM: Real-time Object Tracking for Mobile Devices", "summary": "Single-object tracking (SOT) on edge devices is a critical computer vision task, requiring accurate and continuous target localization across video frames under occlusion, distractor interference, and fast motion. However, recent state-of-the-art distractor-aware memory mechanisms are largely built on segmentation-based trackers and rely on mask prediction and attention-driven memory updates, which introduce substantial computational overhead and limit real-time deployment on resource-constrained hardware; meanwhile, lightweight trackers sustain high throughput but are prone to drift when visually similar distractors appear. To address these challenges, we propose EdgeDAM, a lightweight detection-guided tracking framework that reformulates distractor-aware memory for bounding-box tracking under strict edge constraints. EdgeDAM introduces two key strategies: (1) Dual-Buffer Distractor-Aware Memory (DAM), which integrates a Recent-Aware Memory to preserve temporally consistent target hypotheses and a Distractor-Resolving Memory to explicitly store hard negative candidates and penalize their re-selection during recovery; and (2) Confidence-Driven Switching with Held-Box Stabilization, where tracker reliability and temporal consistency criteria adaptively activate detection and memory-guided re-identification during occlusion, while a held-box mechanism temporarily freezes and expands the estimate to suppress distractor contamination. Extensive experiments on five benchmarks, including the distractor-focused DiDi dataset, demonstrate improved robustness under occlusion and fast motion while maintaining real-time performance on mobile devices, achieving 88.2% accuracy on DiDi and 25 FPS on an iPhone 15. Code will be released.", "url": "http://arxiv.org/abs/2603.05463v1", "authors": ["Syed Muhammad Raza", "Syed Murtaza Hussain Abidi", "Khawar Islam", "Muhammad Ibrahim", "Ajmal Saeed Mian"], "keywords": []},{"title": "Towards 3D Scene Understanding of Gas Plumes in LWIR Hyperspectral Images Using Neural Radiance Fields", "summary": "Hyperspectral images (HSI) have many applications, ranging from environmental monitoring to national security, and can be used for material detection and identification. Longwave infrared (LWIR) HSI can be used for gas plume detection and analysis. Oftentimes, only a few images of a scene of interest are available and are analyzed individually. The ability to combine information from multiple images into a single, cohesive representation could enhance analysis by providing more context on the scene\u0027s geometry and spectral properties. Neural radiance fields (NeRFs) create a latent neural representation of volumetric scene properties that enable novel-view rendering and geometry reconstruction, offering a promising avenue for hyperspectral 3D scene reconstruction. We explore the possibility of using NeRFs to create 3D scene reconstructions from LWIR HSI and demonstrate that the model can be used for the basic downstream analysis task of gas plume detection. The physics-based DIRSIG software suite was used to generate a synthetic multi-view LWIR HSI dataset of a simple facility with a strong sulfur hexafluoride gas plume. Our method, built on the standard Mip-NeRF architecture, combines state-of-the-art methods for hyperspectral NeRFs and sparse-view NeRFs, along with a novel adaptive weighted MSE loss. Our final NeRF method requires around 50% fewer training images than the standard Mip-NeRF and achieves an average PSNR of 39.8 dB with as few as 30 training images. Gas plume detection applied to NeRF-rendered test images using the adaptive coherence estimator achieves an average AUC of 0.821 when compared with detection masks generated from ground-truth test images.", "url": "http://arxiv.org/abs/2603.05473v1", "authors": ["Scout Jarman", "Zigfried Hampel-Arias", "Adra Carr", "Kevin R. Moon"], "keywords": []}]</script>
+
+    <!-- SparkMD5: Zotero's WebDAV format requires md5; SubtleCrypto can't do MD5 -->
+    <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
+    <!-- JSZip: needed to build the <key>.zip wrapper Zotero expects on WebDAV -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="../js/zotero.js"></script>
+    <script src="../js/webdav.js"></script>
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
 </body>
 </html>

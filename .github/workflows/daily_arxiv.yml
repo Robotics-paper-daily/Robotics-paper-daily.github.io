@@ -33,11 +33,25 @@ jobs:
         DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
       run: python src/main.py --backfill
 
+    - name: Build encrypted Zotero credentials bundle
+      env:
+        ZOTERO_API_KEY: ${{ secrets.ZOTERO_API_KEY }}
+        ZOTERO_USER_ID: ${{ secrets.ZOTERO_USER_ID }}
+        SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
+        PDF_PROXY_URL: ${{ secrets.PDF_PROXY_URL }}
+        WEBDAV_URL: ${{ secrets.WEBDAV_URL }}
+        WEBDAV_USER: ${{ secrets.WEBDAV_USER }}
+        WEBDAV_PASS: ${{ secrets.WEBDAV_PASS }}
+      run: python build_secrets.py
+
     - name: Commit and push changes
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add daily_json/ daily_html/ index.html reports.json search_index.json search.html list.html
+        git add daily_json/ daily_html/ index.html reports.json search_index.json search.html list.html guest.html personal.html js/
+        # secrets.enc.js is gitignored to keep it out of forks; force-add so
+        # this workflow's regenerated bundle gets pushed for GitHub Pages.
+        git add -f js/secrets.enc.js
         # Check if there are changes to commit
         if git diff --staged --quiet; then
           echo "No changes to commit."

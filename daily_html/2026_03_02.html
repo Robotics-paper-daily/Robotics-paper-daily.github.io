@@ -32,38 +32,6 @@
             line-height: 1.6;
         }
 
-        .quick-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            align-items: center;
-            width: fit-content;
-            margin: 0.9rem auto 0;
-            padding: 0;
-            border: none;
-            background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-        }
-
-        .quick-nav a {
-            color: var(--highlight-primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 0.35rem 0.75rem;
-            border-radius: 999px;
-            border: 1px solid rgba(226, 232, 240, 0.95);
-            background: rgba(255, 255, 255, 0.86);
-            box-shadow: 0 2px 6px var(--shadow-color);
-            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-        }
-
-        .quick-nav a:hover {
-            background-color: rgba(123, 44, 159, 0.12);
-            color: #6B1F8F;
-            transform: translateY(-1px);
-        }
 
         .bento-grid {
             display: grid;
@@ -103,10 +71,25 @@
         }
 
         .paper-summary {
-            font-size: 0.875rem; /* Tailwind text-sm */
+            font-size: 0.85rem;
             color: var(--text-muted-color);
-            margin-bottom: 1.25rem; /* Tailwind mb-5 */
+            margin-bottom: 1.25rem;
             line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
         }
 
         .paper-link {
@@ -195,12 +178,25 @@
         }
 
         .paper-tldr {
-            font-size: 0.95rem; /* Slightly bigger than summary */
-            color: #475569; /* Changed to Tailwind slate-600 (slightly darker than summary) */
-            margin-top: 0.75rem; /* Tailwind mt-3 */
-            margin-bottom: 0.75rem; /* Tailwind mb-2 */
-            /* font-style: italic; */
-            font-weight: bold;
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
         }
 
         .paper-rating {
@@ -276,6 +272,222 @@
             font-size: 0.88rem;
         }
 
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link.
+           Shown only when body.zotero-mode is set (which like.js does after
+           confirming sessionStorage has decrypted credentials). Guests never
+           see it. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn i {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover i {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
@@ -289,11 +501,6 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>March 02, 2026</p>
-        <nav class="quick-nav">
-            <a href="../index.html" target="_top">首页</a>
-            <a href="../list.html" target="_top">报告列表</a>
-            <a href="../search.html" target="_top">论文检索</a>
-        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -307,16 +514,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">BioProAgent: Neuro-Symbolic Grounding for Constrained Scientific Planning</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Large language models (LLMs) have demonstrated significant reasoning capabilities in scientific discovery but struggle to bridge the gap to physical execution in wet-labs. In these irreversible environments, probabilistic hallucinations are not merely incorrect, but also cause equipment damage or experimental failure. To address this, we propose \textbf{BioProAgent}, a neuro-symbolic framework that anchors probabilistic planning in a deterministic Finite State Machine (FSM). We introduce a State-Augmented Planning mechanism that enforces a rigorous \textit{Design-Verify-Rectify} workflow, ensuring hardware compliance before execution. Furthermore, we address the context bottleneck inherent in complex device schemas by \textit{Semantic Symbol Grounding}, reducing token consumption by $\sim$6$\times$ through symbolic abstraction. In the extended BioProBench benchmark, BioProAgent achieves 95.6\% physical compliance (compared to 21.0\% for ReAct), demonstrating that neuro-symbolic constraints are essential for reliable autonomy in irreversible physical environments. \footnote{Code at https://github.com/YuyangSunshine/bioproagent and project at https://yuyangsunshine.github.io/BioPro-Project/}</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 大型语言模型(LLMs)在科学发现中展现出显著的推理能力，但难以跨越到湿实验室中的物理执行。在这些不可逆的环境中，概率性幻觉不仅仅是不正确，还会导致设备损坏或实验失败。为解决这个问题，我们提出了\textbf{BioProAgent}，一种将概率规划锚定在确定性有限状态机(FSM)中的神经符号化框架。我们引入了一种状态增强型规划机制，该机制强制执行严格的\textit{设计-验证-修正}工作流程，以确保执行前的硬件合规性。此外，我们通过\textit{语义符号接地}来解决复杂设备模式中固有的上下文瓶颈问题，通过符号抽象将token消耗降低约6倍。在扩展的BioProBench基准测试中，BioProAgent实现了95.6%的物理合规性（相比之下，ReAct为21.0%），表明神经符号化约束对于不可逆物理环境中可靠的自主性至关重要。\footnote{代码位于https://github.com/YuyangSunshine/bioproagent，项目位于https://yuyangsunshine.github.io/BioPro-Project/}</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: BioProAgent is a neuro-symbolic framework that improves LLM reliability in wet-lab environments by anchoring probabilistic planning within a deterministic FSM using state-augmented planning and semantic symbol grounding, significantly improving physical compliance.</p>
+            <h2 class="paper-title">
+                BioProAgent: Neuro-Symbolic Grounding for Constrained Scientific Planning
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: BioProAgent是一个神经-符号框架，通过在确定性有限状态机（FSM）中锚定概率规划，使用状态增强规划和语义符号 grounding，提高了LLM在湿实验室环境中的可靠性，显著提高了物理依从性。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>BioProAgent是一个神经-符号框架，通过在确定性有限状态机（FSM）中锚定概率规划，使用状态增强规划和语义符号 grounding，提高了LLM在湿实验室环境中的可靠性，显著提高了物理依从性。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> BioProAgent is a neuro-symbolic framework that improves LLM reliability in wet-lab environments by anchoring probabilistic planning within a deterministic FSM using state-augmented planning and semantic symbol grounding, significantly improving physical compliance.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Large language models (LLMs) have demonstrated significant reasoning capabilities in scientific discovery but struggle to bridge the gap to physical execution in wet-labs. In these irreversible environments, probabilistic hallucinations are not merely incorrect, but also cause equipment damage or experimental failure. To address this, we propose \textbf{BioProAgent}, a neuro-symbolic framework that anchors probabilistic planning in a deterministic Finite State Machine (FSM). We introduce a State-Augmented Planning mechanism that enforces a rigorous \textit{Design-Verify-Rectify} workflow, ensuring hardware compliance before execution. Furthermore, we address the context bottleneck inherent in complex device schemas by \textit{Semantic Symbol Grounding}, reducing token consumption by $\sim$6$\times$ through symbolic abstraction. In the extended BioProBench benchmark, BioProAgent achieves 95.6\% physical compliance (compared to 21.0\% for ReAct), demonstrating that neuro-symbolic constraints are essential for reliable autonomy in irreversible physical environments. \footnote{Code at https://github.com/YuyangSunshine/bioproagent and project at https://yuyangsunshine.github.io/BioPro-Project/}</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>大型语言模型(LLMs)在科学发现中展现出显著的推理能力，但难以跨越到湿实验室中的物理执行。在这些不可逆的环境中，概率性幻觉不仅仅是不正确，还会导致设备损坏或实验失败。为解决这个问题，我们提出了\textbf{BioProAgent}，一种将概率规划锚定在确定性有限状态机(FSM)中的神经符号化框架。我们引入了一种状态增强型规划机制，该机制强制执行严格的\textit{设计-验证-修正}工作流程，以确保执行前的硬件合规性。此外，我们通过\textit{语义符号接地}来解决复杂设备模式中固有的上下文瓶颈问题，通过符号抽象将token消耗降低约6倍。在扩展的BioProBench基准测试中，BioProAgent实现了95.6%的物理合规性（相比之下，ReAct为21.0%），表明神经符号化约束对于不可逆物理环境中可靠的自主性至关重要。\footnote{代码位于https://github.com/YuyangSunshine/bioproagent，项目位于https://yuyangsunshine.github.io/BioPro-Project/}</p>
             
 
             
@@ -390,6 +601,14 @@
             <a href="http://arxiv.org/abs/2603.00876v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Yuyang Liu, Jingya Wang, Liuzhenghao Lv, Yonghong Tian</p>
             
@@ -403,16 +622,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">MC-Search: Evaluating and Enhancing Multimodal Agentic Search with Structured Long Reasoning Chains</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> With the increasing demand for step-wise, cross-modal, and knowledge-grounded reasoning, multimodal large language models (MLLMs) are evolving beyond the traditional fixed retrieve-then-generate paradigm toward more sophisticated agentic multimodal retrieval-augmented generation (MM-RAG). Existing benchmarks, however, mainly focus on simplified QA with short retrieval chains, leaving adaptive planning and multimodal reasoning underexplored. We present MC-Search, the first benchmark for agentic MM-RAG with long, step-wise annotated reasoning chains spanning five representative reasoning structures. Each example specifies sub-questions, retrieval modalities, supporting facts, and intermediate answers, with fidelity ensured by HAVE (Hop-wise Attribution and Verification of Evidence), resulting in 3,333 high-quality examples averaging 3.7 hops. Beyond answer accuracy, MC-Search introduces new process-level metrics for reasoning quality, stepwise retrieval and planning accuracy. By developing a unified agentic MM-RAG pipeline, we benchmark six leading MLLMs and reveal systematic issues such as over- and under-retrieval and modality-misaligned planning. Finally, we introduce Search-Align, a process-supervised fine-tuning framework leveraging verified reasoning chains, showing that our data not only enables faithful evaluation but also improves planning and retrieval fidelity in open-source MLLMs.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 随着对逐步式、跨模态和知识驱动推理需求的日益增长，多模态大型语言模型（MLLMs）正从传统的固定式检索-生成范式演进为更复杂的具有代理能力的增强型多模态检索生成（MM-RAG）。然而，现有的基准测试主要关注于简单的QA，检索链较短，对自适应规划和多模态推理的探索不足。我们提出了 MC-Search，这是首个评估具有代理能力的 MM-RAG 的基准测试，它包含长且逐步标注的推理链，涵盖了五种代表性的推理结构。每个示例都详细说明了子问题、检索模态、支持事实和中间答案，并通过 HAVE（证据的逐跳归因和验证）确保其保真度，最终得到 3,333 个高质量示例，平均跳数为 3.7。除了答案准确性，MC-Search 还引入了新的过程级别指标，用于评估推理质量、逐步检索和规划的准确性。通过开发一个统一的具有代理能力的 MM-RAG 流程，我们对六个领先的 MLLM 进行了基准测试，揭示了诸如过度检索和欠检索以及模态错位规划等系统性问题。最后，我们引入了 Search-Align，这是一个利用验证过的推理链进行过程监督微调的框架，表明我们的数据不仅能够实现忠实的评估，还能提高开源 MLLM 在开放域中的规划和检索保真度。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces MC-Search, a new benchmark for evaluating multimodal agentic retrieval-augmented generation (MM-RAG) with long, structured reasoning chains, and proposes Search-Align, a process-supervised fine-tuning framework, demonstrating improved planning and retrieval fidelity in MLLMs.</p>
+            <h2 class="paper-title">
+                MC-Search: Evaluating and Enhancing Multimodal Agentic Search with Structured Long Reasoning Chains
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了MC-Search，一个新的基准测试，用于评估具有长且结构化的推理链的多模态代理检索增强生成（MM-RAG），并提出了Search-Align，一个过程监督的微调框架，证明了在MLLM中规划和检索保真度的提高。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了MC-Search，一个新的基准测试，用于评估具有长且结构化的推理链的多模态代理检索增强生成（MM-RAG），并提出了Search-Align，一个过程监督的微调框架，证明了在MLLM中规划和检索保真度的提高。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces MC-Search, a new benchmark for evaluating multimodal agentic retrieval-augmented generation (MM-RAG) with long, structured reasoning chains, and proposes Search-Align, a process-supervised fine-tuning framework, demonstrating improved planning and retrieval fidelity in MLLMs.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> With the increasing demand for step-wise, cross-modal, and knowledge-grounded reasoning, multimodal large language models (MLLMs) are evolving beyond the traditional fixed retrieve-then-generate paradigm toward more sophisticated agentic multimodal retrieval-augmented generation (MM-RAG). Existing benchmarks, however, mainly focus on simplified QA with short retrieval chains, leaving adaptive planning and multimodal reasoning underexplored. We present MC-Search, the first benchmark for agentic MM-RAG with long, step-wise annotated reasoning chains spanning five representative reasoning structures. Each example specifies sub-questions, retrieval modalities, supporting facts, and intermediate answers, with fidelity ensured by HAVE (Hop-wise Attribution and Verification of Evidence), resulting in 3,333 high-quality examples averaging 3.7 hops. Beyond answer accuracy, MC-Search introduces new process-level metrics for reasoning quality, stepwise retrieval and planning accuracy. By developing a unified agentic MM-RAG pipeline, we benchmark six leading MLLMs and reveal systematic issues such as over- and under-retrieval and modality-misaligned planning. Finally, we introduce Search-Align, a process-supervised fine-tuning framework leveraging verified reasoning chains, showing that our data not only enables faithful evaluation but also improves planning and retrieval fidelity in open-source MLLMs.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>随着对逐步式、跨模态和知识驱动推理需求的日益增长，多模态大型语言模型（MLLMs）正从传统的固定式检索-生成范式演进为更复杂的具有代理能力的增强型多模态检索生成（MM-RAG）。然而，现有的基准测试主要关注于简单的QA，检索链较短，对自适应规划和多模态推理的探索不足。我们提出了 MC-Search，这是首个评估具有代理能力的 MM-RAG 的基准测试，它包含长且逐步标注的推理链，涵盖了五种代表性的推理结构。每个示例都详细说明了子问题、检索模态、支持事实和中间答案，并通过 HAVE（证据的逐跳归因和验证）确保其保真度，最终得到 3,333 个高质量示例，平均跳数为 3.7。除了答案准确性，MC-Search 还引入了新的过程级别指标，用于评估推理质量、逐步检索和规划的准确性。通过开发一个统一的具有代理能力的 MM-RAG 流程，我们对六个领先的 MLLM 进行了基准测试，揭示了诸如过度检索和欠检索以及模态错位规划等系统性问题。最后，我们引入了 Search-Align，这是一个利用验证过的推理链进行过程监督微调的框架，表明我们的数据不仅能够实现忠实的评估，还能提高开源 MLLM 在开放域中的规划和检索保真度。</p>
             
 
             
@@ -486,6 +709,14 @@
             <a href="http://arxiv.org/abs/2603.00873v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="1" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="1" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Xuying Ning, Dongqi Fu, Tianxin Wei, Mengting Ai, Jiaru Zou, Ting-Wei Li, Hanghang Tong, Yada Zhu, Hendrik Hamann, Jingrui He</p>
             
@@ -499,16 +730,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Constitutional Black-Box Monitoring for Scheming in LLM Agents</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Safe deployment of Large Language Model (LLM) agents in autonomous settings requires reliable oversight mechanisms. A central challenge is detecting scheming, where agents covertly pursue misaligned goals. One approach to mitigating such risks is LLM-based monitoring: using language models to examine agent behaviors for suspicious actions. We study constitutional black-box monitors: prompted classifiers that detect scheming using only externally observable inputs and outputs, optimized on synthetic data generated from natural-language behavior specifications. We introduce two pipelines for generating synthetic agent trajectories, STRIDE (iterative refinement) and Gloom (agent-environment simulation), from which we generate 1,000 samples each. We optimize frontier LLM monitors on these datasets via prompt sweeps, human refinement, and automated prompt optimization, and evaluate performance on 7,500 held-out trajectories from ControlArena, a suite of grounded environments where agents operate in more realistic contexts. Our results demonstrate that monitors selected purely on synthetic data can generalize to more realistic environments, capturing a meaningful scheming signal. However, we find that performance saturates quickly in our setting, with simple prompt sweeps matching the results of more extensive optimization. Pushing beyond this limit yields no further improvements and instead leads to overfitting.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 大型语言模型（LLM）智能体在自主环境中的安全部署需要可靠的监督机制。一个核心挑战是检测阴谋行为，即智能体秘密地追求不一致的目标。缓解此类风险的一种方法是基于LLM的监控：利用语言模型检查智能体的行为，以发现可疑活动。我们研究了宪法式黑盒监控器：一种提示分类器，仅使用外部可观察的输入和输出来检测阴谋行为，并在从自然语言行为规范生成的合成数据上进行优化。我们介绍了两种生成合成智能体轨迹的流水线，STRIDE（迭代改进）和Gloom（智能体-环境模拟），并从中分别生成1,000个样本。我们通过提示扫描、人工改进和自动化提示优化，在这些数据集上优化前沿LLM监控器，并在ControlArena（一套接地环境中，智能体在更真实的上下文中运行）的7,500条预留轨迹上评估性能。我们的结果表明，仅根据合成数据选择的监控器可以泛化到更真实的环境中，捕获有意义的阴谋信号。然而，我们发现在此设置中性能迅速饱和，简单的提示扫描就可以达到更广泛的优化结果。突破此限制不会带来进一步的改进，反而会导致过拟合。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper explores using LLM-based monitors to detect scheming in LLM agents, finding that monitors trained on synthetic data can generalize to realistic environments, though performance saturates quickly.</p>
+            <h2 class="paper-title">
+                Constitutional Black-Box Monitoring for Scheming in LLM Agents
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文探讨了使用基于LLM的监控器来检测LLM智能体中的阴谋行为，发现基于合成数据训练的监控器可以推广到真实环境中，尽管性能很快达到饱和。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文探讨了使用基于LLM的监控器来检测LLM智能体中的阴谋行为，发现基于合成数据训练的监控器可以推广到真实环境中，尽管性能很快达到饱和。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper explores using LLM-based monitors to detect scheming in LLM agents, finding that monitors trained on synthetic data can generalize to realistic environments, though performance saturates quickly.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Safe deployment of Large Language Model (LLM) agents in autonomous settings requires reliable oversight mechanisms. A central challenge is detecting scheming, where agents covertly pursue misaligned goals. One approach to mitigating such risks is LLM-based monitoring: using language models to examine agent behaviors for suspicious actions. We study constitutional black-box monitors: prompted classifiers that detect scheming using only externally observable inputs and outputs, optimized on synthetic data generated from natural-language behavior specifications. We introduce two pipelines for generating synthetic agent trajectories, STRIDE (iterative refinement) and Gloom (agent-environment simulation), from which we generate 1,000 samples each. We optimize frontier LLM monitors on these datasets via prompt sweeps, human refinement, and automated prompt optimization, and evaluate performance on 7,500 held-out trajectories from ControlArena, a suite of grounded environments where agents operate in more realistic contexts. Our results demonstrate that monitors selected purely on synthetic data can generalize to more realistic environments, capturing a meaningful scheming signal. However, we find that performance saturates quickly in our setting, with simple prompt sweeps matching the results of more extensive optimization. Pushing beyond this limit yields no further improvements and instead leads to overfitting.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>大型语言模型（LLM）智能体在自主环境中的安全部署需要可靠的监督机制。一个核心挑战是检测阴谋行为，即智能体秘密地追求不一致的目标。缓解此类风险的一种方法是基于LLM的监控：利用语言模型检查智能体的行为，以发现可疑活动。我们研究了宪法式黑盒监控器：一种提示分类器，仅使用外部可观察的输入和输出来检测阴谋行为，并在从自然语言行为规范生成的合成数据上进行优化。我们介绍了两种生成合成智能体轨迹的流水线，STRIDE（迭代改进）和Gloom（智能体-环境模拟），并从中分别生成1,000个样本。我们通过提示扫描、人工改进和自动化提示优化，在这些数据集上优化前沿LLM监控器，并在ControlArena（一套接地环境中，智能体在更真实的上下文中运行）的7,500条预留轨迹上评估性能。我们的结果表明，仅根据合成数据选择的监控器可以泛化到更真实的环境中，捕获有意义的阴谋信号。然而，我们发现在此设置中性能迅速饱和，简单的提示扫描就可以达到更广泛的优化结果。突破此限制不会带来进一步的改进，反而会导致过拟合。</p>
             
 
             
@@ -582,6 +817,14 @@
             <a href="http://arxiv.org/abs/2603.00829v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="2" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="2" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Simon Storf, Rich Barton-Cooper, James Peters-Gill, Marius Hobbhahn</p>
             
@@ -595,16 +838,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">MetaMind: General and Cognitive World Models in Multi-Agent Systems by Meta-Theory of Mind</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> A major challenge for world models in multi-agent systems is to understand interdependent agent dynamics, predict interactive multi-agent trajectories, and plan over long horizons with collective awareness, without centralized supervision or explicit communication. In this paper, MetaMind, a general and cognitive world model for multi-agent systems that leverages a novel meta-theory of mind (Meta-ToM) framework, is proposed. Through MetaMind, each agent learns not only to predict and plan over its own beliefs, but also to inversely reason goals and beliefs from its own behavior trajectories. This self-reflective, bidirectional inference loop enables each agent to learn a metacognitive ability in a self-supervised manner. Then, MetaMind is shown to generalize the metacognitive ability from first-person to third-person through analogical reasoning. Thus, in multi-agent systems, each agent with MetaMind can actively reason about goals and beliefs of other agents from limited, observable behavior trajectories in a zero-shot manner, and then adapt to emergent collective intention without an explicit communication mechanism. Extended simulation results on diverse multi-agent tasks demonstrate that MetaMind can achieve superior task performance and outperform baselines in few-shot multi-agent generalization.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 多智能体系统中世界模型面临的主要挑战是理解相互依赖的智能体动力学，预测交互式的多智能体轨迹，并在没有中心化监督或显式通信的情况下，以集体意识进行长程规划。本文提出了一种用于多智能体系统的通用认知世界模型 MetaMind，它利用了一种新颖的元心智理论 (Meta-ToM) 框架。通过 MetaMind，每个智能体不仅学会预测和规划其自身的信念，还能从其自身的行为轨迹中逆向推理目标和信念。这种自省的、双向的推理循环使每个智能体都能够以自监督的方式学习元认知能力。然后，MetaMind 被证明可以通过类比推理将元认知能力从第一人称推广到第三人称。因此，在多智能体系统中，每个具有 MetaMind 的智能体都可以从有限的、可观察的行为轨迹中，以零样本的方式主动推理其他智能体的目标和信念，然后在没有显式通信机制的情况下适应涌现的集体意图。在不同的多智能体任务上的扩展模拟结果表明，MetaMind 可以实现卓越的任务性能，并在少样本多智能体泛化中优于基线模型。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper proposes MetaMind, a novel meta-theory of mind framework for multi-agent systems, enabling agents to reason about others' goals and beliefs from behavior trajectories in a zero-shot manner through self-reflection and analogical reasoning, leading to superior performance in diverse multi-agent tasks.</p>
+            <h2 class="paper-title">
+                MetaMind: General and Cognitive World Models in Multi-Agent Systems by Meta-Theory of Mind
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文提出了一种名为MetaMind的新型心智元理论框架，用于多智能体系统。它使智能体能够通过自我反思和类比推理，从行为轨迹以零样本方式推断其他智能体的目标和信念，从而在各种多智能体任务中实现卓越的性能。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文提出了一种名为MetaMind的新型心智元理论框架，用于多智能体系统。它使智能体能够通过自我反思和类比推理，从行为轨迹以零样本方式推断其他智能体的目标和信念，从而在各种多智能体任务中实现卓越的性能。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper proposes MetaMind, a novel meta-theory of mind framework for multi-agent systems, enabling agents to reason about others' goals and beliefs from behavior trajectories in a zero-shot manner through self-reflection and analogical reasoning, leading to superior performance in diverse multi-agent tasks.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> A major challenge for world models in multi-agent systems is to understand interdependent agent dynamics, predict interactive multi-agent trajectories, and plan over long horizons with collective awareness, without centralized supervision or explicit communication. In this paper, MetaMind, a general and cognitive world model for multi-agent systems that leverages a novel meta-theory of mind (Meta-ToM) framework, is proposed. Through MetaMind, each agent learns not only to predict and plan over its own beliefs, but also to inversely reason goals and beliefs from its own behavior trajectories. This self-reflective, bidirectional inference loop enables each agent to learn a metacognitive ability in a self-supervised manner. Then, MetaMind is shown to generalize the metacognitive ability from first-person to third-person through analogical reasoning. Thus, in multi-agent systems, each agent with MetaMind can actively reason about goals and beliefs of other agents from limited, observable behavior trajectories in a zero-shot manner, and then adapt to emergent collective intention without an explicit communication mechanism. Extended simulation results on diverse multi-agent tasks demonstrate that MetaMind can achieve superior task performance and outperform baselines in few-shot multi-agent generalization.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>多智能体系统中世界模型面临的主要挑战是理解相互依赖的智能体动力学，预测交互式的多智能体轨迹，并在没有中心化监督或显式通信的情况下，以集体意识进行长程规划。本文提出了一种用于多智能体系统的通用认知世界模型 MetaMind，它利用了一种新颖的元心智理论 (Meta-ToM) 框架。通过 MetaMind，每个智能体不仅学会预测和规划其自身的信念，还能从其自身的行为轨迹中逆向推理目标和信念。这种自省的、双向的推理循环使每个智能体都能够以自监督的方式学习元认知能力。然后，MetaMind 被证明可以通过类比推理将元认知能力从第一人称推广到第三人称。因此，在多智能体系统中，每个具有 MetaMind 的智能体都可以从有限的、可观察的行为轨迹中，以零样本的方式主动推理其他智能体的目标和信念，然后在没有显式通信机制的情况下适应涌现的集体意图。在不同的多智能体任务上的扩展模拟结果表明，MetaMind 可以实现卓越的任务性能，并在少样本多智能体泛化中优于基线模型。</p>
             
 
             
@@ -678,6 +925,14 @@
             <a href="http://arxiv.org/abs/2603.00808v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="3" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="3" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Lingyi Wang, Rashed Shelim, Walid Saad, Naren Ramakrishna</p>
             
@@ -691,16 +946,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">pySpatial: Generating 3D Visual Programs for Zero-Shot Spatial Reasoning</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Multi-modal Large Language Models (MLLMs) have demonstrated strong capabilities in general-purpose perception and reasoning, but they still struggle with tasks that require spatial understanding of the 3D world. To address this, we introduce pySpatial, a visual programming framework that equips MLLMs with the ability to interface with spatial tools via Python code generation. Given an image sequence and a natural-language query, the model composes function calls to spatial tools including 3D reconstruction, camera-pose recovery, novel-view rendering, etc. These operations convert raw 2D inputs into an explorable 3D scene, enabling MLLMs to reason explicitly over structured spatial representations. Notably, pySpatial requires no gradient-based fine-tuning and operates in a fully zero-shot setting. Experimental evaluations on the challenging MindCube and Omni3D-Bench benchmarks demonstrate that our framework pySpatial consistently surpasses strong MLLM baselines; for instance, it outperforms GPT-4.1-mini by 12.94% on MindCube. Furthermore, we conduct real-world indoor navigation experiments where the robot can successfully traverse complex environments using route plans generated by pySpatial, highlighting the practical effectiveness of our approach.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 多模态大型语言模型(MLLMs)已在通用感知和推理方面展现出强大的能力，但它们在需要对3D世界进行空间理解的任务中仍然表现不佳。为了解决这个问题，我们引入了pySpatial，一个视觉编程框架，通过Python代码生成，赋予MLLMs与空间工具交互的能力。给定一个图像序列和一个自然语言查询，模型会编写函数调用来使用空间工具，包括3D重建、相机姿态恢复、新视角渲染等。这些操作将原始2D输入转换为可探索的3D场景，使MLLMs能够显式地推理结构化的空间表示。值得注意的是，pySpatial无需基于梯度的微调，并在完全零样本设置下运行。在具有挑战性的MindCube和Omni3D-Bench基准测试上的实验评估表明，我们的框架pySpatial始终优于强大的MLLM基线；例如，在MindCube上，它比GPT-4.1-mini的性能高出12.94%。此外，我们进行了真实世界的室内导航实验，其中机器人能够使用pySpatial生成的路线规划成功地穿越复杂的环境，突显了我们方法的实际有效性。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces pySpatial, a zero-shot visual programming framework that enhances MLLMs with 3D spatial reasoning abilities by enabling them to interact with spatial tools through Python code generation, achieving state-of-the-art results on spatial reasoning benchmarks and demonstrating effectiveness in real-world robot navigation.</p>
+            <h2 class="paper-title">
+                pySpatial: Generating 3D Visual Programs for Zero-Shot Spatial Reasoning
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了pySpatial，一个零样本视觉编程框架，通过使MLLM能够通过Python代码生成与空间工具交互，从而增强了MLLM的3D空间推理能力，在空间推理基准测试中取得了最先进的结果，并展示了在现实世界机器人导航中的有效性。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了pySpatial，一个零样本视觉编程框架，通过使MLLM能够通过Python代码生成与空间工具交互，从而增强了MLLM的3D空间推理能力，在空间推理基准测试中取得了最先进的结果，并展示了在现实世界机器人导航中的有效性。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces pySpatial, a zero-shot visual programming framework that enhances MLLMs with 3D spatial reasoning abilities by enabling them to interact with spatial tools through Python code generation, achieving state-of-the-art results on spatial reasoning benchmarks and demonstrating effectiveness in real-world robot navigation.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Multi-modal Large Language Models (MLLMs) have demonstrated strong capabilities in general-purpose perception and reasoning, but they still struggle with tasks that require spatial understanding of the 3D world. To address this, we introduce pySpatial, a visual programming framework that equips MLLMs with the ability to interface with spatial tools via Python code generation. Given an image sequence and a natural-language query, the model composes function calls to spatial tools including 3D reconstruction, camera-pose recovery, novel-view rendering, etc. These operations convert raw 2D inputs into an explorable 3D scene, enabling MLLMs to reason explicitly over structured spatial representations. Notably, pySpatial requires no gradient-based fine-tuning and operates in a fully zero-shot setting. Experimental evaluations on the challenging MindCube and Omni3D-Bench benchmarks demonstrate that our framework pySpatial consistently surpasses strong MLLM baselines; for instance, it outperforms GPT-4.1-mini by 12.94% on MindCube. Furthermore, we conduct real-world indoor navigation experiments where the robot can successfully traverse complex environments using route plans generated by pySpatial, highlighting the practical effectiveness of our approach.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>多模态大型语言模型(MLLMs)已在通用感知和推理方面展现出强大的能力，但它们在需要对3D世界进行空间理解的任务中仍然表现不佳。为了解决这个问题，我们引入了pySpatial，一个视觉编程框架，通过Python代码生成，赋予MLLMs与空间工具交互的能力。给定一个图像序列和一个自然语言查询，模型会编写函数调用来使用空间工具，包括3D重建、相机姿态恢复、新视角渲染等。这些操作将原始2D输入转换为可探索的3D场景，使MLLMs能够显式地推理结构化的空间表示。值得注意的是，pySpatial无需基于梯度的微调，并在完全零样本设置下运行。在具有挑战性的MindCube和Omni3D-Bench基准测试上的实验评估表明，我们的框架pySpatial始终优于强大的MLLM基线；例如，在MindCube上，它比GPT-4.1-mini的性能高出12.94%。此外，我们进行了真实世界的室内导航实验，其中机器人能够使用pySpatial生成的路线规划成功地穿越复杂的环境，突显了我们方法的实际有效性。</p>
             
 
             
@@ -774,6 +1033,14 @@
             <a href="http://arxiv.org/abs/2603.00905v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="4" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="4" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Zhanpeng Luo, Ce Zhang, Silong Yong, Cunxi Dai, Qianwei Wang, Haoxi Ran, Guanya Shi, Katia Sycara, Yaqi Xie</p>
             
@@ -787,19 +1054,23 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">COMBAT: Conditional World Models for Behavioral Agent Training</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Recent advances in video generation have spurred the development of world models capable of simulating 3D-consistent environments and interactions with static objects. However, a significant limitation remains in their ability to model dynamic, reactive agents that can intelligently influence and interact with the world. To address this gap, we introduce COMBAT, a real-time, action-controlled world model trained on the complex 1v1 fighting game Tekken 3. Our work demonstrates that diffusion models can successfully simulate a dynamic opponent that reacts to player actions, learning its behavior implicitly.
+            <h2 class="paper-title">
+                COMBAT: Conditional World Models for Behavioral Agent Training
+                
+            </h2>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文介绍了COMBAT，一个在铁拳3上训练的实时、动作控制的世界模型，它使用扩散Transformer来模拟动态的、反应性的智能体，展示了在没有明确监督的情况下，仅从单人游戏输入中涌现出的复杂智能体行为。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces COMBAT, a real-time, action-controlled world model trained on Tekken 3 that uses a diffusion transformer to simulate dynamic, reactive agents, demonstrating the emergence of sophisticated agent behavior from single-player inputs without explicit supervision.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Recent advances in video generation have spurred the development of world models capable of simulating 3D-consistent environments and interactions with static objects. However, a significant limitation remains in their ability to model dynamic, reactive agents that can intelligently influence and interact with the world. To address this gap, we introduce COMBAT, a real-time, action-controlled world model trained on the complex 1v1 fighting game Tekken 3. Our work demonstrates that diffusion models can successfully simulate a dynamic opponent that reacts to player actions, learning its behavior implicitly.
   Our approach utilizes a 1.2 billion parameter Diffusion Transformer, conditioned on latent representations from a deep compression autoencoder. We employ state-of-the-art techniques, including causal distillation and diffusion forcing, to achieve real-time inference. Crucially, we observe the emergence of sophisticated agent behavior by training the model solely on single-player inputs, without any explicit supervision for the opponent's policy. Unlike traditional imitation learning methods, which require complete action labels, COMBAT learns effectively from partially observed data to generate responsive behaviors for a controllable Player 1. We present an extensive study and introduce novel evaluation methods to benchmark this emergent agent behavior, establishing a strong foundation for training interactive agents within diffusion-based world models.</p>
             
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 视频生成领域的最新进展推动了世界模型的开发，使其能够模拟具有3D一致性的环境以及与静态物体的交互。然而，其在建模能够智能地影响世界并与之交互的动态、反应型智能体方面的能力仍然存在显著局限性。为了弥补这一差距，我们引入了COMBAT，一个在复杂的1v1格斗游戏铁拳3上训练的实时动作控制世界模型。我们的工作表明，扩散模型可以成功地模拟一个对玩家动作做出反应的动态对手，从而隐式地学习其行为。
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>视频生成领域的最新进展推动了世界模型的开发，使其能够模拟具有3D一致性的环境以及与静态物体的交互。然而，其在建模能够智能地影响世界并与之交互的动态、反应型智能体方面的能力仍然存在显著局限性。为了弥补这一差距，我们引入了COMBAT，一个在复杂的1v1格斗游戏铁拳3上训练的实时动作控制世界模型。我们的工作表明，扩散模型可以成功地模拟一个对玩家动作做出反应的动态对手，从而隐式地学习其行为。
 
 我们的方法利用了一个包含12亿参数的扩散Transformer，该Transformer基于来自深度压缩自编码器的潜在表征进行调节。我们采用了包括因果蒸馏和扩散强制在内的最先进技术来实现实时推理。至关重要的是，我们观察到通过仅在单人游戏输入上训练模型，而无需对对手策略进行任何显式监督，即能涌现出复杂的智能体行为。与需要完整动作标签的传统模仿学习方法不同，COMBAT可以有效地从部分观察到的数据中学习，为可控的玩家1生成响应性行为。我们进行了一项广泛的研究，并引入了新颖的评估方法来对这种涌现的智能体行为进行基准测试，为在基于扩散的世界模型中训练交互式智能体奠定了坚实的基础。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces COMBAT, a real-time, action-controlled world model trained on Tekken 3 that uses a diffusion transformer to simulate dynamic, reactive agents, demonstrating the emergence of sophisticated agent behavior from single-player inputs without explicit supervision.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了COMBAT，一个在铁拳3上训练的实时、动作控制的世界模型，它使用扩散Transformer来模拟动态的、反应性的智能体，展示了在没有明确监督的情况下，仅从单人游戏输入中涌现出的复杂智能体行为。</p>
             
 
             
@@ -873,6 +1144,14 @@
             <a href="http://arxiv.org/abs/2603.00825v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="5" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="5" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Anmol Agarwal, Pranay Meshram, Sumer Singh, Saurav Suman, Andrew Lapp, Shahbuland Matiana, Louis Castricato, Spencer Frazier</p>
             
@@ -886,16 +1165,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Hippo: High-performance Interior-Point and Projection-based Solver for Generic Constrained Trajectory Optimization</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Trajectory optimization is the core of modern model-based robotic control and motion planning. Existing trajectory optimizers, based on sequential quadratic programming (SQP) or differential dynamic programming (DDP), are often limited by their slow computation efficiency, low modeling flexibility, and poor convergence for complex tasks requiring hard constraints. In this paper, we introduce Hippo, a solver that can handle inequality constraints using the interior-point method (IPM) with an adaptive barrier update strategy and hard equality constraints via projection or IPM. Through extensive numerical benchmarks, we show that Hippo is a robust and efficient alternative to existing state-of-the-art solvers for difficult robotic trajectory optimization problems requiring high-quality solutions, such as locomotion and manipulation.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 轨迹优化是现代基于模型的机器人控制和运动规划的核心。现有的轨迹优化器，基于序列二次规划（SQP）或微分动态规划（DDP），通常受限于其缓慢的计算效率、较低的建模灵活性以及对于需要硬约束的复杂任务的较差收敛性。在本文中，我们介绍Hippo，一种求解器，它可以使用具有自适应障碍更新策略的内点法（IPM）处理不等式约束，并通过投影或IPM处理硬等式约束。通过大量的数值基准测试，我们表明Hippo是现有最先进求解器的一种稳健且高效的替代方案，适用于需要高质量解决方案的困难的机器人轨迹优化问题，例如运动和操作。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces Hippo, a novel trajectory optimization solver utilizing interior-point methods and projection, claiming superior performance in robotic locomotion and manipulation compared to existing SQP and DDP-based solvers.</p>
+            <h2 class="paper-title">
+                Hippo: High-performance Interior-Point and Projection-based Solver for Generic Constrained Trajectory Optimization
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了一种名为Hippo的新型轨迹优化求解器，它使用内点法和投影，并声称在机器人运动和操作方面比现有的基于SQP和DDP的求解器具有更优越的性能。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了一种名为Hippo的新型轨迹优化求解器，它使用内点法和投影，并声称在机器人运动和操作方面比现有的基于SQP和DDP的求解器具有更优越的性能。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces Hippo, a novel trajectory optimization solver utilizing interior-point methods and projection, claiming superior performance in robotic locomotion and manipulation compared to existing SQP and DDP-based solvers.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Trajectory optimization is the core of modern model-based robotic control and motion planning. Existing trajectory optimizers, based on sequential quadratic programming (SQP) or differential dynamic programming (DDP), are often limited by their slow computation efficiency, low modeling flexibility, and poor convergence for complex tasks requiring hard constraints. In this paper, we introduce Hippo, a solver that can handle inequality constraints using the interior-point method (IPM) with an adaptive barrier update strategy and hard equality constraints via projection or IPM. Through extensive numerical benchmarks, we show that Hippo is a robust and efficient alternative to existing state-of-the-art solvers for difficult robotic trajectory optimization problems requiring high-quality solutions, such as locomotion and manipulation.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>轨迹优化是现代基于模型的机器人控制和运动规划的核心。现有的轨迹优化器，基于序列二次规划（SQP）或微分动态规划（DDP），通常受限于其缓慢的计算效率、较低的建模灵活性以及对于需要硬约束的复杂任务的较差收敛性。在本文中，我们介绍Hippo，一种求解器，它可以使用具有自适应障碍更新策略的内点法（IPM）处理不等式约束，并通过投影或IPM处理硬等式约束。通过大量的数值基准测试，我们表明Hippo是现有最先进求解器的一种稳健且高效的替代方案，适用于需要高质量解决方案的困难的机器人轨迹优化问题，例如运动和操作。</p>
             
 
             
@@ -969,6 +1252,14 @@
             <a href="http://arxiv.org/abs/2603.00871v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="6" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="6" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Haizhou Zhao, Ludovic Righetti, Majid Khadiv</p>
             
@@ -982,16 +1273,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Online Generation of Collision-Free Trajectories in Dynamic Environments</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> In this paper, we present an online method for converting an arbitrary geometric path represented by a sequence of states, generated by any planner (e.g., sampling-based planners like RRT or PRM, search-based planners like ARA*, etc.), into a corresponding kinematically feasible, jerk-limited trajectory. The method generates a sequence of quintic/quartic splines that can be discretized at a user-specified control rate, and then streamed to a low-level robot controller. Our approach enables real-time adaptation to newly captured changes in the environment. It can also be re-invoked at any time instance to generate a new trajectory from the robot's current to a desired target state or sequence of states. We can guarantee that the trajectory will remain collision-free for a certain amount of time in dynamic environments, while allowing bounded geometric deviation from the original path. The kinematic constraints are taken into account, including limited jerk. We validate the approach in a comparative simulation study against the competing method, demonstrating favorable behavior w.r.t. smoothness, computational time, and real-time performance, particularly in scenarios with frequent changes of target states (up to 1 [kHz]). Experiments on a real robot demonstrate that the proposed approach can be used in real-world scenarios including human presence.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 本文提出一种在线方法，用于将由任意规划器（如基于采样的规划器RRT或PRM，基于搜索的规划器ARA*等）生成的状态序列所表示的任意几何路径，转换为相应的、运动学可行且具有加速度抖动限制的轨迹。该方法生成一系列五次/四次样条曲线，可以以用户指定的控制速率离散化，然后传输到低级机器人控制器。我们的方法能够实时适应环境中新捕获的变化。它也可以在任何时刻重新调用，以生成从机器人当前状态到所需目标状态或状态序列的新轨迹。我们可以保证在动态环境中，轨迹在一定时间内保持无碰撞，同时允许与原始路径存在有界几何偏差。考虑了运动学约束，包括加速度抖动限制。我们在与竞争方法的对比仿真研究中验证了该方法，证明了其在平滑性、计算时间和实时性能方面的优势，尤其是在目标状态频繁变化（高达1 [kHz]）的场景中。真实机器人上的实验表明，所提出的方法可用于包括人类存在在内的现实世界场景。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper presents an online method for generating collision-free, kinematically feasible trajectories in dynamic environments using quintic/quartic splines, demonstrating favorable performance in simulation and real-world robot experiments.</p>
+            <h2 class="paper-title">
+                Online Generation of Collision-Free Trajectories in Dynamic Environments
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种在线方法，用于在动态环境中生成无碰撞、运动学上可行的轨迹。该方法使用五次/四次样条曲线，并在仿真和真实机器人实验中表现出良好的性能。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文提出了一种在线方法，用于在动态环境中生成无碰撞、运动学上可行的轨迹。该方法使用五次/四次样条曲线，并在仿真和真实机器人实验中表现出良好的性能。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper presents an online method for generating collision-free, kinematically feasible trajectories in dynamic environments using quintic/quartic splines, demonstrating favorable performance in simulation and real-world robot experiments.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> In this paper, we present an online method for converting an arbitrary geometric path represented by a sequence of states, generated by any planner (e.g., sampling-based planners like RRT or PRM, search-based planners like ARA*, etc.), into a corresponding kinematically feasible, jerk-limited trajectory. The method generates a sequence of quintic/quartic splines that can be discretized at a user-specified control rate, and then streamed to a low-level robot controller. Our approach enables real-time adaptation to newly captured changes in the environment. It can also be re-invoked at any time instance to generate a new trajectory from the robot's current to a desired target state or sequence of states. We can guarantee that the trajectory will remain collision-free for a certain amount of time in dynamic environments, while allowing bounded geometric deviation from the original path. The kinematic constraints are taken into account, including limited jerk. We validate the approach in a comparative simulation study against the competing method, demonstrating favorable behavior w.r.t. smoothness, computational time, and real-time performance, particularly in scenarios with frequent changes of target states (up to 1 [kHz]). Experiments on a real robot demonstrate that the proposed approach can be used in real-world scenarios including human presence.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>本文提出一种在线方法，用于将由任意规划器（如基于采样的规划器RRT或PRM，基于搜索的规划器ARA*等）生成的状态序列所表示的任意几何路径，转换为相应的、运动学可行且具有加速度抖动限制的轨迹。该方法生成一系列五次/四次样条曲线，可以以用户指定的控制速率离散化，然后传输到低级机器人控制器。我们的方法能够实时适应环境中新捕获的变化。它也可以在任何时刻重新调用，以生成从机器人当前状态到所需目标状态或状态序列的新轨迹。我们可以保证在动态环境中，轨迹在一定时间内保持无碰撞，同时允许与原始路径存在有界几何偏差。考虑了运动学约束，包括加速度抖动限制。我们在与竞争方法的对比仿真研究中验证了该方法，证明了其在平滑性、计算时间和实时性能方面的优势，尤其是在目标状态频繁变化（高达1 [kHz]）的场景中。真实机器人上的实验表明，所提出的方法可用于包括人类存在在内的现实世界场景。</p>
             
 
             
@@ -1065,6 +1360,14 @@
             <a href="http://arxiv.org/abs/2603.00759v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="7" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="7" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Nermin Covic, Bakir Lacevic</p>
             
@@ -1078,19 +1381,23 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">ContextCov: Deriving and Enforcing Executable Constraints from Agent Instruction Files</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> As Large Language Model (LLM) agents increasingly execute complex, autonomous software engineering tasks, developers rely on natural language Agent Instructions (e.g., AGENTS.md) to enforce project-specific coding conventions, tooling, and architectural boundaries. However, these instructions are passive text. Agents frequently deviate from them due to context limitations or conflicting legacy code, a phenomenon we term Context Drift. Because agents operate without real-time human supervision, these silent violations rapidly compound into technical debt.
+            <h2 class="paper-title">
+                ContextCov: Deriving and Enforcing Executable Constraints from Agent Instruction Files
+                
+            </h2>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>ContextCov将自然语言的代理指令自动转换为可执行的护栏，从而缓解了LLM代理驱动的软件开发中的“上下文漂移”问题，并强制执行编码规范。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> ContextCov automatically transforms natural language agent instructions into executable guardrails, mitigating 'Context Drift' in LLM agent-driven software development and enforcing coding conventions.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> As Large Language Model (LLM) agents increasingly execute complex, autonomous software engineering tasks, developers rely on natural language Agent Instructions (e.g., AGENTS.md) to enforce project-specific coding conventions, tooling, and architectural boundaries. However, these instructions are passive text. Agents frequently deviate from them due to context limitations or conflicting legacy code, a phenomenon we term Context Drift. Because agents operate without real-time human supervision, these silent violations rapidly compound into technical debt.
   To bridge this gap, we introduce ContextCov, a framework that transforms passive Agent Instructions into active, executable guardrails. ContextCov extracts natural language constraints and synthesizes enforcement checks across three domains: static AST analysis for code patterns, runtime shell shims that intercept prohibited commands, and architectural validators for structural and semantic constraints. Evaluations on 723 open-source repositories demonstrate that ContextCov successfully extracts over 46,000 executable checks with 99.997% syntax validity, providing a necessary automated compliance layer for safe, agent-driven development. Source code and evaluation results are available at https://anonymous.4open.science/r/ContextCov-4510/.</p>
             
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 随着大型语言模型（LLM）智能体越来越多地执行复杂的、自主的软件工程任务，开发者依赖自然语言智能体指令（例如，AGENTS.md）来强制执行项目特定的编码规范、工具和架构边界。然而，这些指令是被动的文本。由于上下文限制或冲突的遗留代码，智能体经常偏离这些指令，我们称之为上下文漂移现象。由于智能体在没有实时人工监督的情况下运行，这些无声的违规行为迅速累积成技术债务。
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>随着大型语言模型（LLM）智能体越来越多地执行复杂的、自主的软件工程任务，开发者依赖自然语言智能体指令（例如，AGENTS.md）来强制执行项目特定的编码规范、工具和架构边界。然而，这些指令是被动的文本。由于上下文限制或冲突的遗留代码，智能体经常偏离这些指令，我们称之为上下文漂移现象。由于智能体在没有实时人工监督的情况下运行，这些无声的违规行为迅速累积成技术债务。
 
 为了弥合这一差距，我们引入了ContextCov，这是一个将被动智能体指令转化为主动的、可执行的防护栏的框架。ContextCov提取自然语言约束，并在三个领域合成强制检查：用于代码模式的静态AST分析，拦截禁止命令的运行时shell垫片，以及用于结构和语义约束的架构验证器。对723个开源仓库的评估表明，ContextCov成功提取了超过46,000个可执行的检查，语法有效性高达99.997%，为安全、智能体驱动的开发提供了一个必要的自动化合规层。源代码和评估结果可在https://anonymous.4open.science/r/ContextCov-4510/获取。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: ContextCov automatically transforms natural language agent instructions into executable guardrails, mitigating 'Context Drift' in LLM agent-driven software development and enforcing coding conventions.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: ContextCov将自然语言的代理指令自动转换为可执行的护栏，从而缓解了LLM代理驱动的软件开发中的“上下文漂移”问题，并强制执行编码规范。</p>
             
 
             
@@ -1164,6 +1471,14 @@
             <a href="http://arxiv.org/abs/2603.00822v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="8" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="8" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Reshabh K Sharma</p>
             
@@ -1177,16 +1492,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">NERFIFY: A Multi-Agent Framework for Turning NeRF Papers into Code</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> The proliferation of neural radiance field (NeRF) research requires significant efforts to reimplement papers before building upon them. We introduce NERFIFY, a multi-agent framework that reliably converts NeRF research papers into trainable Nerfstudio plugins, in contrast to generic paper-to-code methods and frontier models like GPT-5 that usually fail to produce runnable code. NERFIFY achieves domain-specific executability through six key innovations: (1) Context-free grammar (CFG): LLM synthesis is constrained by Nerfstudio formalized as a CFG, ensuring generated code satisfies architectural invariants. (2) Graph-of-Thought code synthesis: Specialized multi-file-agents generate repositories in topological dependency order, validating contracts and errors at each node. (3) Compositional citation recovery: Agents automatically retrieve and integrate components (samplers, encoders, proposal networks) from citation graphs of references. (4) Visual feedback: Artifacts are diagnosed through PSNR-minima ROI analysis, cross-view geometric validation, and VLM-guided patching to iteratively improve quality. (5) Knowledge enhancement: Beyond reproduction, methods can be improved with novel optimizations. (6) Benchmarking: An evaluation framework is designed for NeRF paper-to-code synthesis across 30 diverse papers. On papers without public implementations, NERFIFY achieves visual quality matching expert human code (+/-0.5 dB PSNR, +/-0.2 SSIM) while reducing implementation time from weeks to minutes. NERFIFY demonstrates that a domain-aware design enables code translation for complex vision papers, potentiating accelerated and democratized reproducible research. Code, data and implementations will be publicly released.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 神经辐射场（NeRF）研究的蓬勃发展需要大量精力来重新实现论文才能在其基础上进行构建。我们引入了NERFIFY，这是一个多代理框架，可将NeRF研究论文可靠地转换为可训练的Nerfstudio插件，这与通用的论文到代码方法和GPT-5等前沿模型通常无法生成可运行代码的情况形成对比。NERFIFY通过六项关键创新实现了特定领域的执行性：（1）上下文无关文法（CFG）：LLM合成受到以CFG形式正式化的Nerfstudio约束，确保生成的代码满足架构不变性。（2）图思维代码合成：专门的多文件代理按照拓扑依赖顺序生成存储库，验证每个节点的合约和错误。（3）组合式引用恢复：代理自动从引用的引用图中检索和集成组件（采样器、编码器、提议网络）。（4）视觉反馈：通过PSNR最小值ROI分析、跨视角几何验证和VLM引导的修补来诊断伪影，从而迭代地提高质量。（5）知识增强：除了复现，还可以通过新的优化来改进方法。（6）基准测试：设计了一个评估框架，用于跨30篇不同的论文进行NeRF论文到代码合成。在没有公开实现的论文上，NERFIFY实现了与专家人工代码相匹配的视觉质量（+/-0.5 dB PSNR，+/-0.2 SSIM），同时将实现时间从数周减少到数分钟。NERFIFY证明了领域感知设计可以为复杂的视觉论文启用代码翻译，从而加速和民主化可复现的研究。代码、数据和实现将公开发布。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: NERFIFY is a multi-agent framework that converts NeRF research papers into executable Nerfstudio plugins, achieving comparable visual quality to human code and significantly reducing implementation time.</p>
+            <h2 class="paper-title">
+                NERFIFY: A Multi-Agent Framework for Turning NeRF Papers into Code
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: NERFIFY是一个多智能体框架，可以将NeRF研究论文转换为可执行的Nerfstudio插件，实现与人类代码相当的视觉质量，并显著减少实现时间。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>NERFIFY是一个多智能体框架，可以将NeRF研究论文转换为可执行的Nerfstudio插件，实现与人类代码相当的视觉质量，并显著减少实现时间。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> NERFIFY is a multi-agent framework that converts NeRF research papers into executable Nerfstudio plugins, achieving comparable visual quality to human code and significantly reducing implementation time.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> The proliferation of neural radiance field (NeRF) research requires significant efforts to reimplement papers before building upon them. We introduce NERFIFY, a multi-agent framework that reliably converts NeRF research papers into trainable Nerfstudio plugins, in contrast to generic paper-to-code methods and frontier models like GPT-5 that usually fail to produce runnable code. NERFIFY achieves domain-specific executability through six key innovations: (1) Context-free grammar (CFG): LLM synthesis is constrained by Nerfstudio formalized as a CFG, ensuring generated code satisfies architectural invariants. (2) Graph-of-Thought code synthesis: Specialized multi-file-agents generate repositories in topological dependency order, validating contracts and errors at each node. (3) Compositional citation recovery: Agents automatically retrieve and integrate components (samplers, encoders, proposal networks) from citation graphs of references. (4) Visual feedback: Artifacts are diagnosed through PSNR-minima ROI analysis, cross-view geometric validation, and VLM-guided patching to iteratively improve quality. (5) Knowledge enhancement: Beyond reproduction, methods can be improved with novel optimizations. (6) Benchmarking: An evaluation framework is designed for NeRF paper-to-code synthesis across 30 diverse papers. On papers without public implementations, NERFIFY achieves visual quality matching expert human code (+/-0.5 dB PSNR, +/-0.2 SSIM) while reducing implementation time from weeks to minutes. NERFIFY demonstrates that a domain-aware design enables code translation for complex vision papers, potentiating accelerated and democratized reproducible research. Code, data and implementations will be publicly released.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>神经辐射场（NeRF）研究的蓬勃发展需要大量精力来重新实现论文才能在其基础上进行构建。我们引入了NERFIFY，这是一个多代理框架，可将NeRF研究论文可靠地转换为可训练的Nerfstudio插件，这与通用的论文到代码方法和GPT-5等前沿模型通常无法生成可运行代码的情况形成对比。NERFIFY通过六项关键创新实现了特定领域的执行性：（1）上下文无关文法（CFG）：LLM合成受到以CFG形式正式化的Nerfstudio约束，确保生成的代码满足架构不变性。（2）图思维代码合成：专门的多文件代理按照拓扑依赖顺序生成存储库，验证每个节点的合约和错误。（3）组合式引用恢复：代理自动从引用的引用图中检索和集成组件（采样器、编码器、提议网络）。（4）视觉反馈：通过PSNR最小值ROI分析、跨视角几何验证和VLM引导的修补来诊断伪影，从而迭代地提高质量。（5）知识增强：除了复现，还可以通过新的优化来改进方法。（6）基准测试：设计了一个评估框架，用于跨30篇不同的论文进行NeRF论文到代码合成。在没有公开实现的论文上，NERFIFY实现了与专家人工代码相匹配的视觉质量（+/-0.5 dB PSNR，+/-0.2 SSIM），同时将实现时间从数周减少到数分钟。NERFIFY证明了领域感知设计可以为复杂的视觉论文启用代码翻译，从而加速和民主化可复现的研究。代码、数据和实现将公开发布。</p>
             
 
             
@@ -1260,6 +1579,14 @@
             <a href="http://arxiv.org/abs/2603.00805v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="9" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="9" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Seemandhar Jain, Keshav Gupta, Kunal Gupta, Manmohan Chandraker</p>
             
@@ -1273,16 +1600,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Principled Fast and Meta Knowledge Learners for Continual Reinforcement Learning</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Inspired by the human learning and memory system, particularly the interplay between the hippocampus and cerebral cortex, this study proposes a dual-learner framework comprising a fast learner and a meta learner to address continual Reinforcement Learning~(RL) problems. These two learners are coupled to perform distinct yet complementary roles: the fast learner focuses on knowledge transfer, while the meta learner ensures knowledge integration. In contrast to traditional multi-task RL approaches that share knowledge through average return maximization, our meta learner incrementally integrates new experiences by explicitly minimizing catastrophic forgetting, thereby supporting efficient cumulative knowledge transfer for the fast learner. To facilitate rapid adaptation in new environments, we introduce an adaptive meta warm-up mechanism that selectively harnesses past knowledge. We conduct experiments in various pixel-based and continuous control benchmarks, revealing the superior performance of continual learning for our proposed dual-learner approach relative to baseline methods. The code is released in https://github.com/datake/FAME.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 受人类学习和记忆系统，特别是海马体和 cerebral cortex 之间相互作用的启发，本研究提出了一种包含快速学习器和元学习器的双学习器框架，以解决持续强化学习 (RL) 问题。 这两个学习器耦合起来，发挥着不同但互补的作用：快速学习器专注于知识迁移，而元学习器确保知识整合。 与通过平均回报最大化共享知识的传统多任务 RL 方法相比，我们的元学习器通过明确地最小化灾难性遗忘来逐步整合新的经验，从而支持快速学习器进行高效的累积知识迁移。 为了便于在新环境中进行快速适应，我们引入了一种自适应元热身机制，该机制有选择性地利用过去的知识。 我们在各种基于像素和连续控制的基准测试中进行了实验，揭示了我们提出的双学习器方法的持续学习相对于基线方法的卓越性能。 代码已在 https://github.com/datake/FAME 上发布。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper proposes a dual-learner framework (Fast and Meta Knowledge Learners, FAME) for continual reinforcement learning that explicitly minimizes catastrophic forgetting and achieves superior performance in pixel-based and continuous control benchmarks.</p>
+            <h2 class="paper-title">
+                Principled Fast and Meta Knowledge Learners for Continual Reinforcement Learning
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文提出了一种用于持续强化学习的双学习器框架（快速和元知识学习器，FAME），该框架明确地最小化了灾难性遗忘，并在基于像素的和连续控制基准测试中实现了卓越的性能。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文提出了一种用于持续强化学习的双学习器框架（快速和元知识学习器，FAME），该框架明确地最小化了灾难性遗忘，并在基于像素的和连续控制基准测试中实现了卓越的性能。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper proposes a dual-learner framework (Fast and Meta Knowledge Learners, FAME) for continual reinforcement learning that explicitly minimizes catastrophic forgetting and achieves superior performance in pixel-based and continuous control benchmarks.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Inspired by the human learning and memory system, particularly the interplay between the hippocampus and cerebral cortex, this study proposes a dual-learner framework comprising a fast learner and a meta learner to address continual Reinforcement Learning~(RL) problems. These two learners are coupled to perform distinct yet complementary roles: the fast learner focuses on knowledge transfer, while the meta learner ensures knowledge integration. In contrast to traditional multi-task RL approaches that share knowledge through average return maximization, our meta learner incrementally integrates new experiences by explicitly minimizing catastrophic forgetting, thereby supporting efficient cumulative knowledge transfer for the fast learner. To facilitate rapid adaptation in new environments, we introduce an adaptive meta warm-up mechanism that selectively harnesses past knowledge. We conduct experiments in various pixel-based and continuous control benchmarks, revealing the superior performance of continual learning for our proposed dual-learner approach relative to baseline methods. The code is released in https://github.com/datake/FAME.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>受人类学习和记忆系统，特别是海马体和 cerebral cortex 之间相互作用的启发，本研究提出了一种包含快速学习器和元学习器的双学习器框架，以解决持续强化学习 (RL) 问题。 这两个学习器耦合起来，发挥着不同但互补的作用：快速学习器专注于知识迁移，而元学习器确保知识整合。 与通过平均回报最大化共享知识的传统多任务 RL 方法相比，我们的元学习器通过明确地最小化灾难性遗忘来逐步整合新的经验，从而支持快速学习器进行高效的累积知识迁移。 为了便于在新环境中进行快速适应，我们引入了一种自适应元热身机制，该机制有选择性地利用过去的知识。 我们在各种基于像素和连续控制的基准测试中进行了实验，揭示了我们提出的双学习器方法的持续学习相对于基线方法的卓越性能。 代码已在 https://github.com/datake/FAME 上发布。</p>
             
 
             
@@ -1356,6 +1687,14 @@
             <a href="http://arxiv.org/abs/2603.00903v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="10" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="10" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Ke Sun, Hongming Zhang, Jun Jin, Chao Gao, Xi Chen, Wulong Liu, Linglong Kong</p>
             
@@ -1364,7 +1703,7 @@
     </div>
 
     <section class="filtered-section">
-        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
         <div class="filtered-grid">
             
             <div class="filtered-item">
@@ -1374,12 +1713,24 @@
                         QANTIS: A Hardware-Validated Quantum Platform for POMDP Planning and Multi-Target Data Association
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="11" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="11" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Bayram Yüksel Eker, Suayb S. Arslan, Özgür Nazlı, Mustafa Serhat Demirgil, Furkan Deligöz</p>
                 
                 <p><strong>TLDR-CN:</strong> 该论文提出了QANTIS，一个经过硬件验证的量子平台，用于解决POMDP规划和多目标数据关联问题，并在IBM Heron后端展示了初步结果，并表征了NISQ可行性边界。</p>
+                
+                <p><strong>Overall:</strong> 5/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1389,12 +1740,24 @@
                         UD-SfPNet: An Underwater Descattering Shape-from-Polarization Network for 3D Normal Reconstruction
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="12" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="12" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Puyun Wang, Kaimin Yu, Huayang He, Feng Huang, Xianyu Wu, Yating Chen</p>
                 
                 <p><strong>TLDR-CN:</strong> 该论文介绍了UD-SfPNet，一个使用偏振线索克服散射的水下3D表面法线重建神经网络，在MuS-Polar3D数据集上取得了最先进的结果。</p>
+                
+                <p><strong>Overall:</strong> 5/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1404,12 +1767,24 @@
                         A Novel Reconfigurable Dexterous Hand Based on Triple-Symmetric Bricard Parallel Mechanism
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="13" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="13" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Chunxu Tian, Zhichao Huang, Hongzeng Li, Bo Wang, Jinghao Jia, Yirui Sun, Dan Zhang</p>
                 
                 <p><strong>TLDR-CN:</strong> 本文介绍了一种基于三重对称Bricard并联机构的新型可重构机器人手，以增强抓取的多功能性，并通过原型设计和抓取实验进行了验证。</p>
+                
+                <p><strong>Overall:</strong> 4/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1419,12 +1794,24 @@
                         Neural Latent Arbitrary Lagrangian-Eulerian Grids for Fluid-Solid Interaction
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="14" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="14" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Shilong Tao, Zhe Feng, Shaohan Chen, Weichen Zhang, Zhanxing Zhu, Yunhuai Liu</p>
                 
                 <p><strong>TLDR-CN:</strong> 该论文介绍了Fisale，一个利用潜在ALE网格和分区耦合的神经框架，用于模拟复杂的双向流固耦合，并在几个现实场景中展示了改进的性能。</p>
+                
+                <p><strong>Overall:</strong> 4/10</p>
+                
             </div>
             
             <div class="filtered-item">
@@ -1434,20 +1821,55 @@
                         MMTA: Multi Membership Temporal Attention for Fine-Grained Stroke Rehabilitation Assessment
                         <i class="fas fa-up-right-from-square"></i>
                     </a>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="15" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="15" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
                 </h3>
                 
                 
                 <p><strong>Authors:</strong> Halil Ismail Helvaci, Justin Huber, Jihye Bae, Sen-ching Samson Cheung</p>
                 
                 <p><strong>TLDR-CN:</strong> 该论文介绍了多成员时间注意力 (MMTA)，这是一种用于康复评估中细粒度动作分割的新型时间 Transformer，在基准数据集上实现了改进的性能。</p>
+                
+                <p><strong>Overall:</strong> 4/10</p>
+                
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <p>没有一级过滤未通过的论文。</p>
             </div>
             
         </div>
     </section>
 
     <footer class="footer">
-        Generated on 2026-04-08 07:41:52 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-30 18:17:58 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
+    
+    
+    <script type="application/json" id="papers-data">[{"title": "BioProAgent: Neuro-Symbolic Grounding for Constrained Scientific Planning", "summary": "Large language models (LLMs) have demonstrated significant reasoning capabilities in scientific discovery but struggle to bridge the gap to physical execution in wet-labs. In these irreversible environments, probabilistic hallucinations are not merely incorrect, but also cause equipment damage or experimental failure. To address this, we propose \\textbf{BioProAgent}, a neuro-symbolic framework that anchors probabilistic planning in a deterministic Finite State Machine (FSM). We introduce a State-Augmented Planning mechanism that enforces a rigorous \\textit{Design-Verify-Rectify} workflow, ensuring hardware compliance before execution. Furthermore, we address the context bottleneck inherent in complex device schemas by \\textit{Semantic Symbol Grounding}, reducing token consumption by $\\sim$6$\\times$ through symbolic abstraction. In the extended BioProBench benchmark, BioProAgent achieves 95.6\\% physical compliance (compared to 21.0\\% for ReAct), demonstrating that neuro-symbolic constraints are essential for reliable autonomy in irreversible physical environments. \\footnote{Code at https://github.com/YuyangSunshine/bioproagent and project at https://yuyangsunshine.github.io/BioPro-Project/}", "url": "http://arxiv.org/abs/2603.00876v1", "authors": ["Yuyang Liu", "Jingya Wang", "Liuzhenghao Lv", "Yonghong Tian"], "keywords": []},{"title": "MC-Search: Evaluating and Enhancing Multimodal Agentic Search with Structured Long Reasoning Chains", "summary": "With the increasing demand for step-wise, cross-modal, and knowledge-grounded reasoning, multimodal large language models (MLLMs) are evolving beyond the traditional fixed retrieve-then-generate paradigm toward more sophisticated agentic multimodal retrieval-augmented generation (MM-RAG). Existing benchmarks, however, mainly focus on simplified QA with short retrieval chains, leaving adaptive planning and multimodal reasoning underexplored. We present MC-Search, the first benchmark for agentic MM-RAG with long, step-wise annotated reasoning chains spanning five representative reasoning structures. Each example specifies sub-questions, retrieval modalities, supporting facts, and intermediate answers, with fidelity ensured by HAVE (Hop-wise Attribution and Verification of Evidence), resulting in 3,333 high-quality examples averaging 3.7 hops. Beyond answer accuracy, MC-Search introduces new process-level metrics for reasoning quality, stepwise retrieval and planning accuracy. By developing a unified agentic MM-RAG pipeline, we benchmark six leading MLLMs and reveal systematic issues such as over- and under-retrieval and modality-misaligned planning. Finally, we introduce Search-Align, a process-supervised fine-tuning framework leveraging verified reasoning chains, showing that our data not only enables faithful evaluation but also improves planning and retrieval fidelity in open-source MLLMs.", "url": "http://arxiv.org/abs/2603.00873v1", "authors": ["Xuying Ning", "Dongqi Fu", "Tianxin Wei", "Mengting Ai", "Jiaru Zou", "Ting-Wei Li", "Hanghang Tong", "Yada Zhu", "Hendrik Hamann", "Jingrui He"], "keywords": []},{"title": "Constitutional Black-Box Monitoring for Scheming in LLM Agents", "summary": "Safe deployment of Large Language Model (LLM) agents in autonomous settings requires reliable oversight mechanisms. A central challenge is detecting scheming, where agents covertly pursue misaligned goals. One approach to mitigating such risks is LLM-based monitoring: using language models to examine agent behaviors for suspicious actions. We study constitutional black-box monitors: prompted classifiers that detect scheming using only externally observable inputs and outputs, optimized on synthetic data generated from natural-language behavior specifications. We introduce two pipelines for generating synthetic agent trajectories, STRIDE (iterative refinement) and Gloom (agent-environment simulation), from which we generate 1,000 samples each. We optimize frontier LLM monitors on these datasets via prompt sweeps, human refinement, and automated prompt optimization, and evaluate performance on 7,500 held-out trajectories from ControlArena, a suite of grounded environments where agents operate in more realistic contexts. Our results demonstrate that monitors selected purely on synthetic data can generalize to more realistic environments, capturing a meaningful scheming signal. However, we find that performance saturates quickly in our setting, with simple prompt sweeps matching the results of more extensive optimization. Pushing beyond this limit yields no further improvements and instead leads to overfitting.", "url": "http://arxiv.org/abs/2603.00829v1", "authors": ["Simon Storf", "Rich Barton-Cooper", "James Peters-Gill", "Marius Hobbhahn"], "keywords": []},{"title": "MetaMind: General and Cognitive World Models in Multi-Agent Systems by Meta-Theory of Mind", "summary": "A major challenge for world models in multi-agent systems is to understand interdependent agent dynamics, predict interactive multi-agent trajectories, and plan over long horizons with collective awareness, without centralized supervision or explicit communication. In this paper, MetaMind, a general and cognitive world model for multi-agent systems that leverages a novel meta-theory of mind (Meta-ToM) framework, is proposed. Through MetaMind, each agent learns not only to predict and plan over its own beliefs, but also to inversely reason goals and beliefs from its own behavior trajectories. This self-reflective, bidirectional inference loop enables each agent to learn a metacognitive ability in a self-supervised manner. Then, MetaMind is shown to generalize the metacognitive ability from first-person to third-person through analogical reasoning. Thus, in multi-agent systems, each agent with MetaMind can actively reason about goals and beliefs of other agents from limited, observable behavior trajectories in a zero-shot manner, and then adapt to emergent collective intention without an explicit communication mechanism. Extended simulation results on diverse multi-agent tasks demonstrate that MetaMind can achieve superior task performance and outperform baselines in few-shot multi-agent generalization.", "url": "http://arxiv.org/abs/2603.00808v1", "authors": ["Lingyi Wang", "Rashed Shelim", "Walid Saad", "Naren Ramakrishna"], "keywords": []},{"title": "pySpatial: Generating 3D Visual Programs for Zero-Shot Spatial Reasoning", "summary": "Multi-modal Large Language Models (MLLMs) have demonstrated strong capabilities in general-purpose perception and reasoning, but they still struggle with tasks that require spatial understanding of the 3D world. To address this, we introduce pySpatial, a visual programming framework that equips MLLMs with the ability to interface with spatial tools via Python code generation. Given an image sequence and a natural-language query, the model composes function calls to spatial tools including 3D reconstruction, camera-pose recovery, novel-view rendering, etc. These operations convert raw 2D inputs into an explorable 3D scene, enabling MLLMs to reason explicitly over structured spatial representations. Notably, pySpatial requires no gradient-based fine-tuning and operates in a fully zero-shot setting. Experimental evaluations on the challenging MindCube and Omni3D-Bench benchmarks demonstrate that our framework pySpatial consistently surpasses strong MLLM baselines; for instance, it outperforms GPT-4.1-mini by 12.94% on MindCube. Furthermore, we conduct real-world indoor navigation experiments where the robot can successfully traverse complex environments using route plans generated by pySpatial, highlighting the practical effectiveness of our approach.", "url": "http://arxiv.org/abs/2603.00905v1", "authors": ["Zhanpeng Luo", "Ce Zhang", "Silong Yong", "Cunxi Dai", "Qianwei Wang", "Haoxi Ran", "Guanya Shi", "Katia Sycara", "Yaqi Xie"], "keywords": []},{"title": "COMBAT: Conditional World Models for Behavioral Agent Training", "summary": "Recent advances in video generation have spurred the development of world models capable of simulating 3D-consistent environments and interactions with static objects. However, a significant limitation remains in their ability to model dynamic, reactive agents that can intelligently influence and interact with the world. To address this gap, we introduce COMBAT, a real-time, action-controlled world model trained on the complex 1v1 fighting game Tekken 3. Our work demonstrates that diffusion models can successfully simulate a dynamic opponent that reacts to player actions, learning its behavior implicitly.\n  Our approach utilizes a 1.2 billion parameter Diffusion Transformer, conditioned on latent representations from a deep compression autoencoder. We employ state-of-the-art techniques, including causal distillation and diffusion forcing, to achieve real-time inference. Crucially, we observe the emergence of sophisticated agent behavior by training the model solely on single-player inputs, without any explicit supervision for the opponent\u0027s policy. Unlike traditional imitation learning methods, which require complete action labels, COMBAT learns effectively from partially observed data to generate responsive behaviors for a controllable Player 1. We present an extensive study and introduce novel evaluation methods to benchmark this emergent agent behavior, establishing a strong foundation for training interactive agents within diffusion-based world models.", "url": "http://arxiv.org/abs/2603.00825v1", "authors": ["Anmol Agarwal", "Pranay Meshram", "Sumer Singh", "Saurav Suman", "Andrew Lapp", "Shahbuland Matiana", "Louis Castricato", "Spencer Frazier"], "keywords": []},{"title": "Hippo: High-performance Interior-Point and Projection-based Solver for Generic Constrained Trajectory Optimization", "summary": "Trajectory optimization is the core of modern model-based robotic control and motion planning. Existing trajectory optimizers, based on sequential quadratic programming (SQP) or differential dynamic programming (DDP), are often limited by their slow computation efficiency, low modeling flexibility, and poor convergence for complex tasks requiring hard constraints. In this paper, we introduce Hippo, a solver that can handle inequality constraints using the interior-point method (IPM) with an adaptive barrier update strategy and hard equality constraints via projection or IPM. Through extensive numerical benchmarks, we show that Hippo is a robust and efficient alternative to existing state-of-the-art solvers for difficult robotic trajectory optimization problems requiring high-quality solutions, such as locomotion and manipulation.", "url": "http://arxiv.org/abs/2603.00871v1", "authors": ["Haizhou Zhao", "Ludovic Righetti", "Majid Khadiv"], "keywords": []},{"title": "Online Generation of Collision-Free Trajectories in Dynamic Environments", "summary": "In this paper, we present an online method for converting an arbitrary geometric path represented by a sequence of states, generated by any planner (e.g., sampling-based planners like RRT or PRM, search-based planners like ARA*, etc.), into a corresponding kinematically feasible, jerk-limited trajectory. The method generates a sequence of quintic/quartic splines that can be discretized at a user-specified control rate, and then streamed to a low-level robot controller. Our approach enables real-time adaptation to newly captured changes in the environment. It can also be re-invoked at any time instance to generate a new trajectory from the robot\u0027s current to a desired target state or sequence of states. We can guarantee that the trajectory will remain collision-free for a certain amount of time in dynamic environments, while allowing bounded geometric deviation from the original path. The kinematic constraints are taken into account, including limited jerk. We validate the approach in a comparative simulation study against the competing method, demonstrating favorable behavior w.r.t. smoothness, computational time, and real-time performance, particularly in scenarios with frequent changes of target states (up to 1 [kHz]). Experiments on a real robot demonstrate that the proposed approach can be used in real-world scenarios including human presence.", "url": "http://arxiv.org/abs/2603.00759v1", "authors": ["Nermin Covic", "Bakir Lacevic"], "keywords": []},{"title": "ContextCov: Deriving and Enforcing Executable Constraints from Agent Instruction Files", "summary": "As Large Language Model (LLM) agents increasingly execute complex, autonomous software engineering tasks, developers rely on natural language Agent Instructions (e.g., AGENTS.md) to enforce project-specific coding conventions, tooling, and architectural boundaries. However, these instructions are passive text. Agents frequently deviate from them due to context limitations or conflicting legacy code, a phenomenon we term Context Drift. Because agents operate without real-time human supervision, these silent violations rapidly compound into technical debt.\n  To bridge this gap, we introduce ContextCov, a framework that transforms passive Agent Instructions into active, executable guardrails. ContextCov extracts natural language constraints and synthesizes enforcement checks across three domains: static AST analysis for code patterns, runtime shell shims that intercept prohibited commands, and architectural validators for structural and semantic constraints. Evaluations on 723 open-source repositories demonstrate that ContextCov successfully extracts over 46,000 executable checks with 99.997% syntax validity, providing a necessary automated compliance layer for safe, agent-driven development. Source code and evaluation results are available at https://anonymous.4open.science/r/ContextCov-4510/.", "url": "http://arxiv.org/abs/2603.00822v1", "authors": ["Reshabh K Sharma"], "keywords": []},{"title": "NERFIFY: A Multi-Agent Framework for Turning NeRF Papers into Code", "summary": "The proliferation of neural radiance field (NeRF) research requires significant efforts to reimplement papers before building upon them. We introduce NERFIFY, a multi-agent framework that reliably converts NeRF research papers into trainable Nerfstudio plugins, in contrast to generic paper-to-code methods and frontier models like GPT-5 that usually fail to produce runnable code. NERFIFY achieves domain-specific executability through six key innovations: (1) Context-free grammar (CFG): LLM synthesis is constrained by Nerfstudio formalized as a CFG, ensuring generated code satisfies architectural invariants. (2) Graph-of-Thought code synthesis: Specialized multi-file-agents generate repositories in topological dependency order, validating contracts and errors at each node. (3) Compositional citation recovery: Agents automatically retrieve and integrate components (samplers, encoders, proposal networks) from citation graphs of references. (4) Visual feedback: Artifacts are diagnosed through PSNR-minima ROI analysis, cross-view geometric validation, and VLM-guided patching to iteratively improve quality. (5) Knowledge enhancement: Beyond reproduction, methods can be improved with novel optimizations. (6) Benchmarking: An evaluation framework is designed for NeRF paper-to-code synthesis across 30 diverse papers. On papers without public implementations, NERFIFY achieves visual quality matching expert human code (+/-0.5 dB PSNR, +/-0.2 SSIM) while reducing implementation time from weeks to minutes. NERFIFY demonstrates that a domain-aware design enables code translation for complex vision papers, potentiating accelerated and democratized reproducible research. Code, data and implementations will be publicly released.", "url": "http://arxiv.org/abs/2603.00805v1", "authors": ["Seemandhar Jain", "Keshav Gupta", "Kunal Gupta", "Manmohan Chandraker"], "keywords": []},{"title": "Principled Fast and Meta Knowledge Learners for Continual Reinforcement Learning", "summary": "Inspired by the human learning and memory system, particularly the interplay between the hippocampus and cerebral cortex, this study proposes a dual-learner framework comprising a fast learner and a meta learner to address continual Reinforcement Learning~(RL) problems. These two learners are coupled to perform distinct yet complementary roles: the fast learner focuses on knowledge transfer, while the meta learner ensures knowledge integration. In contrast to traditional multi-task RL approaches that share knowledge through average return maximization, our meta learner incrementally integrates new experiences by explicitly minimizing catastrophic forgetting, thereby supporting efficient cumulative knowledge transfer for the fast learner. To facilitate rapid adaptation in new environments, we introduce an adaptive meta warm-up mechanism that selectively harnesses past knowledge. We conduct experiments in various pixel-based and continuous control benchmarks, revealing the superior performance of continual learning for our proposed dual-learner approach relative to baseline methods. The code is released in https://github.com/datake/FAME.", "url": "http://arxiv.org/abs/2603.00903v1", "authors": ["Ke Sun", "Hongming Zhang", "Jun Jin", "Chao Gao", "Xi Chen", "Wulong Liu", "Linglong Kong"], "keywords": []},{"title": "QANTIS: A Hardware-Validated Quantum Platform for POMDP Planning and Multi-Target Data Association", "summary": "Autonomous navigation under uncertainty requires solving partially observable Markov decision processes (POMDPs) for planning and assigning sensor measurements to tracked targets--a task known as multi-target data association (MTDA). Both problems become computationally demanding at scale: belief conditioning costs $\\mathcal{O}(P(e)^{-1})$ per node under rare evidence, while MTDA is NP-hard. Quantum amplitude amplification can quadratically reduce the belief-update query cost to $\\mathcal{O}(P(e)^{-1/2})$, while QUBO reformulations expose MTDA to quantum and quantum-inspired optimisation heuristics. We present QANTIS, a modular platform that integrates quantum belief update (Grover amplitude amplification and BIQAE), QUBO-based data association via FPC-QAOA, and composable error mitigation, and we report a 45-experiment hardware study on three IBM Heron backends. On hardware, a single Grover iterate applied to a Tiger belief oracle amplifies a rare observation probability from $0.179$ to $0.907$ ($5.1\\times$; ISA 18) while preserving the Bayesian posterior (Hellinger $0.0015$), increasing usable-shot yield from 1,463 to 7,429. We interpret this as a hardware validation of the quadratic query-complexity mechanism at $k=1$ with posterior preservation, rather than a wall-clock advantage claim. We further demonstrate, to our knowledge, the first closed-loop hybrid quantum-classical Tiger POMDP on superconducting hardware ($T=8$, max Hellinger below $0.015$), and empirically characterise NISQ feasibility boundaries: ZNE-based error mitigation is beneficial below ISA $\\approx 100$ and harmful above ISA $\\gtrsim 1{,}000$; FPC-QAOA is meaningful at $\\leq 15$ QUBO variables (ISA $\\lesssim 450$). These results characterise practical operating regimes on current superconducting hardware rather than wall-clock quantum advantage at today\u0027s problem scales.", "url": "http://arxiv.org/abs/2603.00785v1", "authors": ["Bayram Y\u00fcksel Eker", "Suayb S. Arslan", "\u00d6zg\u00fcr Nazl\u0131", "Mustafa Serhat Demirgil", "Furkan Delig\u00f6z"], "keywords": []},{"title": "UD-SfPNet: An Underwater Descattering Shape-from-Polarization Network for 3D Normal Reconstruction", "summary": "Underwater optical imaging is severely hindered by scattering, but polarization imaging offers the unique dual advantages of descattering and shape-from-polarization (SfP) 3D reconstruction. To exploit these advantages, this paper proposes UD-SfPNet, an underwater descattering shape-from-polarization network that leverages polarization cues for improved 3D surface normal prediction. The framework jointly models polarization-based image descattering and SfP normal estimation in a unified pipeline, avoiding error accumulation from sequential processing and enabling global optimization across both tasks. UD-SfPNet further incorporates a novel color embedding module to enhance geometric consistency by exploiting the relationship between color encodings and surface orientation. A detail enhancement convolution module is also included to better preserve high-frequency geometric details that are lost under scattering. Experiments on the MuS-Polar3D dataset show that the proposed method significantly improves reconstruction accuracy, achieving a mean surface normal angular error of 15.12$^\\circ$ (the lowest among compared methods). These results confirm the efficacy of combining descattering with polarization-based shape inference, and highlight the practical significance and potential applications of UD-SfPNet for optical 3D imaging in challenging underwater environments. The code is available at https://github.com/WangPuyun/UD-SfPNet.", "url": "http://arxiv.org/abs/2603.00908v1", "authors": ["Puyun Wang", "Kaimin Yu", "Huayang He", "Feng Huang", "Xianyu Wu", "Yating Chen"], "keywords": []},{"title": "A Novel Reconfigurable Dexterous Hand Based on Triple-Symmetric Bricard Parallel Mechanism", "summary": "This paper introduces a novel design for a robotic hand based on parallel mechanisms. The proposed hand uses a triple-symmetric Bricard linkage as its reconfigurable palm, enhancing adaptability to objects of varying shapes and sizes. Through topological and dimensional synthesis, the mechanism achieves a well-balanced degree of freedom and link configuration suitable for reconfigurable palm motion, balancing dexterity, stability, and load capacity. Furthermore, kinematic analysis is performed using screw theory and closed-loop constraints, and performance is evaluated based on workspace, stiffness, and motion/force transmission efficiency. Finally, a prototype is developed and tested through a series of grasping experiments, demonstrating the ability to perform stable and efficient manipulation across a wide range of objects. The results validate the effectiveness of the design in improving grasping versatility and operational precision, offering a promising solution for advanced robotic manipulation tasks.", "url": "http://arxiv.org/abs/2603.00892v1", "authors": ["Chunxu Tian", "Zhichao Huang", "Hongzeng Li", "Bo Wang", "Jinghao Jia", "Yirui Sun", "Dan Zhang"], "keywords": []},{"title": "Neural Latent Arbitrary Lagrangian-Eulerian Grids for Fluid-Solid Interaction", "summary": "Fluid-solid interaction (FSI) problems are fundamental in many scientific and engineering applications, yet effectively capturing the highly nonlinear two-way interactions remains a significant challenge. Most existing deep learning methods are limited to simplified one-way FSI scenarios, often assuming rigid and static solid to reduce complexity. Even in two-way setups, prevailing approaches struggle to capture dynamic, heterogeneous interactions due to the lack of cross-domain awareness. In this paper, we introduce \\textbf{Fisale}, a data-driven framework for handling complex two-way \\textbf{FSI} problems. It is inspired by classical numerical methods, namely the Arbitrary Lagrangian-Eulerian (\\textbf{ALE}) method and the partitioned coupling algorithm. Fisale explicitly models the coupling interface as a distinct component and leverages multiscale latent ALE grids to provide unified, geometry-aware embeddings across domains. A partitioned coupling module (PCM) further decomposes the problem into structured substeps, enabling progressive modeling of nonlinear interdependencies. Compared to existing models, Fisale introduces a more flexible framework that iteratively handles complex dynamics of solid, fluid and their coupling interface on a unified representation, and enables scalable learning of complex two-way FSI behaviors. Experimentally, Fisale excels in three reality-related challenging FSI scenarios, covering 2D, 3D and various tasks. The code is available at \\href{https://github.com/therontau0054/Fisale}.", "url": "http://arxiv.org/abs/2603.00792v1", "authors": ["Shilong Tao", "Zhe Feng", "Shaohan Chen", "Weichen Zhang", "Zhanxing Zhu", "Yunhuai Liu"], "keywords": []},{"title": "MMTA: Multi Membership Temporal Attention for Fine-Grained Stroke Rehabilitation Assessment", "summary": "To empower the iterative assessments involved during a person\u0027s rehabilitation, automated assessment of a person\u0027s abilities during daily activities requires temporally precise segmentation of fine-grained actions in therapy videos. Existing temporal action segmentation (TAS) models struggle to capture sub-second micro-movements while retaining exercise context, blurring rapid phase transitions and limiting reliable downstream assessment of motor recovery. We introduce Multi-Membership Temporal Attention (MMTA), a high-resolution temporal transformer for fine-grained rehabilitation assessment. Unlike standard temporal attention, which assigns each frame a single attention context per layer, MMTA lets each frame attend to multiple locally normalized temporal attention windows within the same layer. We fuse these concurrent temporal views via feature-space overlap resolution, preserving competing local contexts near transitions while enabling longer-range reasoning through layer-wise propagation. This increases boundary sensitivity without additional depth or multi-stage refinement. MMTA supports both video and wearable IMU inputs within a unified single-stage architecture, making it applicable to both clinical and home settings. MMTA consistently improves over the Global Attention transformer, boosting Edit Score by +1.3 (Video) and +1.6 (IMU) on StrokeRehab while further improving 50Salads by +3.3. Ablations confirm that performance gains stem from multi-membership temporal views rather than architectural complexity, offering a practical solution for resource-constrained rehabilitation assessment.", "url": "http://arxiv.org/abs/2603.00878v1", "authors": ["Halil Ismail Helvaci", "Justin Huber", "Jihye Bae", "Sen-ching Samson Cheung"], "keywords": []}]</script>
+
+    <!-- SparkMD5: Zotero's WebDAV format requires md5; SubtleCrypto can't do MD5 -->
+    <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
+    <!-- JSZip: needed to build the <key>.zip wrapper Zotero expects on WebDAV -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="../js/zotero.js"></script>
+    <script src="../js/webdav.js"></script>
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
 </body>
 </html>

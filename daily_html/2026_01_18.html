@@ -32,38 +32,6 @@
             line-height: 1.6;
         }
 
-        .quick-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            align-items: center;
-            width: fit-content;
-            margin: 0.9rem auto 0;
-            padding: 0;
-            border: none;
-            background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-        }
-
-        .quick-nav a {
-            color: var(--highlight-primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 0.35rem 0.75rem;
-            border-radius: 999px;
-            border: 1px solid rgba(226, 232, 240, 0.95);
-            background: rgba(255, 255, 255, 0.86);
-            box-shadow: 0 2px 6px var(--shadow-color);
-            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-        }
-
-        .quick-nav a:hover {
-            background-color: rgba(123, 44, 159, 0.12);
-            color: #6B1F8F;
-            transform: translateY(-1px);
-        }
 
         .bento-grid {
             display: grid;
@@ -103,10 +71,25 @@
         }
 
         .paper-summary {
-            font-size: 0.875rem; /* Tailwind text-sm */
+            font-size: 0.85rem;
             color: var(--text-muted-color);
-            margin-bottom: 1.25rem; /* Tailwind mb-5 */
+            margin-bottom: 1.25rem;
             line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
         }
 
         .paper-link {
@@ -195,12 +178,25 @@
         }
 
         .paper-tldr {
-            font-size: 0.95rem; /* Slightly bigger than summary */
-            color: #475569; /* Changed to Tailwind slate-600 (slightly darker than summary) */
-            margin-top: 0.75rem; /* Tailwind mt-3 */
-            margin-bottom: 0.75rem; /* Tailwind mb-2 */
-            /* font-style: italic; */
-            font-weight: bold;
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
         }
 
         .paper-rating {
@@ -276,6 +272,222 @@
             font-size: 0.88rem;
         }
 
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link.
+           Shown only when body.zotero-mode is set (which like.js does after
+           confirming sessionStorage has decrypted credentials). Guests never
+           see it. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn i {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover i {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
@@ -289,11 +501,6 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>January 18, 2026</p>
-        <nav class="quick-nav">
-            <a href="../index.html" target="_top">首页</a>
-            <a href="../list.html" target="_top">报告列表</a>
-            <a href="../search.html" target="_top">论文检索</a>
-        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -307,16 +514,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">ShapeR: Robust Conditional 3D Shape Generation from Casual Captures</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Recent advances in 3D shape generation have achieved impressive results, but most existing methods rely on clean, unoccluded, and well-segmented inputs. Such conditions are rarely met in real-world scenarios. We present ShapeR, a novel approach for conditional 3D object shape generation from casually captured sequences. Given an image sequence, we leverage off-the-shelf visual-inertial SLAM, 3D detection algorithms, and vision-language models to extract, for each object, a set of sparse SLAM points, posed multi-view images, and machine-generated captions. A rectified flow transformer trained to effectively condition on these modalities then generates high-fidelity metric 3D shapes. To ensure robustness to the challenges of casually captured data, we employ a range of techniques including on-the-fly compositional augmentations, a curriculum training scheme spanning object- and scene-level datasets, and strategies to handle background clutter. Additionally, we introduce a new evaluation benchmark comprising 178 in-the-wild objects across 7 real-world scenes with geometry annotations. Experiments show that ShapeR significantly outperforms existing approaches in this challenging setting, achieving an improvement of 2.7x in Chamfer distance compared to state of the art.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 3D形状生成领域的最新进展已取得显著成果，但现有方法大多依赖于干净、无遮挡且分割良好的输入。这些条件在实际场景中很少能满足。我们提出一种名为ShapeR的新颖方法，用于从随意拍摄的序列中进行条件式3D物体形状生成。给定一个图像序列，我们利用现成的视觉惯性SLAM、3D检测算法和视觉语言模型来为每个物体提取一组稀疏的SLAM点、带位姿的多视角图像以及机器生成的描述。一个经过训练，能有效利用这些模态信息的校正流变换器会生成高保真度的度量3D形状。为了确保对随意拍摄数据所带来的挑战的鲁棒性，我们采用了一系列技术，包括即时组合增强、跨越物体和场景级别数据集的课程学习方案以及处理背景杂乱的策略。此外，我们引入了一个新的评估基准，包含7个真实世界场景中的178个带有几何标注的野外物体。实验表明，在这种具有挑战性的环境中，ShapeR显著优于现有方法，与当前最佳方法相比，在倒角距离上取得了2.7倍的提升。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: ShapeR generates high-fidelity 3D shapes from casually captured image sequences by leveraging SLAM, 3D detection, and vision-language models, demonstrating significant improvement over existing methods in real-world settings.</p>
+            <h2 class="paper-title">
+                ShapeR: Robust Conditional 3D Shape Generation from Casual Captures
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: ShapeR利用SLAM、3D检测和视觉-语言模型，从随意拍摄的图像序列中生成高保真的3D形状。在真实世界场景中，该方法比现有方法有了显著的改进。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>ShapeR利用SLAM、3D检测和视觉-语言模型，从随意拍摄的图像序列中生成高保真的3D形状。在真实世界场景中，该方法比现有方法有了显著的改进。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> ShapeR generates high-fidelity 3D shapes from casually captured image sequences by leveraging SLAM, 3D detection, and vision-language models, demonstrating significant improvement over existing methods in real-world settings.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Recent advances in 3D shape generation have achieved impressive results, but most existing methods rely on clean, unoccluded, and well-segmented inputs. Such conditions are rarely met in real-world scenarios. We present ShapeR, a novel approach for conditional 3D object shape generation from casually captured sequences. Given an image sequence, we leverage off-the-shelf visual-inertial SLAM, 3D detection algorithms, and vision-language models to extract, for each object, a set of sparse SLAM points, posed multi-view images, and machine-generated captions. A rectified flow transformer trained to effectively condition on these modalities then generates high-fidelity metric 3D shapes. To ensure robustness to the challenges of casually captured data, we employ a range of techniques including on-the-fly compositional augmentations, a curriculum training scheme spanning object- and scene-level datasets, and strategies to handle background clutter. Additionally, we introduce a new evaluation benchmark comprising 178 in-the-wild objects across 7 real-world scenes with geometry annotations. Experiments show that ShapeR significantly outperforms existing approaches in this challenging setting, achieving an improvement of 2.7x in Chamfer distance compared to state of the art.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>3D形状生成领域的最新进展已取得显著成果，但现有方法大多依赖于干净、无遮挡且分割良好的输入。这些条件在实际场景中很少能满足。我们提出一种名为ShapeR的新颖方法，用于从随意拍摄的序列中进行条件式3D物体形状生成。给定一个图像序列，我们利用现成的视觉惯性SLAM、3D检测算法和视觉语言模型来为每个物体提取一组稀疏的SLAM点、带位姿的多视角图像以及机器生成的描述。一个经过训练，能有效利用这些模态信息的校正流变换器会生成高保真度的度量3D形状。为了确保对随意拍摄数据所带来的挑战的鲁棒性，我们采用了一系列技术，包括即时组合增强、跨越物体和场景级别数据集的课程学习方案以及处理背景杂乱的策略。此外，我们引入了一个新的评估基准，包含7个真实世界场景中的178个带有几何标注的野外物体。实验表明，在这种具有挑战性的环境中，ShapeR显著优于现有方法，与当前最佳方法相比，在倒角距离上取得了2.7倍的提升。</p>
             
 
             
@@ -390,6 +601,14 @@
             <a href="http://arxiv.org/abs/2601.11514v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Yawar Siddiqui, Duncan Frost, Samir Aroudj, Armen Avetisyan, Henry Howard-Jenkins, Daniel DeTone, Pierre Moulon, Qirui Wu, Zhengqin Li, Julian Straub, Richard Newcombe, Jakob Engel</p>
             
@@ -403,16 +622,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">ReScene4D: Temporally Consistent Semantic Instance Segmentation of Evolving Indoor 3D Scenes</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Indoor environments evolve as objects move, appear, or disappear. Capturing these dynamics requires maintaining temporally consistent instance identities across intermittently captured 3D scans, even when changes are unobserved. We introduce and formalize the task of temporally sparse 4D indoor semantic instance segmentation (SIS), which jointly segments, identifies, and temporally associates object instances. This setting poses a challenge for existing 3DSIS methods, which require a discrete matching step due to their lack of temporal reasoning, and for 4D LiDAR approaches, which perform poorly due to their reliance on high-frequency temporal measurements that are uncommon in the longer-horizon evolution of indoor environments. We propose ReScene4D, a novel method that adapts 3DSIS architectures for 4DSIS without needing dense observations. It explores strategies to share information across observations, demonstrating that this shared context not only enables consistent instance tracking but also improves standard 3DSIS quality. To evaluate this task, we define a new metric, t-mAP, that extends mAP to reward temporal identity consistency. ReScene4D achieves state-of-the-art performance on the 3RScan dataset, establishing a new benchmark for understanding evolving indoor scenes.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 室内环境随着物体的移动、出现或消失而演变。捕捉这些动态变化需要跨越间断捕获的3D扫描，维持时间上一致的实例身份，即使在未观测到变化的情况下也是如此。我们引入并形式化了时间稀疏的4D室内语义实例分割（SIS）任务，该任务联合分割、识别和按时间关联对象实例。这种设置对现有的3DSIS方法提出了挑战，因为它们缺乏时间推理，需要离散的匹配步骤；而对于4D LiDAR方法，其性能不佳，因为它们依赖于高频的时间测量，这在室内环境的长期演变中并不常见。我们提出了ReScene4D，这是一种新方法，它调整了3DSIS架构以适应4DSIS，而无需密集的观测。它探索了跨观测共享信息的策略，表明这种共享上下文不仅能够实现一致的实例跟踪，而且还提高了标准3DSIS的质量。为了评估这项任务，我们定义了一个新的指标t-mAP，它扩展了mAP来奖励时间身份一致性。ReScene4D在3RScan数据集上取得了最先进的性能，为理解不断演变的室内场景建立了一个新的基准。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces ReScene4D, a novel method for temporally consistent semantic instance segmentation of evolving indoor 3D scenes from sparse 4D data, outperforming existing 3DSIS and 4D LiDAR approaches and establishing a new benchmark.</p>
+            <h2 class="paper-title">
+                ReScene4D: Temporally Consistent Semantic Instance Segmentation of Evolving Indoor 3D Scenes
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了 ReScene4D，一种新的方法，用于从稀疏的 4D 数据中对不断变化的室内 3D 场景进行时间一致的语义实例分割，优于现有的 3DSIS 和 4D LiDAR 方法，并建立了一个新的基准。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文介绍了 ReScene4D，一种新的方法，用于从稀疏的 4D 数据中对不断变化的室内 3D 场景进行时间一致的语义实例分割，优于现有的 3DSIS 和 4D LiDAR 方法，并建立了一个新的基准。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces ReScene4D, a novel method for temporally consistent semantic instance segmentation of evolving indoor 3D scenes from sparse 4D data, outperforming existing 3DSIS and 4D LiDAR approaches and establishing a new benchmark.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Indoor environments evolve as objects move, appear, or disappear. Capturing these dynamics requires maintaining temporally consistent instance identities across intermittently captured 3D scans, even when changes are unobserved. We introduce and formalize the task of temporally sparse 4D indoor semantic instance segmentation (SIS), which jointly segments, identifies, and temporally associates object instances. This setting poses a challenge for existing 3DSIS methods, which require a discrete matching step due to their lack of temporal reasoning, and for 4D LiDAR approaches, which perform poorly due to their reliance on high-frequency temporal measurements that are uncommon in the longer-horizon evolution of indoor environments. We propose ReScene4D, a novel method that adapts 3DSIS architectures for 4DSIS without needing dense observations. It explores strategies to share information across observations, demonstrating that this shared context not only enables consistent instance tracking but also improves standard 3DSIS quality. To evaluate this task, we define a new metric, t-mAP, that extends mAP to reward temporal identity consistency. ReScene4D achieves state-of-the-art performance on the 3RScan dataset, establishing a new benchmark for understanding evolving indoor scenes.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>室内环境随着物体的移动、出现或消失而演变。捕捉这些动态变化需要跨越间断捕获的3D扫描，维持时间上一致的实例身份，即使在未观测到变化的情况下也是如此。我们引入并形式化了时间稀疏的4D室内语义实例分割（SIS）任务，该任务联合分割、识别和按时间关联对象实例。这种设置对现有的3DSIS方法提出了挑战，因为它们缺乏时间推理，需要离散的匹配步骤；而对于4D LiDAR方法，其性能不佳，因为它们依赖于高频的时间测量，这在室内环境的长期演变中并不常见。我们提出了ReScene4D，这是一种新方法，它调整了3DSIS架构以适应4DSIS，而无需密集的观测。它探索了跨观测共享信息的策略，表明这种共享上下文不仅能够实现一致的实例跟踪，而且还提高了标准3DSIS的质量。为了评估这项任务，我们定义了一个新的指标t-mAP，它扩展了mAP来奖励时间身份一致性。ReScene4D在3RScan数据集上取得了最先进的性能，为理解不断演变的室内场景建立了一个新的基准。</p>
             
 
             
@@ -486,6 +709,14 @@
             <a href="http://arxiv.org/abs/2601.11508v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="1" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="1" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Emily Steiner, Jianhao Zheng, Henry Howard-Jenkins, Chris Xie, Iro Armeni</p>
             
@@ -499,16 +730,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">BoxMind: Closed-loop AI strategy optimization for elite boxing validated in the 2024 Olympics</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Competitive sports require sophisticated tactical analysis, yet combat disciplines like boxing remain underdeveloped in AI-driven analytics due to the complexity of action dynamics and the lack of structured tactical representations. To address this, we present BoxMind, a closed-loop AI expert system validated in elite boxing competition. By defining atomic punch events with precise temporal boundaries and spatial and technical attributes, we parse match footage into 18 hierarchical technical-tactical indicators. We then propose a graph-based predictive model that fuses these explicit technical-tactical profiles with learnable, time-variant latent embeddings to capture the dynamics of boxer matchups. Modeling match outcome as a differentiable function of technical-tactical indicators, we turn winning probability gradients into executable tactical adjustments. Experiments show that the outcome prediction model achieves state-of-the-art performance, with 69.8% accuracy on BoxerGraph test set and 87.5% on Olympic matches. Using this predictive model as a foundation, the system generates strategic recommendations that demonstrate proficiency comparable to human experts. BoxMind is validated through a closed-loop deployment during the 2024 Paris Olympics, directly contributing to the Chinese National Team's historic achievement of three gold and two silver medals. BoxMind establishes a replicable paradigm for transforming unstructured video data into strategic intelligence, bridging the gap between computer vision and decision support in competitive sports.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 竞争性体育需要精妙的战术分析，然而，由于动作动态的复杂性和缺乏结构化的战术表示，诸如拳击之类的格斗项目在人工智能驱动的分析方面仍然不发达。为了解决这个问题，我们提出了BoxMind，一个在精英拳击比赛中验证过的闭环人工智能专家系统。通过定义具有精确时间边界以及空间和技术属性的原子性出拳事件，我们将比赛录像解析成18个层级的技术-战术指标。然后，我们提出一种基于图的预测模型，该模型融合了这些显式的技术-战术概况与可学习的时变隐变量嵌入，以捕捉拳击手对决的动态性。将比赛结果建模为技术-战术指标的可微函数，我们将获胜概率梯度转化为可执行的战术调整。实验表明，结果预测模型取得了最先进的性能，在BoxerGraph测试集上准确率为69.8%，在奥运会比赛中准确率为87.5%。该系统以这个预测模型为基础，生成了战略建议，其熟练程度与人类专家相当。BoxMind通过 2024 年巴黎奥运会期间的闭环部署得到验证，直接促成了中国国家队取得三枚金牌和两枚银牌的历史性成就。BoxMind建立了一个可复制的范例，将非结构化视频数据转化为战略情报，弥合了计算机视觉和竞争性体育决策支持之间的差距。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: BoxMind is a closed-loop AI system for boxing strategy optimization, validated in the 2024 Olympics, that converts unstructured video data into actionable tactical adjustments, demonstrating strong outcome prediction accuracy and contributing to medal wins.</p>
+            <h2 class="paper-title">
+                BoxMind: Closed-loop AI strategy optimization for elite boxing validated in the 2024 Olympics
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: BoxMind是一个用于拳击策略优化的闭环AI系统，已在2024年奥运会中验证。它将非结构化的视频数据转化为可执行的战术调整，展示了强大的结果预测准确性，并为奖牌的获得做出了贡献。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>BoxMind是一个用于拳击策略优化的闭环AI系统，已在2024年奥运会中验证。它将非结构化的视频数据转化为可执行的战术调整，展示了强大的结果预测准确性，并为奖牌的获得做出了贡献。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> BoxMind is a closed-loop AI system for boxing strategy optimization, validated in the 2024 Olympics, that converts unstructured video data into actionable tactical adjustments, demonstrating strong outcome prediction accuracy and contributing to medal wins.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Competitive sports require sophisticated tactical analysis, yet combat disciplines like boxing remain underdeveloped in AI-driven analytics due to the complexity of action dynamics and the lack of structured tactical representations. To address this, we present BoxMind, a closed-loop AI expert system validated in elite boxing competition. By defining atomic punch events with precise temporal boundaries and spatial and technical attributes, we parse match footage into 18 hierarchical technical-tactical indicators. We then propose a graph-based predictive model that fuses these explicit technical-tactical profiles with learnable, time-variant latent embeddings to capture the dynamics of boxer matchups. Modeling match outcome as a differentiable function of technical-tactical indicators, we turn winning probability gradients into executable tactical adjustments. Experiments show that the outcome prediction model achieves state-of-the-art performance, with 69.8% accuracy on BoxerGraph test set and 87.5% on Olympic matches. Using this predictive model as a foundation, the system generates strategic recommendations that demonstrate proficiency comparable to human experts. BoxMind is validated through a closed-loop deployment during the 2024 Paris Olympics, directly contributing to the Chinese National Team's historic achievement of three gold and two silver medals. BoxMind establishes a replicable paradigm for transforming unstructured video data into strategic intelligence, bridging the gap between computer vision and decision support in competitive sports.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>竞争性体育需要精妙的战术分析，然而，由于动作动态的复杂性和缺乏结构化的战术表示，诸如拳击之类的格斗项目在人工智能驱动的分析方面仍然不发达。为了解决这个问题，我们提出了BoxMind，一个在精英拳击比赛中验证过的闭环人工智能专家系统。通过定义具有精确时间边界以及空间和技术属性的原子性出拳事件，我们将比赛录像解析成18个层级的技术-战术指标。然后，我们提出一种基于图的预测模型，该模型融合了这些显式的技术-战术概况与可学习的时变隐变量嵌入，以捕捉拳击手对决的动态性。将比赛结果建模为技术-战术指标的可微函数，我们将获胜概率梯度转化为可执行的战术调整。实验表明，结果预测模型取得了最先进的性能，在BoxerGraph测试集上准确率为69.8%，在奥运会比赛中准确率为87.5%。该系统以这个预测模型为基础，生成了战略建议，其熟练程度与人类专家相当。BoxMind通过 2024 年巴黎奥运会期间的闭环部署得到验证，直接促成了中国国家队取得三枚金牌和两枚银牌的历史性成就。BoxMind建立了一个可复制的范例，将非结构化视频数据转化为战略情报，弥合了计算机视觉和竞争性体育决策支持之间的差距。</p>
             
 
             
@@ -582,6 +817,14 @@
             <a href="http://arxiv.org/abs/2601.11492v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="2" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="2" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Kaiwen Wang, Kaili Zheng, Rongrong Deng, Qingmin Fan, Milin Zhang, Zongrui Li, Xuesi Zhou, Bo Han, Liren Chen, Chenyi Guo, Ji Wu</p>
             
@@ -590,7 +833,7 @@
     </div>
 
     <section class="filtered-section">
-        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
         <div class="filtered-grid">
             
             <div class="filtered-item">
@@ -600,9 +843,32 @@
         </div>
     </section>
 
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <p>没有一级过滤未通过的论文。</p>
+            </div>
+            
+        </div>
+    </section>
+
     <footer class="footer">
-        Generated on 2026-04-08 07:41:50 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-30 18:17:57 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
+    
+    
+    <script type="application/json" id="papers-data">[{"title": "ShapeR: Robust Conditional 3D Shape Generation from Casual Captures", "summary": "Recent advances in 3D shape generation have achieved impressive results, but most existing methods rely on clean, unoccluded, and well-segmented inputs. Such conditions are rarely met in real-world scenarios. We present ShapeR, a novel approach for conditional 3D object shape generation from casually captured sequences. Given an image sequence, we leverage off-the-shelf visual-inertial SLAM, 3D detection algorithms, and vision-language models to extract, for each object, a set of sparse SLAM points, posed multi-view images, and machine-generated captions. A rectified flow transformer trained to effectively condition on these modalities then generates high-fidelity metric 3D shapes. To ensure robustness to the challenges of casually captured data, we employ a range of techniques including on-the-fly compositional augmentations, a curriculum training scheme spanning object- and scene-level datasets, and strategies to handle background clutter. Additionally, we introduce a new evaluation benchmark comprising 178 in-the-wild objects across 7 real-world scenes with geometry annotations. Experiments show that ShapeR significantly outperforms existing approaches in this challenging setting, achieving an improvement of 2.7x in Chamfer distance compared to state of the art.", "url": "http://arxiv.org/abs/2601.11514v1", "authors": ["Yawar Siddiqui", "Duncan Frost", "Samir Aroudj", "Armen Avetisyan", "Henry Howard-Jenkins", "Daniel DeTone", "Pierre Moulon", "Qirui Wu", "Zhengqin Li", "Julian Straub", "Richard Newcombe", "Jakob Engel"], "keywords": []},{"title": "ReScene4D: Temporally Consistent Semantic Instance Segmentation of Evolving Indoor 3D Scenes", "summary": "Indoor environments evolve as objects move, appear, or disappear. Capturing these dynamics requires maintaining temporally consistent instance identities across intermittently captured 3D scans, even when changes are unobserved. We introduce and formalize the task of temporally sparse 4D indoor semantic instance segmentation (SIS), which jointly segments, identifies, and temporally associates object instances. This setting poses a challenge for existing 3DSIS methods, which require a discrete matching step due to their lack of temporal reasoning, and for 4D LiDAR approaches, which perform poorly due to their reliance on high-frequency temporal measurements that are uncommon in the longer-horizon evolution of indoor environments. We propose ReScene4D, a novel method that adapts 3DSIS architectures for 4DSIS without needing dense observations. It explores strategies to share information across observations, demonstrating that this shared context not only enables consistent instance tracking but also improves standard 3DSIS quality. To evaluate this task, we define a new metric, t-mAP, that extends mAP to reward temporal identity consistency. ReScene4D achieves state-of-the-art performance on the 3RScan dataset, establishing a new benchmark for understanding evolving indoor scenes.", "url": "http://arxiv.org/abs/2601.11508v1", "authors": ["Emily Steiner", "Jianhao Zheng", "Henry Howard-Jenkins", "Chris Xie", "Iro Armeni"], "keywords": []},{"title": "BoxMind: Closed-loop AI strategy optimization for elite boxing validated in the 2024 Olympics", "summary": "Competitive sports require sophisticated tactical analysis, yet combat disciplines like boxing remain underdeveloped in AI-driven analytics due to the complexity of action dynamics and the lack of structured tactical representations. To address this, we present BoxMind, a closed-loop AI expert system validated in elite boxing competition. By defining atomic punch events with precise temporal boundaries and spatial and technical attributes, we parse match footage into 18 hierarchical technical-tactical indicators. We then propose a graph-based predictive model that fuses these explicit technical-tactical profiles with learnable, time-variant latent embeddings to capture the dynamics of boxer matchups. Modeling match outcome as a differentiable function of technical-tactical indicators, we turn winning probability gradients into executable tactical adjustments. Experiments show that the outcome prediction model achieves state-of-the-art performance, with 69.8% accuracy on BoxerGraph test set and 87.5% on Olympic matches. Using this predictive model as a foundation, the system generates strategic recommendations that demonstrate proficiency comparable to human experts. BoxMind is validated through a closed-loop deployment during the 2024 Paris Olympics, directly contributing to the Chinese National Team\u0027s historic achievement of three gold and two silver medals. BoxMind establishes a replicable paradigm for transforming unstructured video data into strategic intelligence, bridging the gap between computer vision and decision support in competitive sports.", "url": "http://arxiv.org/abs/2601.11492v1", "authors": ["Kaiwen Wang", "Kaili Zheng", "Rongrong Deng", "Qingmin Fan", "Milin Zhang", "Zongrui Li", "Xuesi Zhou", "Bo Han", "Liren Chen", "Chenyi Guo", "Ji Wu"], "keywords": []}]</script>
+
+    <!-- SparkMD5: Zotero's WebDAV format requires md5; SubtleCrypto can't do MD5 -->
+    <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
+    <!-- JSZip: needed to build the <key>.zip wrapper Zotero expects on WebDAV -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="../js/zotero.js"></script>
+    <script src="../js/webdav.js"></script>
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
 </body>
 </html>

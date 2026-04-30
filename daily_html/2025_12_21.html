@@ -32,38 +32,6 @@
             line-height: 1.6;
         }
 
-        .quick-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            align-items: center;
-            width: fit-content;
-            margin: 0.9rem auto 0;
-            padding: 0;
-            border: none;
-            background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-        }
-
-        .quick-nav a {
-            color: var(--highlight-primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 0.35rem 0.75rem;
-            border-radius: 999px;
-            border: 1px solid rgba(226, 232, 240, 0.95);
-            background: rgba(255, 255, 255, 0.86);
-            box-shadow: 0 2px 6px var(--shadow-color);
-            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-        }
-
-        .quick-nav a:hover {
-            background-color: rgba(123, 44, 159, 0.12);
-            color: #6B1F8F;
-            transform: translateY(-1px);
-        }
 
         .bento-grid {
             display: grid;
@@ -103,10 +71,25 @@
         }
 
         .paper-summary {
-            font-size: 0.875rem; /* Tailwind text-sm */
+            font-size: 0.85rem;
             color: var(--text-muted-color);
-            margin-bottom: 1.25rem; /* Tailwind mb-5 */
+            margin-bottom: 1.25rem;
             line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
         }
 
         .paper-link {
@@ -195,12 +178,25 @@
         }
 
         .paper-tldr {
-            font-size: 0.95rem; /* Slightly bigger than summary */
-            color: #475569; /* Changed to Tailwind slate-600 (slightly darker than summary) */
-            margin-top: 0.75rem; /* Tailwind mt-3 */
-            margin-bottom: 0.75rem; /* Tailwind mb-2 */
-            /* font-style: italic; */
-            font-weight: bold;
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
         }
 
         .paper-rating {
@@ -276,6 +272,222 @@
             font-size: 0.88rem;
         }
 
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link.
+           Shown only when body.zotero-mode is set (which like.js does after
+           confirming sessionStorage has decrypted credentials). Guests never
+           see it. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn i {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover i {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
     </style>
 </head>
 <body class="container mx-auto px-4 antialiased">
@@ -289,11 +501,6 @@
         <h1>Robotics Daily Papers</h1>
         <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
         <p>December 21, 2025</p>
-        <nav class="quick-nav">
-            <a href="../index.html" target="_top">首页</a>
-            <a href="../list.html" target="_top">报告列表</a>
-            <a href="../search.html" target="_top">论文检索</a>
-        </nav>
         <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
     </motion.div>
 
@@ -307,22 +514,26 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Dexterous World Models</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Recent progress in 3D reconstruction has made it easy to create realistic digital twins from everyday environments. However, current digital twins remain largely static and are limited to navigation and view synthesis without embodied interactivity. To bridge this gap, we introduce Dexterous World Model (DWM), a scene-action-conditioned video diffusion framework that models how dexterous human actions induce dynamic changes in static 3D scenes.
+            <h2 class="paper-title">
+                Dexterous World Models
+                
+            </h2>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>这篇论文介绍了灵巧世界模型（DWM），一个以静态3D场景和以自我为中心的手部动作为条件的视频扩散框架，用于生成逼真的人与场景交互视频，从而在数字孪生中实现具身模拟。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces Dexterous World Model (DWM), a video diffusion framework conditioned on static 3D scenes and egocentric hand motions to generate realistic videos of human-scene interactions, enabling embodied simulation in digital twins.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Recent progress in 3D reconstruction has made it easy to create realistic digital twins from everyday environments. However, current digital twins remain largely static and are limited to navigation and view synthesis without embodied interactivity. To bridge this gap, we introduce Dexterous World Model (DWM), a scene-action-conditioned video diffusion framework that models how dexterous human actions induce dynamic changes in static 3D scenes.
   Given a static 3D scene rendering and an egocentric hand motion sequence, DWM generates temporally coherent videos depicting plausible human-scene interactions. Our approach conditions video generation on (1) static scene renderings following a specified camera trajectory to ensure spatial consistency, and (2) egocentric hand mesh renderings that encode both geometry and motion cues to model action-conditioned dynamics directly. To train DWM, we construct a hybrid interaction video dataset. Synthetic egocentric interactions provide fully aligned supervision for joint locomotion and manipulation learning, while fixed-camera real-world videos contribute diverse and realistic object dynamics.
   Experiments demonstrate that DWM enables realistic and physically plausible interactions, such as grasping, opening, and moving objects, while maintaining camera and scene consistency. This framework represents a first step toward video diffusion-based interactive digital twins and enables embodied simulation from egocentric actions.</p>
             
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 3D重建技术的最新进展使得从日常环境中创建逼真的数字孪生变得容易。然而，当前的数字孪生在很大程度上仍然是静态的，并且仅限于导航和视图合成，缺乏具身交互性。为了弥合这一差距，我们引入了灵巧世界模型（DWM），这是一个场景-动作条件视频Diffusion框架，可以对灵巧的人类动作如何在静态3D场景中引起动态变化进行建模。
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>3D重建技术的最新进展使得从日常环境中创建逼真的数字孪生变得容易。然而，当前的数字孪生在很大程度上仍然是静态的，并且仅限于导航和视图合成，缺乏具身交互性。为了弥合这一差距，我们引入了灵巧世界模型（DWM），这是一个场景-动作条件视频Diffusion框架，可以对灵巧的人类动作如何在静态3D场景中引起动态变化进行建模。
 
   给定一个静态3D场景渲染图和一个以自我为中心的手部运动序列，DWM可以生成时间上连贯的视频，描绘合理的人类-场景交互。我们的方法将视频生成基于：（1）遵循指定相机轨迹的静态场景渲染，以确保空间一致性；以及（2）以自我为中心的手部网格渲染，该渲染编码了几何形状和运动线索，以直接模拟动作条件下的动力学。为了训练DWM，我们构建了一个混合交互视频数据集。合成的以自我为中心的交互为联合的运动和操作学习提供了完全对齐的监督，而固定相机的真实世界视频则贡献了多样且逼真的物体动力学。
 
   实验表明，DWM能够实现逼真且符合物理规律的交互，例如抓取、打开和移动物体，同时保持相机和场景的一致性。该框架代表了基于视频Diffusion的交互式数字孪生的第一步，并且能够从以自我为中心的动作中进行具身模拟。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces Dexterous World Model (DWM), a video diffusion framework conditioned on static 3D scenes and egocentric hand motions to generate realistic videos of human-scene interactions, enabling embodied simulation in digital twins.</p>
-            
-            
-            <p class="paper-tldr"><strong>简要说明</strong>: 这篇论文介绍了灵巧世界模型（DWM），一个以静态3D场景和以自我为中心的手部动作为条件的视频扩散框架，用于生成逼真的人与场景交互视频，从而在数字孪生中实现具身模拟。</p>
             
 
             
@@ -396,6 +607,14 @@
             <a href="http://arxiv.org/abs/2512.17907v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Byungjun Kim, Taeksoo Kim, Junyoung Lee, Hanbyul Joo</p>
             
@@ -409,16 +628,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Diffusion Forcing for Multi-Agent Interaction Sequence Modeling</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Understanding and generating multi-person interactions is a fundamental challenge with broad implications for robotics and social computing. While humans naturally coordinate in groups, modeling such interactions remains difficult due to long temporal horizons, strong inter-agent dependencies, and variable group sizes. Existing motion generation methods are largely task-specific and do not generalize to flexible multi-agent generation. We introduce MAGNet (Multi-Agent Diffusion Forcing Transformer), a unified autoregressive diffusion framework for multi-agent motion generation that supports a wide range of interaction tasks through flexible conditioning and sampling. MAGNet performs dyadic prediction, partner inpainting, and full multi-agent motion generation within a single model, and can autoregressively generate ultra-long sequences spanning hundreds of v. Building on Diffusion Forcing, we introduce key modifications that explicitly model inter-agent coupling during autoregressive denoising, enabling coherent coordination across agents. As a result, MAGNet captures both tightly synchronized activities (e.g, dancing, boxing) and loosely structured social interactions. Our approach performs on par with specialized methods on dyadic benchmarks while naturally extending to polyadic scenarios involving three or more interacting people, enabled by a scalable architecture that is agnostic to the number of agents. We refer readers to the supplemental video, where the temporal dynamics and spatial coordination of generated interactions are best appreciated. Project page: https://von31.github.io/MAGNet/</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 理解和生成多人互动是机器人技术和社会计算领域的一项基础性挑战，具有广泛的意义。虽然人类在群体中自然地进行协调，但由于时间跨度长、主体间依赖性强以及群体规模可变，对这种互动进行建模仍然很困难。现有的运动生成方法大多是针对特定任务的，不能推广到灵活的多主体生成。我们提出了MAGNet（多主体扩散强制Transformer），这是一个统一的自回归扩散框架，用于多主体运动生成，通过灵活的条件设定和采样，支持广泛的互动任务。MAGNet在单个模型中执行二元预测、伙伴补全和完整的多主体运动生成，并且可以自回归地生成跨越数百帧的超长序列。在扩散强制的基础上，我们引入了关键的修改，从而在自回归去噪过程中显式地对主体间的耦合进行建模，从而实现主体之间的连贯协同。因此，MAGNet能够捕捉到紧密同步的活动（如跳舞、拳击）和松散结构的社交互动。我们的方法在二元基准测试中与专门方法相当，同时自然地扩展到涉及三个或更多互动人员的多元情景，这得益于一个与主体数量无关的可扩展架构。我们建议读者观看补充视频，在那里，生成的互动的时间动态和空间协调能够得到最佳的欣赏。项目页面: https://von31.github.io/MAGNet/</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: The paper introduces MAGNet, a diffusion-based framework for generating multi-agent interaction sequences, achieving strong performance across various interaction types and group sizes.</p>
+            <h2 class="paper-title">
+                Diffusion Forcing for Multi-Agent Interaction Sequence Modeling
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 该论文介绍了MAGNet，一个基于扩散模型的框架，用于生成多智能体交互序列，在各种交互类型和群体规模上都表现出色。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>该论文介绍了MAGNet，一个基于扩散模型的框架，用于生成多智能体交互序列，在各种交互类型和群体规模上都表现出色。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces MAGNet, a diffusion-based framework for generating multi-agent interaction sequences, achieving strong performance across various interaction types and group sizes.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Understanding and generating multi-person interactions is a fundamental challenge with broad implications for robotics and social computing. While humans naturally coordinate in groups, modeling such interactions remains difficult due to long temporal horizons, strong inter-agent dependencies, and variable group sizes. Existing motion generation methods are largely task-specific and do not generalize to flexible multi-agent generation. We introduce MAGNet (Multi-Agent Diffusion Forcing Transformer), a unified autoregressive diffusion framework for multi-agent motion generation that supports a wide range of interaction tasks through flexible conditioning and sampling. MAGNet performs dyadic prediction, partner inpainting, and full multi-agent motion generation within a single model, and can autoregressively generate ultra-long sequences spanning hundreds of v. Building on Diffusion Forcing, we introduce key modifications that explicitly model inter-agent coupling during autoregressive denoising, enabling coherent coordination across agents. As a result, MAGNet captures both tightly synchronized activities (e.g, dancing, boxing) and loosely structured social interactions. Our approach performs on par with specialized methods on dyadic benchmarks while naturally extending to polyadic scenarios involving three or more interacting people, enabled by a scalable architecture that is agnostic to the number of agents. We refer readers to the supplemental video, where the temporal dynamics and spatial coordination of generated interactions are best appreciated. Project page: https://von31.github.io/MAGNet/</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>理解和生成多人互动是机器人技术和社会计算领域的一项基础性挑战，具有广泛的意义。虽然人类在群体中自然地进行协调，但由于时间跨度长、主体间依赖性强以及群体规模可变，对这种互动进行建模仍然很困难。现有的运动生成方法大多是针对特定任务的，不能推广到灵活的多主体生成。我们提出了MAGNet（多主体扩散强制Transformer），这是一个统一的自回归扩散框架，用于多主体运动生成，通过灵活的条件设定和采样，支持广泛的互动任务。MAGNet在单个模型中执行二元预测、伙伴补全和完整的多主体运动生成，并且可以自回归地生成跨越数百帧的超长序列。在扩散强制的基础上，我们引入了关键的修改，从而在自回归去噪过程中显式地对主体间的耦合进行建模，从而实现主体之间的连贯协同。因此，MAGNet能够捕捉到紧密同步的活动（如跳舞、拳击）和松散结构的社交互动。我们的方法在二元基准测试中与专门方法相当，同时自然地扩展到涉及三个或更多互动人员的多元情景，这得益于一个与主体数量无关的可扩展架构。我们建议读者观看补充视频，在那里，生成的互动的时间动态和空间协调能够得到最佳的欣赏。项目页面: https://von31.github.io/MAGNet/</p>
             
 
             
@@ -492,6 +715,14 @@
             <a href="http://arxiv.org/abs/2512.17900v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="1" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="1" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Vongani H. Maluleke, Kie Horiuchi, Lea Wilken, Evonne Ng, Jitendra Malik, Angjoo Kanazawa</p>
             
@@ -505,16 +736,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">RadarGen: Automotive Radar Point Cloud Generation from Cameras</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> We present RadarGen, a diffusion model for synthesizing realistic automotive radar point clouds from multi-view camera imagery. RadarGen adapts efficient image-latent diffusion to the radar domain by representing radar measurements in bird's-eye-view form that encodes spatial structure together with radar cross section (RCS) and Doppler attributes. A lightweight recovery step reconstructs point clouds from the generated maps. To better align generation with the visual scene, RadarGen incorporates BEV-aligned depth, semantic, and motion cues extracted from pretrained foundation models, which guide the stochastic generation process toward physically plausible radar patterns. Conditioning on images makes the approach broadly compatible, in principle, with existing visual datasets and simulation frameworks, offering a scalable direction for multimodal generative simulation. Evaluations on large-scale driving data show that RadarGen captures characteristic radar measurement distributions and reduces the gap to perception models trained on real data, marking a step toward unified generative simulation across sensing modalities.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 我们提出了RadarGen，一种用于从多视角相机图像合成逼真车载雷达点云的扩散模型。RadarGen通过将雷达测量结果表示为鸟瞰图形式，使其能够将高效的图像潜在扩散适配到雷达领域，该鸟瞰图编码了空间结构以及雷达横截面（RCS）和多普勒属性。一个轻量级的恢复步骤从生成的地图中重建点云。为了更好地将生成与视觉场景对齐，RadarGen结合了从预训练基础模型中提取的BEV对齐的深度、语义和运动线索，这些线索引导随机生成过程产生物理上合理的雷达模式。原则上，以图像为条件使得该方法与现有的视觉数据集和仿真框架广泛兼容，为跨模态生成式仿真的可扩展方向提供了思路。在大型驾驶数据上的评估表明，RadarGen捕获了雷达测量分布的特征，并缩小了与在真实数据上训练的感知模型之间的差距，标志着朝着跨传感模态的统一生成式仿真迈进了一步。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: RadarGen is a diffusion model that generates realistic automotive radar point clouds from multi-view camera imagery, incorporating visual cues to guide the generation process.</p>
+            <h2 class="paper-title">
+                RadarGen: Automotive Radar Point Cloud Generation from Cameras
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: RadarGen是一个扩散模型，可以从多视角的相机图像中生成逼真的汽车雷达点云，并结合视觉线索来指导生成过程。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>RadarGen是一个扩散模型，可以从多视角的相机图像中生成逼真的汽车雷达点云，并结合视觉线索来指导生成过程。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> RadarGen is a diffusion model that generates realistic automotive radar point clouds from multi-view camera imagery, incorporating visual cues to guide the generation process.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> We present RadarGen, a diffusion model for synthesizing realistic automotive radar point clouds from multi-view camera imagery. RadarGen adapts efficient image-latent diffusion to the radar domain by representing radar measurements in bird's-eye-view form that encodes spatial structure together with radar cross section (RCS) and Doppler attributes. A lightweight recovery step reconstructs point clouds from the generated maps. To better align generation with the visual scene, RadarGen incorporates BEV-aligned depth, semantic, and motion cues extracted from pretrained foundation models, which guide the stochastic generation process toward physically plausible radar patterns. Conditioning on images makes the approach broadly compatible, in principle, with existing visual datasets and simulation frameworks, offering a scalable direction for multimodal generative simulation. Evaluations on large-scale driving data show that RadarGen captures characteristic radar measurement distributions and reduces the gap to perception models trained on real data, marking a step toward unified generative simulation across sensing modalities.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>我们提出了RadarGen，一种用于从多视角相机图像合成逼真车载雷达点云的扩散模型。RadarGen通过将雷达测量结果表示为鸟瞰图形式，使其能够将高效的图像潜在扩散适配到雷达领域，该鸟瞰图编码了空间结构以及雷达横截面（RCS）和多普勒属性。一个轻量级的恢复步骤从生成的地图中重建点云。为了更好地将生成与视觉场景对齐，RadarGen结合了从预训练基础模型中提取的BEV对齐的深度、语义和运动线索，这些线索引导随机生成过程产生物理上合理的雷达模式。原则上，以图像为条件使得该方法与现有的视觉数据集和仿真框架广泛兼容，为跨模态生成式仿真的可扩展方向提供了思路。在大型驾驶数据上的评估表明，RadarGen捕获了雷达测量分布的特征，并缩小了与在真实数据上训练的感知模型之间的差距，标志着朝着跨传感模态的统一生成式仿真迈进了一步。</p>
             
 
             
@@ -588,6 +823,14 @@
             <a href="http://arxiv.org/abs/2512.17897v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="2" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="2" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Tomer Borreda, Fangqiang Ding, Sanja Fidler, Shengyu Huang, Or Litany</p>
             
@@ -601,16 +844,20 @@
             class="bento-item"
             data-motion-element
         >
-            <h2 class="paper-title">Distributionally Robust Imitation Learning: Layered Control Architecture for Certifiable Autonomy</h2>
-            <p class="paper-summary"><strong>Abstract (English):</strong> Imitation learning (IL) enables autonomous behavior by learning from expert demonstrations. While more sample-efficient than comparative alternatives like reinforcement learning, IL is sensitive to compounding errors induced by distribution shifts. There are two significant sources of distribution shifts when using IL-based feedback laws on systems: distribution shifts caused by policy error and distribution shifts due to exogenous disturbances and endogenous model errors due to lack of learning. Our previously developed approaches, Taylor Series Imitation Learning (TaSIL) and $\mathcal{L}_1$ -Distributionally Robust Adaptive Control (\ellonedrac), address the challenge of distribution shifts in complementary ways. While TaSIL offers robustness against policy error-induced distribution shifts, \ellonedrac offers robustness against distribution shifts due to aleatoric and epistemic uncertainties. To enable certifiable IL for learned and/or uncertain dynamical systems, we formulate \textit{Distributionally Robust Imitation Policy (DRIP)} architecture, a Layered Control Architecture (LCA) that integrates TaSIL and~\ellonedrac. By judiciously designing individual layer-centric input and output requirements, we show how we can guarantee certificates for the entire control pipeline. Our solution paves the path for designing fully certifiable autonomy pipelines, by integrating learning-based components, such as perception, with certifiable model-based decision-making through the proposed LCA approach.</p>
-            
-            <p class="paper-summary" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(226, 232, 240, 0.5);"><strong>摘要（中文）:</strong> 模仿学习（IL）通过学习专家演示来实现自主行为。相比于诸如强化学习等其他替代方法，模仿学习具有更高的样本效率，但其对由分布偏移引起的累积误差非常敏感。在使用基于模仿学习的反馈律作用于系统时，存在两个显著的分布偏移来源：由策略误差引起的分布偏移，以及由于外生扰动和因缺乏学习而产生的内生模型误差引起的分布偏移。我们之前开发的泰勒级数模仿学习（TaSIL）和 $\mathcal{L}_1$ -分布鲁棒自适应控制（\ellonedrac）以互补的方式解决了分布偏移的挑战。TaSIL提供了对策略误差引起的分布偏移的鲁棒性，而\ellonedrac 提供了对由偶然不确定性和认知不确定性引起的分布偏移的鲁棒性。为了实现针对已学习和/或不确定动力系统的可认证模仿学习，我们构建了\textit{分布鲁棒模仿策略（DRIP）}架构，一种集成了TaSIL和 \ellonedrac 的分层控制架构（LCA）。通过谨慎设计以各层为中心输入和输出要求，我们展示了如何保证整个控制流程的可认证性。我们的解决方案为设计完全可认证的自主系统流程铺平了道路，通过提出的分层控制架构方法，将基于学习的组件（如感知）与可认证的基于模型的决策相结合。</p>
-            
-            
-            <p class="paper-tldr"><strong>TLDR</strong>: This paper introduces Distributionally Robust Imitation Policy (DRIP), a layered control architecture combining Taylor Series Imitation Learning (TaSIL) and $\mathcal{L}_1$-Distributionally Robust Adaptive Control (\ellonedrac) for certifiable autonomous systems by mitigating distribution shifts in imitation learning.</p>
+            <h2 class="paper-title">
+                Distributionally Robust Imitation Learning: Layered Control Architecture for Certifiable Autonomy
+                
+            </h2>
             
             
-            <p class="paper-tldr"><strong>简要说明</strong>: 本文介绍了分布鲁棒模仿策略(DRIP)，一种分层控制架构，结合了泰勒级数模仿学习(TaSIL)和$\mathcal{L}_1$-分布鲁棒自适应控制(\ellonedrac)，通过减少模仿学习中的分布偏移，实现可验证的自主系统。</p>
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文介绍了分布鲁棒模仿策略(DRIP)，一种分层控制架构，结合了泰勒级数模仿学习(TaSIL)和$\mathcal{L}_1$-分布鲁棒自适应控制(\ellonedrac)，通过减少模仿学习中的分布偏移，实现可验证的自主系统。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper introduces Distributionally Robust Imitation Policy (DRIP), a layered control architecture combining Taylor Series Imitation Learning (TaSIL) and $\mathcal{L}_1$-Distributionally Robust Adaptive Control (\ellonedrac) for certifiable autonomous systems by mitigating distribution shifts in imitation learning.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Imitation learning (IL) enables autonomous behavior by learning from expert demonstrations. While more sample-efficient than comparative alternatives like reinforcement learning, IL is sensitive to compounding errors induced by distribution shifts. There are two significant sources of distribution shifts when using IL-based feedback laws on systems: distribution shifts caused by policy error and distribution shifts due to exogenous disturbances and endogenous model errors due to lack of learning. Our previously developed approaches, Taylor Series Imitation Learning (TaSIL) and $\mathcal{L}_1$ -Distributionally Robust Adaptive Control (\ellonedrac), address the challenge of distribution shifts in complementary ways. While TaSIL offers robustness against policy error-induced distribution shifts, \ellonedrac offers robustness against distribution shifts due to aleatoric and epistemic uncertainties. To enable certifiable IL for learned and/or uncertain dynamical systems, we formulate \textit{Distributionally Robust Imitation Policy (DRIP)} architecture, a Layered Control Architecture (LCA) that integrates TaSIL and~\ellonedrac. By judiciously designing individual layer-centric input and output requirements, we show how we can guarantee certificates for the entire control pipeline. Our solution paves the path for designing fully certifiable autonomy pipelines, by integrating learning-based components, such as perception, with certifiable model-based decision-making through the proposed LCA approach.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>模仿学习（IL）通过学习专家演示来实现自主行为。相比于诸如强化学习等其他替代方法，模仿学习具有更高的样本效率，但其对由分布偏移引起的累积误差非常敏感。在使用基于模仿学习的反馈律作用于系统时，存在两个显著的分布偏移来源：由策略误差引起的分布偏移，以及由于外生扰动和因缺乏学习而产生的内生模型误差引起的分布偏移。我们之前开发的泰勒级数模仿学习（TaSIL）和 $\mathcal{L}_1$ -分布鲁棒自适应控制（\ellonedrac）以互补的方式解决了分布偏移的挑战。TaSIL提供了对策略误差引起的分布偏移的鲁棒性，而\ellonedrac 提供了对由偶然不确定性和认知不确定性引起的分布偏移的鲁棒性。为了实现针对已学习和/或不确定动力系统的可认证模仿学习，我们构建了\textit{分布鲁棒模仿策略（DRIP）}架构，一种集成了TaSIL和 \ellonedrac 的分层控制架构（LCA）。通过谨慎设计以各层为中心输入和输出要求，我们展示了如何保证整个控制流程的可认证性。我们的解决方案为设计完全可认证的自主系统流程铺平了道路，通过提出的分层控制架构方法，将基于学习的组件（如感知）与可认证的基于模型的决策相结合。</p>
             
 
             
@@ -684,6 +931,14 @@
             <a href="http://arxiv.org/abs/2512.17899v1" target="_blank" class="paper-link">
                 <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
             </a>
+            <button class="translate-btn" type="button" data-paper-index="3" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="3" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
             
             <p class="paper-authors">Authors: Aditya Gahlawat, Ahmed Aboudonia, Sandeep Banik, Naira Hovakimyan, Nikolai Matni, Aaron D. Ames, Gioele Zardini, Alberto Speranzon</p>
             
@@ -692,7 +947,7 @@
     </div>
 
     <section class="filtered-section">
-        <h2 class="filtered-title">筛选的paper（overall &lt; 6.0）</h2>
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
         <div class="filtered-grid">
             
             <div class="filtered-item">
@@ -702,9 +957,32 @@
         </div>
     </section>
 
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <p>没有一级过滤未通过的论文。</p>
+            </div>
+            
+        </div>
+    </section>
+
     <footer class="footer">
-        Generated on 2026-04-08 07:41:49 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+        Generated on 2026-04-30 18:17:57 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
     </footer>
 
+    
+    
+    <script type="application/json" id="papers-data">[{"title": "Dexterous World Models", "summary": "Recent progress in 3D reconstruction has made it easy to create realistic digital twins from everyday environments. However, current digital twins remain largely static and are limited to navigation and view synthesis without embodied interactivity. To bridge this gap, we introduce Dexterous World Model (DWM), a scene-action-conditioned video diffusion framework that models how dexterous human actions induce dynamic changes in static 3D scenes.\n  Given a static 3D scene rendering and an egocentric hand motion sequence, DWM generates temporally coherent videos depicting plausible human-scene interactions. Our approach conditions video generation on (1) static scene renderings following a specified camera trajectory to ensure spatial consistency, and (2) egocentric hand mesh renderings that encode both geometry and motion cues to model action-conditioned dynamics directly. To train DWM, we construct a hybrid interaction video dataset. Synthetic egocentric interactions provide fully aligned supervision for joint locomotion and manipulation learning, while fixed-camera real-world videos contribute diverse and realistic object dynamics.\n  Experiments demonstrate that DWM enables realistic and physically plausible interactions, such as grasping, opening, and moving objects, while maintaining camera and scene consistency. This framework represents a first step toward video diffusion-based interactive digital twins and enables embodied simulation from egocentric actions.", "url": "http://arxiv.org/abs/2512.17907v1", "authors": ["Byungjun Kim", "Taeksoo Kim", "Junyoung Lee", "Hanbyul Joo"], "keywords": []},{"title": "Diffusion Forcing for Multi-Agent Interaction Sequence Modeling", "summary": "Understanding and generating multi-person interactions is a fundamental challenge with broad implications for robotics and social computing. While humans naturally coordinate in groups, modeling such interactions remains difficult due to long temporal horizons, strong inter-agent dependencies, and variable group sizes. Existing motion generation methods are largely task-specific and do not generalize to flexible multi-agent generation. We introduce MAGNet (Multi-Agent Diffusion Forcing Transformer), a unified autoregressive diffusion framework for multi-agent motion generation that supports a wide range of interaction tasks through flexible conditioning and sampling. MAGNet performs dyadic prediction, partner inpainting, and full multi-agent motion generation within a single model, and can autoregressively generate ultra-long sequences spanning hundreds of v. Building on Diffusion Forcing, we introduce key modifications that explicitly model inter-agent coupling during autoregressive denoising, enabling coherent coordination across agents. As a result, MAGNet captures both tightly synchronized activities (e.g, dancing, boxing) and loosely structured social interactions. Our approach performs on par with specialized methods on dyadic benchmarks while naturally extending to polyadic scenarios involving three or more interacting people, enabled by a scalable architecture that is agnostic to the number of agents. We refer readers to the supplemental video, where the temporal dynamics and spatial coordination of generated interactions are best appreciated. Project page: https://von31.github.io/MAGNet/", "url": "http://arxiv.org/abs/2512.17900v1", "authors": ["Vongani H. Maluleke", "Kie Horiuchi", "Lea Wilken", "Evonne Ng", "Jitendra Malik", "Angjoo Kanazawa"], "keywords": []},{"title": "RadarGen: Automotive Radar Point Cloud Generation from Cameras", "summary": "We present RadarGen, a diffusion model for synthesizing realistic automotive radar point clouds from multi-view camera imagery. RadarGen adapts efficient image-latent diffusion to the radar domain by representing radar measurements in bird\u0027s-eye-view form that encodes spatial structure together with radar cross section (RCS) and Doppler attributes. A lightweight recovery step reconstructs point clouds from the generated maps. To better align generation with the visual scene, RadarGen incorporates BEV-aligned depth, semantic, and motion cues extracted from pretrained foundation models, which guide the stochastic generation process toward physically plausible radar patterns. Conditioning on images makes the approach broadly compatible, in principle, with existing visual datasets and simulation frameworks, offering a scalable direction for multimodal generative simulation. Evaluations on large-scale driving data show that RadarGen captures characteristic radar measurement distributions and reduces the gap to perception models trained on real data, marking a step toward unified generative simulation across sensing modalities.", "url": "http://arxiv.org/abs/2512.17897v1", "authors": ["Tomer Borreda", "Fangqiang Ding", "Sanja Fidler", "Shengyu Huang", "Or Litany"], "keywords": []},{"title": "Distributionally Robust Imitation Learning: Layered Control Architecture for Certifiable Autonomy", "summary": "Imitation learning (IL) enables autonomous behavior by learning from expert demonstrations. While more sample-efficient than comparative alternatives like reinforcement learning, IL is sensitive to compounding errors induced by distribution shifts. There are two significant sources of distribution shifts when using IL-based feedback laws on systems: distribution shifts caused by policy error and distribution shifts due to exogenous disturbances and endogenous model errors due to lack of learning. Our previously developed approaches, Taylor Series Imitation Learning (TaSIL) and $\\mathcal{L}_1$ -Distributionally Robust Adaptive Control (\\ellonedrac), address the challenge of distribution shifts in complementary ways. While TaSIL offers robustness against policy error-induced distribution shifts, \\ellonedrac offers robustness against distribution shifts due to aleatoric and epistemic uncertainties. To enable certifiable IL for learned and/or uncertain dynamical systems, we formulate \\textit{Distributionally Robust Imitation Policy (DRIP)} architecture, a Layered Control Architecture (LCA) that integrates TaSIL and~\\ellonedrac. By judiciously designing individual layer-centric input and output requirements, we show how we can guarantee certificates for the entire control pipeline. Our solution paves the path for designing fully certifiable autonomy pipelines, by integrating learning-based components, such as perception, with certifiable model-based decision-making through the proposed LCA approach.", "url": "http://arxiv.org/abs/2512.17899v1", "authors": ["Aditya Gahlawat", "Ahmed Aboudonia", "Sandeep Banik", "Naira Hovakimyan", "Nikolai Matni", "Aaron D. Ames", "Gioele Zardini", "Alberto Speranzon"], "keywords": []}]</script>
+
+    <!-- SparkMD5: Zotero's WebDAV format requires md5; SubtleCrypto can't do MD5 -->
+    <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
+    <!-- JSZip: needed to build the <key>.zip wrapper Zotero expects on WebDAV -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="../js/zotero.js"></script>
+    <script src="../js/webdav.js"></script>
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
 </body>
 </html>

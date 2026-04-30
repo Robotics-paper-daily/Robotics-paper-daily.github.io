@@ -3,103 +3,410 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>论文检索 - ArXiv Robotics</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/minisearch@7/dist/umd/index.js"></script>
+    <title>论文检索 — Robotics Daily Papers</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/minisearch@7/dist/umd/index.js"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .highlight { background-color: #f3e8ff; border-radius: 2px; padding: 0 2px; }
+        :root {
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --header-color: #0f172a;
+            --primary: #7B2C9F;
+            --primary-hover: #6B1F8F;
+            --secondary: #B794D3;
+            --border: #e2e8f0;
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --card-border: rgba(226, 232, 240, 0.7);
+            --shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
+            --shadow-hover: 0 18px 48px rgba(15, 23, 42, 0.12);
+        }
+        * { box-sizing: border-box; }
+        html, body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f3e8ff 100%);
+            color: var(--text-color);
+        }
+        body { display: flex; flex-direction: column; }
+
         .quick-nav {
             display: flex;
             justify-content: center;
-            gap: 1rem;
-            align-items: center;
-            width: fit-content;
-            margin: 0.9rem auto 1.4rem;
-            padding: 0;
-            border: none;
-            background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
+            gap: 0.5rem;
+            margin: 1.2rem auto 0;
+            padding: 0 1rem;
+            flex-wrap: wrap;
         }
         .quick-nav a {
-            color: #7B2C9F;
+            color: var(--primary);
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.9rem;
-            padding: 0.35rem 0.75rem;
+            font-size: 0.86rem;
+            padding: 0.42rem 1rem;
             border-radius: 999px;
             border: 1px solid rgba(226, 232, 240, 0.95);
             background: rgba(255, 255, 255, 0.86);
-            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
-            transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-        }
-        .quick-nav a:hover {
-            background-color: rgba(123, 44, 159, 0.12);
-            color: #6B1F8F;
-            transform: translateY(-1px);
-        }
-        .search-shell {
-            background: rgba(255, 255, 255, 0.78);
-            border: 1px solid rgba(226, 232, 240, 0.9);
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-            padding: 1rem;
-        }
-        .repo-link {
-            color: #7B2C9F;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
             display: inline-flex;
             align-items: center;
+            gap: 0.4rem;
+        }
+        .quick-nav a svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+            opacity: 0.85;
+        }
+        .quick-nav a:hover {
+            background: rgba(123, 44, 159, 0.12);
+            color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.15);
+        }
+
+        .container {
+            max-width: 880px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1.6rem 1.25rem 3rem;
+            flex: 1;
+        }
+        .hero {
+            text-align: center;
+            margin: 2rem auto 1.6rem;
+            max-width: 640px;
+        }
+        .hero h1 {
+            margin: 0 0 0.45rem;
+            font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+            color: var(--header-color);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        .hero p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.98rem;
+            line-height: 1.6;
+        }
+
+        .search-shell {
+            position: relative;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 0.55rem 0.55rem 0.55rem 3rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .search-shell:focus-within {
+            border-color: rgba(123, 44, 159, 0.45);
+            box-shadow: 0 0 0 4px rgba(123, 44, 159, 0.12), var(--shadow);
+        }
+        .search-shell::before {
+            content: "";
+            position: absolute;
+            left: 1.1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237B2C9F' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='m21 21-3.5-3.5'/></svg>");
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+        .search-shell input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 1.05rem;
+            color: var(--text-color);
+            padding: 0.65rem 0.5rem;
+        }
+        .search-shell input::placeholder { color: #94a3b8; }
+
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
             justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.4rem;
+            font-size: 0.84rem;
+            color: var(--text-muted);
+        }
+        .stats .count {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .results { display: flex; flex-direction: column; gap: 0.85rem; }
+        .result-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 0.95rem;
+            padding: 1rem 1.15rem;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+        }
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(123, 44, 159, 0.25);
+        }
+        .result-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.7rem;
+            margin-bottom: 0.45rem;
+        }
+        .result-title {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            line-height: 1.4;
+            flex: 1;
+        }
+        .result-title:hover { color: var(--primary-hover); text-decoration: underline; }
+        .result-date {
+            flex-shrink: 0;
+            background: rgba(123, 44, 159, 0.1);
+            color: var(--primary);
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.18rem 0.55rem;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+        .result-authors {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin: 0.15rem 0 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .result-tldr {
+            color: var(--text-color);
+            font-size: 0.9rem;
+            line-height: 1.55;
+            margin: 0 0 0.65rem;
+        }
+        .result-foot {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.74rem;
+            color: var(--text-muted);
+        }
+        .chip {
+            background: rgba(226, 232, 240, 0.7);
+            border-radius: 999px;
+            padding: 0.15rem 0.55rem;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+        .chip-score {
+            background: rgba(123, 44, 159, 0.12);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .chip-topic {
+            background: linear-gradient(135deg, rgba(123, 44, 159, 0.15), rgba(183, 148, 211, 0.18));
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .empty-state, .error-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(6px);
+        }
+        .empty-state h2, .error-state h2 {
+            margin: 0 0 0.5rem;
+            color: var(--header-color);
+            font-size: 1.15rem;
+        }
+        .empty-state p, .error-state p {
+            color: var(--text-muted);
+            margin: 0 auto;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            max-width: 480px;
+        }
+        .error-state h2 { color: #b91c1c; }
+
+        .examples {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.45rem;
+        }
+        .example-chip {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid var(--card-border);
+            color: var(--primary);
+            font-size: 0.78rem;
+            font-weight: 500;
+            padding: 0.32rem 0.85rem;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background 0.15s ease, transform 0.15s ease;
+        }
+        .example-chip:hover {
+            background: rgba(123, 44, 159, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .loading-skel {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+        .skel-card {
+            height: 110px;
+            border-radius: 0.95rem;
+            border: 1px solid var(--card-border);
+            background: linear-gradient(110deg, rgba(255,255,255,0.65) 30%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0.65) 70%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s linear infinite;
+        }
+        @keyframes shimmer {
+            from { background-position: 200% 0; }
+            to { background-position: -200% 0; }
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 1rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+        }
+        .repo-link {
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
             transition: opacity 0.2s ease;
         }
-        .repo-link:hover { opacity: 0.75; }
-        .repo-icon {
-            width: 22px;
-            height: 22px;
-            display: block;
-        }
+        .repo-link:hover { opacity: 0.7; }
+        .repo-icon { width: 22px; height: 22px; }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen flex flex-col">
-    <div class="container mx-auto px-4 py-8 max-w-4xl flex-1">
-        <h1 class="text-3xl font-bold text-center text-slate-800 mb-2">论文检索</h1>
-        <nav class="quick-nav">
-            <a href="./index.html">首页</a>
-            <a href="./list.html">报告列表</a>
-        </nav>
+<body>
+    <nav class="quick-nav">
+        <a id="home-link" href="./index.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>首页</span>
+        </a>
+        <a href="./list.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span>报告列表</span>
+        </a>
+    </nav>
 
-        <div class="search-shell mb-6">
-            <input id="search-input" type="text" placeholder="输入关键词搜索标题、摘要或作者..."
-                class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-purple-500 text-lg bg-white">
+    <main class="container">
+        <div class="hero">
+            <h1>论文检索</h1>
+            <p>跨所有日期，按标题、摘要、TLDR、作者全文检索；AND 匹配，长词支持模糊匹配。</p>
         </div>
-        <div id="status" class="text-center text-slate-400 mb-4">正在加载索引...</div>
-        <div id="results" class="space-y-4"></div>
-    </div>
 
-    <footer class="h-[46px] border-t border-[#eee] flex items-center justify-center bg-white">
+        <div class="search-shell">
+            <input id="search-input" type="text" placeholder="输入关键词，如 vision-language-action、世界模型、Tesla…" autocomplete="off">
+        </div>
+
+        <div id="status" class="stats"><span>正在加载索引…</span></div>
+
+        <div id="results">
+            <div class="loading-skel">
+                <div class="skel-card"></div>
+                <div class="skel-card"></div>
+                <div class="skel-card"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
         <a class="repo-link" href="https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io" target="_blank" rel="noopener noreferrer" title="Project Repository" aria-label="Project Repository">
             <svg class="repo-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38
-                0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
-                -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
-                .07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
-                -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.7 7.7 0 0 1 2-.27c.68 0 1.36.09 2 .27
-                1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15
-                0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48
-                0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                <path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.7 7.7 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
             </svg>
         </a>
     </footer>
 
     <script>
+        // Personal-mode bounce: rewrite "首页" to personal.html when logged in.
+        try {
+            if (sessionStorage.getItem('zotero_secrets')) {
+                document.getElementById('home-link').setAttribute('href', './personal.html');
+            }
+        } catch (e) { /* sessionStorage unavailable */ }
+
+        const EXAMPLES = [
+            'vision-language-action',
+            'world model',
+            'autonomous driving',
+            'humanoid',
+            'manipulation',
+            'diffusion policy',
+        ];
+
         let papersMap = {};
         let miniSearch;
+        let totalCount = 0;
+        let dateRange = '';
         const input = document.getElementById('search-input');
         const resultsDiv = document.getElementById('results');
         const statusDiv = document.getElementById('status');
+
+        function esc(s) {
+            const d = document.createElement('div');
+            d.textContent = s == null ? '' : String(s);
+            return d.innerHTML;
+        }
+
+        function renderIdleHint() {
+            const dr = dateRange ? `（覆盖 ${dateRange}）` : '';
+            statusDiv.innerHTML = `<span>索引中共 <span class="count">${totalCount}</span> 篇论文 ${dr}</span>`;
+            resultsDiv.innerHTML = `
+                <div class="empty-state">
+                    <h2>试试这些热门方向</h2>
+                    <p>或在上方输入任意英文/中文关键词；至少 3 个字符开始匹配。</p>
+                    <div class="examples">
+                        ${EXAMPLES.map(e => `<span class="example-chip" data-q="${esc(e)}">${esc(e)}</span>`).join('')}
+                    </div>
+                </div>`;
+            resultsDiv.querySelectorAll('.example-chip').forEach(c => {
+                c.addEventListener('click', () => {
+                    input.value = c.dataset.q;
+                    input.focus();
+                    doSearch();
+                });
+            });
+        }
 
         fetch('search_index.json?v=' + Date.now())
             .then(r => {
@@ -107,16 +414,22 @@
                 return r.json();
             })
             .then(data => {
-                // 为每条记录添加 id，并预处理 authors 为字符串
                 data.forEach((p, i) => {
                     p.id = i;
                     p.authorsText = (p.authors || []).join(', ');
                 });
                 papersMap = Object.fromEntries(data.map(p => [p.id, p]));
+                totalCount = data.length;
+
+                // Compute date range
+                const dates = data.map(p => p.date).filter(Boolean).sort();
+                if (dates.length) {
+                    dateRange = `${dates[0]} → ${dates[dates.length - 1]}`;
+                }
 
                 miniSearch = new MiniSearch({
                     fields: ['title', 'summary', 'summary_zh', 'tldr', 'tldr_zh', 'authorsText'],
-                    storeFields: ['title', 'summary', 'summary_zh', 'tldr', 'tldr_zh', 'url', 'date', 'authors', 'authorsText', 'categories', 'score'],
+                    storeFields: ['title', 'summary', 'summary_zh', 'tldr', 'tldr_zh', 'url', 'date', 'authors', 'authorsText', 'categories', 'score', 'topic'],
                     searchOptions: {
                         boost: { title: 5, authorsText: 3, tldr: 2, tldr_zh: 2, summary: 1, summary_zh: 1 },
                         combineWith: 'AND',
@@ -125,12 +438,17 @@
                     },
                 });
                 miniSearch.addAll(data);
-                statusDiv.textContent = `索引加载完成，共 ${data.length} 篇论文。输入关键词开始搜索。`;
+                renderIdleHint();
                 input.focus();
             })
             .catch(err => {
                 console.error('Search index error:', err);
-                statusDiv.innerHTML = `<span class="text-red-500">加载搜索索引失败: ${err.message}</span>`;
+                resultsDiv.innerHTML = `
+                    <div class="error-state">
+                        <h2>加载失败</h2>
+                        <p>无法加载搜索索引：${esc(err.message)}<br>请确认 <code>search_index.json</code> 已生成。</p>
+                    </div>`;
+                statusDiv.innerHTML = '';
             });
 
         let debounceTimer;
@@ -141,45 +459,51 @@
 
         function doSearch() {
             const query = input.value.trim();
-            resultsDiv.innerHTML = '';
-            if (!query || !miniSearch) {
-                const total = Object.keys(papersMap).length;
-                statusDiv.textContent = total ? `共 ${total} 篇论文。输入关键词开始搜索。` : '正在加载索引...';
+            if (!miniSearch) return;
+            if (!query) {
+                renderIdleHint();
                 return;
             }
             const results = miniSearch.search(query);
-            statusDiv.textContent = `找到 ${results.length} 篇匹配论文`;
-            const shown = results.slice(0, 100);
-            shown.forEach(r => {
-                const p = papersMap[r.id];
-                const card = document.createElement('div');
-                card.className = 'bg-white rounded-lg shadow p-4 hover:shadow-md transition';
-                const desc = p.tldr_zh || p.tldr || '';
-                card.innerHTML = `
-                    <div class="flex items-start justify-between gap-2 mb-1">
-                        <a href="${p.url}" target="_blank" class="text-purple-700 font-semibold hover:underline leading-snug">${esc(p.title)}</a>
-                        <span class="shrink-0 text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded">${p.date}</span>
-                    </div>
-                    <p class="text-slate-500 text-xs mb-1 italic">${esc(p.authorsText)}</p>
-                    <p class="text-slate-600 text-sm mb-2">${esc(desc)}</p>
-                    <div class="flex items-center gap-3 text-xs text-slate-400">
-                        <span>${(p.categories || []).join(', ')}</span>
-                        ${p.score ? '<span>⭐ ' + p.score + '</span>' : ''}
+            statusDiv.innerHTML = `<span>找到 <span class="count">${results.length}</span> 篇匹配 <em style="color:#94a3b8;font-style:normal">"${esc(query)}"</em></span>`;
+
+            if (results.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="empty-state">
+                        <h2>没找到匹配</h2>
+                        <p>试试更宽泛的关键词，或换英文词形（如 "policy" 而非 "policies"）。</p>
                     </div>`;
-                resultsDiv.appendChild(card);
-            });
+                return;
+            }
+
+            const shown = results.slice(0, 100);
+            resultsDiv.innerHTML = shown.map(r => {
+                const p = papersMap[r.id];
+                const desc = p.tldr_zh || p.tldr || (p.summary_zh || p.summary || '').slice(0, 200);
+                const cats = (p.categories || []).slice(0, 2).join(', ');
+                return `
+                    <article class="result-card">
+                        <div class="result-head">
+                            <a class="result-title" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">${esc(p.title)}</a>
+                            <span class="result-date">${esc(p.date || '')}</span>
+                        </div>
+                        ${p.authorsText ? `<p class="result-authors">${esc(p.authorsText)}</p>` : ''}
+                        <p class="result-tldr">${esc(desc)}</p>
+                        <div class="result-foot">
+                            ${p.topic ? `<span class="chip chip-topic">${esc(p.topic)}</span>` : ''}
+                            ${p.score ? `<span class="chip chip-score">★ ${esc(p.score)}</span>` : ''}
+                            ${cats ? `<span class="chip">${esc(cats)}</span>` : ''}
+                        </div>
+                    </article>`;
+            }).join('');
+
             if (results.length > 100) {
-                const more = document.createElement('p');
-                more.className = 'text-center text-slate-400 text-sm';
-                more.textContent = `仅显示前 100 条结果，共 ${results.length} 条匹配。请缩小搜索范围。`;
-                resultsDiv.appendChild(more);
+                resultsDiv.innerHTML += `
+                    <p style="text-align:center;color:var(--text-muted);font-size:0.84rem;margin:0.5rem 0">
+                        仅显示前 100 条结果（共 ${results.length} 条）。请缩小搜索范围。
+                    </p>`;
             }
         }
-
-        function esc(s) {
-            const d = document.createElement('div');
-            d.textContent = s;
-            return d.innerHTML;
-        }
-    </script></body>
+    </script>
+</body>
 </html>
