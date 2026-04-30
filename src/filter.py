@@ -7,159 +7,188 @@ import json
 import logging
 from typing import Optional, Any
 
+from config import (
+    TIER0_KEYWORDS, TIER0_TOKENS,
+    TIER1_KEYWORDS, TIER1_TOKENS,
+    TIER2_KEYWORDS, TIER2_TOKENS,
+    TIER3_KEYWORDS, TIER3_TOKENS,
+    TIER0_WEIGHT, TIER1_WEIGHT, TIER2_WEIGHT, TIER3_WEIGHT,
+    TIER0_CAP, TIER1_CAP, TIER2_CAP,
+    TITLE_MULTIPLIER, CATEGORY_BONUS,
+    STAGE1_PASS_THRESHOLD,
+    TOPICS,
+    TRANSLATION_MIN_SCORE,
+)
+
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # DeepSeek API 配置
 # 在 GitHub Actions 中，DEEPSEEK_API_KEY 应设置为 Secret
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
-DEEPSEEK_API_URL = " https://models.sjtu.edu.cn/api/v1/chat/completions"
+DEEPSEEK_API_URL = "https://models.sjtu.edu.cn/api/v1/chat/completions"
 MODEL_NAME = "deepseek-chat"
 
-STAGE1_PRIORITY_KEYWORDS = (
-    "robot",
-    "robotic",
-    "robotics",
-    "embodied",
-    "manipulation",
-    "grasp",
-    "locomotion",
-    "navigation",
-    "humanoid",
-    "quadruped",
-    "uav",
-    "drone",
-    "slam",
-    "sim-to-real",
-    "sim2real",
-    "vision-language-action",
-    "vla",
-    "vision-language-navigation",
-    "vln",
-)
 
-STAGE1_SUPPORT_KEYWORDS = (
-    "reinforcement learning",
-    "imitation learning",
-    "policy learning",
-    "policy optimization",
-    "trajectory optimization",
-    "motion planning",
-    "control policy",
-    "world model",
-    "vision-language model",
-    "large language model",
-    "multimodal",
-    "teleoperation",
-    "propriocept",
-)
+# ============================================================================
+# Stage 1 — keyword prefilter
+# ============================================================================
+# Score-based: each tier contributes weighted hits (capped per tier), with
+# title hits doubled. Tier 3 forces hard rejection. cs.RO / cs.AI add a
+# category bonus.
 
-STAGE1_CONTEXT_KEYWORDS = (
-    "control",
-    "planning",
-    "action",
-    "policy",
-    "agent",
-    "physical",
-    "embodied",
-    "navigation",
-    "manipulation",
-    "robot",
-    "uav",
-    "drone",
-    "locomotion",
-)
-
-STAGE1_EXCLUDE_KEYWORDS = (
-    "autonomous driving",
-    "medical imaging",
-    "protein",
-    "drug discovery",
-    "genomic",
-    "radiology",
-    "pathology",
-    "speech recognition",
-    "machine translation",
-    "sentiment analysis",
-    "recommendation system",
-    "advertising",
-    "finance",
-    "stock prediction",
-)
+# Collapse runs of whitespace, hyphens, and underscores into a single space so
+# "sim-to-real", "sim_to_real", and "sim to real" all match the same pattern.
+_NORMALIZE_RE = re.compile(r"[_\-\s]+")
 
 
-def _find_keyword_hits(text: str, keywords: tuple[str, ...]) -> list[str]:
-    return [keyword for keyword in keywords if keyword in text]
+def _normalize(text: str) -> str:
+    if not text:
+        return ""
+    return _NORMALIZE_RE.sub(" ", text.lower()).strip()
+
+
+def _phrase_to_pattern(norm: str) -> str:
+    """Normalized keyword phrase → regex with light plural tolerance.
+
+    - Words ending in consonant + ``y`` allow ``y`` or ``ies``
+      (``policy`` → ``policy`` / ``policies``).
+    - Words ending in ``s``, ``x``, ``z``, ``ch``, ``sh`` allow optional ``es``.
+    - Everything else allows an optional trailing ``s``.
+
+    Tokens (single words like ``vla``, ``slam``) keep strict matching to avoid
+    false positives on look-alike words.
+    """
+    if len(norm) >= 2 and norm[-1] == "y" and norm[-2] not in "aeiou":
+        stem = norm[:-1]
+        return rf"\b{re.escape(stem)}(?:y|ies)\b"
+    if norm.endswith(("s", "x", "z", "ch", "sh")):
+        return rf"\b{re.escape(norm)}(?:es)?\b"
+    return rf"\b{re.escape(norm)}s?\b"
+
+
+def _build_pattern(keywords: tuple[str, ...], tokens: tuple[str, ...]) -> Optional[re.Pattern]:
+    """Build a single combined regex matching any keyword or token.
+
+    Multi-word phrases are normalized (so spacing/hyphenation is flexible) and
+    given light plural tolerance via :func:`_phrase_to_pattern`. Tokens are
+    matched strictly with ``\\b...\\b`` to avoid substring collisions like
+    ``slam`` matching ``Islam``. Longer alternatives are listed first so that
+    ``world action model`` wins over ``world model`` at the same position.
+    """
+    parts: list[str] = []
+    for kw in keywords:
+        norm = _normalize(kw)
+        if norm:
+            parts.append(_phrase_to_pattern(norm))
+    for tok in tokens:
+        norm = _normalize(tok)
+        if norm:
+            parts.append(rf"\b{re.escape(norm)}\b")
+    if not parts:
+        return None
+    parts.sort(key=len, reverse=True)
+    return re.compile("|".join(parts))
+
+
+_TIER0_PATTERN = _build_pattern(TIER0_KEYWORDS, TIER0_TOKENS)
+_TIER1_PATTERN = _build_pattern(TIER1_KEYWORDS, TIER1_TOKENS)
+_TIER2_PATTERN = _build_pattern(TIER2_KEYWORDS, TIER2_TOKENS)
+_TIER3_PATTERN = _build_pattern(TIER3_KEYWORDS, TIER3_TOKENS)
+
+
+def _find_hits(pattern: Optional[re.Pattern], text: str) -> list[str]:
+    if pattern is None or not text:
+        return []
+    return pattern.findall(text)
+
+
+def _tier_subscore(title_hits: list[str], summary_hits: list[str], weight: int, cap: int) -> int:
+    raw = (len(title_hits) * TITLE_MULTIPLIER + len(summary_hits)) * weight
+    return int(min(raw, cap))
+
+
+def compute_stage1_score(paper: dict) -> tuple[int, list[str], dict, bool]:
+    """Score a single paper against the four keyword tiers + category bonuses.
+
+    Returns ``(total_score, hit_terms, breakdown, has_tier3_hit)``.
+    """
+    title_norm = _normalize(paper.get("title", ""))
+    summary_norm = _normalize(paper.get("summary", ""))
+    categories = [str(c).lower() for c in paper.get("categories", [])]
+
+    t0_title = _find_hits(_TIER0_PATTERN, title_norm)
+    t0_sum = _find_hits(_TIER0_PATTERN, summary_norm)
+    t1_title = _find_hits(_TIER1_PATTERN, title_norm)
+    t1_sum = _find_hits(_TIER1_PATTERN, summary_norm)
+    t2_title = _find_hits(_TIER2_PATTERN, title_norm)
+    t2_sum = _find_hits(_TIER2_PATTERN, summary_norm)
+    t3_hits = _find_hits(_TIER3_PATTERN, title_norm) + _find_hits(_TIER3_PATTERN, summary_norm)
+
+    t0 = _tier_subscore(t0_title, t0_sum, TIER0_WEIGHT, TIER0_CAP)
+    t1 = _tier_subscore(t1_title, t1_sum, TIER1_WEIGHT, TIER1_CAP)
+    t2 = _tier_subscore(t2_title, t2_sum, TIER2_WEIGHT, TIER2_CAP)
+    t3 = TIER3_WEIGHT * len(t3_hits) if t3_hits else 0
+    cat_bonus = sum(CATEGORY_BONUS.get(cat, 0) for cat in categories)
+
+    total = t0 + t1 + t2 + t3 + cat_bonus
+
+    breakdown = {
+        "tier0": t0,
+        "tier1": t1,
+        "tier2": t2,
+        "tier3": t3,
+        "category": cat_bonus,
+    }
+
+    hits_seen = set(t0_title + t0_sum + t1_title + t1_sum + t2_title + t2_sum + t3_hits)
+    return total, sorted(hits_seen), breakdown, bool(t3_hits)
 
 
 def prefilter_papers_by_keywords(papers: list) -> tuple[list, list]:
-    """一级预筛：先用关键词规则筛选，减少后续 LLM 打分数量。
-
-    Args:
-        papers: 原始论文列表。
-
-    Returns:
-        tuple[list, list]: (stage1 通过的论文, stage1 未通过的论文)
-    """
-    selected_papers = []
-    rejected_papers = []
+    """Stage-1 prefilter: keep papers with stage1 score >= threshold and no Tier-3 hits."""
+    selected: list = []
+    rejected: list = []
 
     for paper in papers:
-        categories = [str(c).lower() for c in paper.get("categories", [])]
-        text = " ".join(
-            [
-                str(paper.get("title", "")).lower(),
-                str(paper.get("summary", "")).lower(),
-                " ".join(categories),
-            ]
-        )
+        score, hits, breakdown, has_tier3 = compute_stage1_score(paper)
+        paper["stage1_score"] = score
+        paper["stage1_match_terms"] = hits[:15]
+        paper["stage1_breakdown"] = breakdown
 
-        priority_hits = _find_keyword_hits(text, STAGE1_PRIORITY_KEYWORDS)
-        support_hits = _find_keyword_hits(text, STAGE1_SUPPORT_KEYWORDS)
-        context_hits = _find_keyword_hits(text, STAGE1_CONTEXT_KEYWORDS)
-        exclude_hits = _find_keyword_hits(text, STAGE1_EXCLUDE_KEYWORDS)
-
-        in_ro_category = "cs.ro" in categories
-        selected = False
-        reason = "insufficient robotics signal"
-
-        if in_ro_category:
-            selected = True
-            reason = "category hit: cs.RO"
-        elif priority_hits:
-            selected = True
-            reason = f"priority keyword hit ({len(priority_hits)})"
-        elif (len(support_hits) >= 2 and len(context_hits) >= 1) or (
-            len(support_hits) >= 1 and len(context_hits) >= 2
-        ):
-            selected = True
-            reason = f"support/context hit ({len(support_hits)}/{len(context_hits)})"
-
-        if exclude_hits and not (in_ro_category or priority_hits):
-            selected = False
-            reason = f"excluded domain hit ({len(exclude_hits)})"
-
-        paper["stage1_selected"] = selected
-        paper["selected"] = selected
-        paper["stage1_reason"] = reason
-        paper["stage1_match_terms"] = sorted(
-            set(priority_hits + support_hits + context_hits)
-        )[:10]
-
-        if selected:
-            selected_papers.append(paper)
-        else:
+        if has_tier3:
+            paper["stage1_selected"] = False
+            paper["selected"] = False
+            paper["stage1_reason"] = f"tier3 exclude hit: {hits[:5]}"
             paper["ai_processed"] = False
-            rejected_papers.append(paper)
+            rejected.append(paper)
+        elif score >= STAGE1_PASS_THRESHOLD:
+            paper["stage1_selected"] = True
+            paper["selected"] = True
+            paper["stage1_reason"] = (
+                f"score={score} (t0={breakdown['tier0']}, t1={breakdown['tier1']}, "
+                f"t2={breakdown['tier2']}, cat={breakdown['category']})"
+            )
+            selected.append(paper)
+        else:
+            paper["stage1_selected"] = False
+            paper["selected"] = False
+            paper["stage1_reason"] = f"score={score} below threshold {STAGE1_PASS_THRESHOLD}"
+            paper["ai_processed"] = False
+            rejected.append(paper)
 
     logging.info(
-        "一级预筛完成：通过 %s 篇，未通过 %s 篇（总计 %s 篇）。",
-        len(selected_papers),
-        len(rejected_papers),
+        "一级预筛完成：通过 %s 篇，未通过 %s 篇（含 tier3 拒）（总计 %s 篇）。",
+        len(selected),
+        len(rejected),
         len(papers),
     )
-    return selected_papers, rejected_papers
+    return selected, rejected
 
+
+# ============================================================================
+# Response parsing helpers
+# ============================================================================
 
 def extract_json_from_response(text: str) -> Optional[Any]:
     """从 LLM 回复中提取 JSON 对象或数组。
@@ -220,6 +249,10 @@ def clean_translation(text: str) -> str:
     return text
 
 
+# ============================================================================
+# LLM API call with retries
+# ============================================================================
+
 def call_llm_api(
     prompt: str,
     max_tokens: int = 5,
@@ -227,7 +260,7 @@ def call_llm_api(
     base_delay: float = 2.0,
     timeout: int = 60,
 ) -> Optional[str]:
-    """调用 OpenRouter API 并返回模型的响应，带重试和指数退避。
+    """调用 LLM API 并返回模型的响应，带重试和指数退避。
 
     Args:
         prompt (str): 发送给模型的提示。
@@ -297,66 +330,109 @@ def call_llm_api(
     logging.error(f"API 调用在 {max_retries + 1} 次尝试后仍然失败。")
     return None
 
-RATE_PROMPT_TEMPLATE = """
-Do NOT include any thinking process, explanation, or analysis. Output ONLY the JSON object, nothing else.
 
-# Role Setting
-You are an experienced researcher in the field of Artificial Intelligence, skilled at quickly evaluating the potential value of research papers. You must be strict and discriminating in your relevance scoring.
+# ============================================================================
+# Stage 2 — LLM rating prompt
+# ============================================================================
 
-# Task
-Score this paper across multiple dimensions (1-10 points).
+RATE_PROMPT_TEMPLATE = """Do NOT include any thinking process, explanation, or analysis. Output ONLY the JSON object, nothing else.
 
-# My Research Interests (be strict about these)
-My core interests are: **Robotics** and **Embodied AI**. Specifically:
-- Robot manipulation, grasping, locomotion, navigation, planning
-- Reinforcement learning / imitation learning **applied to robot control**
-- Vision-Language-Action (VLA) models for robotic tasks
-- Vision-Language-Navigation (VLN) for embodied agents
-- World models for robot control, sim-to-real transfer
-- Large Language Models / Vision-Language Models **applied to robotics or embodied agents**
-- Safety, sim-to-real, multi-modal perception **in a robotics context**
+# Role
+You are an experienced AI researcher specialized in robotics, embodied AI, and autonomous driving. You evaluate papers strictly against the interests below.
 
-# What is NOT highly relevant (should get low relevance_score, e.g. 1-3):
-- Pure computer vision (detection, segmentation, generation) without robotic application
-- Pure NLP / dialogue / text generation without embodied or robotic context
-- Theoretical ML (optimization, generalization bounds) without robotics connection
-- Autonomous driving (unless explicitly about general robot learning)
-- Medical imaging, protein folding, drug discovery
-- General LLM/VLM benchmarks, pretraining, or alignment without robotics use
+# Core Research Interests (4 main lines)
+1. **Vision-Language-Action (VLA) models** — generalist robot policies, robot foundation models, VLA pretraining or fine-tuning, manipulation/navigation policies driven by VLM/LLM.
+2. **World Models / World Action Models** — generative or predictive world models for control, video world models, action-conditioned world models, sim-to-real via world models.
+3. **Autonomous Driving** — end-to-end driving, driving foundation models, driving with LLM/VLM, closed-loop driving simulation, BEV/occupancy/trajectory prediction used in a driving stack.
+4. **Embodied Intelligence** — manipulation (dexterous/bimanual/mobile), locomotion, humanoid/legged robots, navigation including VLN, embodied agents in 3D environments, sim-to-real transfer.
 
-# Paper
+# What is NOT relevant (relevance_score 1-3)
+- Pure 2D vision (segmentation, detection, generation) without robotic or driving application
+- Pure NLP (translation, summarization, dialogue) without embodied or robotic use
+- Generic LLM benchmarks, pretraining, or alignment with no robotic/driving angle
+- Theoretical ML (optimization, generalization bounds) without a clear robotic connection
+- Medical imaging, protein structure, drug discovery, genomics
+
+# Paper to evaluate
 Title: %s
 Abstract: %s
 
-# Output Format
-Return ONLY a JSON object (no extra text):
+# Output (JSON object only — no markdown, no extra text)
 {
-  "tldr": "<1-2 sentence English summary>",
+  "tldr": "<1-2 sentence English summary of the contribution>",
   "tldr_zh": "<1-2 sentence Chinese summary>",
-  "relevance_score": <1-10>,
-  "novelty_claim_score": <1-10>,
-  "clarity_score": <1-10>,
-  "potential_impact_score": <1-10>,
-  "overall_priority_score": <1-10>
+  "topic": "<one of: VLA | WorldModel | AutonomousDriving | VLN | Manipulation | Locomotion | HumanoidEmbodied | RLRobot | Perception3D | Other>",
+  "keywords": ["<3-5 short technical keywords>"],
+  "relevance_score": <1-10 integer>,
+  "novelty_claim_score": <1-10 integer>,
+  "clarity_score": <1-10 integer>,
+  "potential_impact_score": <1-10 integer>,
+  "overall_priority_score": <1-10 integer>
 }
 
-# Scoring Guidelines
-- Relevance (1-10): How directly related is it to my robotics/embodied AI interests above? Be strict: a pure vision or pure NLP paper should score 1-3 even if it uses fancy models. Only score 7+ if the paper explicitly involves robots, embodied agents, or physical control.
-- Novelty (1-10): Degree of innovation claimed in the abstract.
-- Clarity (1-10): Is the abstract easy to understand and complete?
-- Potential Impact (1-10): Importance of the problem and potential application value.
-- Overall Priority (1-10): Weighted combination — relevance should dominate. A paper with relevance 2 should never get overall_priority above 4, regardless of other scores.
+# Scoring rules
+- relevance_score:
+    8-10 if the paper directly contributes to one of the 4 main lines above (uses real robots, embodied agents, or driving stacks).
+    5-7 if related but tangential (e.g. a vision method that explicitly targets robotic perception).
+    1-3 if there is no clear robotic / driving / embodied connection.
+- overall_priority_score is dominated by relevance:
+    relevance <= 3 forces overall <= 4.
+    relevance >= 8 typically yields overall >= 6.
+- topic: pick the single best fit from the enumeration. Use "Other" only if none clearly applies.
+- keywords: short technical phrases lifted from the abstract (no full sentences).
+
+# Calibration examples
+Example A — high relevance:
+  Title: "RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control"
+  Abstract: "We present RT-2, a vision-language-action (VLA) model that co-fine-tunes on web data and robot trajectories to produce a generalist manipulation policy that can be deployed on real robots..."
+  Output keys: {"topic": "VLA", "relevance_score": 10, "overall_priority_score": 10, ...}
+
+Example B — low relevance:
+  Title: "Improved BPE Tokenization for Multilingual Translation"
+  Abstract: "We propose a new byte-pair-encoding tokenizer that improves multilingual translation BLEU on 50 languages..."
+  Output keys: {"topic": "Other", "relevance_score": 1, "overall_priority_score": 2, ...}
 """
 
 
+def _coerce_int(value: Any, default: int = 0) -> int:
+    """Force a value into an integer, falling back to ``default`` on garbage input."""
+    if isinstance(value, bool):
+        return int(value)
+    if isinstance(value, (int, float)):
+        return int(value)
+    if isinstance(value, str):
+        try:
+            return int(float(value.strip()))
+        except (TypeError, ValueError):
+            return default
+    return default
+
+
+def _coerce_topic(value: Any) -> str:
+    if not isinstance(value, str):
+        return "Other"
+    candidate = value.strip()
+    if candidate in TOPICS:
+        return candidate
+    # case-insensitive match against known topics
+    lower_map = {t.lower(): t for t in TOPICS}
+    return lower_map.get(candidate.lower(), "Other")
+
+
+def _coerce_keywords(value: Any) -> list[str]:
+    if isinstance(value, list):
+        return [str(k).strip() for k in value if str(k).strip()][:5]
+    if isinstance(value, str):
+        # comma-separated fallback
+        return [k.strip() for k in value.split(",") if k.strip()][:5]
+    return []
+
+
 def filter_and_rate_papers(papers: list) -> list:
-    """逐篇评分论文（建议传入一级预筛后的论文列表）。
+    """Stage 2: send each (Stage-1-passing) paper to the LLM for full scoring.
 
-    Args:
-        papers: 包含论文信息的字典列表，每个字典应包含 'title' 和 'summary'。
-
-    Returns:
-        评分后的论文列表。API 失败的论文标记 ai_processed=False。
+    Adds tldr / tldr_zh / topic / keywords / 5 score fields. Papers that fail
+    to parse are marked ``ai_processed=False`` and kept for downstream display.
     """
     if not DEEPSEEK_API_KEY:
         logging.error("未设置 DEEPSEEK_API_KEY 环境变量。无法进行评分。")
@@ -369,7 +445,7 @@ def filter_and_rate_papers(papers: list) -> list:
         summary = paper.get('summary', 'N/A')
 
         prompt = RATE_PROMPT_TEMPLATE % (title, summary)
-        ai_response = call_llm_api(prompt, max_tokens=300)
+        ai_response = call_llm_api(prompt, max_tokens=400)
 
         if ai_response is None:
             logging.warning(f"论文 {i+1}/{len(papers)}: '{title[:50]}...' API 调用失败 (ai_processed=False)")
@@ -383,22 +459,40 @@ def filter_and_rate_papers(papers: list) -> list:
             paper['ai_processed'] = False
             continue
 
-        for key in ('tldr', 'tldr_zh', 'relevance_score', 'novelty_claim_score',
-                    'clarity_score', 'potential_impact_score', 'overall_priority_score'):
+        # String fields
+        for key in ('tldr', 'tldr_zh'):
+            if key in parsed and isinstance(parsed[key], str):
+                paper[key] = parsed[key].strip()
+
+        # Topic enum + keyword list with validation
+        paper['topic'] = _coerce_topic(parsed.get('topic'))
+        paper['keywords'] = _coerce_keywords(parsed.get('keywords'))
+
+        # Score fields, coerced to ints
+        for key in ('relevance_score', 'novelty_claim_score', 'clarity_score',
+                    'potential_impact_score', 'overall_priority_score'):
             if key in parsed:
-                paper[key] = parsed[key]
+                paper[key] = _coerce_int(parsed[key], default=0)
+
         paper['ai_processed'] = True
-        logging.info(f"论文 {i+1}/{len(papers)}: '{title[:50]}...' - overall={paper.get('overall_priority_score', 'N/A')}")
+        logging.info(
+            f"论文 {i+1}/{len(papers)}: '{title[:50]}...' "
+            f"-> topic={paper.get('topic')}, overall={paper.get('overall_priority_score', 'N/A')}"
+        )
 
     rated_count = sum(1 for p in papers if p.get('ai_processed'))
     logging.info(f"评分完成，成功 {rated_count}/{len(papers)} 篇。")
     return papers
 
 
+# ============================================================================
+# Stage 2.1 — translation (only for high-priority papers)
+# ============================================================================
+
 def translate_summaries(
     papers: list,
     target_language: str = "中文",
-    min_overall_score: float = 6.0,
+    min_overall_score: float = TRANSLATION_MIN_SCORE,
 ) -> list:
     """逐篇翻译论文摘要。仅翻译 overall_priority_score 达到阈值的论文。
 
@@ -462,30 +556,40 @@ if __name__ == '__main__':
         test_papers = [
             {
                 'title': 'Deep Reinforcement Learning for Robotic Manipulation',
-                'summary': 'This paper presents a novel deep reinforcement learning approach for training robots to perform complex manipulation tasks using vision and proprioception.'
+                'summary': 'This paper presents a novel deep reinforcement learning approach for training robots to perform complex manipulation tasks using vision and proprioception.',
+                'categories': ['cs.RO'],
             },
             {
-                'title': 'Vision-Language Models for Robot Navigation',
-                'summary': 'We propose a vision-language model that enables robots to understand natural language instructions and navigate in complex environments.'
+                'title': 'Vision-Language-Action Models for Generalist Robot Policies',
+                'summary': 'We propose a vision-language-action model that enables generalist manipulation across diverse tasks.',
+                'categories': ['cs.RO', 'cs.LG'],
             },
             {
-                'title': 'World Models for Sim-to-Real Transfer in Robotics',
-                'summary': 'A novel approach to learning world models that enable effective sim-to-real transfer for robotic control policies.'
+                'title': 'World Models for Sim-to-Real Transfer in Autonomous Driving',
+                'summary': 'A novel world action model approach for closed-loop driving simulation and policy learning.',
+                'categories': ['cs.LG'],
             },
             {
                 'title': 'Advances in Pure NLP Tokenization',
-                'summary': 'We present a new tokenization method for natural language processing that improves efficiency on text-only benchmarks.'
+                'summary': 'We present a new tokenization method for natural language processing that improves efficiency on text-only benchmarks via machine translation.',
+                'categories': ['cs.CL'],
             },
         ]
-        logging.info("\n--- 开始测试 filter_and_rate_papers ---")
-        filtered = filter_and_rate_papers(test_papers)
 
-        logging.info("\n--- 过滤和评分后的论文 ---")
-        for paper in filtered:
+        logging.info("\n--- 测试 Stage 1 prefilter ---")
+        selected, rejected = prefilter_papers_by_keywords(test_papers)
+        for p in selected + rejected:
             logging.info(
-                f"- {paper['title']}\t"
-                f"score={paper.get('overall_priority_score', 'N/A')}\t"
-                f"ai_processed={paper.get('ai_processed', 'N/A')}"
+                f"  {p['title'][:50]}... -> score={p['stage1_score']}, "
+                f"selected={p['stage1_selected']}, hits={p.get('stage1_match_terms')}"
+            )
+
+        logging.info("\n--- 测试 Stage 2 LLM rating ---")
+        rated = filter_and_rate_papers(selected)
+        for p in rated:
+            logging.info(
+                f"  {p['title'][:50]}... -> topic={p.get('topic')}, "
+                f"overall={p.get('overall_priority_score')}, ai_processed={p.get('ai_processed')}"
             )
         logging.info("--- 测试结束 ---")
     else:

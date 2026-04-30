@@ -4,6 +4,8 @@ import logging
 from datetime import date, datetime, timezone
 from jinja2 import Environment, FileSystemLoader
 
+from config import SCORE_THRESHOLD
+
 
 def generate_html_from_json(json_file_path: str, template_dir: str, template_name: str, output_dir: str):
     """Reads paper data from a JSON file and generates an HTML page using a Jinja2 template.
@@ -27,7 +29,7 @@ def generate_html_from_json(json_file_path: str, template_dir: str, template_nam
     env = Environment(loader=FileSystemLoader(template_dir))
     template = env.get_template(template_name)
 
-    score_threshold = 6.0
+    score_threshold = SCORE_THRESHOLD
 
     def to_score(paper: dict) -> float:
         try:

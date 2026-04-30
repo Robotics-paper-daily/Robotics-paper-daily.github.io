@@ -15,6 +15,7 @@ from filter import (
     translate_summaries,
 )
 from html_generator import generate_html_from_json
+from config import TRANSLATION_MIN_SCORE
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -81,6 +82,8 @@ def generate_search_index(json_dir: str, output_path: str):
                 'categories': paper.get('categories', []),
                 'score': paper.get('overall_priority_score', 0),
                 'selected': paper.get('selected', paper.get('stage1_selected', True)),
+                'topic': paper.get('topic', ''),
+                'keywords': paper.get('keywords', []),
             })
 
     try:
@@ -143,11 +146,13 @@ def main(target_date: date):
             logging.warning("一级预筛后没有论文通过，本次将跳过打分与翻译。")
             scored_selected_papers = []
 
-        logging.info("步骤 2.2: 翻译论文摘要为中文（仅 overall_priority_score >= 6）...")
+        logging.info(
+            f"步骤 2.2: 翻译论文摘要为中文（仅 overall_priority_score >= {TRANSLATION_MIN_SCORE}）..."
+        )
         scored_selected_papers = translate_summaries(
             scored_selected_papers,
             target_language="中文",
-            min_overall_score=6,
+            min_overall_score=TRANSLATION_MIN_SCORE,
         )
 
         def safe_score(paper: dict) -> float:
