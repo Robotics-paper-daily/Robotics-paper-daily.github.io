@@ -7,6 +7,8 @@
 
 可选的**个人模式**经站点密码门控，提供基于 Zotero 的一键收藏，及向 WebDAV 文件库的 PDF 自动上传，并集成 [hjfy.top](https://hjfy.top) 的 arXiv 中英对照阅读跳转。
 
+**v0.3 新增**：跨平台**桌面应用**（[`app/`](app/README.md)，Windows + macOS），在每日列表里一键 **「帮我读」**——用你*本地*的 Claude Code 订阅深读任一论文并生成结构化 Obsidian 笔记，并带已读标记与启动即最新。公网站点不受影响。
+
 
 
 ---
@@ -29,9 +31,20 @@
 ### 个人模式（可选，密码门控）
 
 9. **Zotero 集成** — 每篇论文一个 "Add to Zotero" 控件，向按需创建的 `Daily Paper / YYYY-MM-DD` 子集合写入 `preprint` 类型条目（含 arXiv DOI、作者、摘要）。
-10. **WebDAV PDF 上传** — 经 Cloudflare Worker（绕开 CORS）抓取 arXiv PDF，封装为 Zotero 的 `<key>.zip` + `<key>.prop` 格式，PUT 至用户的 WebDAV 服务器。下次桌面同步后文件本地可用。
+10. **WebDAV PDF + LaTeX 源码上传** — 经 Cloudflare Worker（绕开 CORS）抓取 arXiv PDF *与* 源码 tarball（`https://arxiv.org/e-print/<id>`），分别封装为 Zotero 的 `<key>.zip` + `<key>.prop` 格式，PUT 至用户的 WebDAV 服务器。下次桌面同步后两份文件均本地可用。源码上传为尽力而为，单文件上限 50 MB；仅 PDF 投稿（无 LaTeX 源）按 `%PDF` 魔数检测后跳过。
 11. **翻译跳转** — 每篇论文附跳转控件，按 arXiv ID 打开 [hjfy.top](https://hjfy.top) 进行中英对照阅读。该深层链接要求用户预先在同一浏览器会话中登录 hjfy.top；未登录时请求会被重定向至 hjfy.top 首页。翻译控件在访客模式与个人模式中均可见，hjfy.top 账户凭据完全由 hjfy.top 自行管理，不属于本项目的 secrets。
 12. **默认访客模式** — 公网站点公开全部内容但隐藏个人功能控件；只有通过密码门解密凭据 bundle 后方可解锁。
+
+### 桌面应用 PaperReader（v0.3，可选）
+
+一个跨平台 Electron 应用（[`app/`](app/README.md)，Windows + macOS），用你**本地的 Claude Code 订阅**直接从每日列表精读论文。公网站点不受影响——这些控件是 app 自己注入的，公开站永不显示。
+
+13. **「帮我读」** — 每篇论文一个按钮，调用本地 `claude` CLI 跑 `paper-reading` 技能（在你的 Obsidian vault 内），深读该论文并生成结构化笔记文件夹；右侧栏实时显示进度，完成后可"在 Obsidian 打开"。走订阅（OAuth），不用 API key。
+14. **已读标记** — 本机 vault 里已有笔记的论文显示 **✓ 已读** 按钮，点击直接打开已有笔记而非重读。跨设备靠你自己的 Obsidian 同步，app 只读本机。
+15. **启动即最新，无需 git pull** — app 启动时从已发布站点 live-fetch `reports.json` 与报告页（离线缓存），各设备无需拉取仓库即显示最新论文。
+16. **应用内 Zotero** — 同一道密码门在 app 内解锁个人模式，报告里的 "Add to Zotero" 按钮一并可用。
+
+前置条件、运行/打包、设置详见 [app/README.md](app/README.md)。
 
 ---
 
@@ -104,8 +117,10 @@ WebDAV 文件存储适用于超出 Zotero 自带 300 MB 免费配额的库。所
 ```javascript
 // arxiv-pdf-proxy
 //   GET  /?url=<https://arxiv.org/pdf/...>     → 抓取 arXiv PDF
+//   GET  /?url=<https://arxiv.org/e-print/...> → 抓取 arXiv LaTeX 源码
 //   PUT  /?webdav-put=<https://webdav/...>     → 转发 PUT 至 WebDAV
-// 两种模式均返回 CORS 头，便于浏览器调用。
+// 三种模式均返回 CORS 头。upstream Content-Type 透传
+// （PDF 仍为 application/pdf，源码为 application/gzip）。
 
 const ARXIV_HOST = 'arxiv.org';
 const WEBDAV_HOST = 'mori.teracloud.jp';   // ← 设为你的 WebDAV 域名
@@ -162,7 +177,10 @@ export default {
       const upstream = await fetch(target.toString());
       return cors(new Response(upstream.body, {
         status: upstream.status,
-        headers: { 'Content-Type': 'application/pdf' },
+        headers: {
+          'Content-Type':
+            upstream.headers.get('Content-Type') || 'application/octet-stream',
+        },
       }));
     }
 
@@ -232,6 +250,10 @@ arXiv API → scraper.py → filter.py（一级关键词）
               │
               ▼
    Zotero 桌面端同步 → PDF 本地可用
+
+   [6]（尽力而为）对 https://arxiv.org/e-print/<id>
+       重复 [1]–[5] 上传 LaTeX 源码 tarball ——
+       新的附件 key、第二组 <key>.zip + <key>.prop。
 ```
 
 ---

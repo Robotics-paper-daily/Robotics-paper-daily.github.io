@@ -11,6 +11,11 @@
 //   4. PUT <key>.zip + <key>.prop to user's WebDAV via Worker proxy
 //   5. Desktop Zotero picks up file on next sync
 //
+// LaTeX source upload (best effort, runs only after PDF upload succeeds):
+//   Same four steps targeting https://arxiv.org/e-print/<id>. arXiv returns
+//   gzipped tar for most papers; PDF-only papers are detected via %PDF magic
+//   and skipped. Source failure does not roll back the PDF or parent item.
+//
 // Without WebDAV creds, falls back to a linked_url attachment so user at
 // least has a clickable arXiv link from inside Zotero.
 //
@@ -122,76 +127,143 @@
   let proxyUrl = "";
   let webdavClient = null;
 
-  /**
-   * Run the full PDF → WebDAV upload flow for one paper.
-   * Returns:
-   *   {ok: true}                         success — desktop Zotero will see
-   *                                       the file on next sync
-   *   {ok: false, reason: "..."}         which step died (surfaced in toast
-   *                                       so the user doesn't need DevTools)
-   *
-   * The caller is expected to fall back to a linked-URL attachment when this
-   * returns ok:false.
-   */
-  async function tryUploadToWebdav(client, parentKey, pdfUrl, arxivId) {
-    if (!proxyUrl) {
-      return { ok: false, reason: "未配置 Worker 代理" };
-    }
-    if (!webdavClient || !webdavClient.isConfigured()) {
-      return { ok: false, reason: "未配置 WebDAV 凭据" };
-    }
+  // Cap on LaTeX source archive size. Cloudflare Workers have a request body
+  // ceiling around 100 MB and a wall-clock CPU limit; 50 MB leaves headroom.
+  const SOURCE_MAX_BYTES = 50 * 1024 * 1024;
 
-    // Step 1: fetch PDF bytes via Worker proxy
-    const proxyFetchUrl = `${proxyUrl.replace(/\/$/, "")}/?url=${encodeURIComponent(pdfUrl)}`;
+  /**
+   * Fetch arbitrary bytes through the Worker proxy. Throws on any failure
+   * (network, non-2xx, suspiciously small payload). Returns Uint8Array.
+   */
+  async function fetchViaProxy(targetUrl) {
+    const proxyFetchUrl = `${proxyUrl.replace(/\/$/, "")}/?url=${encodeURIComponent(targetUrl)}`;
     console.log("[zotero] proxy fetch:", proxyFetchUrl);
     let res;
     try {
       res = await fetch(proxyFetchUrl);
     } catch (e) {
-      return { ok: false, reason: `代理 fetch 异常: ${e.message}` };
+      throw new Error(`代理 fetch 异常: ${e.message}`);
     }
     if (!res.ok) {
-      return { ok: false, reason: `代理返回 HTTP ${res.status}` };
+      throw new Error(`代理返回 HTTP ${res.status}`);
     }
-    const pdfBytes = await res.arrayBuffer();
-    console.log("[zotero] proxy returned", pdfBytes.byteLength, "bytes");
-    if (pdfBytes.byteLength < 1024) {
+    const buf = await res.arrayBuffer();
+    console.log("[zotero] proxy returned", buf.byteLength, "bytes");
+    if (buf.byteLength < 1024) {
+      throw new Error(`代理响应过小 (${buf.byteLength}B)`);
+    }
+    return new Uint8Array(buf);
+  }
+
+  /**
+   * Common tail: compute MD5, register Zotero imported_url attachment with
+   * WebDAV-bound metadata, PUT <key>.zip + <key>.prop to WebDAV. Throws on
+   * any step's failure; returns the new attachment key on success.
+   *
+   * @param {{sourceUrl, filename, title, contentType}} opts
+   */
+  async function uploadFileToZoteroAndWebdav(client, parentKey, bytes, opts) {
+    const md5 = computeMd5(bytes);
+    const mtime = Date.now();
+    console.log("[zotero] md5:", md5, "mtime:", mtime, "name:", opts.filename);
+
+    const attachmentKey = await client.createImportedAttachment(parentKey, {
+      title: opts.title,
+      url: opts.sourceUrl,
+      filename: opts.filename,
+      contentType: opts.contentType,
+      md5,
+      mtime,
+    });
+    console.log("[zotero] attachment key:", attachmentKey);
+
+    await webdavClient.upload(attachmentKey, bytes, opts.filename, mtime);
+    return attachmentKey;
+  }
+
+  /**
+   * PDF upload flow. Returns {ok: true} on success, {ok: false, reason} on
+   * any step failure. Caller falls back to linked_url attachment on failure.
+   */
+  async function tryUploadPdf(client, parentKey, pdfUrl, arxivId) {
+    if (!proxyUrl) return { ok: false, reason: "未配置 Worker 代理" };
+    if (!webdavClient || !webdavClient.isConfigured()) {
+      return { ok: false, reason: "未配置 WebDAV 凭据" };
+    }
+    let bytes;
+    try {
+      bytes = await fetchViaProxy(pdfUrl);
+    } catch (e) {
+      return { ok: false, reason: e.message };
+    }
+    try {
+      await uploadFileToZoteroAndWebdav(client, parentKey, bytes, {
+        sourceUrl: pdfUrl,
+        filename: `${arxivId || "paper"}.pdf`,
+        title: "Full Text PDF",
+        contentType: "application/pdf",
+      });
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, reason: e.message };
+    }
+  }
+
+  /**
+   * LaTeX source upload flow. Best-effort — returns {ok: false, reason} on
+   * any failure (no LaTeX submission, oversized, network error, etc.). The
+   * caller treats failure as non-fatal and surfaces the reason in toast.
+   */
+  async function tryUploadSource(client, parentKey, arxivId) {
+    if (!arxivId) return { ok: false, reason: "无 arxiv_id" };
+    if (!proxyUrl) return { ok: false, reason: "未配置 Worker 代理" };
+    if (!webdavClient || !webdavClient.isConfigured()) {
+      return { ok: false, reason: "未配置 WebDAV 凭据" };
+    }
+
+    const eprintUrl = `https://arxiv.org/e-print/${arxivId}`;
+    let bytes;
+    try {
+      bytes = await fetchViaProxy(eprintUrl);
+    } catch (e) {
+      return { ok: false, reason: `源码拉取失败: ${e.message}` };
+    }
+
+    // arXiv returns the original PDF for PDF-only submissions (~5% of papers).
+    // Detect by %PDF magic and skip — there's no LaTeX to translate.
+    if (
+      bytes[0] === 0x25 &&
+      bytes[1] === 0x50 &&
+      bytes[2] === 0x44 &&
+      bytes[3] === 0x46
+    ) {
+      return { ok: false, reason: "无 LaTeX 源码（仅 PDF 提交）" };
+    }
+    // Expected: gzip magic 1f 8b. Anything else is likely an error page.
+    if (!(bytes[0] === 0x1f && bytes[1] === 0x8b)) {
       return {
         ok: false,
-        reason: `代理响应过小 (${pdfBytes.byteLength}B)`,
+        reason: `源码格式未知 (magic ${bytes[0].toString(16)} ${bytes[1].toString(16)})`,
+      };
+    }
+    if (bytes.byteLength > SOURCE_MAX_BYTES) {
+      return {
+        ok: false,
+        reason: `源码过大 (${(bytes.byteLength / 1024 / 1024).toFixed(1)}MB > ${SOURCE_MAX_BYTES / 1024 / 1024}MB)`,
       };
     }
 
-    // Step 2: compute MD5 of the original PDF (becomes attachment.md5)
-    const pdfMd5 = computeMd5(pdfBytes);
-    const mtime = Date.now();
-    const filename = `${arxivId || "paper"}.pdf`;
-    console.log("[zotero] PDF md5:", pdfMd5, "mtime:", mtime, "name:", filename);
-
-    // Step 3: register the attachment in Zotero with WebDAV-bound metadata
-    let attachmentKey;
     try {
-      attachmentKey = await client.createImportedAttachment(parentKey, {
-        title: "Full Text PDF",
-        url: pdfUrl,
-        filename,
-        contentType: "application/pdf",
-        md5: pdfMd5,
-        mtime,
+      await uploadFileToZoteroAndWebdav(client, parentKey, bytes, {
+        sourceUrl: eprintUrl,
+        filename: `${arxivId}-source.tar.gz`,
+        title: "LaTeX Source",
+        contentType: "application/gzip",
       });
+      return { ok: true, sizeMb: (bytes.byteLength / 1024 / 1024).toFixed(1) };
     } catch (e) {
-      return { ok: false, reason: `Zotero 创建附件失败: ${e.message}` };
+      return { ok: false, reason: e.message };
     }
-    console.log("[zotero] attachment key:", attachmentKey);
-
-    // Step 4: PUT zip + prop to WebDAV
-    try {
-      await webdavClient.upload(attachmentKey, pdfBytes, filename, mtime);
-    } catch (e) {
-      return { ok: false, reason: `WebDAV 上传: ${e.message}` };
-    }
-
-    return { ok: true };
   }
 
   async function addPaper(btn, paper, client) {
@@ -210,9 +282,16 @@
       const arxivId = arxivIdMatch ? arxivIdMatch[1] : null;
 
       let pdfResult = { ok: false, reason: "无 PDF URL" };
+      let sourceResult = null;
+
       if (pdfUrl && pdfUrl !== paper.url) {
         if (webdavClient && webdavClient.isConfigured()) {
-          pdfResult = await tryUploadToWebdav(client, itemKey, pdfUrl, arxivId);
+          pdfResult = await tryUploadPdf(client, itemKey, pdfUrl, arxivId);
+          // Only chase the source archive if PDF made it through. Source
+          // failure is non-fatal; we log the reason for the toast.
+          if (pdfResult.ok && arxivId) {
+            sourceResult = await tryUploadSource(client, itemKey, arxivId);
+          }
         } else {
           pdfResult = { ok: false, reason: "WebDAV 未配置" };
         }
@@ -231,12 +310,21 @@
 
       btn.dataset.itemKey = itemKey;
       setBtnState(btn, "saved");
-      showToast(
-        pdfResult.ok
-          ? "已保存到 Zotero（PDF 已上传 WebDAV，Sync 后桌面可见）"
-          : `已保存到 Zotero（仅链接，原因：${pdfResult.reason}）`,
-        pdfResult.ok ? "success" : "info"
-      );
+
+      let toastMsg, toastKind;
+      if (pdfResult.ok && sourceResult && sourceResult.ok) {
+        toastMsg = `已保存到 Zotero（PDF + 源码 ${sourceResult.sizeMb}MB 已上传 WebDAV）`;
+        toastKind = "success";
+      } else if (pdfResult.ok) {
+        toastMsg = sourceResult
+          ? `已保存到 Zotero（PDF 已上传，源码：${sourceResult.reason}）`
+          : "已保存到 Zotero（PDF 已上传 WebDAV，Sync 后桌面可见）";
+        toastKind = "success";
+      } else {
+        toastMsg = `已保存到 Zotero（仅链接，原因：${pdfResult.reason}）`;
+        toastKind = "info";
+      }
+      showToast(toastMsg, toastKind);
     } catch (e) {
       console.error("[zotero] add failed:", e);
       setBtnState(btn, "idle");

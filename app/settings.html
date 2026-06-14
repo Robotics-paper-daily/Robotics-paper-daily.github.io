@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PaperReader 设置</title>
+    <style>
+      :root { --primary: #7b2c9f; --border: #e2e8f0; --muted: #64748b; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0; padding: 1.2rem 1.4rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #1e293b; background: #fff; font-size: 0.88rem;
+      }
+      h1 { font-size: 1.05rem; margin: 0 0 0.3rem; }
+      p.sub { margin: 0 0 1.1rem; color: var(--muted); font-size: 0.8rem; }
+      .field { margin-bottom: 0.95rem; }
+      .field label { display: block; font-weight: 600; margin-bottom: 0.35rem; }
+      .row { display: flex; gap: 0.5rem; }
+      input[type="text"], input[type="number"], select {
+        flex: 1; padding: 0.45rem 0.6rem; border: 1px solid var(--border); border-radius: 0.5rem;
+        font-family: inherit; font-size: 0.84rem; width: 100%;
+      }
+      button {
+        font-family: inherit; font-weight: 600; font-size: 0.82rem; padding: 0.45rem 0.9rem;
+        border-radius: 0.5rem; border: 1px solid var(--border); background: #f8fafc; cursor: pointer;
+      }
+      button.primary { background: var(--primary); color: #fff; border-color: transparent; }
+      .hint { font-size: 0.74rem; color: var(--muted); margin-top: 0.3rem; }
+      .status { margin: 0.4rem 0 1rem; padding: 0.6rem 0.75rem; border-radius: 0.5rem; font-size: 0.8rem; }
+      .status .line { display: flex; gap: 0.4rem; align-items: center; }
+      .ok { color: #047857; }
+      .bad { color: #b91c1c; }
+      .actions { display: flex; gap: 0.6rem; justify-content: flex-end; margin-top: 0.6rem; }
+      .two { display: flex; gap: 0.8rem; }
+      .two .field { flex: 1; }
+    </style>
+  </head>
+  <body>
+    <h1>PaperReader 设置</h1>
+    <p class="sub">「帮我读」会用本地 Claude 订阅在下面的 vault 里跑 paper-reading 技能。</p>
+
+    <div id="status" class="status"></div>
+
+    <div class="field">
+      <label>Obsidian Vault 路径</label>
+      <div class="row">
+        <input type="text" id="vaultPath" placeholder="包含 .obsidian/ 和 paper-reading 技能的 vault" />
+        <button id="pickVault" type="button">选择…</button>
+      </div>
+      <div class="hint">需含 <code>.claude/skills/paper-reading/SKILL.md</code></div>
+    </div>
+
+    <div class="field">
+      <label>claude 可执行文件（留空自动定位）</label>
+      <div class="row">
+        <input type="text" id="claudePath" placeholder="自动定位（Windows: claude.exe / macOS: PATH 上的 claude）" />
+        <button id="pickClaude" type="button">选择…</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>论文数据源（启动时拉取最新；留空=仅用内置离线快照）</label>
+      <input type="text" id="liveBase" placeholder="https://robotics-paper-daily.github.io" />
+      <div class="hint">app 启动直接从这里拉最新论文，无需 git pull；抓取失败自动回退缓存/内置快照。</div>
+    </div>
+
+    <div class="two">
+      <div class="field">
+        <label>模型</label>
+        <select id="model">
+          <option value="sonnet">sonnet（省额度，推荐）</option>
+          <option value="opus">opus（更强，更耗额度）</option>
+          <option value="haiku">haiku（最省）</option>
+          <option value="">CLI 默认</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>并发数</label>
+        <input type="number" id="concurrency" min="1" max="16" />
+      </div>
+      <div class="field">
+        <label>单次预算上限 $（0=不限）</label>
+        <input type="number" id="maxBudgetUsd" min="0" step="0.5" />
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="recheck" type="button">重新检测</button>
+      <button id="save" class="primary" type="button">保存</button>
+    </div>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+      const bridge = window.paperBridge;
+
+      async function loadSettings() {
+        const s = await bridge.getSettings();
+        $("vaultPath").value = s.vaultPath || "";
+        $("claudePath").value = s.claudePath || "";
+        $("liveBase").value = s.liveBase != null ? s.liveBase : "";
+        $("model").value = s.model != null ? s.model : "sonnet";
+        $("concurrency").value = s.concurrency || 2;
+        $("maxBudgetUsd").value = s.maxBudgetUsd || 0;
+      }
+
+      async function refreshStatus() {
+        const p = await bridge.probeEnv();
+        const box = $("status");
+        const vIcon = p.vault.ok ? "✓" : "✗";
+        const cIcon = p.claude.ok ? "✓" : "✗";
+        const vCls = p.vault.ok ? "ok" : "bad";
+        const cCls = p.claude.ok ? "ok" : "bad";
+        box.style.background = p.ready ? "rgba(5,150,105,0.08)" : "rgba(185,28,28,0.06)";
+        box.innerHTML =
+          `<div class="line ${vCls}">${vIcon} Vault：${p.vault.ok ? p.vault.path : p.vault.reason}</div>` +
+          `<div class="line ${cCls}">${cIcon} claude：${p.claude.ok ? p.claude.path + "  (" + (p.claude.version || "") + ")" : p.claude.reason}</div>`;
+      }
+
+      $("pickVault").addEventListener("click", async () => {
+        const p = await bridge.pickVault();
+        if (p) $("vaultPath").value = p;
+      });
+      $("pickClaude").addEventListener("click", async () => {
+        const p = await bridge.pickClaude();
+        if (p) $("claudePath").value = p;
+      });
+      $("recheck").addEventListener("click", refreshStatus);
+      $("save").addEventListener("click", async () => {
+        await bridge.setSettings({
+          vaultPath: $("vaultPath").value.trim(),
+          claudePath: $("claudePath").value.trim(),
+          liveBase: $("liveBase").value.trim(),
+          model: $("model").value,
+          concurrency: parseInt($("concurrency").value, 10) || 2,
+          maxBudgetUsd: parseFloat($("maxBudgetUsd").value) || 0,
+        });
+        await refreshStatus();
+      });
+
+      loadSettings().then(refreshStatus);
+    </script>
+  </body>
+</html>

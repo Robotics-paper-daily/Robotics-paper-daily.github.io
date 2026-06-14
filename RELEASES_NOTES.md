@@ -1,3 +1,78 @@
+# v0.3 — PaperReader desktop app (一键「帮我读」+ 已读标记)
+
+## TL;DR
+
+A cross-platform **Electron desktop app** (`app/`, Windows + macOS) wraps the
+daily-papers site and drives your **local Claude Code subscription** to
+deep-read any candidate paper with the `paper-reading` skill — generating a
+structured Obsidian note straight from the paper list. It live-fetches the
+latest papers on launch (no git pull), marks papers already read in your local
+vault, and unlocks the existing Zotero controls in-app. The public GitHub Pages
+site is unchanged — the read button is the app's own injection and never
+appears there. The app is local-only and adds **no new repository secrets**.
+
+> macOS support ships in the code; verify on a Mac (or via the CI workflow)
+> before relying on it.
+
+---
+
+## Highlights
+
+### Desktop app (new)
+
+- **「帮我读」 per paper.** A button on every candidate spawns the local `claude`
+  CLI (`--permission-mode bypassPermissions`, subscription OAuth — never an API
+  key) with the vault's `paper-reading` skill to deep-read the paper and write a
+  structured note folder `<vault>/<date>/<title>/`. Live stream-json progress in a
+  sidebar; "open folder / open in Obsidian" on finish; a bounded job queue with
+  cancel + a watchdog.
+- **Always-latest data, no git pull.** A custom `app://` protocol live-fetches
+  `reports.json` + report pages from the published site on each load (cached to
+  userData for offline; bundled snapshot as last resort), and injects the read
+  button into the fetched pages — so the public site needs no change.
+- **Already-read markers.** On load the app scans the **local** vault for existing
+  notes and shows those papers as **✓ 已读** → click opens the note. Cross-device
+  is your own Obsidian sync; the app only ever reads this machine.
+- **Zotero unlock in-app.** A launch password overlay decrypts the same
+  `secrets.enc.js` bundle as the public gate, enabling "Add to Zotero" inside the
+  app (or skip it for read-only).
+- **Settings + packaging.** Configurable vault/claude paths, model
+  (default `opus`), concurrency (default 10), per-read budget cap, and data
+  source. Installers build via `electron-builder` — Windows `.exe` locally; macOS
+  `.dmg` via the `Build PaperReader app` GitHub Actions workflow.
+
+### Skill / notes
+
+- **paper-reading diagrams reworked.** The skill now draws a **skeleton** overview
+  pipeline (collapse repeated structure, ≤ ~12 nodes), wraps it in a collapsed
+  callout, and color-codes stages — so the Mermaid diagram fits the note width and
+  stops dominating the page. A `mermaid-fit` Obsidian CSS snippet makes existing
+  diagrams responsive too.
+
+---
+
+## Notes
+
+- The desktop app is **local-only** — it drives this machine's Claude
+  subscription and Obsidian vault, and is not part of the public site. Build
+  artifacts (`app/dist`, `app/node_modules`, `app/site`) are git-ignored.
+- No new repository secrets. The app reuses the existing encrypted Zotero bundle
+  for its optional in-app unlock.
+
+---
+
+## 中文摘要
+
+v0.3 新增**桌面应用 PaperReader**（`app/`，Windows + macOS）：在每日论文列表里一键
+**「帮我读」**——调用你**本地 Claude Code 订阅** + vault 里的 `paper-reading` 技能
+深读论文并生成结构化 Obsidian 笔记；启动 **live-fetch 最新论文**（无需 git pull）、
+标记本机 vault 里**已读**的论文、应用内解锁 **Zotero**。公网站点零改动（读按钮是 app
+自己注入，公开站不显示），且不新增任何仓库 secret。另：`paper-reading` 技能的总览流程图
+改为**骨架化 + 折叠 + 上色**，不再占篇幅、自适应宽度。macOS 端代码已就绪，上线前请在
+Mac（或 CI）实测。
+
+---
+
 # v0.2 — Personal Mode + Zotero/WebDAV + UI Overhaul
 
 ## TL;DR

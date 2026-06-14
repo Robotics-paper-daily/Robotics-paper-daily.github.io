@@ -1,0 +1,33 @@
+{
+  "name": "paperreader",
+  "productName": "PaperReader",
+  "version": "0.3.0",
+  "description": "Desktop wrapper for the daily-papers site that deep-reads a paper with the local Claude Code paper-reading skill.",
+  "author": "scpsyl",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "sync-site": "node sync-site.js",
+    "prestart": "node sync-site.js",
+    "start": "electron .",
+    "predist": "node sync-site.js",
+    "dist": "electron-builder",
+    "predist:win": "node sync-site.js",
+    "dist:win": "electron-builder --win",
+    "predist:mac": "node sync-site.js",
+    "dist:mac": "electron-builder --mac"
+  },
+  "devDependencies": {
+    "electron": "^32.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.scpsyl.paperreader",
+    "productName": "PaperReader",
+    "directories": { "output": "dist", "buildResources": "build" },
+    "files": ["**/*", "!dist/**", "!**/*.md"],
+    "win": { "target": ["nsis"] },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true },
+    "mac": { "target": ["dmg"], "category": "public.app-category.productivity" }
+  }
+}

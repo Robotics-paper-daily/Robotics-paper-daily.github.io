@@ -1,0 +1,50 @@
+name: Build PaperReader app
+
+# Manual / tag-triggered. Builds the Electron desktop app installers.
+# Windows -> .exe (nsis), macOS -> .dmg. The macOS dmg MUST be built on a mac
+# runner (cannot cross-build/sign from Windows); that's the whole reason this
+# job exists rather than building locally.
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "app-v*"
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            script: "dist:win"
+          - os: macos-latest
+            script: "dist:mac"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install app deps
+        working-directory: app
+        run: npm install
+
+      - name: Build installer
+        working-directory: app
+        # predist:* hooks run sync-site.js first, snapshotting the committed
+        # daily_html/ js/ reports.json into app/site before packaging.
+        run: npm run ${{ matrix.script }}
+        env:
+          # Personal/unsigned build — don't attempt code signing/notarization.
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: paperreader-${{ matrix.os }}
+          path: |
+            app/dist/*.exe
+            app/dist/*.dmg
+          if-no-files-found: ignore

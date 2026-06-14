@@ -7,6 +7,8 @@ This is an automated daily digest of robotics papers from arXiv. A scheduled Git
 
 We also offer an optional **personal mode**, gated by a site password, adds one-click "Add to Zotero" with PDF auto-upload to a WebDAV-backed library, plus an arXiv-to-bilingual translation deep-link via [hjfy.top](https://hjfy.top).
 
+New in **v0.3**: a cross-platform **desktop app** ([`app/`](app/README.md), Windows + macOS) adds a one-click **「帮我读」** that drives your *local* Claude Code subscription to deep-read any paper straight from the list into a structured Obsidian note — plus already-read markers and always-latest data. The public site is unaffected.
+
 ---
 
 ## Features
@@ -27,9 +29,20 @@ We also offer an optional **personal mode**, gated by a site password, adds one-
 ### Personal mode (optional, password-gated)
 
 9. **Zotero integration** — a per-paper "Add to Zotero" control writes a typed `preprint` item (with arXiv DOI, authors, abstract) into a `Daily Paper / YYYY-MM-DD` collection, created on demand.
-10. **WebDAV PDF upload** — the arXiv PDF is fetched through a Cloudflare Worker (CORS bypass), wrapped in Zotero's `<key>.zip` + `<key>.prop` format, and PUT to the user's WebDAV server. After the next desktop sync, the file is locally available without further action.
+10. **WebDAV PDF + LaTeX source upload** — the arXiv PDF *and* the LaTeX source archive (`https://arxiv.org/e-print/<id>`) are fetched through a Cloudflare Worker (CORS bypass), wrapped in Zotero's `<key>.zip` + `<key>.prop` format, and PUT to the user's WebDAV server. After the next desktop sync, both files are locally available without further action. The source upload is best-effort and capped at 50 MB; PDF-only submissions are detected (via `%PDF` magic) and skip source automatically.
 11. **Translation** — a per-paper button opens [hjfy.top](https://hjfy.top) with the relevant arXiv ID for bilingual reading. The deep-link requires a prior login at hjfy.top in the same browser session; without authentication the request is redirected to the hjfy.top homepage. The translation button is exposed in both guest and personal modes — hjfy.top credentials are managed entirely by hjfy.top and are not part of this project's secrets.
 12. **Default to guest mode** — the public site exposes all content but suppresses action buttons. Personal features unlock only after the password gate decrypts the credentials bundle.
+
+### Desktop app — PaperReader (v0.3, optional)
+
+A cross-platform Electron app ([`app/`](app/README.md), Windows + macOS) that drives your **local Claude Code subscription** to read papers straight from the daily list. The public site is unchanged — these controls are the app's own injection and never appear there.
+
+13. **「帮我读」 (read this for me)** — a per-paper button spawns your local `claude` CLI with the `paper-reading` skill (in your Obsidian vault) to deep-read the paper and generate a structured note folder, with live progress in a sidebar and an "open in Obsidian" finish. Uses your subscription (OAuth), never an API key.
+14. **Already-read markers** — papers whose note already exists in your local vault show a **✓ 已读** button that opens the existing note instead of re-reading. Cross-device is your own Obsidian sync; the app only ever reads this machine.
+15. **Always-latest, no git pull** — the app live-fetches `reports.json` + report pages from the published site on launch (offline-cached), so every device shows the newest papers without pulling the repo.
+16. **Zotero in-app** — the same password gate unlocks personal mode inside the app, so the report's "Add to Zotero" buttons work there too.
+
+See [app/README.md](app/README.md) for prerequisites, run/build, and settings.
 
 ---
 
@@ -102,8 +115,10 @@ Steps:
 ```javascript
 // arxiv-pdf-proxy
 //   GET  /?url=<https://arxiv.org/pdf/...>     → fetch arXiv PDF
+//   GET  /?url=<https://arxiv.org/e-print/...> → fetch arXiv LaTeX source
 //   PUT  /?webdav-put=<https://webdav/...>     → forward PUT to WebDAV
-// Both modes return CORS headers for browser invocation.
+// All modes return CORS headers for browser invocation. Upstream Content-Type
+// passes through (PDF stays application/pdf; e-print is application/gzip).
 
 const ARXIV_HOST = 'arxiv.org';
 const WEBDAV_HOST = 'mori.teracloud.jp';   // ← set to your WebDAV hostname
@@ -160,7 +175,10 @@ export default {
       const upstream = await fetch(target.toString());
       return cors(new Response(upstream.body, {
         status: upstream.status,
-        headers: { 'Content-Type': 'application/pdf' },
+        headers: {
+          'Content-Type':
+            upstream.headers.get('Content-Type') || 'application/octet-stream',
+        },
       }));
     }
 
@@ -230,6 +248,11 @@ Browser ──[user clicks Add to Zotero]──┐
                   │
                   ▼
        Zotero desktop sync → PDF locally available
+
+       [6] (best effort) repeat steps 1–5 against
+           https://arxiv.org/e-print/<id> for the
+           LaTeX source archive — fresh attachment
+           key, second <key>.zip + <key>.prop pair.
 ```
 
 ---

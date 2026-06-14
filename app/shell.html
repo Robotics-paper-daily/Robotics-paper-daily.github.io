@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PaperReader</title>
+    <style>
+      :root {
+        --primary: #7b2c9f;
+        --secondary: #b794d3;
+        --text: #1e293b;
+        --text-muted: #64748b;
+        --border: #e2e8f0;
+        --emerald: #059669;
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0; padding: 0; height: 100%;
+        display: flex; flex-direction: column;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--text); background: #f8fafc;
+      }
+      #topbar {
+        flex-shrink: 0; height: 48px; display: flex; align-items: center;
+        justify-content: space-between; padding: 0 1.1rem; gap: 0.8rem;
+        background: linear-gradient(135deg, var(--primary) 0%, #8e3dae 50%, var(--secondary) 100%);
+        color: #fff; font-size: 0.85rem;
+        box-shadow: 0 4px 14px rgba(123, 44, 159, 0.22); z-index: 5;
+      }
+      #topbar .left { display: flex; align-items: center; gap: 0.6rem; font-weight: 600; }
+      #topbar .badge {
+        background: rgba(255, 255, 255, 0.22); padding: 0.16rem 0.6rem;
+        border-radius: 999px; font-size: 0.68rem; font-weight: 600;
+      }
+      #topbar .center { flex: 1; display: flex; justify-content: center; }
+      #report-select {
+        background: rgba(255, 255, 255, 0.16); color: #fff; border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 0.5rem; padding: 0.3rem 0.7rem; font-size: 0.8rem; font-family: inherit;
+        cursor: pointer; max-width: 280px;
+      }
+      #report-select option { color: #1e293b; }
+      #topbar button {
+        color: #fff; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 0.36rem 0.85rem; border-radius: 0.55rem; cursor: pointer; font-family: inherit;
+        font-weight: 500; font-size: 0.8rem; transition: background 0.15s ease;
+      }
+      #topbar button:hover { background: rgba(255, 255, 255, 0.24); }
+
+      #content { flex: 1 1 auto; display: flex; overflow: hidden; }
+      iframe { border: none; flex: 1 1 auto; height: 100%; display: block; background: #fff; }
+
+      #sidebar {
+        flex-shrink: 0; width: 340px; border-left: 1px solid var(--border);
+        background: #fff; display: flex; flex-direction: column; overflow: hidden;
+      }
+      .sidebar-head {
+        flex-shrink: 0; padding: 0.8rem 1rem; font-weight: 700; font-size: 0.92rem;
+        border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem;
+      }
+      #env-badge {
+        font-size: 0.66rem; font-weight: 600; padding: 0.12rem 0.5rem; border-radius: 999px;
+        margin-left: auto;
+      }
+      #env-badge.ok { background: rgba(5, 150, 105, 0.12); color: #047857; }
+      #env-badge.warn { background: rgba(217, 119, 6, 0.14); color: #b45309; cursor: pointer; }
+      #job-list { flex: 1 1 auto; overflow-y: auto; padding: 0.6rem; }
+      #job-empty { padding: 1.4rem 1rem; color: var(--text-muted); font-size: 0.82rem; line-height: 1.6; }
+
+      .job {
+        border: 1px solid var(--border); border-radius: 0.6rem; padding: 0.65rem 0.7rem;
+        margin-bottom: 0.55rem; background: #fff; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+      }
+      .job-title {
+        font-size: 0.82rem; font-weight: 600; line-height: 1.35; margin-bottom: 0.35rem;
+        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+      }
+      .job-meta { display: flex; align-items: center; gap: 0.5rem; font-size: 0.74rem; color: var(--text-muted); }
+      .job-phase { font-weight: 600; }
+      .job.running .job-phase { color: #b45309; }
+      .job.done .job-phase { color: #047857; }
+      .job.error .job-phase { color: #b91c1c; }
+      .job.canceled .job-phase { color: var(--text-muted); }
+      .job-elapsed { margin-left: auto; font-variant-numeric: tabular-nums; }
+      .job-bar { height: 3px; border-radius: 2px; background: #eef2f7; margin: 0.5rem 0 0.45rem; overflow: hidden; }
+      .job-bar > i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #d97706, #f59e0b); transition: width 0.4s ease; }
+      .job.done .job-bar > i { background: linear-gradient(90deg, #059669, #10b981); }
+      .job.error .job-bar > i { background: #b91c1c; }
+      .job-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+      .job-actions button {
+        font-family: inherit; font-size: 0.72rem; font-weight: 600; padding: 0.26rem 0.6rem;
+        border-radius: 0.45rem; border: 1px solid var(--border); background: #f8fafc; color: var(--text);
+        cursor: pointer;
+      }
+      .job-actions button.primary { background: rgba(5, 150, 105, 0.1); color: #047857; border-color: rgba(5, 150, 105, 0.25); }
+      .job-actions button.danger { color: #b91c1c; }
+      .job-actions button:hover { filter: brightness(0.97); }
+      .job-detail { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.3rem; word-break: break-all; }
+
+      /* Personal-mode (Zotero) unlock overlay — mirrors index.html's gate. */
+      #unlock-overlay {
+        position: fixed; inset: 0; z-index: 100;
+        background: rgba(30, 41, 59, 0.55); backdrop-filter: blur(3px);
+        display: none; align-items: center; justify-content: center;
+      }
+      .unlock-card {
+        width: 360px; max-width: 90vw; background: #fff; border-radius: 0.9rem;
+        padding: 1.4rem 1.5rem; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.3);
+      }
+      .unlock-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
+      .unlock-sub { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1rem; }
+      #unlock-pw {
+        width: 100%; padding: 0.6rem 0.75rem; border: 1px solid var(--border);
+        border-radius: 0.55rem; font-size: 0.9rem; font-family: inherit;
+      }
+      #unlock-pw:focus { outline: none; border-color: var(--primary); }
+      .unlock-err { color: #b91c1c; font-size: 0.8rem; min-height: 1.1rem; margin: 0.4rem 0; }
+      .unlock-actions { display: flex; gap: 0.6rem; justify-content: flex-end; }
+      .unlock-actions button {
+        font-family: inherit; font-weight: 600; font-size: 0.84rem; padding: 0.5rem 1rem;
+        border-radius: 0.55rem; border: 1px solid var(--border); background: #f8fafc;
+        color: var(--text); cursor: pointer;
+      }
+      .unlock-actions button.primary { background: var(--primary); color: #fff; border-color: transparent; }
+      .unlock-actions button:disabled { opacity: 0.6; cursor: wait; }
+    </style>
+  </head>
+  <body>
+    <div id="topbar">
+      <div class="left"><span>📖 PaperReader</span><span class="badge">本地精读</span></div>
+      <div class="center"><select id="report-select" title="选择报告日期"></select></div>
+      <div class="right"><button id="btn-settings" type="button">设置</button></div>
+    </div>
+    <div id="content">
+      <iframe id="report-frame" title="report"></iframe>
+      <aside id="sidebar">
+        <div class="sidebar-head">阅读任务 <span id="env-badge"></span></div>
+        <div id="job-list">
+          <div id="job-empty">
+            点击论文卡片上的「帮我读」开始。<br />会调用你本地的 Claude 订阅，用
+            paper-reading 技能精读并在 Obsidian vault 生成笔记。<br /><br />一次深读约几分钟。
+          </div>
+        </div>
+      </aside>
+    </div>
+    <div id="unlock-overlay">
+      <div class="unlock-card">
+        <div class="unlock-title">解锁个人模式（Zotero）</div>
+        <div class="unlock-sub">
+          输入密码解密 Zotero 凭据（与网页版同一密码），解锁后即可在论文卡片上「Add to
+          Zotero」。也可跳过，仅使用「帮我读」。
+        </div>
+        <input type="password" id="unlock-pw" placeholder="密码" autocomplete="off" />
+        <div id="unlock-err" class="unlock-err"></div>
+        <div class="unlock-actions">
+          <button id="unlock-skip" type="button">跳过</button>
+          <button id="unlock-go" type="button" class="primary">解锁</button>
+        </div>
+      </div>
+    </div>
+    <!-- crypto.js + the encrypted bundle (window.__ZOTERO_ENC) power the unlock,
+         same as the public site's index.html gate. -->
+    <script src="site/js/crypto.js"></script>
+    <script src="site/js/secrets.enc.js"></script>
+    <script src="renderer.js"></script>
+  </body>
+</html>
