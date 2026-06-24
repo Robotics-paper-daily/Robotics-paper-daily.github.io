@@ -23,6 +23,50 @@ function existing(p) {
   }
 }
 
+// The login shell's PATH (homebrew/uv/conda/pyenv/etc.), computed once. A
+// Finder/.app-launched Electron only inherits a minimal PATH, so we recover the
+// user's real PATH the same way resolveClaudePath finds claude — via a login
+// shell. Cached because this spawns a shell.
+let _loginPathCache;
+function loginShellPath() {
+  if (_loginPathCache !== undefined) return _loginPathCache;
+  _loginPathCache = "";
+  try {
+    const shell = process.env.SHELL || "/bin/sh";
+    _loginPathCache = execSync(`${shell} -lic 'printf %s "$PATH"'`, {
+      encoding: "utf8",
+      timeout: 5000,
+    }).trim();
+  } catch {}
+  return _loginPathCache;
+}
+
+// Build a PATH for the spawned claude (macOS/Linux) so its OWN subprocesses
+// (python/uv/git the skill runs) resolve even under a GUI-minimal PATH. Purely
+// additive + de-duped — never drops an entry the process already had.
+function enrichedPath(claudePath, currentPath) {
+  const home = process.env.HOME || "";
+  const segs = [currentPath, loginShellPath(), claudePath && path.dirname(claudePath)]
+    .concat([
+      "/opt/homebrew/bin",
+      "/opt/homebrew/sbin",
+      "/usr/local/bin",
+      home && path.join(home, ".local", "bin"),
+      home && path.join(home, ".npm-global", "bin"),
+      "/usr/bin",
+      "/bin",
+      "/usr/sbin",
+      "/sbin",
+    ])
+    .filter(Boolean)
+    .join(":")
+    .split(":");
+  const seen = new Set();
+  const out = [];
+  for (const s of segs) if (s && !seen.has(s)) (seen.add(s), out.push(s));
+  return out.join(":");
+}
+
 function resolveClaudePath(override) {
   const ov = existing(override);
   if (ov) return ov;
@@ -76,6 +120,12 @@ function resolveClaudePath(override) {
     const p = execSync(`${shell} -lic 'command -v claude'`, { encoding: "utf8" }).trim();
     if (existing(p)) return p;
   } catch {}
+  // npm global prefix (covers nvm / asdf / custom prefixes the static list misses)
+  try {
+    const prefix = execSync("npm prefix -g", { encoding: "utf8" }).trim();
+    const c = path.join(prefix, "bin", "claude");
+    if (existing(c)) return c;
+  } catch {}
   for (const c of [
     "/usr/local/bin/claude",
     "/opt/homebrew/bin/claude",
@@ -90,7 +140,22 @@ function resolveClaudePath(override) {
 // The prompt names the skill + passes the arxiv url so the skill triggers
 // deterministically, and explicitly neutralizes the skill's "overwrite this
 // duplicate?" question (which would hang a headless run with no answerer).
-function buildPrompt(url) {
+function buildPrompt(arg) {
+  const { url, query } = typeof arg === "string" ? { url: arg } : arg || {};
+  if (query && !url) {
+    // Name/title only — let Claude locate the paper on arXiv first, then read it.
+    return (
+      "Use the paper-reading skill to deep-read a paper and write the structured " +
+      'Obsidian note. The paper is given by name/description, not a link:\n"' +
+      query +
+      '"\nFirst find the paper on arXiv (search the web / arxiv for its abstract ' +
+      "page and id), then deep-read THAT paper. If you cannot confidently identify " +
+      "a single matching paper, stop and say so instead of guessing." +
+      "\nIf a note for this arxiv id already exists, OVERWRITE it without asking." +
+      "\nDo not ask me any questions. Proceed end to end and finish by printing " +
+      "the final note's absolute path."
+    );
+  }
   return (
     "Use the paper-reading skill to deep-read this paper and write the " +
     "structured Obsidian note: " +
@@ -101,10 +166,10 @@ function buildPrompt(url) {
   );
 }
 
-function buildArgv({ url, model, permissionMode, maxBudgetUsd }) {
+function buildArgv({ url, query, model, permissionMode, maxBudgetUsd }) {
   const argv = [
     "-p",
-    buildPrompt(url),
+    buildPrompt({ url, query }),
     "--output-format",
     "stream-json",
     "--verbose",
@@ -117,10 +182,11 @@ function buildArgv({ url, model, permissionMode, maxBudgetUsd }) {
 }
 
 // Spawn the read. Returns the ChildProcess (stdout = stream-json NDJSON).
-function spawnRead({ claudePath, vaultPath, url, model, permissionMode, maxBudgetUsd }) {
-  const argv = buildArgv({ url, model, permissionMode, maxBudgetUsd });
+function spawnRead({ claudePath, vaultPath, url, query, model, permissionMode, maxBudgetUsd }) {
+  const argv = buildArgv({ url, query, model, permissionMode, maxBudgetUsd });
   const env = { ...process.env };
   delete env.ANTHROPIC_API_KEY; // force subscription auth, never API-key billing
+  if (process.platform !== "win32") env.PATH = enrichedPath(claudePath, env.PATH);
   const child = spawn(claudePath, argv, {
     cwd: vaultPath,
     shell: false,

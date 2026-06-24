@@ -80,7 +80,7 @@
     queued: "fa-hourglass-half",
     running: "fa-spinner fa-spin",
     done: "fa-circle-check",
-    read: "fa-circle-check",
+    read: "fa-book",
     error: "fa-triangle-exclamation",
   };
 
@@ -105,11 +105,62 @@
           queued: "排队中",
           running: "读取中",
           done: "已生成",
-          read: "已读",
+          read: "笔记",
           error: "失败·重试",
         }[state] ||
         "帮我读";
     }
+  }
+
+  // Manual 已读 marker on a note-having card (B style: corner badge + left
+  // accent). Source of truth is the note's checkbox; clicking writes it back via
+  // the bridge (and Obsidian-side edits show up on next load). Independent of the
+  // blue 笔记 (note-exists) button.
+  function applyCardRead(card, read) {
+    card.classList.toggle("paper-read", read);
+    const t = card.querySelector(".read-mark-toggle");
+    if (t) {
+      t.innerHTML = read
+        ? '<i class="fas fa-circle-check"></i> 已读'
+        : '<i class="far fa-circle"></i> 标为已读';
+    }
+  }
+
+  function markCardRead(btn, isRead) {
+    const card = btn.closest(".bento-item, .filtered-item");
+    if (!card) return;
+    if (getComputedStyle(card).position === "static") card.style.position = "relative";
+    if (!card.querySelector(".read-mark-foot")) {
+      const foot = document.createElement("div");
+      foot.className = "read-mark-foot";
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "read-mark-toggle";
+      foot.appendChild(toggle);
+      card.appendChild(foot);
+
+      const badge = document.createElement("span");
+      badge.className = "read-mark-badge";
+      badge.innerHTML = '<i class="fas fa-check"></i> 已读';
+      card.appendChild(badge);
+
+      toggle.addEventListener("click", () => {
+        const next = !card.classList.contains("paper-read");
+        applyCardRead(card, next); // optimistic
+        Promise.resolve(bridge.setReadStatus(btn.dataset.notePath, next))
+          .then((r) => {
+            if (!r || !r.ok) {
+              applyCardRead(card, !next); // revert on failure
+              showToast(`标记失败：${(r && r.reason) || "未知错误"}`, "error");
+            }
+          })
+          .catch((e) => {
+            applyCardRead(card, !next);
+            showToast(`标记失败：${e.message}`, "error");
+          });
+      });
+    }
+    applyCardRead(card, !!isRead);
   }
 
   // Map a normalized progress event → the button label shown while running.
@@ -235,7 +286,18 @@
       ".read-btn.read{color:#fff;background:linear-gradient(135deg,#2563eb,#3b82f6);border-color:transparent}" +
       ".read-btn.read:hover{filter:brightness(1.08);color:#fff}" +
       ".read-btn.error{color:#b91c1c;background-color:rgba(185,28,28,.08);border-color:rgba(185,28,28,.3)}" +
-      ".read-btn-compact{padding:.32rem .7rem;font-size:.78rem;margin-left:.5rem}";
+      ".read-btn-compact{padding:.32rem .7rem;font-size:.78rem;margin-left:.5rem}" +
+      // app-only: widen the report (Tailwind .container caps at 768px in the ~1000px
+      // iframe → big side margins). Raise the cap so cards use the width / less white.
+      "body.container{max-width:1400px !important}" +
+      // manual 已读 marker (B style): bottom toggle + corner badge + left accent
+      ".read-mark-foot{margin-top:.85rem;padding-top:.7rem;border-top:1px dashed rgba(226,232,240,.9)}" +
+      ".read-mark-toggle{font-family:inherit;font-size:.78rem;font-weight:600;display:inline-flex;align-items:center;gap:.4rem;padding:.35rem .85rem;border-radius:999px;border:1px solid rgba(203,213,225,.9);background:#fff;color:#64748b;cursor:pointer;transition:background-color .2s ease,color .2s ease,border-color .2s ease}" +
+      ".read-mark-toggle:hover{border-color:#94a3b8;color:#475569}" +
+      ".bento-item.paper-read,.filtered-item.paper-read{border-left:3px solid #10b981}" +
+      ".paper-read .read-mark-toggle{border-color:transparent;background:rgba(5,150,105,.12);color:#047857}" +
+      ".read-mark-badge{display:none;position:absolute;top:0;right:0;align-items:center;gap:.3rem;font-size:.66rem;font-weight:700;color:#047857;background:rgba(5,150,105,.14);padding:.2rem .6rem;border-bottom-left-radius:.6rem}" +
+      ".paper-read .read-mark-badge{display:inline-flex}";
     const style = document.createElement("style");
     style.id = "read-paper-styles";
     style.textContent = css;
@@ -322,9 +384,11 @@
             const paper = papers[parseInt(idxStr, 10)];
             if (!paper) return;
             const id = baseArxivId(extractArxivIdLocal(paper.url));
-            if (id && map[id]) {
-              btn.dataset.notePath = map[id];
-              setReadBtn(btn, "read");
+            const entry = id && map[id];
+            if (entry) {
+              btn.dataset.notePath = entry.rel;
+              setReadBtn(btn, "read"); // blue 笔记 button (opens the note)
+              markCardRead(btn, entry.read); // manual 已读 marker (from the note's checkbox)
             }
           });
         })

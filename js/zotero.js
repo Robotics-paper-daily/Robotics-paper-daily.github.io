@@ -199,6 +199,54 @@
         headers: { "If-Unmodified-Since-Version": String(version) },
       });
     }
+
+    // ---- read-only reconcile: which Daily Paper items are already added ----
+
+    // GET a list endpoint with full pagination (Zotero caps page size at 100).
+    async _getAllPaged(path, params = {}) {
+      const limit = 100;
+      let start = 0;
+      let out = [];
+      for (;;) {
+        const qs = new URLSearchParams({
+          ...params,
+          limit: String(limit),
+          start: String(start),
+        });
+        const res = await this._req(`${path}?${qs.toString()}`);
+        const batch = await res.json();
+        if (!Array.isArray(batch) || batch.length === 0) break;
+        out = out.concat(batch);
+        const total = parseInt(res.headers.get("Total-Results") || "0", 10);
+        start += batch.length;
+        if (batch.length < limit || (total && out.length >= total)) break;
+      }
+      return out;
+    }
+
+    /**
+     * Build { baseArxivId: itemKey } for every preprint already filed under the
+     * `Daily Paper` collection tree. Read-only: if the root collection doesn't
+     * exist yet (nothing ever added), returns {} without creating anything.
+     */
+    async listDailyPaperArxivMap(rootName) {
+      const rootKey = await this.findCollection(rootName, null);
+      if (!rootKey) return {};
+      const collections = await this._getAllPaged(`/users/${this.userId}/collections`);
+      const treeKeys = subtreeKeys(collections, rootKey);
+      const items = await this._getAllPaged(`/users/${this.userId}/items`, {
+        itemType: "preprint",
+      });
+      const map = {};
+      for (const it of items) {
+        const d = it.data || {};
+        const cols = Array.isArray(d.collections) ? d.collections : [];
+        if (!cols.some((k) => treeKeys.has(k))) continue;
+        const base = baseArxivId(itemArxivId(d));
+        if (base && !map[base]) map[base] = it.key;
+      }
+      return map;
+    }
   }
 
   /**
@@ -225,7 +273,55 @@
     return m ? m[1] : null;
   }
 
+  /** Strip the trailing version: "2606.13675v1" → "2606.13675". */
+  function baseArxivId(id) {
+    return id ? String(id).replace(/v\d+$/i, "") : null;
+  }
+
+  /** Best-effort arxiv id (with version, if present) from a Zotero item's data. */
+  function itemArxivId(d) {
+    if (!d) return null;
+    if (d.archiveID) {
+      const m = String(d.archiveID).match(/(\d{4}\.\d{4,5})(v\d+)?/i);
+      if (m) return m[1] + (m[2] || "");
+      return String(d.archiveID);
+    }
+    if (d.DOI) {
+      const m = String(d.DOI).match(/arXiv\.(\d{4}\.\d{4,5})(v\d+)?/i);
+      if (m) return m[1] + (m[2] || "");
+    }
+    if (d.url) {
+      const x = extractArxivId(d.url);
+      if (x) return x;
+    }
+    return null;
+  }
+
+  /** Set of collection keys in the subtree rooted at rootKey (inclusive). */
+  function subtreeKeys(collections, rootKey) {
+    const childrenOf = new Map();
+    for (const c of collections || []) {
+      const key = c.key || (c.data && c.data.key);
+      const parent = (c.data && c.data.parentCollection) || "__root__";
+      if (!childrenOf.has(parent)) childrenOf.set(parent, []);
+      childrenOf.get(parent).push(key);
+    }
+    const set = new Set([rootKey]);
+    const stack = [rootKey];
+    while (stack.length) {
+      const cur = stack.pop();
+      for (const k of childrenOf.get(cur) || []) {
+        if (k && !set.has(k)) {
+          set.add(k);
+          stack.push(k);
+        }
+      }
+    }
+    return set;
+  }
+
   global.ZoteroClient = ZoteroClient;
   global.extractArxivId = extractArxivId;
+  global.baseArxivId = baseArxivId;
   global.computeMd5 = computeMd5;
 })(window);

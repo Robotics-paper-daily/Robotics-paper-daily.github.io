@@ -120,12 +120,22 @@ function mapEvent(raw) {
   }
 
   if (raw.type === "result") {
+    // The result event's top-level usage is cumulative for the whole run (it
+    // sums its per-turn `iterations`); total_cost_usd is the notional API cost.
+    const u = raw.usage || {};
     return {
       kind: "done",
       isError: !!raw.is_error,
       resultText: typeof raw.result === "string" ? raw.result : "",
       denials: Array.isArray(raw.permission_denials) ? raw.permission_denials : [],
       durationMs: raw.duration_ms,
+      usage: {
+        input: u.input_tokens || 0,
+        output: u.output_tokens || 0,
+        cacheRead: u.cache_read_input_tokens || 0,
+        cacheCreate: u.cache_creation_input_tokens || 0,
+      },
+      costUsd: typeof raw.total_cost_usd === "number" ? raw.total_cost_usd : null,
     };
   }
 

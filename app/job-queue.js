@@ -8,6 +8,8 @@ const path = require("path");
 const fs = require("fs");
 const { spawnRead, resolveClaudePath } = require("./spawn-claude");
 const { makeParser, mapEvent } = require("./stream-parser");
+const { cleanPaperCache } = require("./cache-clean");
+const { repairFigures } = require("./figure-repair");
 
 let _seq = 0;
 const nextId = () => "job_" + ++_seq;
@@ -43,6 +45,9 @@ class JobQueue {
       phase: j.phase,
       label: j.label,
       startedAt: j.startedAt,
+      durationMs: j.durationMs,
+      usage: j.usage,
+      costUsd: j.costUsd,
       folderPath: j.folderPath,
       errorText: j.errorText,
     }));
@@ -76,6 +81,10 @@ class JobQueue {
       dateAtStart: null,
       watchdog: null,
       _result: null,
+      usage: null,
+      costUsd: null,
+      durationMs: null,
+      endedAt: 0,
     };
     this.jobs.push(job);
     this._emit(job);
@@ -96,6 +105,10 @@ class JobQueue {
       label: job.label,
       folderPath: job.folderPath,
       errorText: job.errorText,
+      startedAt: job.startedAt,
+      durationMs: job.durationMs,
+      usage: job.usage,
+      costUsd: job.costUsd,
       ...(extra || {}),
     });
   }
@@ -128,6 +141,7 @@ class JobQueue {
         claudePath,
         vaultPath: s.vaultPath,
         url: job.payload.url,
+        query: job.payload.query,
         model: s.model,
         permissionMode: s.permissionMode,
         maxBudgetUsd: s.maxBudgetUsd,
@@ -182,6 +196,8 @@ class JobQueue {
         return;
       case "done":
         job._result = ev;
+        job.usage = ev.usage || null;
+        job.costUsd = ev.costUsd != null ? ev.costUsd : null;
         if (ev.isError) job.errorText = ev.resultText || "读取出错";
         return;
     }
@@ -202,11 +218,48 @@ class JobQueue {
     }
 
     job.folderPath = this._resolveFolder(job);
+    job.endedAt = Date.now();
+    job.durationMs = job.endedAt - job.startedAt;
     job.state = "done";
     job.phase = "done";
     job.label = "已生成";
     this._emit(job);
+    this._repairFigures(job);
+    this._cleanCache(job);
     this._pump();
+  }
+
+  // Backstop for dangling figure embeds: if the note references figures the read
+  // never actually downloaded, fetch them from the arxiv HTML. Async + best-effort
+  // — only adds missing files, never edits the note. (See app/figure-repair.js.)
+  _repairFigures(job) {
+    if (!job.folderPath) return;
+    const vaultPath = this.settings().vaultPath;
+    repairFigures(job.folderPath, vaultPath)
+      .then((r) => {
+        if (r && r.fetched > 0) {
+          this._emit(job, { phase: "done", label: `已生成（补回 ${r.fetched} 张缺图）` });
+        }
+        if (r && r.failures && r.failures.length) {
+          console.warn("[queue] figure repair partial:", job.id, JSON.stringify(r.failures));
+        }
+      })
+      .catch((e) => console.error("[queue] figure repair failed:", e));
+  }
+
+  // After a note is produced, drop this paper's intermediate cache files so
+  // <vault>/.cache never accumulates or gets synced. Per-paper only (never the
+  // whole .cache — concurrent reads may still be using it). Backstop for the
+  // skill's own cleanup step.
+  _cleanCache(job) {
+    try {
+      let id = job.payload.arxivId;
+      if (job.folderPath) {
+        const pdf = fs.readdirSync(job.folderPath).find((f) => /\.pdf$/i.test(f));
+        if (pdf) id = pdf.replace(/\.pdf$/i, ""); // base id from the produced folder (covers name-based reads)
+      }
+      cleanPaperCache(this.settings().vaultPath, id);
+    } catch {}
   }
 
   _fail(job, msg) {
@@ -214,6 +267,7 @@ class JobQueue {
       clearTimeout(job.watchdog);
       job.watchdog = null;
     }
+    if (!job.durationMs) job.durationMs = Date.now() - job.startedAt;
     job.state = "error";
     job.phase = "error";
     job.label = msg;
@@ -260,6 +314,9 @@ class JobQueue {
   cancel(jobId) {
     const job = this.jobs.find((j) => j.id === jobId);
     if (!job) return { ok: false, reason: "not-found" };
+    if (job.state === "queued" || job.state === "running") {
+      job.durationMs = Date.now() - job.startedAt;
+    }
     if (job.state === "queued") {
       job.state = "canceled";
       job.label = "已取消";

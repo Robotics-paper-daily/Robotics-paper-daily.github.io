@@ -11,10 +11,9 @@
 //   4. PUT <key>.zip + <key>.prop to user's WebDAV via Worker proxy
 //   5. Desktop Zotero picks up file on next sync
 //
-// LaTeX source upload (best effort, runs only after PDF upload succeeds):
-//   Same four steps targeting https://arxiv.org/e-print/<id>. arXiv returns
-//   gzipped tar for most papers; PDF-only papers are detected via %PDF magic
-//   and skipped. Source failure does not roll back the PDF or parent item.
+// Zotero holds the paper only (PDF). The arxiv LaTeX typesetting source is
+// deliberately NOT uploaded — it is not the implementation; code understanding
+// is the paper-reading skill's job (it fetches the GitHub repo into the note).
 //
 // Without WebDAV creds, falls back to a linked_url attachment so user at
 // least has a clickable arXiv link from inside Zotero.
@@ -29,6 +28,10 @@
   const SESSION_ROOT_COLLECTION = "zotero_daily_paper_root";
   const LOCAL_LIKED_MAP = "zotero_liked_map";
   const ROOT_COLLECTION_NAME = "Daily Paper";
+  // Background reconcile against the real Zotero library (source of truth).
+  // Cached per session so day-switches (iframe reloads) don't re-hit the API.
+  const SESSION_ADDED_CACHE = "zotero_added_cache"; // { ts, map: {baseArxivId: itemKey} }
+  const ADDED_CACHE_TTL_MS = 5 * 60 * 1000;
 
   /**
    * Read credentials from sessionStorage. Tries the current document first,
@@ -127,10 +130,6 @@
   let proxyUrl = "";
   let webdavClient = null;
 
-  // Cap on LaTeX source archive size. Cloudflare Workers have a request body
-  // ceiling around 100 MB and a wall-clock CPU limit; 50 MB leaves headroom.
-  const SOURCE_MAX_BYTES = 50 * 1024 * 1024;
-
   /**
    * Fetch arbitrary bytes through the Worker proxy. Throws on any failure
    * (network, non-2xx, suspiciously small payload). Returns Uint8Array.
@@ -209,63 +208,6 @@
     }
   }
 
-  /**
-   * LaTeX source upload flow. Best-effort — returns {ok: false, reason} on
-   * any failure (no LaTeX submission, oversized, network error, etc.). The
-   * caller treats failure as non-fatal and surfaces the reason in toast.
-   */
-  async function tryUploadSource(client, parentKey, arxivId) {
-    if (!arxivId) return { ok: false, reason: "无 arxiv_id" };
-    if (!proxyUrl) return { ok: false, reason: "未配置 Worker 代理" };
-    if (!webdavClient || !webdavClient.isConfigured()) {
-      return { ok: false, reason: "未配置 WebDAV 凭据" };
-    }
-
-    const eprintUrl = `https://arxiv.org/e-print/${arxivId}`;
-    let bytes;
-    try {
-      bytes = await fetchViaProxy(eprintUrl);
-    } catch (e) {
-      return { ok: false, reason: `源码拉取失败: ${e.message}` };
-    }
-
-    // arXiv returns the original PDF for PDF-only submissions (~5% of papers).
-    // Detect by %PDF magic and skip — there's no LaTeX to translate.
-    if (
-      bytes[0] === 0x25 &&
-      bytes[1] === 0x50 &&
-      bytes[2] === 0x44 &&
-      bytes[3] === 0x46
-    ) {
-      return { ok: false, reason: "无 LaTeX 源码（仅 PDF 提交）" };
-    }
-    // Expected: gzip magic 1f 8b. Anything else is likely an error page.
-    if (!(bytes[0] === 0x1f && bytes[1] === 0x8b)) {
-      return {
-        ok: false,
-        reason: `源码格式未知 (magic ${bytes[0].toString(16)} ${bytes[1].toString(16)})`,
-      };
-    }
-    if (bytes.byteLength > SOURCE_MAX_BYTES) {
-      return {
-        ok: false,
-        reason: `源码过大 (${(bytes.byteLength / 1024 / 1024).toFixed(1)}MB > ${SOURCE_MAX_BYTES / 1024 / 1024}MB)`,
-      };
-    }
-
-    try {
-      await uploadFileToZoteroAndWebdav(client, parentKey, bytes, {
-        sourceUrl: eprintUrl,
-        filename: `${arxivId}-source.tar.gz`,
-        title: "LaTeX Source",
-        contentType: "application/gzip",
-      });
-      return { ok: true, sizeMb: (bytes.byteLength / 1024 / 1024).toFixed(1) };
-    } catch (e) {
-      return { ok: false, reason: e.message };
-    }
-  }
-
   async function addPaper(btn, paper, client) {
     setBtnState(btn, "loading");
     try {
@@ -282,16 +224,10 @@
       const arxivId = arxivIdMatch ? arxivIdMatch[1] : null;
 
       let pdfResult = { ok: false, reason: "无 PDF URL" };
-      let sourceResult = null;
 
       if (pdfUrl && pdfUrl !== paper.url) {
         if (webdavClient && webdavClient.isConfigured()) {
           pdfResult = await tryUploadPdf(client, itemKey, pdfUrl, arxivId);
-          // Only chase the source archive if PDF made it through. Source
-          // failure is non-fatal; we log the reason for the toast.
-          if (pdfResult.ok && arxivId) {
-            sourceResult = await tryUploadSource(client, itemKey, arxivId);
-          }
         } else {
           pdfResult = { ok: false, reason: "WebDAV 未配置" };
         }
@@ -307,18 +243,14 @@
       const map = readLikedMap();
       map[paper.url] = itemKey;
       writeLikedMap(map);
+      patchAddedCache(paperBaseId(paper), itemKey);
 
       btn.dataset.itemKey = itemKey;
       setBtnState(btn, "saved");
 
       let toastMsg, toastKind;
-      if (pdfResult.ok && sourceResult && sourceResult.ok) {
-        toastMsg = `已保存到 Zotero（PDF + 源码 ${sourceResult.sizeMb}MB 已上传 WebDAV）`;
-        toastKind = "success";
-      } else if (pdfResult.ok) {
-        toastMsg = sourceResult
-          ? `已保存到 Zotero（PDF 已上传，源码：${sourceResult.reason}）`
-          : "已保存到 Zotero（PDF 已上传 WebDAV，Sync 后桌面可见）";
+      if (pdfResult.ok) {
+        toastMsg = "已保存到 Zotero（PDF 已上传 WebDAV，Sync 后桌面可见）";
         toastKind = "success";
       } else {
         toastMsg = `已保存到 Zotero（仅链接，原因：${pdfResult.reason}）`;
@@ -342,6 +274,7 @@
       const map = readLikedMap();
       delete map[paper.url];
       writeLikedMap(map);
+      patchAddedCache(paperBaseId(paper), null);
 
       delete btn.dataset.itemKey;
       setBtnState(btn, "idle");
@@ -350,6 +283,135 @@
       console.error("[zotero] remove failed:", e);
       setBtnState(btn, "saved");
       showToast(`删除失败：${e.message}`, "error");
+    }
+  }
+
+  // ---- Zotero reconcile: keep "In Zotero" honest against the real library ----
+
+  function paperBaseId(paper) {
+    if (!paper || !window.baseArxivId || !window.extractArxivId) return null;
+    return window.baseArxivId(window.extractArxivId(paper.url));
+  }
+
+  // Session cache of the added-map so switching days doesn't re-query Zotero.
+  function readAddedCache() {
+    try {
+      const c = JSON.parse(sessionStorage.getItem(SESSION_ADDED_CACHE) || "null");
+      if (c && c.map && c.ts && Date.now() - c.ts < ADDED_CACHE_TTL_MS) return c.map;
+    } catch {}
+    return null;
+  }
+  function writeAddedCache(map) {
+    try {
+      sessionStorage.setItem(SESSION_ADDED_CACHE, JSON.stringify({ ts: Date.now(), map }));
+    } catch {}
+  }
+  // Keep the cache coherent after a manual add/remove (don't refresh the TTL).
+  function patchAddedCache(baseId, itemKey) {
+    if (!baseId) return;
+    try {
+      const c = JSON.parse(sessionStorage.getItem(SESSION_ADDED_CACHE) || "null");
+      const map = (c && c.map) || {};
+      if (itemKey) map[baseId] = itemKey;
+      else delete map[baseId];
+      sessionStorage.setItem(
+        SESSION_ADDED_CACHE,
+        JSON.stringify({ ts: (c && c.ts) || Date.now(), map })
+      );
+    } catch {}
+  }
+
+  // Small, unobtrusive sync indicator — JS-injected so it needs no template change.
+  function injectSyncStyles() {
+    if (document.getElementById("zotero-sync-styles")) return;
+    const css =
+      "#zotero-sync-status{position:fixed;left:1rem;bottom:1rem;z-index:9998;display:none;" +
+      "align-items:center;gap:.45rem;padding:.4rem .85rem;border-radius:999px;font-size:.78rem;" +
+      "font-weight:600;font-family:inherit;background:#fff;border:1px solid rgba(226,232,240,.95);" +
+      "box-shadow:0 4px 14px rgba(15,23,42,.12);color:#475569;transition:opacity .3s ease}" +
+      "#zotero-sync-status.show{display:inline-flex}" +
+      "#zotero-sync-status.error{color:#b91c1c;border-color:rgba(185,28,28,.3)}" +
+      "#zotero-sync-status.done{color:#047857;border-color:rgba(16,185,129,.3)}";
+    const s = document.createElement("style");
+    s.id = "zotero-sync-styles";
+    s.textContent = css;
+    (document.head || document.documentElement).appendChild(s);
+  }
+  let syncHideTimer = null;
+  function setSyncStatus(state, text) {
+    injectSyncStyles();
+    let el = document.getElementById("zotero-sync-status");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "zotero-sync-status";
+      document.body.appendChild(el);
+    }
+    if (syncHideTimer) {
+      clearTimeout(syncHideTimer);
+      syncHideTimer = null;
+    }
+    if (state === "hidden") {
+      el.classList.remove("show");
+      return;
+    }
+    el.className = "show" + (state === "error" ? " error" : state === "done" ? " done" : "");
+    const icon =
+      state === "syncing"
+        ? '<i class="fas fa-spinner fa-spin"></i>'
+        : state === "done"
+          ? '<i class="fas fa-circle-check"></i>'
+          : '<i class="fas fa-triangle-exclamation"></i>';
+    el.innerHTML = icon + '<span class="zss-text"></span>';
+    el.querySelector(".zss-text").textContent = text;
+    if (state === "done" || state === "error") {
+      syncHideTimer = setTimeout(() => el.classList.remove("show"), 3000);
+    }
+  }
+
+  /**
+   * Reconcile every button on the page against the real Zotero library: mark
+   * papers already in the Daily Paper tree as saved, clear stale "saved" state
+   * for papers no longer there, and rewrite localStorage to match. Uses the
+   * session cache when fresh (silent); otherwise queries Zotero with a visible
+   * indicator. Network failure keeps the localStorage-based state untouched.
+   */
+  async function reconcileWithZotero(client, buttons, papers) {
+    if (!buttons.length) return;
+    let map = readAddedCache();
+    const fromCache = !!map;
+    if (!map) {
+      setSyncStatus("syncing", "Zotero 同步中…");
+      try {
+        map = await client.listDailyPaperArxivMap(ROOT_COLLECTION_NAME);
+        writeAddedCache(map);
+      } catch (e) {
+        console.warn("[zotero] reconcile failed:", e);
+        setSyncStatus("error", "Zotero 同步失败（保留本地状态）");
+        return; // keep whatever localStorage gave us
+      }
+    }
+    const liked = readLikedMap();
+    buttons.forEach((btn) => {
+      if (btn.dataset.state === "loading") return;
+      const idx = parseInt(btn.dataset.paperIndex, 10);
+      const paper = papers[idx];
+      if (!paper) return;
+      const baseId = paperBaseId(paper);
+      const itemKey = baseId ? map[baseId] : null;
+      if (itemKey) {
+        btn.dataset.itemKey = itemKey;
+        setBtnState(btn, "saved");
+        liked[paper.url] = itemKey;
+      } else {
+        // not in Zotero (anymore) → drop stale saved state
+        delete liked[paper.url];
+        delete btn.dataset.itemKey;
+        if (btn.dataset.state === "saved") setBtnState(btn, "idle");
+      }
+    });
+    writeLikedMap(liked);
+    if (!fromCache) {
+      setSyncStatus("done", `Zotero 已同步（库中 ${Object.keys(map).length} 篇）`);
     }
   }
 
@@ -429,6 +491,10 @@
         }
       });
     });
+
+    // Background: reconcile the buttons against the real Zotero library so the
+    // "In Zotero" state is accurate across devices/sessions, not just localStorage.
+    reconcileWithZotero(client, buttons, papers);
   }
 
   if (document.readyState === "loading") {

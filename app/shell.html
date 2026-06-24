@@ -22,35 +22,224 @@
       }
       #topbar {
         flex-shrink: 0; height: 48px; display: flex; align-items: center;
-        justify-content: space-between; padding: 0 1.1rem; gap: 0.8rem;
-        background: linear-gradient(135deg, var(--primary) 0%, #8e3dae 50%, var(--secondary) 100%);
-        color: #fff; font-size: 0.85rem;
-        box-shadow: 0 4px 14px rgba(123, 44, 159, 0.22); z-index: 5;
+        justify-content: space-between; padding: 0 0.9rem; gap: 0.8rem;
+        background: #ffffff; color: var(--text); font-size: 0.85rem;
+        border-bottom: 1px solid var(--border); z-index: 5;
       }
-      #topbar .left { display: flex; align-items: center; gap: 0.6rem; font-weight: 600; }
+      #topbar .left { display: flex; align-items: center; gap: 0.5rem; }
+      #topbar .logo { display: inline-flex; align-items: center; color: var(--primary); }
+      #topbar .appname { font-weight: 700; color: var(--primary); font-size: 0.92rem; letter-spacing: -0.01em; }
       #topbar .badge {
-        background: rgba(255, 255, 255, 0.22); padding: 0.16rem 0.6rem;
-        border-radius: 999px; font-size: 0.68rem; font-weight: 600;
+        background: #f1edf7; color: #6b1f8f; padding: 0.14rem 0.55rem;
+        border-radius: 999px; font-size: 0.66rem; font-weight: 600;
       }
       #topbar .center { flex: 1; display: flex; justify-content: center; }
-      #report-select {
-        background: rgba(255, 255, 255, 0.16); color: #fff; border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 0.5rem; padding: 0.3rem 0.7rem; font-size: 0.8rem; font-family: inherit;
-        cursor: pointer; max-width: 280px;
+
+      /* Date picker: ‹  [📅 date ▾]  ›  — the native <select> sits transparent
+         on top of the pill so the dropdown list stays native + reliable. */
+      .datepicker { position: relative; display: flex; align-items: center; gap: 0.4rem; }
+      .date-nav {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 28px; height: 28px; padding: 0; border-radius: 50%;
+        background: #f1f5f9; color: #475569; border: 1px solid transparent;
+        cursor: pointer; transition: background 0.15s ease;
       }
-      #report-select option { color: #1e293b; }
-      #topbar button {
-        color: #fff; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.3);
-        padding: 0.36rem 0.85rem; border-radius: 0.55rem; cursor: pointer; font-family: inherit;
-        font-weight: 500; font-size: 0.8rem; transition: background 0.15s ease;
+      .date-nav:hover:not(:disabled) { background: #e2e8f0; }
+      .date-nav:disabled { opacity: 0.4; cursor: default; }
+      .date-pill {
+        position: relative; display: flex; align-items: center; gap: 0.5rem;
+        min-width: 152px; justify-content: center; padding: 0.34rem 0.85rem;
+        background: #f1f5f9; border: 1px solid var(--border); border-radius: 999px;
+        color: var(--text); font-family: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+        transition: border-color 0.15s ease, background 0.15s ease;
       }
-      #topbar button:hover { background: rgba(255, 255, 255, 0.24); }
+      .date-pill:hover { border-color: #cbd5e1; background: #eef2f7; }
+      .date-pill .cal { color: var(--primary); flex-shrink: 0; }
+      .date-pill .caret { color: var(--text-muted); flex-shrink: 0; transition: transform 0.15s ease; }
+      .date-pill[aria-expanded="true"] .caret { transform: rotate(180deg); }
+      .date-pill #date-label { font-variant-numeric: tabular-nums; }
+      #report-select { display: none; }
+
+      /* Calendar popover (the merged 论文列表): a month grid of report days. */
+      .date-popover {
+        display: none; position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+        z-index: 50; width: 272px; background: #fff; border: 1px solid var(--border);
+        border-radius: 12px; box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16); padding: 12px 14px;
+      }
+      .date-popover.open { display: block; }
+      .dp-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+      .dp-title { font-size: 0.82rem; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+      .dp-nav {
+        display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px;
+        border-radius: 6px; border: none; background: transparent; color: #64748b; cursor: pointer;
+      }
+      .dp-nav:hover:not(:disabled) { background: #f1f5f9; color: var(--text); }
+      .dp-nav:disabled { opacity: 0.3; cursor: default; }
+      .dp-nav svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .dp-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+      .dp-dow { font-size: 0.66rem; color: #94a3b8; text-align: center; padding: 2px 0; }
+      .dp-cell {
+        font-family: inherit; font-size: 0.76rem; text-align: center; padding: 6px 0; border: none;
+        background: transparent; color: #cbd5e1; border-radius: 6px; cursor: default;
+      }
+      .dp-cell.in { color: #475569; }
+      .dp-cell.has { background: #f3e8ff; color: #6b1f8f; font-weight: 600; cursor: pointer; }
+      .dp-cell.has:hover { background: #e9d5ff; }
+      .dp-cell.sel { background: var(--primary); color: #fff; font-weight: 600; cursor: pointer; }
+      .dp-foot { margin-top: 10px; padding-top: 8px; border-top: 1px solid #eef2f7; display: flex; justify-content: space-between; align-items: center; }
+      .dp-hint { font-size: 0.66rem; color: #94a3b8; }
+      .dp-latest { font-family: inherit; font-size: 0.7rem; font-weight: 600; color: var(--primary); background: none; border: none; cursor: pointer; padding: 0; }
+      .dp-latest:hover { text-decoration: underline; }
+
+      #topbar .icon-btn {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 34px; height: 34px; padding: 0; border-radius: 9px;
+        color: #475569; background: #f1f5f9; border: 1px solid transparent;
+        cursor: pointer; transition: background 0.15s ease, color 0.15s ease;
+      }
+      #topbar .icon-btn:hover { background: #e2e8f0; color: var(--text); }
+      #topbar .right { display: flex; align-items: center; gap: 0.5rem; }
+      .read-any-btn {
+        display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 0.8rem;
+        border-radius: 9px; font-family: inherit; font-size: 0.8rem; font-weight: 600;
+        color: #6b1f8f; background: #f1edf7; border: 1px solid transparent; cursor: pointer;
+        transition: background 0.15s ease;
+      }
+      .read-any-btn:hover { background: #e7dcf2; }
+      .tb-ico {
+        width: 17px; height: 17px; display: block;
+        stroke: currentColor; stroke-width: 2; fill: none;
+        stroke-linecap: round; stroke-linejoin: round;
+      }
 
       #content { flex: 1 1 auto; display: flex; overflow: hidden; }
-      iframe { border: none; flex: 1 1 auto; height: 100%; display: block; background: #fff; }
+      #main-col { flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+
+      /* In-app browser tabs: home (the report) + one tab per opened web page. */
+      #tabbar {
+        flex-shrink: 0; display: flex; align-items: flex-end; gap: 4px;
+        padding: 6px 8px 0; background: #f1f3f7; border-bottom: 1px solid var(--border);
+        overflow-x: auto; scrollbar-width: none;
+      }
+      #tabbar::-webkit-scrollbar { height: 0; }
+      .tab {
+        display: flex; align-items: center; gap: 7px; max-width: 210px; flex-shrink: 0;
+        padding: 6px 10px; border-radius: 8px 8px 0 0; font-size: 0.78rem; color: var(--text-muted);
+        cursor: pointer; user-select: none; border: 1px solid transparent; border-bottom: none;
+      }
+      .tab:hover { background: #e9edf3; }
+      .tab.active {
+        background: #fff; color: var(--text); border-color: var(--border);
+        box-shadow: inset 0 2px 0 var(--primary); margin-bottom: -1px;
+      }
+      .tab .tab-ico { display: inline-flex; flex-shrink: 0; color: var(--text-muted); }
+      .tab.active .tab-ico { color: var(--primary); }
+      .tab .tab-ico svg { width: 14px; height: 14px; display: block; }
+      .tab .tab-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .tab-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--primary); flex-shrink: 0; display: none; }
+      .tab.has-new .tab-dot { display: inline-block; }
+      .tab-close {
+        display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+        width: 17px; height: 17px; padding: 0; border: none; background: transparent;
+        color: #94a3b8; border-radius: 4px; cursor: pointer;
+      }
+      .tab-close svg { width: 12px; height: 12px; }
+      .tab-close:hover { background: #e2e8f0; color: var(--text); }
+      .tab.home .tab-close { display: none; }
+
+      /* Per-tab nav row — shown only for web tabs. */
+      #nav {
+        flex-shrink: 0; display: flex; align-items: center; gap: 4px;
+        padding: 5px 10px; background: #fff; border-bottom: 1px solid #eef2f7;
+      }
+      #nav button {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 28px; height: 28px; padding: 0; border: none; background: transparent;
+        color: #475569; border-radius: 6px; cursor: pointer;
+      }
+      #nav button:hover:not(:disabled) { background: #f1f5f9; }
+      #nav button:disabled { opacity: 0.35; cursor: default; }
+      #nav .nav-url { flex: 1; min-width: 0; font-size: 0.74rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 0.4rem; }
+      #nav .nav-ext { width: auto; padding: 0 0.7rem; gap: 6px; font-size: 0.74rem; font-weight: 600; color: #6b1f8f; }
+      #nav .nav-ext:hover { background: #f1edf7; }
+
+      #view-stack { flex: 1 1 auto; position: relative; overflow: hidden; background: #fff; }
+      #view-stack > iframe, #view-stack > webview {
+        position: absolute; inset: 0; width: 100%; height: 100%; border: none; background: #fff;
+      }
+      webview { display: flex; }
+      .view-hidden { display: none !important; }
+      .tab-spin { animation: tab-spin 0.8s linear infinite; transform-origin: center; }
+      @keyframes tab-spin { to { transform: rotate(360deg); } }
+      #topbar .icon-btn.spinning .tb-ico { animation: tab-spin 0.8s linear infinite; transform-origin: center; }
+
+      /* Shell-level toast tray (refresh / search / Zotero feedback in the top frame). */
+      #shell-toast-tray {
+        position: fixed; left: 50%; bottom: 1.1rem; transform: translateX(-50%);
+        z-index: 200; display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+        pointer-events: none;
+      }
+      .shell-toast {
+        max-width: 70vw; padding: 0.55rem 1rem; border-radius: 0.6rem; font-size: 0.82rem;
+        font-weight: 500; color: #fff; background: #334155; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.25);
+        opacity: 0; transform: translateY(8px); transition: opacity 0.25s ease, transform 0.25s ease;
+      }
+      .shell-toast.show { opacity: 1; transform: translateY(0); }
+      .shell-toast.success { background: #047857; }
+      .shell-toast.error { background: #b91c1c; }
+      .shell-toast.info { background: #334155; }
+
+      /* Search panel (查找文献): a modal with the MiniSearch box + result list. */
+      .search-card {
+        width: 640px; max-width: 92vw; max-height: 82vh; display: flex; flex-direction: column;
+        background: #fff; border-radius: 0.9rem; padding: 1rem 1.1rem 1.1rem;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.3);
+      }
+      .search-head { display: flex; align-items: center; gap: 0.6rem; }
+      .search-box {
+        flex: 1; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.8rem;
+        border: 1px solid var(--border); border-radius: 0.6rem; transition: border-color 0.15s ease;
+      }
+      .search-box:focus-within { border-color: var(--primary); }
+      .search-box .tb-ico { color: var(--primary); flex-shrink: 0; }
+      .search-box input {
+        flex: 1; border: none; outline: none; background: transparent; font-family: inherit;
+        font-size: 0.95rem; color: var(--text);
+      }
+      .search-status { font-size: 0.76rem; color: var(--text-muted); margin: 0.7rem 0 0.5rem; flex-shrink: 0; }
+      .search-status .count { color: var(--primary); font-weight: 700; }
+      .search-results { flex: 1 1 auto; overflow-y: auto; display: flex; flex-direction: column; gap: 0.6rem; }
+
+      .sr-card { border: 1px solid var(--border); border-radius: 0.7rem; padding: 0.7rem 0.85rem; }
+      .sr-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
+      .sr-title { font-size: 0.9rem; font-weight: 600; color: var(--primary); line-height: 1.4; cursor: pointer; }
+      .sr-title:hover { text-decoration: underline; }
+      .sr-date { flex-shrink: 0; background: #f1edf7; color: #6b1f8f; font-size: 0.68rem; font-weight: 600; padding: 0.12rem 0.5rem; border-radius: 999px; white-space: nowrap; }
+      .sr-authors { font-size: 0.72rem; color: var(--text-muted); font-style: italic; margin: 0.2rem 0 0.3rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .sr-tldr { font-size: 0.8rem; color: var(--text); line-height: 1.5; margin: 0 0 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      .sr-foot { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+      .sr-chip { background: #f1edf7; color: #6b1f8f; font-size: 0.68rem; font-weight: 600; padding: 0.12rem 0.55rem; border-radius: 999px; }
+      .sr-spacer { flex: 1; }
+      .sr-btn {
+        display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.32rem 0.7rem; font-family: inherit;
+        font-size: 0.74rem; font-weight: 600; border-radius: 0.45rem; cursor: pointer; border: 1px solid transparent;
+      }
+      .sr-btn svg { width: 13px; height: 13px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .sr-read { color: #047857; background: rgba(5, 150, 105, 0.08); border-color: rgba(5, 150, 105, 0.22); }
+      .sr-read:hover { background: rgba(5, 150, 105, 0.16); }
+      .sr-read.busy { color: #b45309; background: rgba(217, 119, 6, 0.1); border-color: rgba(217, 119, 6, 0.3); cursor: progress; }
+      .sr-read.done { color: #fff; background: #059669; border-color: transparent; }
+      .sr-zotero { color: #6b1f8f; background: #f1edf7; }
+      .sr-zotero:hover { background: #e7dcf2; }
+      .sr-zotero.saved { color: #fff; background: var(--primary); border-color: transparent; }
+      .sr-btn:disabled { opacity: 0.6; cursor: wait; }
+      .search-empty { text-align: center; color: var(--text-muted); font-size: 0.84rem; padding: 1.4rem 1rem; line-height: 1.6; }
+      .search-examples { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin-top: 0.8rem; }
+      .search-ex { font-size: 0.74rem; font-weight: 600; color: var(--primary); background: #f1edf7; border: none; border-radius: 999px; padding: 0.3rem 0.8rem; cursor: pointer; font-family: inherit; }
+      .search-ex:hover { background: #e7dcf2; }
 
       #sidebar {
-        flex-shrink: 0; width: 340px; border-left: 1px solid var(--border);
+        flex-shrink: 0; width: 280px; border-left: 1px solid var(--border);
         background: #fff; display: flex; flex-direction: column; overflow: hidden;
       }
       .sidebar-head {
@@ -95,9 +284,10 @@
       .job-actions button.danger { color: #b91c1c; }
       .job-actions button:hover { filter: brightness(0.97); }
       .job-detail { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.3rem; word-break: break-all; }
+      .job-tokens { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.3rem; font-variant-numeric: tabular-nums; }
 
-      /* Personal-mode (Zotero) unlock overlay — mirrors index.html's gate. */
-      #unlock-overlay {
+      /* Modal overlays: Zotero unlock gate + "read any paper" + search panel. */
+      #unlock-overlay, #read-overlay, #search-overlay {
         position: fixed; inset: 0; z-index: 100;
         background: rgba(30, 41, 59, 0.55); backdrop-filter: blur(3px);
         display: none; align-items: center; justify-content: center;
@@ -108,11 +298,11 @@
       }
       .unlock-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
       .unlock-sub { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1rem; }
-      #unlock-pw {
+      #unlock-pw, #read-input {
         width: 100%; padding: 0.6rem 0.75rem; border: 1px solid var(--border);
         border-radius: 0.55rem; font-size: 0.9rem; font-family: inherit;
       }
-      #unlock-pw:focus { outline: none; border-color: var(--primary); }
+      #unlock-pw:focus, #read-input:focus { outline: none; border-color: var(--primary); }
       .unlock-err { color: #b91c1c; font-size: 0.8rem; min-height: 1.1rem; margin: 0.4rem 0; }
       .unlock-actions { display: flex; gap: 0.6rem; justify-content: flex-end; }
       .unlock-actions button {
@@ -126,12 +316,66 @@
   </head>
   <body>
     <div id="topbar">
-      <div class="left"><span>📖 PaperReader</span><span class="badge">本地精读</span></div>
-      <div class="center"><select id="report-select" title="选择报告日期"></select></div>
-      <div class="right"><button id="btn-settings" type="button">设置</button></div>
+      <div class="left">
+        <span class="logo">
+          <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        </span>
+        <span class="appname">PaperReader</span>
+        <span class="badge">本地精读</span>
+      </div>
+      <div class="center">
+        <div class="datepicker">
+          <button id="date-prev" class="date-nav" type="button" title="前一天（更早）" aria-label="前一天">
+            <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <button type="button" class="date-pill" id="date-pill-btn" aria-haspopup="dialog" aria-expanded="false" title="选择报告日期（点开日历）">
+            <svg class="tb-ico cal" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <span id="date-label">—</span>
+            <svg class="tb-ico caret" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <button id="date-next" class="date-nav" type="button" title="后一天（更新）" aria-label="后一天">
+            <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+          <select id="report-select" aria-label="选择报告日期"></select>
+          <div id="date-popover" class="date-popover" role="dialog" aria-label="选择报告日期"></div>
+        </div>
+      </div>
+      <div class="right">
+        <button id="btn-search" class="read-any-btn" type="button" title="查找文献（跨所有日期全文检索）">
+          <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-3.5-3.5"></path></svg>
+          <span>搜索</span>
+        </button>
+        <button id="btn-read-any" class="read-any-btn" type="button" title="读一篇论文（arXiv 链接 / ID 或论文名称）">
+          <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>读论文</span>
+        </button>
+        <button id="btn-refresh" class="icon-btn" type="button" title="刷新（拉取最新报告）" aria-label="刷新">
+          <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+        </button>
+        <button id="btn-settings" class="icon-btn" type="button" title="设置" aria-label="设置">
+          <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
+      </div>
     </div>
     <div id="content">
-      <iframe id="report-frame" title="report"></iframe>
+      <div id="main-col">
+        <div id="tabbar">
+          <div class="tab home active" id="tab-home" title="每日报告">
+            <span class="tab-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg></span>
+            <span class="tab-title">报告</span>
+          </div>
+        </div>
+        <div id="nav" class="view-hidden">
+          <button id="nav-back" type="button" title="后退" aria-label="后退"><svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+          <button id="nav-fwd" type="button" title="前进" aria-label="前进"><svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+          <button id="nav-reload" type="button" title="刷新" aria-label="刷新"><svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg></button>
+          <span class="nav-url" id="nav-url"></span>
+          <button id="nav-ext" class="nav-ext" type="button" title="在系统浏览器打开"><svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg><span>用浏览器打开</span></button>
+        </div>
+        <div id="view-stack">
+          <iframe id="report-frame" title="report"></iframe>
+        </div>
+      </div>
       <aside id="sidebar">
         <div class="sidebar-head">阅读任务 <span id="env-badge"></span></div>
         <div id="job-list">
@@ -141,6 +385,37 @@
           </div>
         </div>
       </aside>
+    </div>
+    <div id="read-overlay">
+      <div class="unlock-card">
+        <div class="unlock-title">读一篇论文</div>
+        <div class="unlock-sub">
+          粘贴 arXiv 链接 / ID，或直接输入论文名称（会联网搜索定位）。读完会用
+          paper-reading 技能在 Obsidian 生成同款结构化笔记，进度见右侧「阅读任务」。
+        </div>
+        <input type="text" id="read-input" placeholder="arXiv 链接 / ID，或论文名称" autocomplete="off" />
+        <div id="read-err" class="unlock-err"></div>
+        <div class="unlock-actions">
+          <button id="read-cancel" type="button">取消</button>
+          <button id="read-zotero" type="button" title="把这篇加入 Zotero（仅 arXiv 链接 / ID）">加入 Zotero</button>
+          <button id="read-go" type="button" class="primary">开读</button>
+        </div>
+      </div>
+    </div>
+    <div id="search-overlay">
+      <div class="search-card">
+        <div class="search-head">
+          <div class="search-box">
+            <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-3.5-3.5"></path></svg>
+            <input type="text" id="search-input" placeholder="输入关键词，如 vision-language-action、世界模型、Tesla…" autocomplete="off" />
+          </div>
+          <button id="search-close" class="icon-btn" type="button" title="关闭" aria-label="关闭">
+            <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <div id="search-status" class="search-status"></div>
+        <div id="search-results" class="search-results"></div>
+      </div>
     </div>
     <div id="unlock-overlay">
       <div class="unlock-card">
@@ -159,8 +434,15 @@
     </div>
     <!-- crypto.js + the encrypted bundle (window.__ZOTERO_ENC) power the unlock,
          same as the public site's index.html gate. -->
+    <script src="vendor/spark-md5.min.js"></script>
+    <script src="vendor/jszip.min.js"></script>
+    <script src="vendor/minisearch.min.js"></script>
     <script src="site/js/crypto.js"></script>
     <script src="site/js/secrets.enc.js"></script>
+    <script src="site/js/zotero.js"></script>
+    <script src="site/js/webdav.js"></script>
+    <script src="calendar.js"></script>
+    <script src="zotero-save.js"></script>
     <script src="renderer.js"></script>
   </body>
 </html>

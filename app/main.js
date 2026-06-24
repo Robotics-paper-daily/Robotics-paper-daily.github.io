@@ -16,6 +16,8 @@ const { probeEnv, detectDefaults } = require("./env-probe");
 const { JobQueue } = require("./job-queue");
 const { syncSite } = require("./sync-site");
 const { scanReadPapers } = require("./vault-scan");
+const { setReadInNoteText } = require("./read-status");
+const { arxivIdFromInput, parseArxivAtom } = require("./arxiv-meta");
 
 // Pin the app name so userData (config.json, site-cache) is deterministic —
 // otherwise packaged vs `electron .` runs can resolve to different folders
@@ -49,7 +51,11 @@ function liveBase() {
 // papers without a git pull). The app's own code + the Zotero secrets stay
 // local/bundled — we never fetch those from the public site.
 function isLiveData(rel) {
-  return rel === "site/reports.json" || /^site\/daily_html\/[^/]+\.html$/.test(rel);
+  return (
+    rel === "site/reports.json" ||
+    rel === "site/search_index.json" ||
+    /^site\/daily_html\/[^/]+\.html$/.test(rel)
+  );
 }
 
 function guessType(p) {
@@ -81,7 +87,9 @@ async function serveSiteLive(rel) {
 
   if (base) {
     try {
-      const res = await net.fetch(base + "/" + sub, { signal: AbortSignal.timeout(6000) });
+      // The search index is large (~80 MB); give it a much longer ceiling.
+      const timeoutMs = sub === "search_index.json" ? 120000 : 6000;
+      const res = await net.fetch(base + "/" + sub, { signal: AbortSignal.timeout(timeoutMs) });
       if (res.ok) {
         let body = Buffer.from(await res.arrayBuffer());
         if (isHtml) body = injectReadScript(body);
@@ -145,6 +153,18 @@ function firstRunInit() {
   return Object.keys(patch).length ? settings.merge(patch) : s;
 }
 
+// http(s) URLs (links / window.open from the report iframe or a webview) →
+// in-app tab; the renderer builds the <webview>. Other schemes → the OS. Always
+// denies the native popup so we never spawn extra windows.
+function routeOpenUrl(url) {
+  if (typeof url === "string" && /^https?:\/\//i.test(url)) {
+    if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send("open-tab", url);
+  } else if (url) {
+    shell.openExternal(url).catch(() => {});
+  }
+  return { action: "deny" };
+}
+
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 1280,
@@ -158,9 +178,20 @@ function createMainWindow() {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false,
+      webviewTag: true, // external links open as in-app <webview> tabs
     },
   });
   mainWindow.loadURL("app://local/shell.html");
+
+  // Route window.open / target=_blank (from the report iframe) to in-app tabs
+  // instead of native windows.
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => routeOpenUrl(url));
+  // Harden the <webview> guests: no preload, no node integration.
+  mainWindow.webContents.on("will-attach-webview", (_e, webPreferences) => {
+    delete webPreferences.preload;
+    webPreferences.nodeIntegration = false;
+    webPreferences.contextIsolation = true;
+  });
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
@@ -208,13 +239,111 @@ function createMainWindow() {
           );
           await delay(4500);
           console.log("[smoke] probe:", JSON.stringify(await wc.executeJavaScript(PROBE)));
+          // New chrome (refresh / calendar popover / search panel) sanity probe.
+          if (process.env.PAPERREADER_SMOKE_UI) {
+            const ui = await wc.executeJavaScript(`(() => {
+                const out = {};
+                out.calendarLoaded = typeof window.PRCalendar !== 'undefined';
+                out.miniSearchLoaded = typeof window.MiniSearch !== 'undefined';
+                out.zoteroSaveLoaded = typeof window.ZoteroSave !== 'undefined';
+                out.hasSearchBtn = !!document.getElementById('btn-search');
+                out.hasRefreshBtn = !!document.getElementById('btn-refresh');
+                const pill = document.getElementById('date-pill-btn'); if (pill) pill.click();
+                const pop = document.getElementById('date-popover');
+                out.calOpen = !!pop && pop.classList.contains('open');
+                out.calReportDays = document.querySelectorAll('#date-popover .dp-cell.has, #date-popover .dp-cell.sel').length;
+                out.calTitle = (document.querySelector('#date-popover .dp-title')||{}).textContent || null;
+                if (pill) pill.click();
+                const sb = document.getElementById('btn-search'); if (sb) sb.click();
+                const so = document.getElementById('search-overlay');
+                out.searchOpen = !!so && getComputedStyle(so).display !== 'none';
+                out.hasSearchInput = !!document.getElementById('search-input');
+                const sc = document.getElementById('search-close'); if (sc) sc.click();
+                return out;
+              })()`);
+            console.log("[smoke] ui:", JSON.stringify(ui));
+          }
+          // Render a synthetic finished job through the real IPC path to verify
+          // the frozen total time + per-read token line render.
+          if (process.env.PAPERREADER_SMOKE_TOKENS) {
+            const fake = {
+              jobId: "job_smoke",
+              title: "SMOKE token render test",
+              state: "done",
+              phase: "done",
+              label: "已生成",
+              startedAt: Date.now() - 154000,
+              durationMs: 154000,
+              usage: { input: 2100, output: 48000, cacheRead: 1200000, cacheCreate: 30000 },
+              costUsd: 3.4,
+            };
+            mainWindow.webContents.send("paper:progress", fake);
+            await delay(600);
+            const row = await wc.executeJavaScript(`(() => {
+                const j = document.querySelector('#job-list .job');
+                if (!j) return { found: false };
+                const tk = j.querySelector('.job-tokens');
+                return {
+                  found: true,
+                  phase: (j.querySelector('.job-phase')||{}).textContent,
+                  elapsed: (j.querySelector('.job-elapsed')||{}).textContent,
+                  tokens: tk ? tk.textContent : null,
+                  tokensShown: !!(tk && getComputedStyle(tk).display !== 'none'),
+                };
+              })()`);
+            console.log("[smoke] tokens:", JSON.stringify(row));
+          }
+          // Click the FIRST IDLE 帮我读 (skip 已读/已生成/读取中/失败) so we actually
+          // spawn a read — clicking a 已读 button would only open its note.
+          const PICK_IDLE = `(() => {
+              const d = document.getElementById('report-frame').contentWindow.document;
+              const b = d.querySelector('.read-btn:not(.read):not(.done):not(.running):not(.error)') || d.querySelector('.read-btn');
+              if (!b) return { ok: false };
+              b.click();
+              return { ok: true, idx: b.dataset.paperIndex, label: (b.querySelector('.read-label')||b).textContent.replace(/\\s+/g,' ').trim() };
+            })()`;
           if (process.env.PAPERREADER_SMOKE_CLICK) {
-            const clicked = await wc.executeJavaScript(
-              `(() => { const d = document.getElementById('report-frame').contentWindow.document; const b = d.querySelector('.read-btn'); if (b) b.click(); return !!b; })()`
-            );
-            console.log("[smoke] clicked first read button:", clicked);
+            console.log("[smoke] clicked idle read button:", JSON.stringify(await wc.executeJavaScript(PICK_IDLE)));
             await delay(22000); // let init + a phase or two stream in
             console.log("[smoke] after-click:", JSON.stringify(await wc.executeJavaScript(PROBE)));
+          }
+          // Full end-to-end: spawn a real read, poll the JobQueue (main process)
+          // to completion, then exercise openInObsidian — automated e2e check.
+          if (process.env.PAPERREADER_SMOKE_FULL) {
+            console.log("[smoke] full-read clicked:", JSON.stringify(await wc.executeJavaScript(PICK_IDLE)));
+            const deadline = Date.now() + 18 * 60 * 1000; // under the 20-min watchdog
+            let job = null, lastKey = "";
+            while (Date.now() < deadline) {
+              await delay(5000);
+              const snap = queue.snapshot();
+              job = snap.length ? snap[snap.length - 1] : null;
+              if (job) {
+                const key = `${job.state}/${job.phase}/${job.label}`;
+                if (key !== lastKey) {
+                  console.log("[smoke] job:", JSON.stringify({ state: job.state, phase: job.phase, label: job.label }));
+                  lastKey = key;
+                }
+                if (job.state === "done" || job.state === "error") break;
+              }
+            }
+            console.log("[smoke] final job:", JSON.stringify(job));
+            if (job && job.state === "done") {
+              console.log("[smoke] folderPath:", job.folderPath);
+              console.log("[smoke] openInObsidian:", JSON.stringify(queue.openInObsidian(job.id)));
+            }
+          }
+          // Verify in-app tabs: a window.open from the report must create a
+          // background tab, NOT a native window.
+          if (process.env.PAPERREADER_SMOKE_TAB) {
+            await wc.executeJavaScript(
+              `(() => { const f = document.getElementById('report-frame'); (f.contentWindow || window).open('https://example.com/','_blank'); return true; })()`
+            );
+            await delay(2000);
+            const tabInfo = await wc.executeJavaScript(
+              `(() => ({ tabs: document.querySelectorAll('#tabbar .tab').length, hasNew: !!document.querySelector('#tabbar .tab.has-new'), navHidden: document.getElementById('nav').classList.contains('view-hidden'), dateLabel: (document.getElementById('date-label')||{}).textContent, reportHidden: document.getElementById('report-frame').classList.contains('view-hidden') }))()`
+            );
+            console.log("[smoke] tabs:", JSON.stringify(tabInfo), "windows:", BrowserWindow.getAllWindows().length);
+            console.log("[smoke] report-after-tab:", JSON.stringify(await wc.executeJavaScript(PROBE)));
           }
           const img = await wc.capturePage();
           fs.writeFileSync(process.env.PAPERREADER_SMOKE, img.toPNG());
@@ -272,8 +401,10 @@ function wireIpc() {
       createSettingsWindow();
       return { ok: false, reason: !probe.claude.ok ? "claude 未就绪" : "vault 未就绪" };
     }
-    const dup = queue.findActiveByUrl(payload.url);
-    if (dup) return { ok: false, reason: "already-running", jobId: dup.id };
+    if (payload.url) {
+      const dup = queue.findActiveByUrl(payload.url);
+      if (dup) return { ok: false, reason: "already-running", jobId: dup.id };
+    }
     const job = queue.enqueue(payload);
     return { ok: true, jobId: job.id, state: job.state };
   });
@@ -294,12 +425,52 @@ function wireIpc() {
     return { ok: true, uri };
   });
 
+  // Manual 已读: flip the checkbox at the end of the note's .md (syncs via Obsidian).
+  ipcMain.handle("vault:setReadStatus", (_e, relNoExt, read) => {
+    const s = settings.load();
+    if (!s.vaultPath || !relNoExt) return { ok: false, reason: "no-path" };
+    const notePath = path.join(s.vaultPath, relNoExt + ".md");
+    try {
+      const text = fs.readFileSync(notePath, "utf8");
+      const next = setReadInNoteText(text, !!read);
+      if (next !== text) fs.writeFileSync(notePath, next, "utf8");
+      return { ok: true, read: !!read };
+    } catch (e) {
+      return { ok: false, reason: e.message };
+    }
+  });
+
   ipcMain.handle("settings:get", () => settings.load());
   ipcMain.handle("settings:set", (_e, patch) => settings.merge(patch));
   ipcMain.handle("env:probe", () => probeEnv(settings.load()));
   ipcMain.handle("settings:open", () => {
     createSettingsWindow();
     return { ok: true };
+  });
+
+  // "Open in system browser" from a web tab's nav row.
+  ipcMain.handle("open-external", (_e, url) => {
+    if (typeof url === "string" && /^https?:\/\//i.test(url)) shell.openExternal(url);
+    return { ok: true };
+  });
+
+  // Fetch arXiv metadata for a link/ID (read-modal "加入 Zotero"). Done in the
+  // main process via net.fetch — the arXiv Atom API sets no CORS headers.
+  ipcMain.handle("arxiv:meta", async (_e, idOrUrl) => {
+    const id = arxivIdFromInput(idOrUrl);
+    if (!id) return { ok: false, reason: "无法识别 arXiv ID" };
+    try {
+      const res = await net.fetch(
+        `http://export.arxiv.org/api/query?id_list=${encodeURIComponent(id)}&max_results=1`,
+        { signal: AbortSignal.timeout(15000) }
+      );
+      if (!res.ok) return { ok: false, reason: `arXiv HTTP ${res.status}` };
+      const meta = parseArxivAtom(await res.text(), id);
+      if (!meta) return { ok: false, reason: "未找到该论文（或解析失败）" };
+      return { ok: true, id, meta };
+    } catch (e) {
+      return { ok: false, reason: e.message || String(e) };
+    }
   });
 
   ipcMain.handle("settings:pickVault", async () => {
@@ -319,6 +490,13 @@ function wireIpc() {
 }
 
 app.whenReady().then(() => {
+  // Dev (`electron .`) otherwise shows the default Electron dock icon; use ours.
+  // Packaged builds get the icon from the .app bundle, so only override in dev.
+  if (!app.isPackaged && process.platform === "darwin" && app.dock) {
+    try {
+      app.dock.setIcon(path.join(APP_DIR, "build", "icon.png"));
+    } catch {}
+  }
   registerAppProtocol();
   ensureSite();
   firstRunInit();
@@ -334,6 +512,14 @@ app.whenReady().then(() => {
 
   wireIpc();
   createMainWindow();
+
+  // <webview> guests: route their popups (in-page links opening new windows) to
+  // in-app tabs as well, so nothing ever spawns a native window.
+  app.on("web-contents-created", (_e, contents) => {
+    if (typeof contents.getType === "function" && contents.getType() === "webview") {
+      contents.setWindowOpenHandler(({ url }) => routeOpenUrl(url));
+    }
+  });
 
   // If prerequisites are missing, surface settings right away.
   const probe = probeEnv(settings.load());
