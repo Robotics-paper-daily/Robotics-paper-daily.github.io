@@ -32,7 +32,7 @@ Auth is your existing Claude Code login (subscription / OAuth) — the app never
 sets `ANTHROPIC_API_KEY`, so reads bill against your plan, not the API.
 
 **Latest papers, no git pull.** The `app://` protocol live-fetches
-`reports.json` + report pages from the live GitHub Pages site (`liveBase`,
+`reports.json`, report pages, and the manifest-driven search-index shards from the live GitHub Pages site (`liveBase`,
 default `https://robotics-paper-daily.github.io`) on each load, caches them under
 the app's userData for offline use, and falls back cache → bundled `site/`
 snapshot when offline. The public pages don't carry the read button — the proxy

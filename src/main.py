@@ -16,6 +16,7 @@ from filter import (
 )
 from html_generator import generate_html_from_json
 from config import TRANSLATION_MIN_SCORE
+from search_index import generate_search_index
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -28,6 +29,7 @@ DEFAULT_JSON_DIR = os.path.join(PROJECT_ROOT, 'daily_json')
 DEFAULT_HTML_DIR = os.path.join(PROJECT_ROOT, 'daily_html')
 DEFAULT_TEMPLATE_DIR = os.path.join(PROJECT_ROOT, 'templates')
 DEFAULT_TEMPLATE_NAME = 'paper_template.html' # 确保此模板存在
+DEFAULT_SEARCH_INDEX_DIR = os.path.join(PROJECT_ROOT, 'search_index')
 
 # 设定最早抓取日期（上限日期），早于此日期的文章将不会自动抓取
 EARLIEST_DATE = date(2026, 1, 1)  # 可以根据需要修改这个日期
@@ -50,48 +52,6 @@ def find_missing_dates(json_dir: str, earliest: date, latest: date) -> list:
             missing.append(current)
         current += timedelta(days=1)
     return missing
-
-
-def generate_search_index(json_dir: str, output_path: str):
-    """扫描所有 daily JSON 文件，生成一个扁平的搜索索引 search_index.json。"""
-    index = []
-    if not os.path.isdir(json_dir):
-        logging.warning(f"JSON 目录 '{json_dir}' 不存在，无法生成搜索索引。")
-        return
-
-    for filename in sorted(os.listdir(json_dir)):
-        if not filename.endswith('.json'):
-            continue
-        date_str = filename.replace('.json', '')  # e.g. "2026-02-20"
-        filepath = os.path.join(json_dir, filename)
-        try:
-            with open(filepath, 'r', encoding='utf-8') as f:
-                papers = json.load(f)
-        except Exception:
-            continue
-        for paper in papers:
-            index.append({
-                'title': paper.get('title', ''),
-                'summary': paper.get('summary', ''),
-                'summary_zh': paper.get('summary_zh', ''),
-                'tldr': paper.get('tldr', ''),
-                'tldr_zh': paper.get('tldr_zh', ''),
-                'url': paper.get('url', ''),
-                'date': date_str,
-                'authors': paper.get('authors', []),
-                'categories': paper.get('categories', []),
-                'score': paper.get('overall_priority_score', 0),
-                'selected': paper.get('selected', paper.get('stage1_selected', True)),
-                'topic': paper.get('topic', ''),
-                'keywords': paper.get('keywords', []),
-            })
-
-    try:
-        with open(output_path, 'w', encoding='utf-8') as f:
-            json.dump(index, f, ensure_ascii=False)
-        logging.info(f"搜索索引已生成: {output_path}，共 {len(index)} 篇论文。")
-    except Exception as e:
-        logging.error(f"生成搜索索引失败: {e}", exc_info=True)
 
 
 def main(target_date: date):
@@ -323,5 +283,9 @@ if __name__ == '__main__':
                 logging.info(f"还有 {remaining} 个缺失日期未处理，下次运行 --backfill 将继续补全。")
 
     # --- 生成搜索索引 ---
-    logging.info("生成搜索索引 search_index.json ...")
-    generate_search_index(DEFAULT_JSON_DIR, os.path.join(PROJECT_ROOT, 'search_index.json'))
+    logging.info("生成分片搜索索引 search_index/（并更新旧客户端兼容索引）...")
+    generate_search_index(
+        DEFAULT_JSON_DIR,
+        DEFAULT_SEARCH_INDEX_DIR,
+        os.path.join(PROJECT_ROOT, 'search_index.json'),
+    )

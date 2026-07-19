@@ -24,7 +24,7 @@ New in **v0.3**: a cross-platform **desktop app** ([`app/`](app/README.md), Wind
 5. **Continuous deployment** — workflow at [.github/workflows/daily_arxiv.yml](.github/workflows/daily_arxiv.yml).
 6. **Backfill** — missing dates in `daily_json/` are detected and processed in batches via `--backfill --backfill-limit N`.
 7. **Stage-1 rescoring** — [src/rescore_stage1.py](src/rescore_stage1.py) re-applies the current keyword taxonomy to all historical JSON without invoking the LLM, allowing retroactive policy changes at zero API cost.
-8. **Full-text search** — client-side [MiniSearch](https://lucaong.github.io/minisearch/) index over titles, abstracts, TLDRs, and authors with AND-matching.
+8. **Full-text search** — client-side [MiniSearch](https://lucaong.github.io/minisearch/) index over titles, abstracts, TLDRs, and authors with AND-matching. The complete history is stored in size-bounded monthly shards so the daily workflow never creates a file above GitHub's 100 MiB limit.
 
 ### Personal mode (optional, password-gated)
 
@@ -339,6 +339,7 @@ python src/rebuild_html.py      # re-render every HTML
 │   ├── scraper.py                      # arXiv API client
 │   ├── filter.py                       # Stage-1 prefilter + Stage-2 LLM rating
 │   ├── html_generator.py               # Jinja2 renderer
+│   ├── search_index.py                  # Size-bounded search shard generator
 │   ├── rebuild_html.py                 # Re-render every HTML from JSON
 │   └── rescore_stage1.py               # Re-apply Stage-1 rules to historical JSON
 ├── templates/paper_template.html       # Daily-report Jinja2 template
@@ -357,7 +358,8 @@ python src/rebuild_html.py      # re-render every HTML
 ├── guest.html                          # Public read-only frame
 ├── list.html                           # Historical reports index
 ├── search.html                         # MiniSearch full-text search
-├── search_index.json                   # Pre-built search index (auto-generated)
+├── search_index/                       # Full manifest + monthly search shards (auto-generated)
+├── search_index.json                   # Bounded legacy-client compatibility index
 ├── reports.json                        # Per-day report manifest (auto-generated)
 ├── requirements.txt
 ├── README.md / README_ZH.md

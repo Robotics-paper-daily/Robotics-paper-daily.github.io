@@ -26,7 +26,7 @@
 5. **持续部署** — 工作流 [.github/workflows/daily_arxiv.yml](.github/workflows/daily_arxiv.yml)。
 6. **缺日补全** — `daily_json/` 中缺失日期由 `--backfill --backfill-limit N` 检测并按批处理。
 7. **一级回填** — [src/rescore_stage1.py](src/rescore_stage1.py) 对所有历史 JSON 重新应用当前关键词分类，不调用 LLM，零 API 成本支持回溯调整。
-8. **全文检索** — [MiniSearch](https://lucaong.github.io/minisearch/) 客户端索引覆盖标题、摘要、TLDR 与作者，AND 匹配。
+8. **全文检索** — [MiniSearch](https://lucaong.github.io/minisearch/) 客户端索引覆盖标题、摘要、TLDR 与作者，AND 匹配。完整历史按月生成带体积上限的分片，避免每日工作流再次产生超过 GitHub 100 MiB 限制的单文件。
 
 ### 个人模式（可选，密码门控）
 
@@ -340,6 +340,7 @@ python src/rebuild_html.py      # 全量重渲染 HTML
 │   ├── scraper.py                      # arXiv API 客户端
 │   ├── filter.py                       # 一级预筛 + 二级 LLM 评分
 │   ├── html_generator.py               # Jinja2 渲染器
+│   ├── search_index.py                  # 带体积上限的检索分片生成器
 │   ├── rebuild_html.py                 # 基于 JSON 全量重建 HTML
 │   └── rescore_stage1.py               # 对历史 JSON 重新应用一级规则
 ├── templates/paper_template.html       # 每日报告 Jinja2 模板
@@ -358,7 +359,8 @@ python src/rebuild_html.py      # 全量重渲染 HTML
 ├── guest.html                          # 公开只读框架
 ├── list.html                           # 历史报告索引
 ├── search.html                         # MiniSearch 全文检索
-├── search_index.json                   # 预构建检索索引（自动生成）
+├── search_index/                       # 完整 manifest + 按月检索分片（自动生成）
+├── search_index.json                   # 有界的旧客户端兼容索引
 ├── reports.json                        # 每日报告清单（自动生成）
 ├── requirements.txt
 ├── README.md / README_ZH.md

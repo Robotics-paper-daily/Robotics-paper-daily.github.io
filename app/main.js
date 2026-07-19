@@ -30,6 +30,9 @@ const SITE_DIR = path.join(APP_DIR, "site");
 let mainWindow = null;
 let settingsWindow = null;
 let queue = null;
+let searchLiveRetryAfter = 0;
+
+const SEARCH_LIVE_RETRY_DELAY_MS = 15000;
 
 // ----- custom app:// scheme (same-origin for shell + report iframe) -----
 protocol.registerSchemesAsPrivileged([
@@ -54,6 +57,7 @@ function isLiveData(rel) {
   return (
     rel === "site/reports.json" ||
     rel === "site/search_index.json" ||
+    /^site\/search_index\/(?:manifest|\d{4}-\d{2}(?:-\d{3})?)\.json$/.test(rel) ||
     /^site\/daily_html\/[^/]+\.html$/.test(rel)
   );
 }
@@ -78,19 +82,32 @@ function injectReadScript(buf) {
 
 // Live-first for daily data: fetch GitHub Pages, cache to userData, fall back to
 // that cache then the bundled snapshot when offline.
-async function serveSiteLive(rel) {
+async function serveSiteLive(rel, requestSearch = "") {
   const sub = rel.slice("site/".length); // reports.json | daily_html/x.html
   const isHtml = /\.html?$/i.test(sub);
+  const isSearchData = sub === "search_index.json" || sub.startsWith("search_index/");
+  const isLegacySearch = sub === "search_index.json";
   const base = liveBase();
   const cacheFile = path.join(app.getPath("userData"), "site-cache", sub);
   const bundled = path.join(APP_DIR, rel);
 
-  if (base) {
+  const canTryLive = base && (!isSearchData || isLegacySearch || Date.now() >= searchLiveRetryAfter);
+  if (canTryLive) {
     try {
-      // The search index is large (~80 MB); give it a much longer ceiling.
-      const timeoutMs = sub === "search_index.json" ? 120000 : 6000;
-      const res = await net.fetch(base + "/" + sub, { signal: AbortSignal.timeout(timeoutMs) });
+      // Search data can be tens of MB; give both legacy and sharded files more time.
+      const timeoutMs = sub === "search_index/manifest.json"
+        ? 10000
+        : isSearchData && Date.now() < searchLiveRetryAfter
+          ? 10000
+          : isSearchData
+            ? 120000
+            : 6000;
+      const res = await net.fetch(base + "/" + sub + requestSearch, {
+        cache: "no-store",
+        signal: AbortSignal.timeout(timeoutMs),
+      });
       if (res.ok) {
+        if (isSearchData) searchLiveRetryAfter = 0;
         let body = Buffer.from(await res.arrayBuffer());
         if (isHtml) body = injectReadScript(body);
         try {
@@ -99,7 +116,9 @@ async function serveSiteLive(rel) {
         } catch {}
         return new Response(body, { headers: { "content-type": guessType(sub) } });
       }
+      if (isSearchData) searchLiveRetryAfter = Date.now() + SEARCH_LIVE_RETRY_DELAY_MS;
     } catch {
+      if (isSearchData) searchLiveRetryAfter = Date.now() + SEARCH_LIVE_RETRY_DELAY_MS;
       /* offline / error → fall through to cache/bundle */
     }
   }
@@ -118,15 +137,17 @@ async function serveSiteLive(rel) {
 function registerAppProtocol() {
   protocol.handle("app", (request) => {
     let rel;
+    let requestUrl;
     try {
-      rel = decodeURIComponent(new URL(request.url).pathname);
+      requestUrl = new URL(request.url);
+      rel = decodeURIComponent(requestUrl.pathname);
     } catch {
       return new Response("bad url", { status: 400 });
     }
     rel = rel.replace(/^\/+/, "");
     const filePath = path.normalize(path.join(APP_DIR, rel));
     if (!filePath.startsWith(APP_DIR)) return new Response("forbidden", { status: 403 });
-    if (rel.startsWith("site/") && isLiveData(rel)) return serveSiteLive(rel);
+    if (rel.startsWith("site/") && isLiveData(rel)) return serveSiteLive(rel, requestUrl.search);
     return net.fetch(pathToFileURL(filePath).toString());
   });
 }
@@ -134,7 +155,11 @@ function registerAppProtocol() {
 // In dev (unpacked), make sure app/site exists by snapshotting the sibling repo.
 // In a packaged build the snapshot is bundled, so this is a no-op.
 function ensureSite() {
-  if (fs.existsSync(path.join(SITE_DIR, "reports.json"))) return;
+  const requiredSnapshotFiles = [
+    path.join(SITE_DIR, "reports.json"),
+    path.join(SITE_DIR, "js", "search-index.js"),
+  ];
+  if (requiredSnapshotFiles.every((file) => fs.existsSync(file))) return;
   try {
     syncSite(path.join(APP_DIR, ".."), SITE_DIR);
   } catch (e) {

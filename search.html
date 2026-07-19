@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/minisearch@7/dist/umd/index.js"></script>
+    <script src="js/search-index.js"></script>
     <style>
         :root {
             --bg-color: #f8fafc;
@@ -378,6 +379,7 @@
         let miniSearch;
         let totalCount = 0;
         let dateRange = '';
+        let legacyIndex = false;
         const input = document.getElementById('search-input');
         const resultsDiv = document.getElementById('results');
         const statusDiv = document.getElementById('status');
@@ -390,7 +392,8 @@
 
         function renderIdleHint() {
             const dr = dateRange ? `（覆盖 ${dateRange}）` : '';
-            statusDiv.innerHTML = `<span>索引中共 <span class="count">${totalCount}</span> 篇论文 ${dr}</span>`;
+            const scope = legacyIndex ? '（兼容模式，仅高相关论文）' : dr;
+            statusDiv.innerHTML = `<span>索引中共 <span class="count">${totalCount}</span> 篇论文 ${scope}</span>`;
             resultsDiv.innerHTML = `
                 <div class="empty-state">
                     <h2>试试这些热门方向</h2>
@@ -408,12 +411,19 @@
             });
         }
 
-        fetch('search_index.json?v=' + Date.now())
-            .then(r => {
-                if (!r.ok) throw new Error(`HTTP ${r.status}`);
-                return r.json();
-            })
-            .then(data => {
+        SearchIndexLoader.loadSearchIndex({
+            baseUrl: 'search_index',
+            legacyUrl: 'search_index.json',
+            onProgress: ({ loadedShards, totalShards, loadedPapers, totalPapers }) => {
+                statusDiv.innerHTML = `<span>正在加载索引 ${loadedShards}/${totalShards}（${loadedPapers}/${totalPapers} 篇）…</span>`;
+            },
+            onFallback: (err) => {
+                console.warn('Sharded search index unavailable; using compatibility index:', err);
+                statusDiv.innerHTML = '<span>完整索引不可用，正在加载兼容索引…</span>';
+            },
+        })
+            .then(({ papers: data, legacy }) => {
+                legacyIndex = legacy;
                 data.forEach((p, i) => {
                     p.id = i;
                     p.authorsText = (p.authors || []).join(', ');
@@ -446,7 +456,7 @@
                 resultsDiv.innerHTML = `
                     <div class="error-state">
                         <h2>加载失败</h2>
-                        <p>无法加载搜索索引：${esc(err.message)}<br>请确认 <code>search_index.json</code> 已生成。</p>
+                        <p>无法加载搜索索引：${esc(err.message)}<br>请确认 <code>search_index/manifest.json</code> 与分片已生成。</p>
                     </div>`;
                 statusDiv.innerHTML = '';
             });

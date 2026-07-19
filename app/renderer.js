@@ -532,6 +532,7 @@ let miniSearch = null;
 let indexState = "none"; // none | loading | ready | error
 let searchTotal = 0;
 let searchDateRange = "";
+let searchIndexIsLegacy = false;
 const searchReadByJob = new Map(); // jobId -> the search result's read button
 
 function escHtml(s) {
@@ -555,7 +556,18 @@ async function loadSearchIndex() {
   searchStatus.textContent = "正在加载检索索引（首次较慢，需联网拉取）…";
   searchResults.innerHTML = "";
   try {
-    const data = await (await fetch("site/search_index.json")).json();
+    const { papers: data, legacy } = await SearchIndexLoader.loadSearchIndex({
+      baseUrl: "site/search_index",
+      legacyUrl: "site/search_index.json",
+      onProgress: ({ loadedShards, totalShards, loadedPapers, totalPapers }) => {
+        searchStatus.textContent = `正在加载检索索引 ${loadedShards}/${totalShards}（${loadedPapers}/${totalPapers} 篇）…`;
+      },
+      onFallback: (err) => {
+        console.warn("Sharded search index unavailable; using compatibility index:", err);
+        searchStatus.textContent = "完整索引不可用，正在加载兼容索引…";
+      },
+    });
+    searchIndexIsLegacy = legacy;
     data.forEach((p, i) => {
       p.id = i;
       p.authorsText = (p.authors || []).join(", ");
@@ -579,12 +591,17 @@ async function loadSearchIndex() {
   } catch (e) {
     indexState = "none"; // allow a retry on next open
     searchStatus.textContent = "";
-    searchResults.innerHTML = `<div class="search-empty">索引加载失败：${escHtml(e.message)}<br/>请检查网络后重新打开搜索（首次需联网拉取 search_index.json）。</div>`;
+    searchResults.innerHTML = `<div class="search-empty">索引加载失败：${escHtml(e.message)}<br/>请检查网络后重新打开搜索（首次需联网拉取索引分片）。</div>`;
   }
 }
 
 function renderIdleHint() {
-  searchStatus.innerHTML = `索引中共 <span class="count">${searchTotal}</span> 篇论文${searchDateRange ? `（${escHtml(searchDateRange)}）` : ""}`;
+  const scope = searchIndexIsLegacy
+    ? "（兼容模式，仅高相关论文）"
+    : searchDateRange
+      ? `（${escHtml(searchDateRange)}）`
+      : "";
+  searchStatus.innerHTML = `索引中共 <span class="count">${searchTotal}</span> 篇论文${scope}`;
   const chips = SEARCH_EXAMPLES.map(
     (e) => `<button class="search-ex" type="button" data-q="${escHtml(e)}">${escHtml(e)}</button>`
   ).join("");
