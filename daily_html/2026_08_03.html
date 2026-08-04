@@ -1,0 +1,2732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArXiv Robotics Papers (RL/VLM/World Models/LLMs/VLA/VLN) - August 03, 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.16.4/framer-motion.dev.js"></script>
+    <!-- Example using Font Awesome (replace with your preferred icon library if needed) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        :root {
+            /* New Palette: Light, Clean, Futuristic with Tsinghua Purple accents */
+            --bg-color: #f8fafc; /* Tailwind slate-50 (Very Light Gray) */
+            --card-bg-color: #ffffff; /* White */
+            --text-color: #1e293b; /* Tailwind slate-800 (Dark Gray-Blue) */
+            --text-muted-color: #64748b; /* Tailwind slate-500 (Medium Gray-Blue) */
+            --header-color: #0f172a; /* Tailwind slate-900 (Very Dark Blue) */
+            --highlight-primary: #7B2C9F; /* Tsinghua Purple */
+            --highlight-secondary: #B794D3; /* Light Tsinghua Purple */
+            --border-color: #e2e8f0; /* Tailwind slate-200 (Light Gray) */
+            --shadow-color: rgba(15, 23, 42, 0.08); /* Subtle shadow based on slate-900 */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            line-height: 1.6;
+        }
+
+
+        .bento-grid {
+            display: grid;
+            gap: 1.5rem; /* Tailwind gap-6 */
+            grid-template-columns: 1fr; /* Force single column */
+            padding-bottom: 4rem; /* Add padding at the bottom */
+        }
+
+        .bento-item {
+            /* Apply semi-transparent white background and blur */
+            background-color: rgba(255, 255, 255, 0.7); /* White with 70% opacity */
+            backdrop-filter: blur(10px); /* Apply blur effect */
+            -webkit-backdrop-filter: blur(10px); /* Safari prefix */
+            border-radius: 1rem; /* Slightly larger radius */
+            padding: 1.75rem; /* Slightly more padding */
+            border: 1px solid rgba(226, 232, 240, 0.5); /* Lighter border with transparency */
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.3s ease-out;
+            overflow: hidden; /* Ensure content doesn't overflow */
+            position: relative; /* For potential pseudo-elements */
+        }
+
+        /* Removed ::before pseudo-element for a cleaner look */
+
+
+        .bento-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 20px var(--shadow-color), 0 4px 8px rgba(15, 23, 42, 0.06); /* Adjusted hover shadow */
+        }
+
+        .paper-title {
+            font-size: 1.125rem; /* Tailwind text-lg */
+            font-weight: 600; /* Tailwind font-semibold */
+            color: var(--highlight-primary); /* Use new primary highlight */
+            margin-bottom: 0.75rem; /* Tailwind mb-3 */
+            line-height: 1.4;
+        }
+
+        .paper-summary {
+            font-size: 0.85rem;
+            color: var(--text-muted-color);
+            margin-bottom: 1.25rem;
+            line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
+        }
+
+        .paper-link {
+            display: inline-flex; /* Use flex for icon alignment */
+            align-items: center;
+            font-size: 0.875rem; /* Tailwind text-sm */
+            font-weight: 600;
+            color: var(--highlight-primary);
+            text-decoration: none;
+            padding: 0.5rem 1rem; /* Add padding */
+            border-radius: 0.5rem; /* Slightly rounder */
+            background-color: rgba(123, 44, 159, 0.08); /* Subtle purple background */
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
+
+        .paper-link i {
+            margin-right: 0.5rem; /* Tailwind mr-2 */
+            transition: transform 0.3s ease;
+        }
+
+        .paper-link:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F; /* Darker purple on hover */
+            transform: translateY(-1px);
+        }
+        .paper-link:hover i {
+             transform: translateX(2px);
+        }
+
+        .paper-authors {
+            font-size: 0.75rem; /* Tailwind text-xs */
+            color: var(--text-muted-color);
+            margin-top: 1rem; /* Tailwind mt-4 */
+            font-style: italic;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem; /* Tailwind mb-12 */
+            padding-top: 3rem; /* Tailwind pt-12 */
+        }
+
+        .header h1 {
+            font-size: 2.5rem; /* Tailwind text-4xl or 5xl */
+            font-weight: 700; /* Tailwind font-bold */
+            color: var(--header-color);
+            letter-spacing: -0.025em; /* Tailwind tracking-tight */
+            margin-bottom: 0.5rem;
+            /* Optional: Add a subtle text gradient (Tsinghua Purple) */
+            /* background: linear-gradient(90deg, var(--highlight-primary), var(--highlight-secondary)); */
+            /* -webkit-background-clip: text; */
+            /* -webkit-text-fill-color: transparent; */
+        }
+
+        .header p {
+            font-size: 1.125rem; /* Tailwind text-lg */
+            color: var(--text-muted-color);
+            margin-top: 0.5rem; /* Tailwind mt-2 */
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .footer {
+            text-align: center;
+            color: var(--text-muted-color);
+            font-size: 0.875rem; /* Tailwind text-sm */
+            padding-top: 2rem;
+            padding-bottom: 2rem; /* Tailwind py-8 */
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        /* Simple line graphic element (optional) */
+        .line-graphic {
+            height: 1px; /* Thinner line */
+            background: linear-gradient(90deg, rgba(123, 44, 159, 0), var(--highlight-primary), rgba(123, 44, 159, 0));
+            opacity: 0.6;
+            margin: 1.5rem 0; /* Adjust margin */
+        }
+
+        /* Framer Motion requires the script, styles enhance appearance */
+        [data-motion-element] {
+             /* Base styles for elements animated by Framer Motion */
+        }
+
+        .paper-tldr {
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
+        }
+
+        .paper-rating {
+            margin-top: 1rem; /* Tailwind mt-4 */
+            margin-bottom: 1rem; /* Tailwind mb-4 */
+            color: #f59e0b; /* Tailwind amber-500 */
+        }
+
+        .paper-rating i {
+            margin-right: 0.125rem; /* Tailwind mr-0.5 */
+        }
+
+        /* Apply consistent star color to sub-ratings */
+        .paper-sub-ratings .rating-item i {
+            color: #f59e0b; /* Match overall rating star color (amber-500) */
+            margin-right: 0.125rem; /* Consistent spacing */
+        }
+
+        .filtered-section {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .filtered-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--header-color);
+            margin-bottom: 1rem;
+        }
+
+        .filtered-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .filtered-item {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .filtered-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+        }
+
+        .filtered-item-title-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: color 0.25s ease;
+        }
+
+        .filtered-item-title-link:hover {
+            color: var(--highlight-primary);
+        }
+
+        .filtered-item-title-link i {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .filtered-item p {
+            margin: 0.25rem 0;
+            color: var(--text-muted-color);
+            font-size: 0.88rem;
+        }
+
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link.
+           Shown only when body.zotero-mode is set (which like.js does after
+           confirming sessionStorage has decrypted credentials). Guests never
+           see it. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn i {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover i {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
+    </style>
+</head>
+<body class="container mx-auto px-4 antialiased">
+    <motion.div
+        initial="{ opacity: 0, y: -30 }"
+        animate="{ opacity: 1, y: 0 }"
+        transition="{ duration: 0.6, ease: 'easeOut' }"
+        class="header"
+        data-motion-element
+    >
+        <h1>Robotics Daily Papers</h1>
+        <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
+        <p>August 03, 2026</p>
+        <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
+    </motion.div>
+
+    <div class="bento-grid" id="paper-grid">
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.0, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                PRISM: Privileged Probabilistic Latent Supervision for End-to-End Autonomous Driving Motion Planning
+                
+                <span class="topic-chip topic-autonomousdriving">AutonomousDriving</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">end-to-end autonomous driving</span>
+                
+                <span class="kw">probabilistic deep supervision</span>
+                
+                <span class="kw">ELBO</span>
+                
+                <span class="kw">latent regularization</span>
+                
+                <span class="kw">planning</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文揭示端到端自动驾驶中VLM监督的性能增益源自与真实数据的潜在连接而非推理能力，并提出基于ELBO的概率深度监督框架，在nuScenes上将规划L2误差降低8%，碰撞率降低3%。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper reveals that performance gains from VLM supervision in end-to-end autonomous driving stem from latent connections to ground-truth data, not reasoning, and proposes a probabilistic deep supervision framework using ELBO that reduces planning L2 error by 8% and collision rate by 3% on nuScenes.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> End-to-end autonomous driving (E2E AD) systems integrate perception, prediction, and planning into a single differentiable architecture. While these models show great promise, their standard training often relies on output-only supervision, which can lead to weak gradients for the hidden layers of increasingly complex models. Recent works have integrated vision-language model (VLM) supervision for latent features to address this, yielding substantial empirical gains, yet leaving the underlying theoretical mechanisms poorly understood. Our investigation into this methodology reveals that the resulting performance gains stem not from VLM reasoning capabilities, as previously assumed, but rather from the latent connections forged between the E2E AD model and ground-truth (GT) data during training. Building on this insight, we propose a probabilistic deep supervision framework that regularizes intermediate latent representations directly from GT data. By treating model latents as reparameterizable distributions, we optimize the architecture via the Evidence Lower Bound (ELBO). Our evaluations conducted on the nuScenes dataset demonstrate that supervising trajectory-related latents with future GT paths consistently improves planning performance. Using identical training data and E2E architectures, our method achieves an 8% reduction in planning L2 error and a 3% decrease in collision rates compared to competitive vectorized baselines, all while incurring negligible computational overhead.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>端到端自动驾驶系统将感知、预测与规划整合为单一可微分架构。尽管这类模型展现出巨大潜力，但其标准训练过程往往仅依赖输出监督，这可能导致日益复杂的模型中隐藏层梯度信号较弱。近期研究尝试引入视觉语言模型监督以增强潜在特征表征，虽取得显著经验提升，但底层理论机制仍鲜为人知。本研究对该方法的深入剖析表明，其所带来的性能增益并非源自先前假设的VLM推理能力，而是源于训练过程中E2E AD模型与真值数据之间建立的潜在连接。基于这一发现，我们提出一种概率深度监督框架，该框架直接通过真值数据对中间隐层表征进行正则化约束。通过将模型潜在变量建模为可重参数化分布，我们利用证据下界优化网络架构。在nuScenes数据集上的评估表明，采用未来GT路径监督轨迹相关隐层表征可持续提升规划性能。在相同训练数据与E2E架构条件下，与竞争性向量化基线方法相比，本方法实现规划L2误差降低8%、碰撞率下降3%，同时仅产生可忽略的额外计算开销。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(10/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star-half-alt"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2608.01201v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Volodymyr Havrylov, Faris Janjoš, Andreas Look, Jürgen Mathes, Andreas Geiger</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.05, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                GenTrack: Physical Alignment for Robot-Native Motion Generation and Zero-Shot Humanoid Tracking
+                
+                <span class="topic-chip topic-humanoidembodied">HumanoidEmbodied</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">online generator-tracker framework</span>
+                
+                <span class="kw">zero-shot humanoid tracking</span>
+                
+                <span class="kw">execution-grounded alignment</span>
+                
+                <span class="kw">robot-native motion</span>
+                
+                <span class="kw">co-training</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>GenTrack提出了一种在线协同训练框架，交替进行基于机器人可执行性的文本到运动生成器对齐和在新生成参考上的跟踪器训练，缩小了重定向人体运动与机器人原生控制之间的差距，实现了零样本人形跟踪。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> GenTrack proposes an online co-training framework that alternates between grounding a text-to-motion generator on robot executability and training a humanoid tracker on newly generated references, narrowing the gap between retargeted human motion and robot-native control for zero-shot humanoid tracking.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> General-purpose humanoid trackers can execute diverse references, but their zero-shot coverage depends on large embodied corpora that are costly to extend. Text-to-motion generators offer scalable supervision, yet models trained on human motion or retargeted data inherit a gap between kinematic plausibility and robot executability. Existing one-way pipelines fix either the generated corpus or the reward tracker. We introduce GenTrack, an online generator--tracker framework that alternates execution-grounded, group-relative generator alignment with tracker training on newly generated references; anchoring and rehearsal constrain drift. On Unitree G1, we evaluate GenTrack with ProtoMotions and SONIC backbones across three zero-shot tracking splits including public AMASS and LAFAN benchmarks, and a private out-of-distribution test set of 1,024 prompt-motion pairs in the wild. The online co-training strategy consistently produces generators that output more robot-executable motions with strong semantic alignment, and trackers with markedly broader zero-shot coverage and improved tracking accuracy, especially on out-of-distribution references. These results demonstrate that joint online post-training effectively narrows the executability gap between retargeted references and robot-native motion, advancing zero-shot humanoid control without additional data collection and beyond the limitations of a static reference pool.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>通用人形跟踪器可执行多样化的运动指令，但其零样本覆盖能力依赖于成本高昂、难以扩展的具身语料库。文本到动作生成器提供可扩展的监督信号，然而基于人类运动或重定向数据训练的模型仍存在运动学合理性与机器人可执行性之间的固有差距。现有单向流程要么固定生成语料库，要么固定奖励跟踪器。我们提出GenTrack——一种在线生成器-跟踪器框架，该框架交替执行基于执行环境的群组相对生成器对齐操作，并在新生成的运动指令上训练跟踪器；锚定与回放机制可约束漂移。在宇树G1机器人上，我们使用ProtoMotions和SONIC主干网络对GenTrack进行评测，涵盖三个零样本跟踪测试集：包括公开的AMASS和LAFAN基准测试集，以及包含1024个野外提示-动作对的私有分布外测试集。在线协同训练策略持续输出更符合机器人可执行性且语义对齐度更高的动作生成器，同时显著提升跟踪器的零样本覆盖范围与跟踪精度，尤其对分布外运动指令效果显著。这些结果表明，联合在线后训练有效缩小了重定向运动与机器人原生动作之间的可执行性差距，无需额外数据采集即可推进零样本人形控制，突破静态参考池的局限性。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2608.01410v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="1" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="1" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Zeyu Ling, Xinyao Yu, Renye Yan, Jikang Cheng, Zhanke Wang, Qing Shuai, Changqing Zou</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.1, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                SG-WAM: Self-Guided World Modeling in Geometry-Aware Policy Space
+                
+                <span class="topic-chip topic-worldmodel">WorldModel</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">world action models</span>
+                
+                <span class="kw">geometry-aware dynamics</span>
+                
+                <span class="kw">self-guided prediction</span>
+                
+                <span class="kw">policy representation space</span>
+                
+                <span class="kw">robot manipulation</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>SG-WAM 是一个自引导框架，在策略推导的潜在空间中学习几何感知的、动作条件的世界动态，无需大规模预训练即可实现强大的机器人操作性能。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> SG-WAM is a self-guided framework that learns geometry-aware, action-conditioned world dynamics in policy-derived latent space, achieving strong robot manipulation performance without large-scale pretraining.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> World Action Models (WAMs) couple action generation with prediction of future states. Their effectiveness depends on whether future dynamics are modeled in a space that is both aligned with action generation and sufficiently geometry-aware to capture where and how actions change the scene. Existing WAMs typically satisfy only part of this requirement, relying on either perceptually heavy observation-space targets or auxiliary latent spaces that are not jointly structured for action relevance and geometry. We propose SG-WAM, a self-guided framework that learns geometry-aware action-conditioned dynamics directly in the policy-derived representation space. SG-WAM introduces learnable dynamics tokens and a Self-Guided World Predictor that forecasts their future latent states conditioned on intervening robot actions. Prediction targets are generated by an exponential moving average copy of the same policy backbone, providing stable supervision within the representation family used by the action expert. Geometric supervision further structures the policy image-token representations, providing spatially grounded context for the dynamics tokens and yielding a future-alignment space that is both action-relevant and geometry-aware. Latent future prediction, geometric grounding, and flow-matching action generation are jointly optimized end-to-end in a unified framework. Built on a 0.9B model without large-scale embodied pretraining, SG-WAM achieves 98.5% average success on LIBERO and 73% on LIBERO-Plus, while outperforming strong baselines in both in-distribution and out-of-distribution real-world evaluations.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>世界动作模型（WAMs）将动作生成与未来状态预测相结合。其有效性取决于未来动态是否在一个既与动作生成对齐、又具备充分几何感知能力以捕捉动作改变场景的位置与方式的表征空间中进行建模。现有WAM通常仅满足该要求的部分条件：要么依赖感知负担较重的观测空间目标，要么依赖未针对动作相关性与几何结构进行联合设计的辅助潜在空间。我们提出SG-WAM——一种直接在策略派生表征空间中学习几何感知、动作条件化动态的自引导框架。SG-WAM引入可学习动态令牌及自引导世界预测器，该预测器基于干预性机器人动作对动态令牌的未来潜在状态进行预测。预测目标由同一策略骨干网络的指数移动平均副本生成，为动作专家所使用的表征族提供稳定监督。几何监督进一步结构化策略图像令牌表征，为动态令牌提供空间上下文基础，并构建出兼具动作相关性与几何感知能力的未来对齐空间。潜在未来预测、几何约束与流匹配动作生成在统一框架中端到端联合优化。基于不含大规模具身预训练的0.9B模型，SG-WAM在LIBERO上达到98.5%的平均成功率，在LIBERO-Plus上达到73%，同时在分布内与分布外真实世界评估中均超越强基线方法。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2608.01397v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="2" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="2" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Ruiteng Zhao, Zhengshen Zhang, Yue Su, Wenshuo Wang, Jiahui Li, Zhiyuan Yang, Francis E. H. Tay, Marcelo H. Ang, Haiyue Zhu</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.15000000000000002, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                Driver2Map: Imitating Human Driving for Online High-Definition Map Construction
+                
+                <span class="topic-chip topic-autonomousdriving">AutonomousDriving</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">HD map construction</span>
+                
+                <span class="kw">BEV fusion</span>
+                
+                <span class="kw">multi-modal alignment</span>
+                
+                <span class="kw">pose-guided fusion</span>
+                
+                <span class="kw">map refinement</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>Driver2Map 提出了一种新的在线高清地图构建模型，通过两阶段对齐和位姿引导的鸟瞰图融合，融合摄像头图像、标准地图和卫星图像，模拟人类驾驶感知。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> Driver2Map proposes a novel online HD map construction model that fuses camera images, standard-definition maps, and satellite images using two-stage alignment and pose-guided BEV fusion to mimic human driving perception.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> High-definition (HD) maps are essential for autonomous driving systems. In constructing such maps, onboard multi-view camera images, standard-definition maps and satellite images provide crucial information. However, due to the modality and perspective differences among these data sources, existing methods often struggle to effectively align and fuse them, making online HD map construction still challenging. To address these issues, we propose Driver2Map, an online HD map construction model inspired by human drivers. Unlike existing HD map construction models that utilize only two modalities, our Driver2Map can simultaneously exploit three modalities. Specifically, we propose a "two-stage alignment" strategy to reduce spatial misalignment across different modalities. Additionally, we introduce "Pose-Guided BEV Fusion", a BEV (bird's-eye-view) generation module that leverages camera pose information to adaptively weight multi-view features, thereby effectively suppressing cross-view feature overlap during BEV generation. Also, we design a "Pretrained Prior for Map Refinement" module to refine the initial prediction by learning map structure priors, thus improving the HD map prediction under dynamic occlusions. Extensive experiments demonstrate that Driver2Map outperforms existing methods on both IoU and AP metrics.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>高清（HD）地图对于自动驾驶系统至关重要。在构建此类地图时，车载多视角摄像头图像、标准清晰度地图和卫星图像提供了关键信息。然而，由于这些数据源在模态和视角上的差异，现有方法往往难以有效对齐和融合它们，这使得在线高清地图构建仍具挑战性。为解决这些问题，我们提出Driver2Map——一种受人类驾驶员启发的在线高清地图构建模型。与仅利用两种模态的现有高清地图构建模型不同，我们的Driver2Map可同时利用三种模态。具体而言，我们提出了一种“两阶段对齐”策略，以减少不同模态间的空间错位。此外，我们引入了“姿态引导的BEV融合”模块，该BEV（鸟瞰图）生成模块利用相机姿态信息自适应地加权多视角特征，从而在BEV生成过程中有效抑制跨视角特征重叠。同时，我们设计了“用于地图优化的预训练先验”模块，通过学习地图结构先验来优化初始预测，从而提升动态遮挡条件下的高清地图预测性能。大量实验表明，Driver2Map在IoU和AP指标上均优于现有方法。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2608.01338v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="3" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="3" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Pan Yin, Runtian Xia, Weisong Kuang, Kaiyu Li, Cong Zhao, Xiangyong Cao</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.2, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                Hermite Curves as Trajectory Priors for Vision-Language-Action Models
+                
+                <span class="topic-chip topic-vla">VLA</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">Hermite curves</span>
+                
+                <span class="kw">trajectory priors</span>
+                
+                <span class="kw">VLA models</span>
+                
+                <span class="kw">robotic manipulation</span>
+                
+                <span class="kw">action chunk</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>引入Hermite曲线轨迹先验来结构化VLA模型中的动作片段，提高平滑性和任务成功率，在仿真和真实机器人基准上无推理开销。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> Introduces Hermite curve trajectory priors to structure action chunks in VLA models, improving smoothness and task success on simulation and real-robot benchmarks with no inference overhead.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Despite recent progress in Vision-Language-Action (VLA) models for robotic manipulation, the action chunk remains a weakly structured interface. Existing work typically flatten each chunk into per-timestep controls, relying on implicit data learning that manifests as jagged motion and boundary discontinuities during physical execution. To address these limitations, we introduce Hermite trajectory priors, parameterizing the chunk trajectory as a piecewise cubic Hermite curve defined by endpoint positions and velocities to explicitly enforce smoothness and continuity. We instantiate this fixed operator across discrete autoregressive and continuous generative paradigms via three variants: (1) Hermite Tokens, which predict quantized boundary variables autoregressively; (2) Hermite Scaffold, which decomposes clean actions into a base scaffold and residuals; and (3) Hermite Regularization, which applies the prior strictly as an auxiliary training objective. Across simulation benchmarks and real-robot platforms, Hermite Regularization achieves superior performance among these three variants, improving π0.5 baseline success rates from 95.9% to 98.7% on LIBERO, 85.7% to 90.9% on LIBERO-plus, and 63.4% to 90.0% across four real-robot tasks without additional inference overhead. Trajectory analyses reveal that explicitly structuring trajectory priors serves most effectively as a learning inductive bias rather than a runtime constraint.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>尽管近年来面向机器人操作的视觉-语言-动作（VLA）模型取得了进展，但动作块（action chunk）仍是一种结构薄弱的接口。现有工作通常将每个动作块扁平化为逐时间步的控制指令，依赖隐式数据学习，导致物理执行过程中出现锯齿状运动与边界不连续性。为解决这些局限，我们引入埃尔米特轨迹先验，将动作块轨迹参数化为由端点位置与速度定义的分段三次埃尔米特曲线，以显式强制平滑性与连续性。我们通过三种变体将该固定算子实例化至离散自回归与连续生成范式：（1）埃尔米特词元（Hermite Tokens），以自回归方式预测量化边界变量；（2）埃尔米特骨架（Hermite Scaffold），将干净动作分解为基础骨架与残差；（3）埃尔米特正则化（Hermite Regularization），将先验严格作为辅助训练目标施加。在仿真基准与真实机器人平台上，上述三种变体中埃尔米特正则化取得了最优性能：在LIBERO基准上将π0.5基线的成功率从95.9%提升至98.7%，在LIBERO-plus上从85.7%提升至90.9%，在四项真实机器人任务中从63.4%提升至90.0%，且无需额外推理开销。轨迹分析表明，显式结构化轨迹先验作为学习归纳偏置而非运行时约束最为有效。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2608.01265v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="4" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="4" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Qi Lv, Jianming Xing, Zhao Yang, Mingyuan Yao, Yinan Shi, Yawei Jueluo, Mike Zheng Shou, Xiang Deng</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.25, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                MiniWorld: Democratizing the Training of Video World Models from Scratch
+                
+                <span class="topic-chip topic-worldmodel">WorldModel</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">video world model</span>
+                
+                <span class="kw">autoregressive video diffusion</span>
+                
+                <span class="kw">Flow Matching</span>
+                
+                <span class="kw">block-causal Video Diffusion Transformer</span>
+                
+                <span class="kw">streaming generation</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>MiniWorld 是一个轻量级、可复现的视频世界模型训练框架，采用块因果视频扩散变换器和流匹配技术，可在单台 8-GPU 服务器上数天内从头训练自回归流式视频世界模型。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> MiniWorld is a lightweight, reproducible framework for training autoregressive streaming video world models from scratch using a block-causal Video Diffusion Transformer and Flow Matching, enabling efficient training on a single 8-GPU server within days.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Video world models predict future observations conditioned on historical observations and control signals, enabling long-horizon generation through autoregressive state transitions. Unlike conventional video generation models that primarily capture visual appearance and motion, video world models learn the underlying dynamics governing environment evolution under agent actions, providing a foundation for embodied AI and interactive simulation. Recent progress has largely relied on adapting pretrained video generation models through post-training or distillation. Although effective, these approaches often require complex training pipelines, substantial computational resources, and suffer from the mismatch between bidirectional pretraining and causal streaming inference. Recent studies have shown that training autoregressive video world models from scratch is feasible and scalable. However, the community still lacks a lightweight, transparent, and fully reproducible baseline trainable end-to-end with modest computational resources. We present MiniWorld, a reproducible framework for training streaming video world models from scratch. MiniWorld employs a block-causal Video Diffusion Transformer trained with Flow Matching in the latent space of a pretrained Video VAE. Building on Diffusion Forcing, it adopts a chunk-wise non-decreasing noise schedule and two-stage continued training to improve temporal modeling and stability. During inference, MiniWorld combines a rolling KV cache with pipelined asynchronous denoising for efficient streaming generation under bounded computation. The entire model can be trained within several days on a single 8-GPU server. By releasing the training and inference codebase and pretrained checkpoints, we hope MiniWorld will facilitate future research on video world modeling.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>视频世界模型基于历史观测与控制信号预测未来观测，通过自回归状态转换实现长程生成。与主要捕获视觉表观与运动信息的传统视频生成模型不同，视频世界模型学习智能体动作驱动下环境演化的底层动力学机制，为具身AI与交互式仿真奠定基础。近期进展多依赖于通过后训练或知识蒸馏对预训练视频生成模型进行适配改造。尽管有效，这些方法通常需要复杂的训练流程、大量计算资源，且存在双向预训练与因果流式推理之间的失配问题。最新研究表明，从头训练自回归视频世界模型具备可行性与可扩展性。然而，该领域仍缺乏轻量级、透明且完全可复现的基线模型，能使用中等计算资源实现端到端训练。我们提出MiniWorld——一种从头训练流式视频世界模型的可复现框架。该框架采用块因果视频扩散Transformer，在预训练视频VAE的潜空间中使用流匹配进行训练。基于扩散强迫机制，其采用分块非递减噪声调度与两阶段持续训练策略，以提升时序建模能力与稳定性。推理阶段，MiniWorld将滚动KV缓存与流水线异步去噪相结合，在有限计算资源下实现高效流式生成。整个模型可在单台8-GPU服务器上于数日内完成训练。通过开源训练推理代码库与预训练检查点，我们希望MiniWorld能推动视频世界建模领域的未来研究。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2608.01127v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="5" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="5" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Yian Zhao, Ruochong Zheng, Hongcan Guo, Yu Yan, Jian Zhang, Jie Chen</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.30000000000000004, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                WAM-Diff2: Hierarchical AR-to-Diffusion Distillation for Highly Efficient Autonomous Driving VLA
+                
+                <span class="topic-chip topic-autonomousdriving">AutonomousDriving</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">Vision-Language-Action</span>
+                
+                <span class="kw">distillation</span>
+                
+                <span class="kw">diffusion policy</span>
+                
+                <span class="kw">autoregressive-to-diffusion</span>
+                
+                <span class="kw">autonomous driving</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文提出WAM-Diff2，一种分层蒸馏框架，将预训练的自回归VLA模型转化为并行离散扩散策略用于自动驾驶，在保持性能的同时实现2.8倍至15.1倍的解码加速。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper introduces WAM-Diff2, a hierarchical distillation framework that converts pre-trained autoregressive VLA models into parallel discrete diffusion policies for autonomous driving, achieving performance parity with 2.8x–15.1x decoding speedup.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Vision-Language-Action (VLA) models have emerged as a prominent paradigm for end-to-end autonomous driving; however, their efficient deployment is severely constrained by high computational latency and exposure bias arising from sequential autoregressive decoding. Conversely, while specialized diffusion policies enable low-latency, parallel execution, training them from scratch typically yields narrow, single-task architectures that lack holistic visual-linguistic reasoning. Successfully transforming pre-trained autoregressive generalists into parallel diffusion models could combine multi-task cognitive intelligence with execution efficiency, yet this transition presents a formidable architectural challenge due to mismatched attention patterns (causal versus bidirectional) and divergent optimization objectives. To bridge this divide, we introduce WAM-Diff2, a multi-task discrete diffusion VLA framework powered by a three-stage hierarchical distillation strategy. By structuring the architectural shift through progressive block-wise adaptation, block-wise distillation, and model-wise cross-scale distillation, WAM-Diff2 preserves the underlying semantic foundations of the base model while accelerating inference. Extensive evaluations across driving understanding, perception, and planning benchmarks demonstrate that WAM-Diff2 effectively mitigates exposure bias and achieves performance parity with autoregressive baselines. Crucially, the autoregressive-to-diffusion transition yields a 2.8x decoding speedup, which scales to an ultimate 15.1x acceleration when combined with system-level optimizations including FlashInfer and CUDA Graphs.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>视觉-语言-动作（VLA）模型已成为端到端自动驾驶领域的重要范式，然而其高效部署受到顺序自回归解码带来的高计算延迟和暴露偏差的严重制约。相反，专用扩散策略虽能实现低延迟并行执行，但从头训练这类策略通常会产生架构狭窄的单任务模型，缺乏整体性的视觉-语言推理能力。将预训练的自回归通用模型成功转化为并行扩散模型，有望融合多任务认知智能与执行效率，然而由于注意力模式（因果注意力与双向注意力）不匹配以及优化目标存在差异，这一转变面临严峻的架构挑战。为弥合这一鸿沟，我们提出WAM-Diff2——一个基于三阶段分层蒸馏策略的多任务离散扩散VLA框架。通过逐步块级适配、块级蒸馏以及跨尺度模型级蒸馏来构建架构迁移过程，WAM-Diff2在加速推理的同时保留了基础模型中蕴含的语义根基。在驾驶理解、感知与规划基准上的广泛评估表明，WAM-Diff2有效缓解了暴露偏差，并实现了与自回归基线相当的性能。关键在于，自回归到扩散的转换带来了2.8倍的解码加速，当结合FlashInfer和CUDA Graphs等系统级优化后，最终可达到15.1倍的加速效果。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2608.01035v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="6" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="6" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Zhihao Zhu, Hanlin Shang, Mingwang Xu, Feipeng Cai, Zhuolin He, Yaoyi Li, Jianhua Han, Hang Xu, Siyu Zhu</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.35000000000000003, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                FactorJEPA: Factorizing Monolithic Futures into Layout-Agent-Interaction Channels for Crowded and Chaotic Global South Urban Worlds
+                
+                <span class="topic-chip topic-worldmodel">WorldModel</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">world model</span>
+                
+                <span class="kw">Joint Embedding Predictive Architecture</span>
+                
+                <span class="kw">dense urban scenes</span>
+                
+                <span class="kw">factorized latent</span>
+                
+                <span class="kw">DENSEWORLD dataset</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>FactorJEPA 将JEPA的单一未来潜在表示分解为布局、实体和交互通道，用于拥挤的全球南方城市场景的世界建模，并发布了DENSEWORLD-115k数据集。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> FactorJEPA decomposes the monolithic future latent of JEPA into layout, entity, and interaction channels for world modeling in crowded Global South urban environments, and introduces the DENSEWORLD-115k dataset.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> World models have attracted significant attention for their ability to capture and predict the structure and dynamics of the physical world. In this emerging landscape, Joint Embedding Predictive Architectures (JEPA) offer a particularly compelling direction.
+  We study a largely unexplored regime: populous, crowded, and chaotic Global South urban environments, which we call DENSEWORLD. Unlike the lower-density, lane-structured settings that dominate existing evaluations, these scenes exhibit soft spatial boundaries, extreme agent heterogeneity, persistent occlusion, and rapid social negotiation under mixed traffic. We introduce the first large-scale dataset for this regime: 1,000 hours of drive-through, walk-through, and aerial video across 22 cities. Existing JEPA formulations struggle to preserve dense interaction dynamics under heterogeneity and partial observability.
+  We introduce FactorJEPA, which makes world structure a first-class predictive primitive. Rather than encoding the future in a monolithic latent, it composes layout, entities, and interactions, using a visibility gate and separated subspaces to preserve partially observed agents and discourage cross-factor shortcuts. FactorJEPA improves (i) future-latent accuracy (Future-frame L1), (ii) intervention-sensitive prediction (Causal L1), and (iii) robustness to reduced visual evidence (Mask-ratio slope), while exposing (iv) a reproducible motion-information trade-off (Motion cosine). Method rankings replicate across 2B and 1B V-JEPA 2.1 backbones, with rho = 0.895 to 0.978.
+  We publicly release the DENSEWORLD-115k dataset (https://huggingface.co/datasets/anonymousML123/denseworld-115k) and the surgery-trained FactorJEPA checkpoints (https://huggingface.co/datasets/anonymousML123/factorjepa-outputs/tree/main/outputs/full/vjepa_2_1_vitg_1B/train/m09c_surgery_3stage_DI_diheavy_encoder).</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>世界模型因其捕捉和预测物理世界结构与动态的能力而备受关注。在这一新兴领域中，联合嵌入预测架构提供了一条极具前景的研究方向。  
+我们研究了一个尚未被充分探索的场景：人口稠密、拥挤且混乱的全球南方城市环境，我们将其称为密集世界。与当前主流评估中占据主导地位的低密度、有车道结构的环境不同，这些场景呈现出软性空间边界、极端的主体异质性、持续性遮挡以及混合交通下的快速社会协商特征。我们首次为该场景引入了大规模数据集：涵盖22个城市、总时长1000小时的驾车穿越、步行穿越及航拍视频。现有的联合嵌入预测架构在异质性和部分可观测条件下难以保持密集交互动态。  
+
+我们提出了因子联合嵌入预测架构，将世界结构作为首要预测基元。它并非将未来编码为单一隐变量，而是通过组合布局、实体和交互，并利用可见性门控与分离子空间来保留部分可观测的目标，同时抑制跨因子捷径。因子联合嵌入架构在以下方面取得提升：(i) 未来隐变量精度（未来帧L1损失）；(ii) 干预敏感预测（因果L1损失）；(iii) 对视觉证据减少的鲁棒性（掩码比例斜率），同时揭示了(iv) 可复现的运动—信息权衡（运动余弦值）。方法排名在2B与1B规模的V-JEPA 2.1主干网络上复现，斯皮尔曼相关系数介于0.895至0.978之间。  
+
+我们公开发布了DENSEWORLD-115k数据集（https://huggingface.co/datasets/anonymousML123/denseworld-115k）以及经手术式训练的因子联合嵌入架构模型检查点（https://huggingface.co/datasets/anonymousML123/factorjepa-outputs/tree/main/outputs/full/vjepa_2_1_vitg_1B/train/m09c_surgery_3stage_DI_diheavy_encoder）。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star-half-alt"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2608.01049v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="7" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="7" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Kapil Wanaskar, Gaytri Jena, Aman Chadha, Vinija Jain, Vasu Sharma, Amitava Das</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.4, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                GraRe: Grasp Candidate Re-Ranking for Frozen 6-DoF Grasp Detectors
+                
+                <span class="topic-chip topic-manipulation">Manipulation</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">6-DoF grasp</span>
+                
+                <span class="kw">grasp candidate re-ranking</span>
+                
+                <span class="kw">frozen detector</span>
+                
+                <span class="kw">grasp quality estimation</span>
+                
+                <span class="kw">Transformer fusion</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>GraRe 通过从候选属性、局部几何和物体上下文估计抓取质量，对冻结的 6-DoF 抓取检测器的候选抓取进行重新排序，从而提升排序及真实机器人抓取表现。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> GraRe re-ranks grasp candidates from frozen 6-DoF detectors by estimating grasp quality from candidate attributes, local geometry, and object context, improving ranking and real-robot grasping performance.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Existing 6-DoF grasp detectors typically rank grasp candidates by detector confidence. However, our analysis on GraspNet-1Billion shows that detector confidence is often poorly aligned with grasp quality, causing successful grasp candidates to be ranked too low during execution. Motivated by this observation, we formulate grasp candidate re-ranking as a separate task for frozen detectors, aiming to improve candidate ordering without changing the detector or its grasp candidates. We propose GraRe, which estimates grasp quality from candidate attributes, shell-stratified local geometry, and object context. Candidate attributes condition the local geometric and object-context representations, and a Transformer fuses all three feature types. The predicted quality is combined with detector confidence to produce the final ranking. Experiments on GraspNet-1Billion with three frozen detectors show consistent improvements, with gains of up to 13.60 points in Average AP. Real-robot experiments further demonstrate robust grasping in cluttered scenes. These results show that improving candidate ranking provides a practical way to enhance frozen 6-DoF grasp detectors.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>现有的六自由度抓取检测器通常根据检测器置信度对抓取候选进行排序。然而，我们对 GraspNet-1Billion 数据集的分析表明，检测器置信度与抓取质量之间往往存在较差的匹配，导致执行过程中成功的抓取候选被排在过低的位置。受此观察启发，我们将抓取候选重排序定义为针对固定检测器的独立任务，旨在不改变检测器或其抓取候选的情况下改进候选排序。我们提出 GraRe 方法，该方法从候选属性、壳分层局部几何特征以及物体上下文中估计抓取质量。候选属性用于约束局部几何和物体上下文表征，并通过 Transformer 融合所有三种特征类型。预测的质量与检测器置信度相结合以生成最终排序。在 GraspNet-1Billion 数据集上使用三种固定检测器进行的实验显示出一致的改进，平均 AP 提升高达 13.60 分。真实机器人实验进一步证明了在杂乱场景中的鲁棒抓取能力。这些结果表明，改进候选排序为增强固定式六自由度抓取检测器提供了一种实用方法。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star-half-alt"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2608.00946v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="8" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="8" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Jibao Yuan, Yuhui Zhao, Yinzhen Lv, Chao Xu, Shun Li, Chenxi Deng, Shaofei Chen</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.45, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                FeDepth: Federated Learning for Depth Estimation under Robot Heterogeneity
+                
+                <span class="topic-chip topic-perception3d">Perception3D</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">federated learning</span>
+                
+                <span class="kw">depth estimation</span>
+                
+                <span class="kw">robot heterogeneity</span>
+                
+                <span class="kw">clustered FL</span>
+                
+                <span class="kw">non-IID scenarios</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>FeDepth 提出了一种基于描述符的聚类联邦学习框架用于深度估计，能够处理异构机器人平台之间重叠、连续的领域偏移，性能优于标准联邦学习和硬聚类基线。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> FeDepth introduces a descriptor-based clustered federated learning framework for depth estimation that handles overlapping, continuous domain shifts across heterogeneous robot platforms, outperforming standard and hard-clustered FL baselines.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Although recent robot perception research emphasizes training on data from diverse environments to improve generalization, most existing methods still rely on centralized learning, which is inefficient and difficult to scale across heterogeneous robot platforms. Federated learning (FL) offers an alternative by enabling distributed training without raw data transfer, but it suffers from severe performance degradation under domain shifts caused by heterogeneity across clients. In real robotic deployments, data distributions often overlap across platforms, environments, and sensing conditions, making it difficult to partition clients into clearly separated domains. However, this characteristic breaks the assumption of clearly separable client domains commonly used in clustered FL. To address this gap in robot perception, particularly in depth estimation, we introduce two realistic and unexplored non-IID scenarios that reflect heterogeneity in terms of platform, environment, and depth distribution. We then propose FeDepth, a descriptor-based clustered FL framework that models client relationships through soft clustering. Unlike hard clustering methods that assume clearly separated clusters, FeDepth allows clients to participate in multiple clusters, capturing continuous and ambiguous domain transitions commonly observed in robotic environments. Extensive experiments demonstrate that FeDepth consistently improves robustness over standard FL and clustered FL baselines across multiple depth estimation architectures, providing a practical and effective solution for federated robot perception. Our project page is available at https://vision3d-lab.github.io/fedepth/.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>摘要：  
+尽管近期机器人感知研究强调利用来自多样化环境的数据进行训练以提升泛化能力，但现有方法大多仍依赖集中式学习，这种方式效率低下且难以在异构机器人平台上扩展。联邦学习（FL）提供了一种无需传输原始数据即可实现分布式训练的替代方案，但在客户端异构性导致的领域偏移下，其性能会严重下降。在实际机器人部署中，数据分布通常在不同平台、环境和感知条件下存在重叠，这使得难以将客户端划分为边界清晰的独立领域。然而，这一特性打破了聚类联邦学习中常用的“客户端领域可明确分离”的假设。为填补机器人感知领域（特别是深度估计）的空白，我们引入了两种反映平台、环境和深度分布异构性的真实且尚未被探索的非独立同分布场景。进而提出FeDepth——一种基于描述子的聚类联邦学习框架，通过软聚类建模客户端关系。与假设聚类边界清晰明确的硬聚类方法不同，FeDepth允许客户端参与多个聚类，捕捉机器人环境中常见的连续且模糊的领域过渡。大量实验表明，FeDepth在多种深度估计架构上始终优于标准联邦学习及聚类联邦学习基线，显著提升了鲁棒性，为联邦机器人感知提供了实用且有效的解决方案。我们的项目页面见：https://vision3d-lab.github.io/fedepth/。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(6/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2608.01129v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="9" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="9" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Ganghyeon Lee, Inha Lee, Junhee Lee, Jeongeon Lee, Sung Whan Yoon, Kyungdon Joo</p>
+            
+        </motion.div>
+        
+    </div>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01336v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Asleep at the Wheel: JEPA's Limitations in Evaluating Novel Driving Data
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                    
+                    <span class="topic-chip topic-autonomousdriving">AutonomousDriving</span>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="10" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="10" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Advait Pavuluri, Shamik Karkhanis, Uzma Mushtaque</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文评估了一种基于自监督JEPA的新颖性打分方法，用于自动驾驶视频片段自动筛选。研究发现，该方法在跨数据集上的表面成功源于域偏移，而在同一数据集的公平基准上其表现与简单基线无异。</p>
+                
+                <p><strong>Overall:</strong> 5/10</p>
+                
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.00931v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Stipple: Real-Time Incremental Gaussian Splatting with Visual-Inertial Tracking
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                    
+                    <span class="topic-chip topic-perception3d">Perception3D</span>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="11" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="11" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Kilian Northoff, Mateo de Mayo, Daniel Cremers</p>
+                
+                <p><strong>TLDR-CN:</strong> Stipple 将视觉惯性跟踪与增量式 3D 高斯泼溅相结合，为机器人和 XR 应用实现实时的同时跟踪与逼真 3D 重建。</p>
+                
+                <p><strong>Overall:</strong> 5/10</p>
+                
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01157v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        InteracVid: Building a Real Interactive Audio-Visual Response Dataset from Live-Chat Videos
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                    
+                    <span class="topic-chip topic-other">Other</span>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="12" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="12" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Chi Zhang, Haoyang Shi, Yueyi Liu, Zhaokun Yan, Yishu Yin, Yuhang Wu, Miao Liu</p>
+                
+                <p><strong>TLDR-CN:</strong> InteracVid 是一个从直播视频中提取的大规模上下文-查询-响应三元组数据集，用于训练模型生成交互式视听响应而非描述性字幕。</p>
+                
+                <p><strong>Overall:</strong> 3/10</p>
+                
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.00950v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Swimm3R: Splatting with Medium-aware SfM for Underwater 3D Reconstruction
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                    
+                    <span class="topic-chip topic-perception3d">Perception3D</span>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="13" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="13" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Minseong Kweon, Junaed Sattar</p>
+                
+                <p><strong>TLDR-CN:</strong> Swimm3R 将介质感知的结构光技术与水下 Beta 样条相结合，从视频中鲁棒地重建三维水下场景，提升了 PSNR 和下游定位性能。</p>
+                
+                <p><strong>Overall:</strong> 3/10</p>
+                
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01185v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        3DZip: Spatial-Aware Feature Diversity-Guided Token Compression for 3D Question Answering
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Changwoo Baek, Kyeongbo Kong</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5 <span style="opacity: 0.7;">[hits: vision language models]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01258v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        A Benchmark Dataset for MLLM-Generated Image Detection: GPT Image2 & Nano Banana2
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zirui Zhang, Yinbo Yu, Donghai Guan, Chunwei Tian, Daoqiang Zhang, Qi Zhu</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.00800v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        AIMold: An Autonomous AI-based Pipeline for Complex Mold Design
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Pengyun Qiu, Shuo Wang, Zeyuan Chen, Yihao Zhi, Chongjie Ye, Xiaoguang Han</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01276v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Astrolabe: Spherical-Map Guidance Across Diffusion Pipelines for Full-Body Capture from Unconstrained Images
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Shuliang Zhu, Qi Wang, Ryugo Morita, Jinjia Zhou</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01302v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Beyond Symmetric Fusion: Exploiting Task-Dependent Modality Strengths for RGB-Event Small Object Detection
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ziheng Wang, Chaolang Li, Yutong Yang, Xiaohan Xu, Chongxiang Yang, Hengxuan Zhong, Zhen Liang, Pengwen Dai</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: localization]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01355v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        CORTIVA: Candidate-Score Fusion of Complementary Visual Teachers for EEG- and MEG-to-Image Retrieval
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Junhan Wang, Kani Chen</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01021v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Can Humans Dream of Electric Sheep? Human-Written Samples for Fine-Grained Vision-and-Language Hallucination Benchmarking
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Timothee Mickus, Claudio Savelli, Eduardo Calò, Emilio Raimond, Stella Frank, Hengyu Luo, Flavio Giobergia, Vincent Segonne, Chuyuan Li, Aman Sinha, Lorenzo Vaiani, Jörg Tiedemann, Raúl Vázquez</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01113v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        CoT-Edit: Let CoT Guide Instruction Video Editing
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Sen Liang, Fengbin Guan, Youliang Zhang, Xin Li, Zhibo Chen</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5 <span style="opacity: 0.7;">[hits: localization]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01055v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Credit the Right Box: Marginal Contribution Assignment for Structured Visual Perception
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Xinheng Han, Jianfei Wang, Yu Chen, Xiang Wang, Shuai Li, Weixing Li, Feng Pan</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: localization, reinforcement learning]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01343v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        DeVIT: Low-Power Vision Transformer Acceleration Using Delta Computation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Reyhaneh Hosseinzadeh, Parham Zilouchian Moghaddam, Mehdi Modarressi</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.00835v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Deep Learning CNN and Recurrence Analysis for Alpha Gamma EEG Biomarkers in Fragile X Syndrome
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zag ElSayed, Payton Siekierski, Jack Yanchen Liu, Ernest Pedapati</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01178v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        DynActiveGS: Active Gaussian Splatting for Dynamic Scene Reconstruction
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Hongbo Duan, Pengting Luo, Chengzhi Zhao, Yuanhao Chiang, Fangming Liu, Xueqian Wang</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.00994v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Entity-Faithful Repair of Synthetic Supervision for Zero-Shot Image Captioning
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zhiyue Liu, Wenkai Zhou, Jian Qin, Qipeng Jiang</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01058v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Extended KAFR: A kinematic-adaptive paradigm for the efficient analysis of surgical video
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Huu Phong Nguyen, Shekhar Madhav Khairnar, Ganesh Sankaranarayanan</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01392v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        FineMoLA: Towards Fine-Grained Motion-Language Alignment from Clip-Level Supervision
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Tongyan Wang, Zhengyuan Li, Muhan Lin, Shengyang Luo, Yifan Shen, Aniket Bera, Baijian Yang, Yingjie Victor Chen</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01230v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        From Forest to Future Capital: Tracking Land Cover Change in Ibu Kota Nusantara (IKN) from 2021 to 2026 with PlanetScope Imagery
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Clarissa Rui Min Ong, Elizabeth Tee Inn Loo, Kenneth Woon Hao Soh, William Rachmadi, Qiming Zheng, Hao Li</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01104v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        From Patches to Evidence Balls: Class-Conditioned Evidence Retrieval for Few-Shot Whole Slide Image Classification
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Di Zhang, Li Zhang, Jiashuai Liu, Junbo Lu, Zhi Zeng, Jiusong Ge, Chunze Yang, Yi Niu, Jian Chen, Kai He, Zeyu Gao, Chen Li</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01202v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Fruit-HSNet: A Machine Learning Approach for Hyperspectral Image-Based Fruit Ripeness Prediction
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ahmed Baha Ben Jmaa, Faten Chaieb, Anna Fabijańska</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01356v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Harnessing Adversarial Distillation to Customise Debiased, Disease-Specific Pathology Foundation Models for Breast Cancer
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zhiwei Chen, Yang Hu, Yuxiang Xiao, Yakun Ju, Tianyang Zhang, Yingxue Xu, Wei Li, Hao Chen, Jens Rittscher, Kaixiang Yang</p>
+                
+                <p><strong>Stage1:</strong> tier3 exclude hit: ['pathology'] <span style="opacity: 0.7;">[hits: pathology]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01207v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        It's the Decoding Format, Not the Perturbation: Auditing Consistency-Based Selection for Vision-Language Test-Time Scaling
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Puzhuo Zheng, Hasan Kurban</p>
+                
+                <p><strong>Stage1:</strong> score=2 below threshold 5 <span style="opacity: 0.7;">[hits: vision language models]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01094v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Lethe: How Hard Is It to Forget? A Benchmark for Federated Unlearning in Medical Imaging
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Shengchao Chen, Ting Shu</p>
+                
+                <p><strong>Stage1:</strong> tier3 exclude hit: ['medical imaging'] <span style="opacity: 0.7;">[hits: medical imaging]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.00976v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Location-Aware Fine-Grained Representation Learning for Medical Vision Foundation Models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Myeongkyun Kang, Yanting Yang, Xiaoxiao Li</p>
+                
+                <p><strong>Stage1:</strong> score=2 below threshold 5 <span style="opacity: 0.7;">[hits: localization, vision language models]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01074v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Logit-Origin Centering for Singleton Test-Time Adaptation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Mayank Sharma, Rohit Kumar Mourya, Pratik Mazumder</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01328v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        LongChart VQA: A Comprehensive Benchmark for MLLMs with Complex Multi-Chart Reasoning
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ziyan Xiao, Yinghao Zhu, Wenting Zhang, Heaju Kim, Lequan Yu</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.00925v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Look Up and Look Back: Hidden Attention and Latent Orientation in a Frozen Foundation Model for Panoramic SLAM
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zhuang Xiong, Guohao Zhang, Chen Zhang, Zheyu Jiang, Yuchao Mei, Qingshan Xu, Wenbing Tao</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: slam]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.00893v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        MBO Scheme for Local Chan--Vese Segmentation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Kevin Bui, Adina Ciomaga</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.00868v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        MIDAL: Math Image Descriptions for Accessible Learning
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Rebeka Popek, Vaghawan Ojha, Young Hwan You</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5 <span style="opacity: 0.7;">[hits: vision language models]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.00847v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Models as Tools: An Agentic Coordination Framework for Unified Multimodal Visual Tracking
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Wenrui Cai, Yuzhe Li, Qingjie Liu, Yunhong Wang</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5 <span style="opacity: 0.7;">[hits: vlm]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.00975v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        MonitorVLM-v2: A Deployed Vision-Language Framework for Real-Time Safety Violation Detection
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jiang Wu, Sichao Wu, Yinsong Ma, Lifang Zheng, Jingliang Duan</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: policy optimization, vision language models, vlm]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01060v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        One Query, Many Scales: Sparse Mixture-of-Experts for Efficient Hierarchical Cross-View Geo-Localization
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ruijie Fan, Junyan Ye, Qi Zhu, Weijia Li</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: localization]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.00978v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        One-Sided Quantile Coupling for Flow Matching
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jin-Young Kim, So-Yoon Cho, Hyun-Gyoon Kim</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.00903v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        PeCA: Palette Context Assisted Inference for Test-Time Paint-Bucket Colourisation on Animation Videos
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Dongheng Lin, Jianbo Jiao</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.00870v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        PhenoStitch: Training-Free Panoptic Crop Mapping from Satellite Image Time Series
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Xuechen Li</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: mapping]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01354v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        PixVL: Self-Supervised Training of Pixel-Level MLLMs via a Unified Mask--Text Consistency Cycle
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yicheng Xiao, Haoxuan Ma, Caorui Li, Yucheng Wu, Weijie Wang, Haoxiao Wang, Shuang Chen, Fan Yang, Haiyun Guo, Jinqiao Wang</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01072v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        PlantRig - From Bones to Branches: Adaptation of Autoregressive Rigging Models for Plant Skeletal Reconstruction
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Nathan Hu, Yang Yang, Fumio Okura</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01348v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Prompt-Driven Simulation with Feature Perturbation for Cross-Domain Few-Shot Object Detection
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Linhai Zhuo, Junxi Cai, Tianwen Qian, Qingping Zheng, Yang Liu</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01186v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        QuerySplat: Decoupling Geometry and Appearance Representations in 3DGS Prediction
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yinglong Li, Donghui Shen, Xiaoyu Zhang, Zhichao Ye, Hongyu Wu, Aimin Hao, Guofeng Zhang, Haomin Liu</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01301v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Ranking Image Fusion the Way Humans Do: A Learned Pairwise Preference Metric for Infrared-Visible Fusion Assessment
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Haoran Liu, Mingzhe Liu, Peng Li, Guibin Zan</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01067v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        ReACT-CLIP: Response-Aware Test-Time Defense for Vision--Language Models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Hashmat Shadab Malik, Toluwani Aremu, Samuele Poppi, Muzammal Naseer, Salman Khan</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: mapping, vision language models]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01314v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Remember-R1: Mitigating Long-Context Visual Forgetting through Reinforcement Learning
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jianmin Chen, Jiaqi Tang, Wei Wei, Xiaogang Xu, Jiafei Wu, Zhe Liu, Qianzhou Wang, Yingying Yan, Botong Geng, Yuyang Xia, Lei Zhang, Qifeng Chen</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: reinforcement learning]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01271v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Rethinking Video Token Compression with a Global Codebook: Learning Once, Compressing Everywhere
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jiayang He, Tianling Xu, Diancheng Kang, Huaide Jiang, Junyan Bai, Shaoming Zheng, Xuan Song</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01106v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        SG-Layout: Structured Scene Graph-Guided Layout Generation with LLMs
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Junsheng Wang, Chao Chen, Mengying Xie, Mingyan Li, Fuqiang Gu</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01306v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        SPAE: Spectrally Guided Autoencoder for Pretrained Visual Latents
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yibin Huang, Jixiang Hong, Zongzhao Li, Yuhan Dai, Zhibin Wang, Chunwei Wang, Jun Song, Chen Wang, Xiaofei Sun, Xiaoxiao Xu, Conghui Zhu</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01103v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        SSR: Similarity-Shift Refinement for Training-Free Object-Centric Masks
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Xiaoqian Lu, Guangfu Guo</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.00872v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Similarity Weighted Aggregation with Global Differential Privacy for Federated Brain Lesion Segmentation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Muhammad Irfan Khan, Eero Lehtonen, Joni Obradovic, Elina Kontio, Esa Alhoniemi, Suleiman A. Khan, Mojtaba Jafaritadi</p>
+                
+                <p><strong>Stage1:</strong> tier3 exclude hit: ['medical imaging'] <span style="opacity: 0.7;">[hits: medical imaging]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01334v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        SphereVideo: Prototype-anchored Hyperspherical Boundary for Continual AI-generated Video Detection
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Fei Li, Yue Yu, Yuran Wang, Xinghan Li, Jingjing Chen, Yu-Gang Jiang</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01053v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Struct-GStream: Towards Efficient Free-Viewpoint Video Streaming at Low-Bitrates with Structured 3D Gaussians
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Han Jiao, Jiakai Sun, Lei Zhao, Wei Xing, Huaizhong Lin, Zhanjie Zhang, Ao Ma</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01169v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Think in Sets for Streaming Video Token Compression
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Moxu Duan, Jingwen Fu, Yuwang Wang</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01407v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Training-Free Out-of-Distribution Detection for Pathology Whole-Slide Images
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Sabri Mustafa Kahya, Richard R. Chen, Muhammet Sami Yavuz, Jerry Jierui Lou, Akanimoh Adeleye, Haci Ali Kahya, Jana Lipkova</p>
+                
+                <p><strong>Stage1:</strong> tier3 exclude hit: ['pathology'] <span style="opacity: 0.7;">[hits: pathology]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01288v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        TurboClear: One-Step Object-Effect Removal via Region-Calibrated Distribution Matching and Fusion
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jiawei Guo, Junxian Li, Yixin Tang, Bingya Zhang, Jiaxin Lu, Yulun Zhang, Shangchen Zhou</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01298v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        UDT: Reconciling U-Nets and Diffusion Transformers with Data-Adaptive Token Reduction
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Junno Yun, Yaşar Utku Alçalar, Mehmet Akçakaya</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01370v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Understanding Synergistic Interactions among Pathology Foundation Models via Adaptive Fusion
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yuxiang Xiao, Yang Hu, Bin Li, Tianyang Zhang, Zexi Li, Huazhu Fu, Jens Rittscher, Kaixiang Yang</p>
+                
+                <p><strong>Stage1:</strong> tier3 exclude hit: ['pathology'] <span style="opacity: 0.7;">[hits: pathology]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.00986v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Understanding and Overcoming Cross-modal Fusion Bias in Multimodal Anomaly Detection From A Fisher Information Perspective
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Kaifang Long, Lianbo Ma, Liming Liu, Guoyang Xie</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01147v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        UniHEAR: Unified Heterogeneous-Source Attentive Retrieval for Knowledge-Based Visual Question Answering
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ganzhong Luo, Yang Ren, Hanyong Wang, Shuyu Zheng, Menglong Yang</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.01211v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        VaRS-Doc: Interpretation-Aware Variant Representations via Latent Self-Probing for Visual Document Retrieval
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Haocheng Wang, Tongkun Guan, Wei Shen, Xiaokang Yang</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+        </div>
+    </section>
+
+    <footer class="footer">
+        Generated on 2026-08-04 03:25:17 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+    </footer>
+
+    
+    
+    <script type="application/json" id="papers-data">[{"title": "PRISM: Privileged Probabilistic Latent Supervision for End-to-End Autonomous Driving Motion Planning", "summary": "End-to-end autonomous driving (E2E AD) systems integrate perception, prediction, and planning into a single differentiable architecture. While these models show great promise, their standard training often relies on output-only supervision, which can lead to weak gradients for the hidden layers of increasingly complex models. Recent works have integrated vision-language model (VLM) supervision for latent features to address this, yielding substantial empirical gains, yet leaving the underlying theoretical mechanisms poorly understood. Our investigation into this methodology reveals that the resulting performance gains stem not from VLM reasoning capabilities, as previously assumed, but rather from the latent connections forged between the E2E AD model and ground-truth (GT) data during training. Building on this insight, we propose a probabilistic deep supervision framework that regularizes intermediate latent representations directly from GT data. By treating model latents as reparameterizable distributions, we optimize the architecture via the Evidence Lower Bound (ELBO). Our evaluations conducted on the nuScenes dataset demonstrate that supervising trajectory-related latents with future GT paths consistently improves planning performance. Using identical training data and E2E architectures, our method achieves an 8% reduction in planning L2 error and a 3% decrease in collision rates compared to competitive vectorized baselines, all while incurring negligible computational overhead.", "url": "http://arxiv.org/abs/2608.01201v1", "authors": ["Volodymyr Havrylov", "Faris Janjo\u0161", "Andreas Look", "J\u00fcrgen Mathes", "Andreas Geiger"], "keywords": ["end-to-end autonomous driving", "probabilistic deep supervision", "ELBO", "latent regularization", "planning"]},{"title": "GenTrack: Physical Alignment for Robot-Native Motion Generation and Zero-Shot Humanoid Tracking", "summary": "General-purpose humanoid trackers can execute diverse references, but their zero-shot coverage depends on large embodied corpora that are costly to extend. Text-to-motion generators offer scalable supervision, yet models trained on human motion or retargeted data inherit a gap between kinematic plausibility and robot executability. Existing one-way pipelines fix either the generated corpus or the reward tracker. We introduce GenTrack, an online generator--tracker framework that alternates execution-grounded, group-relative generator alignment with tracker training on newly generated references; anchoring and rehearsal constrain drift. On Unitree G1, we evaluate GenTrack with ProtoMotions and SONIC backbones across three zero-shot tracking splits including public AMASS and LAFAN benchmarks, and a private out-of-distribution test set of 1,024 prompt-motion pairs in the wild. The online co-training strategy consistently produces generators that output more robot-executable motions with strong semantic alignment, and trackers with markedly broader zero-shot coverage and improved tracking accuracy, especially on out-of-distribution references. These results demonstrate that joint online post-training effectively narrows the executability gap between retargeted references and robot-native motion, advancing zero-shot humanoid control without additional data collection and beyond the limitations of a static reference pool.", "url": "http://arxiv.org/abs/2608.01410v1", "authors": ["Zeyu Ling", "Xinyao Yu", "Renye Yan", "Jikang Cheng", "Zhanke Wang", "Qing Shuai", "Changqing Zou"], "keywords": ["online generator-tracker framework", "zero-shot humanoid tracking", "execution-grounded alignment", "robot-native motion", "co-training"]},{"title": "SG-WAM: Self-Guided World Modeling in Geometry-Aware Policy Space", "summary": "World Action Models (WAMs) couple action generation with prediction of future states. Their effectiveness depends on whether future dynamics are modeled in a space that is both aligned with action generation and sufficiently geometry-aware to capture where and how actions change the scene. Existing WAMs typically satisfy only part of this requirement, relying on either perceptually heavy observation-space targets or auxiliary latent spaces that are not jointly structured for action relevance and geometry. We propose SG-WAM, a self-guided framework that learns geometry-aware action-conditioned dynamics directly in the policy-derived representation space. SG-WAM introduces learnable dynamics tokens and a Self-Guided World Predictor that forecasts their future latent states conditioned on intervening robot actions. Prediction targets are generated by an exponential moving average copy of the same policy backbone, providing stable supervision within the representation family used by the action expert. Geometric supervision further structures the policy image-token representations, providing spatially grounded context for the dynamics tokens and yielding a future-alignment space that is both action-relevant and geometry-aware. Latent future prediction, geometric grounding, and flow-matching action generation are jointly optimized end-to-end in a unified framework. Built on a 0.9B model without large-scale embodied pretraining, SG-WAM achieves 98.5% average success on LIBERO and 73% on LIBERO-Plus, while outperforming strong baselines in both in-distribution and out-of-distribution real-world evaluations.", "url": "http://arxiv.org/abs/2608.01397v1", "authors": ["Ruiteng Zhao", "Zhengshen Zhang", "Yue Su", "Wenshuo Wang", "Jiahui Li", "Zhiyuan Yang", "Francis E. H. Tay", "Marcelo H. Ang", "Haiyue Zhu"], "keywords": ["world action models", "geometry-aware dynamics", "self-guided prediction", "policy representation space", "robot manipulation"]},{"title": "Driver2Map: Imitating Human Driving for Online High-Definition Map Construction", "summary": "High-definition (HD) maps are essential for autonomous driving systems. In constructing such maps, onboard multi-view camera images, standard-definition maps and satellite images provide crucial information. However, due to the modality and perspective differences among these data sources, existing methods often struggle to effectively align and fuse them, making online HD map construction still challenging. To address these issues, we propose Driver2Map, an online HD map construction model inspired by human drivers. Unlike existing HD map construction models that utilize only two modalities, our Driver2Map can simultaneously exploit three modalities. Specifically, we propose a \"two-stage alignment\" strategy to reduce spatial misalignment across different modalities. Additionally, we introduce \"Pose-Guided BEV Fusion\", a BEV (bird\u0027s-eye-view) generation module that leverages camera pose information to adaptively weight multi-view features, thereby effectively suppressing cross-view feature overlap during BEV generation. Also, we design a \"Pretrained Prior for Map Refinement\" module to refine the initial prediction by learning map structure priors, thus improving the HD map prediction under dynamic occlusions. Extensive experiments demonstrate that Driver2Map outperforms existing methods on both IoU and AP metrics.", "url": "http://arxiv.org/abs/2608.01338v1", "authors": ["Pan Yin", "Runtian Xia", "Weisong Kuang", "Kaiyu Li", "Cong Zhao", "Xiangyong Cao"], "keywords": ["HD map construction", "BEV fusion", "multi-modal alignment", "pose-guided fusion", "map refinement"]},{"title": "Hermite Curves as Trajectory Priors for Vision-Language-Action Models", "summary": "Despite recent progress in Vision-Language-Action (VLA) models for robotic manipulation, the action chunk remains a weakly structured interface. Existing work typically flatten each chunk into per-timestep controls, relying on implicit data learning that manifests as jagged motion and boundary discontinuities during physical execution. To address these limitations, we introduce Hermite trajectory priors, parameterizing the chunk trajectory as a piecewise cubic Hermite curve defined by endpoint positions and velocities to explicitly enforce smoothness and continuity. We instantiate this fixed operator across discrete autoregressive and continuous generative paradigms via three variants: (1) Hermite Tokens, which predict quantized boundary variables autoregressively; (2) Hermite Scaffold, which decomposes clean actions into a base scaffold and residuals; and (3) Hermite Regularization, which applies the prior strictly as an auxiliary training objective. Across simulation benchmarks and real-robot platforms, Hermite Regularization achieves superior performance among these three variants, improving \u03c00.5 baseline success rates from 95.9% to 98.7% on LIBERO, 85.7% to 90.9% on LIBERO-plus, and 63.4% to 90.0% across four real-robot tasks without additional inference overhead. Trajectory analyses reveal that explicitly structuring trajectory priors serves most effectively as a learning inductive bias rather than a runtime constraint.", "url": "http://arxiv.org/abs/2608.01265v1", "authors": ["Qi Lv", "Jianming Xing", "Zhao Yang", "Mingyuan Yao", "Yinan Shi", "Yawei Jueluo", "Mike Zheng Shou", "Xiang Deng"], "keywords": ["Hermite curves", "trajectory priors", "VLA models", "robotic manipulation", "action chunk"]},{"title": "MiniWorld: Democratizing the Training of Video World Models from Scratch", "summary": "Video world models predict future observations conditioned on historical observations and control signals, enabling long-horizon generation through autoregressive state transitions. Unlike conventional video generation models that primarily capture visual appearance and motion, video world models learn the underlying dynamics governing environment evolution under agent actions, providing a foundation for embodied AI and interactive simulation. Recent progress has largely relied on adapting pretrained video generation models through post-training or distillation. Although effective, these approaches often require complex training pipelines, substantial computational resources, and suffer from the mismatch between bidirectional pretraining and causal streaming inference. Recent studies have shown that training autoregressive video world models from scratch is feasible and scalable. However, the community still lacks a lightweight, transparent, and fully reproducible baseline trainable end-to-end with modest computational resources. We present MiniWorld, a reproducible framework for training streaming video world models from scratch. MiniWorld employs a block-causal Video Diffusion Transformer trained with Flow Matching in the latent space of a pretrained Video VAE. Building on Diffusion Forcing, it adopts a chunk-wise non-decreasing noise schedule and two-stage continued training to improve temporal modeling and stability. During inference, MiniWorld combines a rolling KV cache with pipelined asynchronous denoising for efficient streaming generation under bounded computation. The entire model can be trained within several days on a single 8-GPU server. By releasing the training and inference codebase and pretrained checkpoints, we hope MiniWorld will facilitate future research on video world modeling.", "url": "http://arxiv.org/abs/2608.01127v1", "authors": ["Yian Zhao", "Ruochong Zheng", "Hongcan Guo", "Yu Yan", "Jian Zhang", "Jie Chen"], "keywords": ["video world model", "autoregressive video diffusion", "Flow Matching", "block-causal Video Diffusion Transformer", "streaming generation"]},{"title": "WAM-Diff2: Hierarchical AR-to-Diffusion Distillation for Highly Efficient Autonomous Driving VLA", "summary": "Vision-Language-Action (VLA) models have emerged as a prominent paradigm for end-to-end autonomous driving; however, their efficient deployment is severely constrained by high computational latency and exposure bias arising from sequential autoregressive decoding. Conversely, while specialized diffusion policies enable low-latency, parallel execution, training them from scratch typically yields narrow, single-task architectures that lack holistic visual-linguistic reasoning. Successfully transforming pre-trained autoregressive generalists into parallel diffusion models could combine multi-task cognitive intelligence with execution efficiency, yet this transition presents a formidable architectural challenge due to mismatched attention patterns (causal versus bidirectional) and divergent optimization objectives. To bridge this divide, we introduce WAM-Diff2, a multi-task discrete diffusion VLA framework powered by a three-stage hierarchical distillation strategy. By structuring the architectural shift through progressive block-wise adaptation, block-wise distillation, and model-wise cross-scale distillation, WAM-Diff2 preserves the underlying semantic foundations of the base model while accelerating inference. Extensive evaluations across driving understanding, perception, and planning benchmarks demonstrate that WAM-Diff2 effectively mitigates exposure bias and achieves performance parity with autoregressive baselines. Crucially, the autoregressive-to-diffusion transition yields a 2.8x decoding speedup, which scales to an ultimate 15.1x acceleration when combined with system-level optimizations including FlashInfer and CUDA Graphs.", "url": "http://arxiv.org/abs/2608.01035v1", "authors": ["Zhihao Zhu", "Hanlin Shang", "Mingwang Xu", "Feipeng Cai", "Zhuolin He", "Yaoyi Li", "Jianhua Han", "Hang Xu", "Siyu Zhu"], "keywords": ["Vision-Language-Action", "distillation", "diffusion policy", "autoregressive-to-diffusion", "autonomous driving"]},{"title": "FactorJEPA: Factorizing Monolithic Futures into Layout-Agent-Interaction Channels for Crowded and Chaotic Global South Urban Worlds", "summary": "World models have attracted significant attention for their ability to capture and predict the structure and dynamics of the physical world. In this emerging landscape, Joint Embedding Predictive Architectures (JEPA) offer a particularly compelling direction.\n  We study a largely unexplored regime: populous, crowded, and chaotic Global South urban environments, which we call DENSEWORLD. Unlike the lower-density, lane-structured settings that dominate existing evaluations, these scenes exhibit soft spatial boundaries, extreme agent heterogeneity, persistent occlusion, and rapid social negotiation under mixed traffic. We introduce the first large-scale dataset for this regime: 1,000 hours of drive-through, walk-through, and aerial video across 22 cities. Existing JEPA formulations struggle to preserve dense interaction dynamics under heterogeneity and partial observability.\n  We introduce FactorJEPA, which makes world structure a first-class predictive primitive. Rather than encoding the future in a monolithic latent, it composes layout, entities, and interactions, using a visibility gate and separated subspaces to preserve partially observed agents and discourage cross-factor shortcuts. FactorJEPA improves (i) future-latent accuracy (Future-frame L1), (ii) intervention-sensitive prediction (Causal L1), and (iii) robustness to reduced visual evidence (Mask-ratio slope), while exposing (iv) a reproducible motion-information trade-off (Motion cosine). Method rankings replicate across 2B and 1B V-JEPA 2.1 backbones, with rho = 0.895 to 0.978.\n  We publicly release the DENSEWORLD-115k dataset (https://huggingface.co/datasets/anonymousML123/denseworld-115k) and the surgery-trained FactorJEPA checkpoints (https://huggingface.co/datasets/anonymousML123/factorjepa-outputs/tree/main/outputs/full/vjepa_2_1_vitg_1B/train/m09c_surgery_3stage_DI_diheavy_encoder).", "url": "http://arxiv.org/abs/2608.01049v1", "authors": ["Kapil Wanaskar", "Gaytri Jena", "Aman Chadha", "Vinija Jain", "Vasu Sharma", "Amitava Das"], "keywords": ["world model", "Joint Embedding Predictive Architecture", "dense urban scenes", "factorized latent", "DENSEWORLD dataset"]},{"title": "GraRe: Grasp Candidate Re-Ranking for Frozen 6-DoF Grasp Detectors", "summary": "Existing 6-DoF grasp detectors typically rank grasp candidates by detector confidence. However, our analysis on GraspNet-1Billion shows that detector confidence is often poorly aligned with grasp quality, causing successful grasp candidates to be ranked too low during execution. Motivated by this observation, we formulate grasp candidate re-ranking as a separate task for frozen detectors, aiming to improve candidate ordering without changing the detector or its grasp candidates. We propose GraRe, which estimates grasp quality from candidate attributes, shell-stratified local geometry, and object context. Candidate attributes condition the local geometric and object-context representations, and a Transformer fuses all three feature types. The predicted quality is combined with detector confidence to produce the final ranking. Experiments on GraspNet-1Billion with three frozen detectors show consistent improvements, with gains of up to 13.60 points in Average AP. Real-robot experiments further demonstrate robust grasping in cluttered scenes. These results show that improving candidate ranking provides a practical way to enhance frozen 6-DoF grasp detectors.", "url": "http://arxiv.org/abs/2608.00946v1", "authors": ["Jibao Yuan", "Yuhui Zhao", "Yinzhen Lv", "Chao Xu", "Shun Li", "Chenxi Deng", "Shaofei Chen"], "keywords": ["6-DoF grasp", "grasp candidate re-ranking", "frozen detector", "grasp quality estimation", "Transformer fusion"]},{"title": "FeDepth: Federated Learning for Depth Estimation under Robot Heterogeneity", "summary": "Although recent robot perception research emphasizes training on data from diverse environments to improve generalization, most existing methods still rely on centralized learning, which is inefficient and difficult to scale across heterogeneous robot platforms. Federated learning (FL) offers an alternative by enabling distributed training without raw data transfer, but it suffers from severe performance degradation under domain shifts caused by heterogeneity across clients. In real robotic deployments, data distributions often overlap across platforms, environments, and sensing conditions, making it difficult to partition clients into clearly separated domains. However, this characteristic breaks the assumption of clearly separable client domains commonly used in clustered FL. To address this gap in robot perception, particularly in depth estimation, we introduce two realistic and unexplored non-IID scenarios that reflect heterogeneity in terms of platform, environment, and depth distribution. We then propose FeDepth, a descriptor-based clustered FL framework that models client relationships through soft clustering. Unlike hard clustering methods that assume clearly separated clusters, FeDepth allows clients to participate in multiple clusters, capturing continuous and ambiguous domain transitions commonly observed in robotic environments. Extensive experiments demonstrate that FeDepth consistently improves robustness over standard FL and clustered FL baselines across multiple depth estimation architectures, providing a practical and effective solution for federated robot perception. Our project page is available at https://vision3d-lab.github.io/fedepth/.", "url": "http://arxiv.org/abs/2608.01129v1", "authors": ["Ganghyeon Lee", "Inha Lee", "Junhee Lee", "Jeongeon Lee", "Sung Whan Yoon", "Kyungdon Joo"], "keywords": ["federated learning", "depth estimation", "robot heterogeneity", "clustered FL", "non-IID scenarios"]},{"title": "Asleep at the Wheel: JEPA\u0027s Limitations in Evaluating Novel Driving Data", "summary": "Modern autonomous-driving fleets record far more video than human reviewers can inspect. This motivates the need for an automatic clip triage mechanism, to surface rare and review-worthy clips, so that driving models can be fine-tuned to better handle unideal circumstances. We test a label-free approach that scores clips by the prediction-error \"novelty\" of a self-supervised joint-embedding predictive architecture (JEPA); a frozen V-JEPA video encoder is paired with a lightweight predictor head to reconstruct masked clip embeddings, and clips whose embeddings are hard to predict are flagged as interesting. Evaluated under a realistic protocol that trains on one dataset and tests against footage from others, this approach appears highly effective. We show that this apparent success is actually a domain-shift consequence: on a fair benchmark drawn from a single dataset, this mechanism collapses to chance and is on par with simple no-training baselines. A lightly supervised probe on the same frozen embeddings results in almost double the average precision, indicating that the bottleneck is indeed the self-supervised objective, rather than the representation. We present this as a study for evaluating the effectiveness of self-supervised learning, where cross-dataset protocols can silently reward domain separation over novelty.", "url": "http://arxiv.org/abs/2608.01336v1", "authors": ["Advait Pavuluri", "Shamik Karkhanis", "Uzma Mushtaque"], "keywords": ["autonomous driving", "joint-embedding predictive architecture", "novelty detection", "domain shift", "self-supervised learning"]},{"title": "Stipple: Real-Time Incremental Gaussian Splatting with Visual-Inertial Tracking", "summary": "3D Gaussian Splatting (3DGS) provides efficient rendering of photo-realistic scenes, but its heavy preprocessing and training steps make it a poor fit for applications that require real-time reconstruction in robotics or XR. This capability is important since it allows immediate feedback and interaction with new environments. Visual-inertial odometry (VIO) and simultaneous localization and mapping (VI-SLAM) systems, on the other hand, specifically target these real-time applications, which makes them a good choice for integration with 3DGS. We propose a new method that tracks and reconstructs simultaneously in real-time by leveraging an efficient visual-inertial tracking system based on Basalt together with a novel incremental method built on top of Brush, an efficient Rust-based GPU-vendor-agnostic implementation of 3D Gaussian Splatting. We show that many of the heavy preprocessing and training steps of 3DGS can be replaced with a more efficient incremental training strategy that has direct access to the information generated by the visual-inertial tracking system. Furthermore, we propose and combine multiple practical improvements to increase the efficiency of the training pipeline and adapt it to run in real-time, parallel to the tracking thread. This work highlights the value of exploiting the complementary nature of SLAM and 3DGS, and how that can lead to promising results for real-time 3D reconstruction.", "url": "http://arxiv.org/abs/2608.00931v1", "authors": ["Kilian Northoff", "Mateo de Mayo", "Daniel Cremers"], "keywords": ["3D Gaussian Splatting", "visual-inertial odometry", "SLAM", "real-time reconstruction", "incremental training"]},{"title": "InteracVid: Building a Real Interactive Audio-Visual Response Dataset from Live-Chat Videos", "summary": "Large language models have made text the default medium for human--AI interaction, buttext alone cannot express the full range of responses required by multimodal assistants,avatars, and embodied agents. While recent audio-video generative models can synthesizehigh-fidelity synchronized content, existing supervision is largely \\emph{descriptive}:models are trained to render captions rather than to produce audio-visual responsescaused by external user interactions. We introduce \\textbf{InteracVid}, \\emph{the firstopen-source large-scale dataset that addresses this missing supervision}, so that everysample couples a preceding audio-visual context and an external stimulus with the realinteractive response that follows. We design a metadata-aware pipeline that extractsinteractive clips from long, noisy livestreams, yielding over \\textbf{454K}context-query-response triplets from more than \\textbf{59K} livestream videos andspanning conversation-centered, object-centric, procedural, embodied, and screen-basedscenarios. A ten-rater human study confirms that the extracted interactions are causal,natural, and temporally complete for both genuine and reconstructed queries. On aheld-out benchmark of \\textbf{100} genuine live-chat queries, fine-tuning on InteracVidimproves both interaction planning and audio-video response generation, and anindependent human evaluation reproduces the system ranking and the conclusions obtainedwith our automatic judge. These results highlight interaction-structured data as acritical foundation for interactive multimodal generation.", "url": "http://arxiv.org/abs/2608.01157v1", "authors": ["Chi Zhang", "Haoyang Shi", "Yueyi Liu", "Zhaokun Yan", "Yishu Yin", "Yuhang Wu", "Miao Liu"], "keywords": ["interactive audio-visual generation", "live-chat video dataset", "context-query-response triplets", "multimodal assistant"]},{"title": "Swimm3R: Splatting with Medium-aware SfM for Underwater 3D Reconstruction", "summary": "We propose Swimm3R, a unified framework that combines medium-aware structure-from-motion (SfM) with Underwater Beta Splatting to address scattering- and attenuation-induced failures in underwater 3D reconstruction. Swimm3R distills in-air geometric priors into a feed-forward backbone and uses a physics head to regress underwater image-formation parameters, camera poses, and restored point clouds. Additionally, we introduce Underwater Beta Splatting, which extends Gaussian splatting with Beta primitives and scattering-aware geometric gradients for stable underwater geometry representation. We further establish the Barbados underwater video dataset to demonstrate the effectiveness of our method in challenging underwater environments. On this dataset, Swimm3R robustly recovers underwater scene structure under challenging scattering conditions, yielding coherent seafloor geometry. Using these predicted point clouds, the proposed Underwater Beta Splatting improves average PSNR by $1.47$ dB over WaterSplatting while increasing downstream localization performance by $2.0$ and $2.4$ percentage points in RRA@15 and RTA@15, respectively.", "url": "http://arxiv.org/abs/2608.00950v1", "authors": ["Minseong Kweon", "Junaed Sattar"], "keywords": ["underwater 3D reconstruction", "structure-from-motion", "Gaussian splatting", "Beta primitives", "scattering-aware geometric gradients"]}]</script>
+
+    <!-- SparkMD5: Zotero's WebDAV format requires md5; SubtleCrypto can't do MD5 -->
+    <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
+    <!-- JSZip: needed to build the <key>.zip wrapper Zotero expects on WebDAV -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="../js/zotero.js"></script>
+    <script src="../js/webdav.js"></script>
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
+</body>
+</html>
