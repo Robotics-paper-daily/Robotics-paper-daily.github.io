@@ -1,0 +1,3558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArXiv Robotics Papers (RL/VLM/World Models/LLMs/VLA/VLN) - August 20, 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.16.4/framer-motion.dev.js"></script>
+    <!-- Example using Font Awesome (replace with your preferred icon library if needed) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        :root {
+            /* New Palette: Light, Clean, Futuristic with Tsinghua Purple accents */
+            --bg-color: #f8fafc; /* Tailwind slate-50 (Very Light Gray) */
+            --card-bg-color: #ffffff; /* White */
+            --text-color: #1e293b; /* Tailwind slate-800 (Dark Gray-Blue) */
+            --text-muted-color: #64748b; /* Tailwind slate-500 (Medium Gray-Blue) */
+            --header-color: #0f172a; /* Tailwind slate-900 (Very Dark Blue) */
+            --highlight-primary: #7B2C9F; /* Tsinghua Purple */
+            --highlight-secondary: #B794D3; /* Light Tsinghua Purple */
+            --border-color: #e2e8f0; /* Tailwind slate-200 (Light Gray) */
+            --shadow-color: rgba(15, 23, 42, 0.08); /* Subtle shadow based on slate-900 */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            line-height: 1.6;
+        }
+
+
+        .bento-grid {
+            display: grid;
+            gap: 1.5rem; /* Tailwind gap-6 */
+            grid-template-columns: 1fr; /* Force single column */
+            padding-bottom: 4rem; /* Add padding at the bottom */
+        }
+
+        .bento-item {
+            /* Apply semi-transparent white background and blur */
+            background-color: rgba(255, 255, 255, 0.7); /* White with 70% opacity */
+            backdrop-filter: blur(10px); /* Apply blur effect */
+            -webkit-backdrop-filter: blur(10px); /* Safari prefix */
+            border-radius: 1rem; /* Slightly larger radius */
+            padding: 1.75rem; /* Slightly more padding */
+            border: 1px solid rgba(226, 232, 240, 0.5); /* Lighter border with transparency */
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.3s ease-out;
+            overflow: hidden; /* Ensure content doesn't overflow */
+            position: relative; /* For potential pseudo-elements */
+        }
+
+        /* Removed ::before pseudo-element for a cleaner look */
+
+
+        .bento-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 20px var(--shadow-color), 0 4px 8px rgba(15, 23, 42, 0.06); /* Adjusted hover shadow */
+        }
+
+        .paper-title {
+            font-size: 1.125rem; /* Tailwind text-lg */
+            font-weight: 600; /* Tailwind font-semibold */
+            color: var(--highlight-primary); /* Use new primary highlight */
+            margin-bottom: 0.75rem; /* Tailwind mb-3 */
+            line-height: 1.4;
+        }
+
+        .paper-summary {
+            font-size: 0.85rem;
+            color: var(--text-muted-color);
+            margin-bottom: 1.25rem;
+            line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
+        }
+
+        .paper-link {
+            display: inline-flex; /* Use flex for icon alignment */
+            align-items: center;
+            font-size: 0.875rem; /* Tailwind text-sm */
+            font-weight: 600;
+            color: var(--highlight-primary);
+            text-decoration: none;
+            padding: 0.5rem 1rem; /* Add padding */
+            border-radius: 0.5rem; /* Slightly rounder */
+            background-color: rgba(123, 44, 159, 0.08); /* Subtle purple background */
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
+
+        .paper-link i {
+            margin-right: 0.5rem; /* Tailwind mr-2 */
+            transition: transform 0.3s ease;
+        }
+
+        .paper-link:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F; /* Darker purple on hover */
+            transform: translateY(-1px);
+        }
+        .paper-link:hover i {
+             transform: translateX(2px);
+        }
+
+        .paper-authors {
+            font-size: 0.75rem; /* Tailwind text-xs */
+            color: var(--text-muted-color);
+            margin-top: 1rem; /* Tailwind mt-4 */
+            font-style: italic;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem; /* Tailwind mb-12 */
+            padding-top: 3rem; /* Tailwind pt-12 */
+        }
+
+        .header h1 {
+            font-size: 2.5rem; /* Tailwind text-4xl or 5xl */
+            font-weight: 700; /* Tailwind font-bold */
+            color: var(--header-color);
+            letter-spacing: -0.025em; /* Tailwind tracking-tight */
+            margin-bottom: 0.5rem;
+            /* Optional: Add a subtle text gradient (Tsinghua Purple) */
+            /* background: linear-gradient(90deg, var(--highlight-primary), var(--highlight-secondary)); */
+            /* -webkit-background-clip: text; */
+            /* -webkit-text-fill-color: transparent; */
+        }
+
+        .header p {
+            font-size: 1.125rem; /* Tailwind text-lg */
+            color: var(--text-muted-color);
+            margin-top: 0.5rem; /* Tailwind mt-2 */
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .footer {
+            text-align: center;
+            color: var(--text-muted-color);
+            font-size: 0.875rem; /* Tailwind text-sm */
+            padding-top: 2rem;
+            padding-bottom: 2rem; /* Tailwind py-8 */
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        /* Simple line graphic element (optional) */
+        .line-graphic {
+            height: 1px; /* Thinner line */
+            background: linear-gradient(90deg, rgba(123, 44, 159, 0), var(--highlight-primary), rgba(123, 44, 159, 0));
+            opacity: 0.6;
+            margin: 1.5rem 0; /* Adjust margin */
+        }
+
+        /* Framer Motion requires the script, styles enhance appearance */
+        [data-motion-element] {
+             /* Base styles for elements animated by Framer Motion */
+        }
+
+        .paper-tldr {
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
+        }
+
+        .paper-rating {
+            margin-top: 1rem; /* Tailwind mt-4 */
+            margin-bottom: 1rem; /* Tailwind mb-4 */
+            color: #f59e0b; /* Tailwind amber-500 */
+        }
+
+        .paper-rating i {
+            margin-right: 0.125rem; /* Tailwind mr-0.5 */
+        }
+
+        /* Apply consistent star color to sub-ratings */
+        .paper-sub-ratings .rating-item i {
+            color: #f59e0b; /* Match overall rating star color (amber-500) */
+            margin-right: 0.125rem; /* Consistent spacing */
+        }
+
+        .filtered-section {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .filtered-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--header-color);
+            margin-bottom: 1rem;
+        }
+
+        .filtered-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .filtered-item {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .filtered-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+        }
+
+        .filtered-item-title-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: color 0.25s ease;
+        }
+
+        .filtered-item-title-link:hover {
+            color: var(--highlight-primary);
+        }
+
+        .filtered-item-title-link i {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .filtered-item p {
+            margin: 0.25rem 0;
+            color: var(--text-muted-color);
+            font-size: 0.88rem;
+        }
+
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link.
+           Shown only when body.zotero-mode is set (which like.js does after
+           confirming sessionStorage has decrypted credentials). Guests never
+           see it. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn i {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover i {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
+    </style>
+</head>
+<body class="container mx-auto px-4 antialiased">
+    <motion.div
+        initial="{ opacity: 0, y: -30 }"
+        animate="{ opacity: 1, y: 0 }"
+        transition="{ duration: 0.6, ease: 'easeOut' }"
+        class="header"
+        data-motion-element
+    >
+        <h1>Robotics Daily Papers</h1>
+        <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
+        <p>August 20, 2026</p>
+        <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
+    </motion.div>
+
+    <div class="bento-grid" id="paper-grid">
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.0, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                Decision-Metric Alignment in Latent World Models: Diagnostics and Action-Conditioned Objectives for MPC Planning
+                
+                <span class="topic-chip topic-worldmodel">WorldModel</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">latent world model</span>
+                
+                <span class="kw">decision-metric alignment</span>
+                
+                <span class="kw">JEPA</span>
+                
+                <span class="kw">model-predictive control</span>
+                
+                <span class="kw">action-conditioned objectives</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文提出了诊断指标（Plan-Real Spearman、CEM-stage Spearman）和方法（DA-LeWM），改进了用于MPC规划的JEPA风格潜在世界模型中的决策-度量对齐，实现了更快的收敛和更高的成功率。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper proposes diagnostic metrics (Plan-Real Spearman, CEM-stage Spearman) and a method (DA-LeWM) that improves decision-metric alignment in JEPA-style latent world models for MPC-based robot control, achieving faster convergence and higher success rates.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> JEPA-style latent world models can use Euclidean distance to a goal latent as the cost for model-predictive control (MPC). Strong decoding of task variables, however, does not guarantee that this particular cost ranks candidate action sequences by real task progress. We call the latter property \emph{decision-metric alignment}. We introduce Plan-Real Spearman, which measures latent--real rank agreement on random plans, and CEM-stage Spearman, which measures the same agreement as cross-entropy-method (CEM) search concentrates its proposal. We analyze sufficient conditions under which latent distance preserves real-cost rankings, identifying encoder distortion, terminal rollout error, and candidate margins as the controlling quantities. Guided by the observed empirical alignment gap, DA-LeWM augments LeWM with inverse-dynamics and demonstration-conditioned goal-action heads. Across all our experiments, DA-LeWM accelerates convergence and achieves higher online success than LeWM, while probe scores remain similar. These results show that action-conditioned objectives improve the geometry used by Euclidean-cost, CEM-based latent MPC.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>摘要：  
+JEPA风格的潜空间世界模型可使用目标潜变量与当前潜变量之间的欧氏距离作为模型预测控制（MPC）的代价函数。然而，任务变量的强解码能力并不能保证该特定代价函数能根据真实任务进展对候选动作序列进行排序。我们将后者称为“决策-度量对齐”。我们引入了Plan-Real Spearman指标，用于衡量随机规划中潜空间排序与真实排序的一致性；以及CEM-stage Spearman指标，用于衡量在交叉熵方法（CEM）搜索集中其提议时相同的一致性。我们分析了潜距离保持真实代价排序的充分条件，识别出编码器畸变、终端展开误差和候选裕度为控制量。基于观察到的实证对齐差距，DA-LeWM在LeWM基础上增加了逆动力学和演示条件化的目标-动作头。在所有实验中，DA-LeWM相比LeWM加速了收敛并实现了更高的在线成功率，而探针得分保持相似。这些结果表明，动作条件化目标改进了基于欧氏代价与CEM的潜空间MPC所使用的几何结构。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2608.18746v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Jiawei Wang, Ke Rui, Yushen Zuo, Yichun Feng, Minglei Li</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.05, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                Reinforced Planning with Latent World Models
+                
+                <span class="topic-chip topic-worldmodel">WorldModel</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">reinforced planning</span>
+                
+                <span class="kw">latent world model</span>
+                
+                <span class="kw">multi-step plan improvement</span>
+                
+                <span class="kw">neural planner</span>
+                
+                <span class="kw">robotic manipulation</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文提出强化规划（RP1），一种通过世界模型 rollout 学习多步规划改进的方法，在视觉导航、机械臂到达和机器人操作任务上超越手工设计的搜索算法。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper introduces Reinforced Planning (RP1), a method that learns multi-step plan improvement from world-model rollouts, outperforming hand-designed search algorithms in visual navigation, arm reaching, and robotic manipulation tasks.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Humans solve complex problems by constructing plans and mentally simulating their outcomes with an internal model of the world. Machine learning has produced world models that similarly predict the outcomes of action sequences, but the improvement of candidate plans still isn't fully learned. Current planners are either hand-designed, distilled from a hand-designed optimizer, or learned only to inform an amortized policy rather than to revise the plan itself. We introduce the Reinforced Planning, a method based on the idea that search can be learned by reinforcing good search rules into a neural planner. Our implementation RP1 learns both how to evaluate imagined outcomes through a critic, as well as how to improve multi-step plans through an optimizer trained fully offline from imagined world-model roll-outs. To our knowledge, RP1 is the first method to fully learn how to improve multi-step plans. Furthermore, it can be trained independently of and attached to any pretrained latent world model. Across visual navigation, arm reaching, and robotic manipulation on two world-model backbones, RP1 substantially outperforms hand-designed search algorithms, reaching near-perfect success in several settings while using $1,000 \times$ less world-model rollouts and being up to $67 \times$ faster than the strongest alternative under concurrent planner inference.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>摘要：  
+人类通过构建计划并在内部世界模型中模拟其结果来解决复杂问题。机器学习已产生能够类似预测动作序列结果的世界模型，但候选计划的改进仍然尚未完全实现学习。当前的规划器或为手工设计，或从手工设计的优化器中提炼，或仅用于告知摊销策略而非修正计划本身。我们提出强化规划方法，其核心思想在于：搜索可通过将优质搜索规则强化学习到神经规划器中。我们的实现RP1不仅通过评估器学习如何评估想象结果，还通过在想象的世界模型推演中完全离线训练的优化器，学习如何改进多步计划。据我们所知，RP1是首个完全学会改进多步计划的方法。此外，它可独立训练并附加于任何预训练的潜在世界模型。在基于两个世界模型主干网络的视觉导航、机械臂伸展及机器人操作任务中，RP1显著优于手工设计的搜索算法，在多个场景下达到近乎完美的成功率，同时所需世界模型推演次数减少1000倍，在并行规划器推理场景下速度比最强替代方案快67倍。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2608.18669v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="1" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="1" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Armin Sommer, Jannik Schilling</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.1, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                The Embodiment Gap in Robot Foundation Models
+                
+                <span class="topic-chip topic-vla">VLA</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">embodiment gap</span>
+                
+                <span class="kw">robot foundation models</span>
+                
+                <span class="kw">cross-embodiment learning</span>
+                
+                <span class="kw">adaptation work</span>
+                
+                <span class="kw">reporting framework</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本综述形式化了'具身鸿沟'这一概念，即机器人基础模型在不同实体机器人上部署所需的实际工作量，提出了一个双轴映射框架和一个超越成功率的适应性工作报告方案。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This survey formalizes the 'embodiment gap' as the practical work needed to transfer robot foundation models to different physical robots, proposing a two-axis mapping framework and a reporting scheme to quantify adaptation effort beyond success rate.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Robot foundation models (RFMs), including vision-language-action (VLA) policies, are often discussed through a scaling view: more data, larger models, and broader benchmarks should improve generalization. In robotics, however, a model can generalize while work still remains before it can run on a robot with a particular body. The work required differs across methods and target robots, and those differences affect practical deployment. We call the gap between reusable models, representations, or data and their use in execution on the target robot the embodiment gap. This survey examines what can be reused across robot embodiments and what must still be implemented on a new robot. We place existing methods on a two-axis map that shows the type of shared structure and the stage at which adaptation is needed for execution on the target robot. We then examine recent work through three overlapping research directions: sharing semantics and perception, sharing robot data and interfaces, and learning correspondence across embodiments. We also propose a reporting framework for adaptation work that success rate alone does not reveal. The framework identifies the work that should be checked when comparing cross-embodiment learning and highlights work that remains on a new robot and questions for future study.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>机器人基础模型（RFMs），包括视觉-语言-动作（VLA）策略，通常通过扩展性视角进行讨论：更多数据、更大模型以及更广泛的基准测试应能提升泛化能力。然而，在机器人领域，模型可能已具备泛化能力，但在特定本体上运行前仍需完成适配工作。不同方法及目标机器人所需的适配工作量存在差异，而这些差异直接影响实际部署。我们将可复用模型、表征或数据与其在目标机器人上执行之间的差距称为"具身鸿沟"。本综述探讨了哪些内容可以在不同机器人本体间复用，以及在新机器人上仍需实现哪些部分。我们将现有方法置于一个双轴图中，该图表征共享结构的类型以及在目标机器人上执行所需适配的阶段。随后，我们通过三个重叠的研究方向审视近期工作：共享语义与感知、共享机器人数据与接口，以及跨本体对应关系的学习。此外，我们提出一个评估适配工作的报告框架——仅靠成功率无法揭示其全貌。该框架明确了在比较跨本体学习时应核查的适配工作，并强调了新机器人上仍需完成的工作及未来研究方向。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2608.18433v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="2" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="2" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Yukiyasu Domae, Keisuke Shirai, Hanbit Oh, Ryoichi Nakajo, Tomohiro Motoda, Koshi Makihara, Masaki Murooka, Takuma Yagi, Yoshiaki Bando, Ryo Hanai</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.15000000000000002, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                Role-Conditioned Sub-Token Routing for Efficient Vision-Language-Action Policies
+                
+                <span class="topic-chip topic-vla">VLA</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">sub-token compression</span>
+                
+                <span class="kw">value representation</span>
+                
+                <span class="kw">role-conditioned routing</span>
+                
+                <span class="kw">VLA efficiency</span>
+                
+                <span class="kw">token pruning</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>RoleSub 提出角色条件子令牌路由，在保留令牌内部压缩值表示，作为令牌剪枝的补充，实现高效 VLA 推理而无需额外移除令牌。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> RoleSub introduces role-conditioned sub-token routing to compress value representations within retained tokens, complementing token pruning for efficient VLA inference without removing additional tokens.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Vision-Language-Action (VLA) models process long multimodal token sequences, making inference expensive in both memory and computation. Existing efficiency methods mainly reduce visual tokens, but aggressive token pruning becomes fragile because removing a token discards its entire representation. Sub-token compression provides a complementary alternative by retaining more tokens while reducing their value width. However, directly applying sub-token compression to VLA policies is less effective because information important for perception, language understanding, and control is distributed differently across the multimodal representation.
+  We introduce Role-Conditioned Sub-Token Routing (RoleSub), which learns how to compress the value representations of retained tokens. After visual token reduction, RoleSub partitions each retained value representation into groups in an orthogonal space and uses a lightweight router to determine which groups should be preserved. The routing decision is conditioned on the token representation, a learned latent role representation, and language context. The same mechanism can also be applied to language values, allowing visual and language representations to be compressed without removing additional tokens.
+  We evaluate RoleSub on OpenVLA-OFT-7B across the four LIBERO suites. At matched visual-KV budgets, RoleSub outperforms a trained token-only control in 33 of 36 settings, with the largest gains under aggressive compression. Combining visual and language compression reduces total KV to 9.2--11.3% of the original while retaining strong control performance on most tasks. These results show that reducing the representation within retained tokens provides an effective complement to token pruning for aggressive VLA compression.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>视觉-语言-动作（VLA）模型需处理长序列多模态标记，导致推理时内存与计算成本高昂。现有效率优化方法主要减少视觉标记数量，但激进的标记剪枝策略存在脆弱性——因为移除标记会丢弃其完整表征。子标记压缩作为一种互补方案，能够在保留更多标记的同时压缩其数值宽度。然而，直接将子标记压缩应用于VLA策略的效果有限，原因是感知、语言理解与控制所需的信息在多模态表征中的分布存在差异。
+
+我们提出角色条件化子标记路由（RoleSub），该方法学习如何压缩保留标记的数值表征。在完成视觉标记精简后，RoleSub在正交空间中将每个保留标记的数值表征划分为若干组，并通过轻量化路由器决定哪些组应当保留。路由决策取决于标记表征、学习到的潜在角色表征及语言上下文。该机制同样可应用于语言数值表征，从而在不额外移除标记的前提下压缩视觉与语言表征。
+
+我们在OpenVLA-OFT-7B模型上，针对四个LIBERO测试套件评估了RoleSub。在匹配的视觉KV预算下，RoleSub在36个设定中的33个超越了纯标记控制基线，其中激进压缩场景下的增益最为显著。结合视觉与语言压缩后，总KV量降至原始值的9.2%至11.3%，同时多数任务仍保持强劲控制性能。这些结果表明，压缩保留标记内的表征可有效补充标记剪枝策略，实现激进的VLA压缩。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(10/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2608.18410v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="3" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="3" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Wei Jiang, Wei Wang</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.2, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                GigaBrain-WBC-0.5: A Behavior World Model for Robust Whole-Body Control with Environment Interaction
+                
+                <span class="topic-chip topic-humanoidembodied">HumanoidEmbodied</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">behavior world model</span>
+                
+                <span class="kw">whole-body control</span>
+                
+                <span class="kw">humanoid</span>
+                
+                <span class="kw">terrain interaction</span>
+                
+                <span class="kw">robust tracking</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>GigaBrain-WBC-0.5 提出了一种用于人形机器人全身控制的行为世界模型（BWM），通过因果Transformer联合预测动作、状态和潜在指令，实现了鲁棒的地形交互和跌倒恢复。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> GigaBrain-WBC-0.5 introduces a Behavior World Model (BWM) for humanoid whole-body control, using a causal Transformer to jointly predict actions, states, and latent commands, enabling robust terrain interaction and fall recovery.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Whole-body motion tracking policies turn a humanoid into a robust control interface: the teleoperator---or an upstream model---only supplies a coarse movement intent, while the low-level policy keeps the robot balanced and physically feasible. Existing trackers deliver this interface only on flat ground: trained in empty scenes, they never learn how contact with terrain and objects reshapes their dynamics, and they attempt to teach the policy to balance under any command by continually enlarging the reference-motion corpus, which stops working once feasible behaviors become environment-dependent. We present GigaBrain-WBC-0.5, the first Behavior World Model (BWM) for humanoid whole-body control. Rather than a purely reactive tracker, we train a causal Transformer to jointly predict its next action, next state, and the distribution over its next latent behavior command, so the network that acts also models how the environment shapes what it can do next. An automatic terrain-annotation pipeline recovers full 3D contact geometry from retargeted motion, enabling terrain annotation at the scale of existing motion datasets. The predicted distribution is reused at deployment to detect implausible commands online and retract them onto learned behaviors, so the robot attempts tasks in a "best-effort" manner. The result is a unified policy that takes real-time command, interacts with environment, and stays robust to implausible commands, falls, and disturbances. GigaBrain-WBC-0.5 achieves the highest success rate across all four regimes among three large-scale tracker baselines: 81.3% on terrain interaction (4.3x the strongest baseline), 83.1% under implausible commands, and 99.3% fall recovery (16.8x the strongest baseline). Hardware trials show robust interaction under missing supports and disturbances; the Unitree G1 checkpoint transfers to the Maker L01 robot with simple fine-tuning.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>全身运动跟踪策略使人形机器人成为一个鲁棒的控制接口：远程操作员（或上游模型）仅提供粗略的运动意图，而底层策略则负责保持机器人平衡及物理可行性。现有跟踪器仅在平坦地面上实现该接口——由于在空旷场景中训练，它们从未学习如何通过地面与物体接触来重塑自身动力学，并试图通过持续扩大参考运动语料库来使策略在任何指令下保持平衡，而一旦可行行为依赖于环境，该方法便失效。我们提出GigaBrain-WBC-0.5，这是首个面向人形机器人全身控制的行为世界模型（BWM）。不同于纯反应式跟踪器，我们训练了一个因果Transformer来联合预测其下一步动作、下一状态及下一潜在行为指令的分布，从而使执行动作的网络同时建模环境对其后续可行能力的影响。一种自动地形标注流程可从重定向运动中恢复完整3D接触几何，使地形标注能达到现有运动数据集规模。部署时，预测分布被用于在线检测不合理指令并将其回缩至已学习行为，使机器人以"尽力而为"方式尝试任务。最终得到一个统一策略，能实时接收指令、与环境交互，并对不合理指令、跌倒及扰动保持鲁棒性。在三个大规模跟踪器基线中，GigaBrain-WBC-0.5在全部四种测试场景下均取得最高成功率：地形交互任务81.3%（为最强基线4.3倍）、不合理指令下83.1%、跌倒恢复99.3%（为最强基线16.8倍）。硬件实验表明其在缺失支撑与扰动条件下仍能实现鲁棒交互；该Unitree G1检查点经简单微调即可迁移至Maker L01机器人。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2608.18234v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="4" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="4" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Ziyang Cheng, Tianshu Tang, Jinxin Lan, Xinze Chen, Yuhan Gong, Zhichao Liu, Changzhong Wu, Yahao Mao, Zongyan Deng, Mingxuan Ma, Huasen Xi, Yilong Liu, Yutong Wu, Xiaofeng Wang, Yang Wang, Yun Ye, Guan Huang, Xiaojie Jin, Zheng Zhu, Jiwen Lu</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.25, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                Progressive Experience Fusion for Multi-Task World Model Control in Endovascular Navigation
+                
+                <span class="topic-chip topic-worldmodel">WorldModel</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">Progressive Experience Fusion</span>
+                
+                <span class="kw">multi-task TD-MPC2</span>
+                
+                <span class="kw">world model control</span>
+                
+                <span class="kw">endovascular navigation</span>
+                
+                <span class="kw">model predictive path integral</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文提出渐进式经验融合（PEF）方法来训练多任务TD-MPC2世界模型控制器以用于自主血管内导航，在仿真中实现了更高的成功率，并通过微调成功迁移到体外模型。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper proposes Progressive Experience Fusion (PEF) to train a multi-task TD-MPC2 world model controller for autonomous endovascular navigation, achieving improved success rates in simulation and successful transfer to an in vitro phantom with fine-tuning.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Autonomous endovascular navigation could support the delivery of mechanical thrombectomy to underserved areas, but controllers must navigate long, multi-stage paths across varying vascular anatomies. This study investigates Progressive Experience Fusion (PEF) to train a multi-task TD-MPC2 controller. We additionally evaluate a heuristic that changes the Model Predictive Path Integral planning horizon using residual action-sequence dispersion, and fine-tuning in a patient-specific simulation. Across five subtasks in ten known training anatomies with held-out targets, PEF achieved a mean success rate of 74%, compared with 37% for Soft Actor-Critic (p < 0.001) and 65% for base TD-MPC2 (p = 0.053). A PEF controller with adaptive-horizon planning trained on 30 vasculatures achieved a mean success rate of 90% in ten held-out vasculatures. The PEF agent successfully transferred to an unseen in vitro stroke patient vasculature under fluoroscopy, achieving a mean path ratio improvement from 63% to 80% with fine-tuning (p < 0.001), following 40x103 fine-tuning steps (corresponding to approximately 107 min of clinical inter-hospital transfer time). This work represents a proof of concept for multi-vasculature training and patient-specific adaptation, while further validation is required before clinical deployment.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>自主血管内导航技术可为医疗资源匮乏地区的机械取栓治疗提供支持，但控制器需在形态各异的血管解剖结构中完成多阶段长路径导航。本研究探讨了渐进式经验融合方法以训练多任务TD-MPC2控制器，同时评估了基于残差动作序列离散度动态调整模型预测路径积分规划时域的启发式策略，并在患者特异性仿真中进行了微调。在包含十个已知训练解剖结构及保留目标路径的五个子任务中，PEF的平均成功率达74%，显著优于软Actor-Critic算法的37%（p < 0.001）及基础TD-MPC2的65%（p = 0.053）。采用自适应规划时域的PEF控制器在三十个血管结构上训练后，对十个未训练血管结构的平均成功率达90%。经40×10³步微调（对应约107分钟临床院际转运时间），PEF智能体成功迁移至未接触过的体外卒中患者血管荧光透视模型，路径比均值从63%提升至80%（p < 0.001）。本研究证实了多血管结构训练与患者特异性适配的可行性，但临床应用前仍需进一步验证。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(6/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2608.18647v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="5" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="5" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Harry Robertshaw, Maxence Boels, Nikola Fischer, Sebastien Ourselin, Christos Bergeles, Alejandro Granados, Thomas C Booth</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.30000000000000004, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                Partition the Support, Reconstruct the Residual: Training-Free Sparse Attention for Video Generation and World Models
+                
+                <span class="topic-chip topic-worldmodel">WorldModel</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">block-sparse attention</span>
+                
+                <span class="kw">training-free</span>
+                
+                <span class="kw">video generation</span>
+                
+                <span class="kw">world models</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文提出了SparsePR，一种无需训练的块稀疏注意力方法，可改善重建误差并加速视频生成和世界模型中的视频变换器。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper introduces SparsePR, a training-free block-sparse attention method that improves reconstruction error and speeds up video transformers for video generation and world models.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Training-free block-sparse attention can accelerate video transformers, but row-wise attention concentration does not by itself specify an executable sparse operator. Queries sharing a block route may have poorly overlapping supports, while retained attention mass alone does not determine the post-softmax error from skipped interactions. We show that partition geometry affects both pooled support and the predictability of the remaining residual from the sparse output. We introduce SparsePR, which combines Response-Coupled Partitioning with Probe-Fitted Residual Reconstruction. Sampled-query key responses form paired K/V groups, whose centroids induce query-response coordinates for shared routing. A small set of exact query rows then calibrates a call-specific affine correction from the sparse output within the output subspace observed in the probe residuals. Across four heterogeneous video generation and world models, SparsePR consistently reduces attention-reconstruction error. Ablations show that probe fitting accounts for most of this reduction, while response-coupled partitioning lowers hard-drop error and improves reconstruction under a finite probe budget. SparsePR preserves generation quality at 22.0-26.0% realized executed-pair density while achieving 1.48x-2.61x end-to-end speedups. Project page: https://pardistaghavi.github.io/SparsePR-website/</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>无需训练的块稀疏注意力可以加速视频Transformer，但逐行注意力集中本身并不能指定一个可执行的稀疏算子。共享同一块路由路径的查询可能具有重叠较差的支撑集，而仅保留的注意力质量本身无法确定由跳过交互引起的softmax后误差。我们证明，分区几何结构同时影响聚合支撑集以及从稀疏输出中预测剩余残差的能力。我们提出SparsePR，该方法将响应耦合分区与探针拟合残差重建相结合。采样查询的键响应构成配对的K/V组，其质心为共享路由生成查询-响应坐标。随后，少量精确查询行通过探针残差中观测到的输出子空间，从稀疏输出校准一个调用特定的仿射校正。在四个异构视频生成与世界模型上，SparsePR持续降低了注意力重建误差。消融实验表明，探针拟合贡献了该误差降低的大部分，而响应耦合分区降低了硬丢弃误差，并在有限探针预算下改善了重建质量。SparsePR在实现22.0%-26.0%的实际执行对密度时保持了生成质量，同时实现了1.48倍至2.61倍的端到端加速。项目页面：https://pardistaghavi.github.io/SparsePR-website/</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="fas fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                    
+                        <i class="far fa-star"></i>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(6/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2608.18484v1" target="_blank" class="paper-link">
+                <i class="fas fa-file-pdf mr-1"></i> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="6" title="在 hjfy.top 翻译为中文">
+                <i class="fas fa-language"></i>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="6" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Pardis Taghavi, Reza Langari, Gaurav Pandey</p>
+            
+        </motion.div>
+        
+    </div>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18715v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        The Impact of CutMix on Reliability and Robustness in Semantic Segmentation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                    
+                    <span class="topic-chip topic-autonomousdriving">AutonomousDriving</span>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="7" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="7" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Steven Landgraf, Markus Ulrich</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文研究了CutMix数据增强对语义分割模型可靠性和鲁棒性的影响，发现CutMix在分布偏移下持续改善校准和不确定性质量，这对自动驾驶等安全关键应用至关重要。</p>
+                
+                <p><strong>Overall:</strong> 5/10</p>
+                
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18827v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        MLREF: Efficient Module Reuse for Reward Design in Reinforcement Learning via Large Language Models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                    
+                    <span class="topic-chip topic-other">Other</span>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="8" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="8" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Chenglin Liu, Xun Wang, Ruishuo Chen, Zhuoran Li, Longbo Huang</p>
+                
+                <p><strong>TLDR-CN:</strong> MLREF 提出了一种基于模块池的奖励进化框架，利用大语言模型优化强化学习的奖励设计，在移动和操作任务上分别取得 25.2% 和 6.6% 的性能提升。</p>
+                
+                <p><strong>Overall:</strong> 4/10</p>
+                
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18770v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        To Go Far, Go Together: Diverse Preferences Induce a Curriculum for Reward Optimization
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                    
+                    <span class="topic-chip topic-other">Other</span>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="9" title="在 hjfy.top 翻译为中文">
+                        <i class="fas fa-language"></i>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="9" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Taehyung Kim, Jongeun Choi</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出CurriPO，通过构建树状课程结构覆盖多样化的用户奖励模型，解决对齐中优化难度不公问题，在个性化连续控制模拟中验证效果。</p>
+                
+                <p><strong>Overall:</strong> 3/10</p>
+                
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18279v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        A Comprehensive Review of Large Language Models for Nanophotonics: From Surrogate Modeling to Autonomous Design
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Huanshu Zhang, Kegeng Tang, Lei Kang, Sawyer D. Campbell, Zihao Wang, Douglas H. Werner</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5 <span style="opacity: 0.7;">[hits: mapping]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18709v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        A Critical Synthesis of Uncertainty Quantification and Foundation Models for Semantic Segmentation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Steven Landgraf, Joceline Hinz, Markus Ulrich</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18903v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        A FEM-Based Surrogate Modelling and Optimization Framework for Physics-Constrained Electromagnetic Coil Design
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yucheng Liu</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18780v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        A Real-Time Tsetlin Machine-based Non-intrusive Load Monitoring System on MCUs
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Tianhang Tan, Han Wu, Tousif Rahman, Shengyu Duan, Alex Yakovlev, Rishad Shafik</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18819v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        A Unifying Relational Perspective on Expressive Lottery Tickets
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Lorenz Kummer, Samir Moustafa, Anatol Ehrlich, Franka Bause, Marco Nennstiel, Przemysław Andrzej Wałȩga, Nils Morten Kriege</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18714v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        A single design choice determines whether machine learning models of materials make physically impossible predictions
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Can Polat, Mustafa Kurban, Erchin Serpedin, Hasan Kurban</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18450v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Adaptive Multi-Agent Feature Selection for Personalized Fall Risk Prevention
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Chang Liu, Ladda Thiamwong, Yanjie Fu, Rui Xie</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5 <span style="opacity: 0.7;">[hits: reinforcement learning]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18402v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Algorithms for adaptive and heteroskedastic linear regression at the computational threshold
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Spencer Compton, Tselil Schramm</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18230v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Allocating Recurrent Compute in Looped Language Models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ruhai Lin, Yiyang Guo, Rui-Jie Zhu, Hao Ye, Jason K. Eshraghian</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18675v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        An Empirical Benchmark of Deep Time-Series Models for Smart Meter Energy Forecasting
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Behnaz Kavoosighafi, Maria Eidenskog, Wiktoria Glad, Katerina Vrotsou</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18451v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Atrial Fibrillation Detection with Arbitrary Leads via a Codebook-Based Reconstruction-Classification Framework
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Hongtao Li, Jia Wei, Guoyao Li, Yuchen Lei, Guangnian Ma, Jia Xiao, Yuanjun Lai, Shuzhen Lv, Xueqiang Ouyang</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19043v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Bernstein-Vazirani Networks: Quantum Machine Learning by Interference
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Natacha Kuete Meli, Tolga Birdal, Prayag Tiwari, Vladislav Golyanik, Michael Moeller</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18759v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Beyond Predictive Fairness: Quantifying Attribution Consistency Across Demographic Groups in Diabetic Retinopathy Screening
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Kerol Djoumessi, Philipp Berens</p>
+                
+                <p><strong>Stage1:</strong> tier3 exclude hit: ['medical imaging'] <span style="opacity: 0.7;">[hits: medical imaging]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19181v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Beyond Teacher Likelihood: Group-Calibrated On-Policy Distillation for Long-Context Reasoning
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zhu Zhang, Jixun Wang, Xiaoang Xu, Xiaorong Wang, Zihan Zhou, Zhiyuan Wang, Shuo Wang, Chaojun Xiao, Yuezhi Zhou</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19128v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Beyond Trial Averaging: Anchoring Neural and Visual Representations for Few-Repetition Brain-to-Image Retrieval
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zhenyao Cui, Siyuan Kan, Dingkun Liu, Dongrui Wu</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18576v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Beyond receptive fields: sequence-pooled normalization can supply most of a sequence labeler's context
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Qing Tian</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18244v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Bidirectional representational alignment between biological and artificial neural networks
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Samuel Kostousov, Abhinn Kaushik, Brokoslaw Laschowski</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18938v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Breaking the weakest link to evade vision language models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ilan Zini, Boussad Addad, Katarzyna Kapusta</p>
+                
+                <p><strong>Stage1:</strong> score=4 below threshold 5 <span style="opacity: 0.7;">[hits: vision language models, vlm]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18261v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Cacheable by Design? Training Mixture-of-Experts Routers for Locality Against the Edge Memory-Bandwidth Wall: A Pre-Registered Negative Result with a Systems Measurement Study
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Shriniwas Ramesh Suram</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18639v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Change Point--Aware Evaluation and Re-Calibration of PPG-Based Blood Pressure Estimation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yunwon Tae, Minje Park, Gyunho Rho, Dongjoon Yoo, Sunghoon Joo</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18235v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Classifying Directional Trajectories Near Criticality in the Three-State Majority-Vote Model with Deep Belief Networks and Bidirectional GRUs
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Mauricio A. Valle, Gonzalo A. Ruz</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18242v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        ClosureBench: A Constructive Benchmark for Compositional Graph Reasoning
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Stefano Goria</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19285v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Clustering and Token Denoising for Faster and More Robust VLMs
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Baptiste Rossigneux, Inna Kucher, Vincent Lorrain, Emmanuel Casseau</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5 <span style="opacity: 0.7;">[hits: vlm]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18578v2" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Compress and Forget: bitsandbytes Quantization Amplifies Proactive Interference in LLMs
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Shayan Shahrabi-Farahani, Dara Rahmati</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18660v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Computational Measurement of Team-Process Phase Dynamics in Collaborative Virtual Reality
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Qing Huang, Jianing Zhang, Pooja Pol</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18574v2" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Continual Reasoning Gym: Diagnosing and Harnessing Shared Reasoning in Continual RLVR
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Lirui Luo, Guoxi Zhang, Hongming Xu, Rongqing Li, Cong Fang, Lifeng Fan</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5 <span style="opacity: 0.7;">[hits: reinforcement learning]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19151v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Continuous-Time Reinforcement Learning for Controlled Hawkes Jump-Diffusions
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Tomasz R. Bielecki, Thibaut Mastrolia, Haoze Yan</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: reinforcement learning]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18911v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Converting Expert Deliberation into Financial Signals Through A Context-Aware NLP Pipeline
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Vivek Batra, Kristin Chen, Sanjiv Das, Samuel Judge, Harshad Khadilkar, Sukrit Mittal, Amir Nasrollahzadeh, Daniel Ostrov, Jacob Sisk</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18634v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Coordination on a Budget: Federated Active Learning with Few Labels
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Liam Mohr, Daphna Weinshall</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18346v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Coupled-cluster molecular properties across the main group that extrapolate beyond training size
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Wenhao He, Xu Chen, Noah Song, Haowei Xu, Tim S. Hindges, Bohan Li, Zihan Lin, Yu Yao, Avetik R. Harutyunyan, Fang Liu, Yao Wang, Hao Tang, Ju Li</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18524v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        DART-SD: Diamond-topology Aware Retrieval and Tuning for Self-Distillation of Multi-Turn Tool-Calling Agents
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Hangrui Xu, Jiarui Wang, Yang Yang, Chuanbo Zhu, Fangda Chen, Ziqi Wu, Jingming Cai, Yan Song</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18294v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Debiased Inference for AI-Generated Data without Gold-Standard Labels: Identification via Multiple Imperfect Measurements
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Naoki Egami, Sooahn Shin</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18610v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Denoising-Aware Inversion: Revealing Privacy Risks in Noise-Protected Text Embeddings
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yubo Wang, Shujie Cui, James Bailey, Hongzhi Yin, Wenyu Liang, Min Tang, Shiyue Qin, Weiqing Wang</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19067v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Diffusion Models for High-Dimensional Clustered Data: Intrinsic-Dimension Adaptivity via Bayesian Classification
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yuga Iguchi, Paul Fearnhead</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19119v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Discretizing Continuous Time Series for Imputation with Masked Diffusion Training
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Dongbin Kim, Seungyun Lee, Geonwoo Shin, Jaewook Lee</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19084v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Does Mapping Non-Maximal Probabilities to GMM Components Matter for S-JEPA Encoder Representations?
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Wenxuan He, Yunpeng Li, Shan Liang</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: mapping]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18469v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        ERASE: EaRly bAckpropagation SchEdule for Faster Training of Modern Recommendation Systems
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ergan Shang, Flavio Sales Truzzi</p>
+                
+                <p><strong>Stage1:</strong> tier3 exclude hit: ['click through rate', 'recommendation systems'] <span style="opacity: 0.7;">[hits: click through rate, recommendation systems]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18762v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Enhancing Distance-Based Graph Autoencoders with Structural Penalties for Dynamic Graph Embedding
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Aleksandar Tomčić, Miloš Savić, Miloš Radovanović</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19117v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Enhancing EBSD throughput of battery electrode materials using super-resolution generative adversarial networks
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> John Mangum, Andrew Glaws, Francois Usseglio-Viretta, Steven Spurgeon, Donal Finegan</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18690v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Europe's Climate Ambition Under Scrutiny: Evidence from Deep Learning Emission Projections
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jacopo Ghirri, Carlos Rodriguez-Pardo, Lara Aleluia Reis, Massimo Tavoni</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.20149v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Evaluating Neural Cartographic Relief Shading for Urban Environments: A Downtown Calgary Study Using High-Resolution DEM and DSM Data
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Emmanuel Stefanakis</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18289v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Evaluating Structured Information Extraction with Open Models in a High Risk Public Sector Application
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Elias Schubert, Felix Bießmann</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: vision language models, vlm]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18539v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Evaluating and Explaining Prompt Sensitivity of LLMs Using Interactions
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ruiyang Qin, Qingzhuo Wang, Tian Wang, Zhihua Wei, Wen Shen</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18311v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        FedCoRe: Target-Adaptive Completion for Missing Modalities in Healthcare Federated Learning
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Holger R. Roth, Ziyue Xu, Peter Cnudde</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18736v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        FedLNS: Leverage LayerNorm Signature Modeling to Mitigate Adversarial Manipulation in Federated LLMs
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Kai Li, Jong-Ik Park, Carlee Joe-Wong, Wei Ni, Falko Dressler</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18733v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Flama: a Python framework for development and deployment of production-ready APIs, machine learning, and LLM services
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> José A. Perdiguero López, Miguel A. Durán-Olivencia</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18656v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        FlashAttention for Scalable Vector Architectures
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Sonia Rani Gupta, Nikela Papadopoulou, Miquel Pericàs</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18803v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Forgetting, plasticity, and co-observation: a third facet of continual learning
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Timm Hess, Abhishek Jha, Gido M. van de Ven, Tinne Tuytelaars</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18339v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        From Inference to Adaptation: A Unified Optimal Transport View of Vision Language Model
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Qi Yu, Zhichen Zeng, Katherine Tieu, Xiyuan Yang, Ruizhong Qiu, Yuchen Yan, Lihui Liu, Yanjun Zhao, Lingjie Chen, Jingrui He, Hanghang Tong</p>
+                
+                <p><strong>Stage1:</strong> score=4 below threshold 5 <span style="opacity: 0.7;">[hits: vision language model, vision language models, vlm]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18581v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        From Storage to Access: Verifiable Activation of Parametric Knowledge in LLMs via Explicit Priming and Implicit Reasoning
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zuocheng Ying, Yang Yang, Yumou Wu, Chuanbo Zhu, Jiarui Wang, Ziqi Wu, Jingming Cai, Junqing Yu, Zikai Song</p>
+                
+                <p><strong>Stage1:</strong> score=2 below threshold 5 <span style="opacity: 0.7;">[hits: reinforcement learning]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18969v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Fuzzy Accuracy Compensates for Label Subjectivity in Classification of Skin Tone Using Wearable Photoplethysmography Signals
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Padmini Krishnadas, Urs Hackstein, Alen Bosnjakovic, Philip J. Aston</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18522v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        GCNO: Gramian Chebyshev Neural Operator for Physics-Based Compression of Wireless Channels
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Rafid Umayer Murshed, Shahab Hamidi-Rad, Elahe Soltanaghai, Akshay Malhotra</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18849v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        GEAR: Generative Expansion and Real Anchoring for Two-Stage Distillation of Tabular Foundation Models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Qi Qin, Jiajie Zhu, Dali Chen, Yuzhao Zhang, Jia-Xing Han, Yu Su, Peng Zhang, Ying Yan, Yifan Sun</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18749v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Geometric Data Perturbation with Noisy-Anchor Alignment for Privacy-Preserving Collaborative Learning
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Keiyu Nosaka, Yamato Suetake, Yuichi Takano, Yukihiko Okada, Akiko Yoshise</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19141v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Geometric Iterative Retrieval for Neural Audio Codec Resynthesis
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Leo Schmidt-Traub, Frédéric Berdoz, Luca A. Lanzendörfer, Roger Wattenhofer</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18268v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Global Crises and National Policies: A Large Scale Analysis of Political Content in German Language Online Media
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yara Döring, Felix Bießmann</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18767v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Gradient Mirage: Trainable yet Label-Unidentifiable Gradients in Large Language Model Split Learning
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Shiyu Miao, Yunlong Mao, Zirui Huang, Liang Yao, Tianshuo Zheng, Yanhui Gu, Fan Liu, Sheng Zhong</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18887v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Graph-Based Approaches to Learning Epileptogenic Zone Localization Using Stereo-EEG Recordings
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Daniel Wendelken, Brian Ervin, Ravindra Arya, Ali A. Minai</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: localization]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18777v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        GraphK: Variable-Size Graph Generation with Efficient Edge Construction
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Resul Tugay, Eren Oluğ, Elif Ak, Sule Gunduz Oguducu</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18936v2" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Graphical Design of Interpretable Architectures
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Pietro Barbiero</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19140v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Grouping the Stochastic Machine: Precision, Not Capability, as the Frontier Metric for AI Systems
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> George Andrikopoulos</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19013v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Harness Continual Learning: Continual Adaptation Beyond Model Parameters
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Borui Kang, Jinrui Gu, Junhan Lv, Wenbin Li, Lei Wang, Yang Gao</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19297v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Holtercare-Bench: A Multimodal Benchmark for Evaluating Long-Term Dynamic ECG Analysis
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yihan Xie, Hanwen Cui, Runze Ye, Juekai Lin, Haoyang Wang, Jinhao Mao, Bo Zhang, Wenqiao Zhang, Xiaogang Guo, Jun Xiao, Lei Zhang</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5 <span style="opacity: 0.7;">[hits: localization]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18374v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Inference and Uncertainty Quantification for Streaming $r$-PCA
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Haoshu Xu, Hongzhe Li</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18592v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Infrared Universality of Collective Dynamics across Transformer and State-Space Architectures
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Byung Gyu Chae</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18503v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        LLM-Powered Predictive Decision-Making for Sustainable Data Center Operations
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Hanzhao Wang, Jingxuan Wu, Yumeng Li, Yu Pan, Guanting Chen</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19127v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Leaf Values as Coordinates: Exact Contrastive Explanation for Gradient-Boosted Ensembles
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Emanuele Luzio</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19168v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Learned, Then Lost: A Measured Single-Example Counterfactual in Pre-training
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zachary Speck, Asa Shepard</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18765v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Learning Canonical Register Automata over Ordered Data Domains
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yong Li, Qiyi Tang, Di-De Yen</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19082v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Learning Random Geometric Graphs Drawn in Probabilistic Metric Spaces
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Dalia Chakrabarty, Kangrui Wang, Chuqiao Zhang, Ye Liu</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18570v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Learning Topological Features of $\widehat Z$-invariants
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Brandon Robinson, Shimal Harichurn, Fabian Ruehle, Sergei Gukov, Rak-Kyeong Seong, Miranda C. N. Cheng</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18919v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Lost in Aggregation: How Benchmarks Overlook Irreplaceable Model Strengths
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Andrej Tschalzev, Stefan Lüdtke, Heiner Stuckenschmidt, Christian Bartelt</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18341v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Low-Power, Neuromorphic, Acoustic Anomaly Detection for Persistent Machine Monitoring
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Steven C. Nesbit, Victor M. Vergara, Michael A. Felix, Evan T. Kain, Luis R. García Carrillo, Gerd J. Kunde, Andrew T. Sornborger</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19171v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Lévy Attention: Single-Pass Predictive Uncertainty for Continuous-Time Attention
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Sotirios P. Chatzis, Loukas Papadoulas</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18546v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        MARCUS: Missing-Aware Region Representation with Contextual Urban Signals for Rent Prediction
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Chenya Huang, Bin Liang, Zhidong Li, Yuxi Lu, Kunqi Li, Justin Wang, Fang Chen</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18774v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        MIFR: A Modality-Invariant and Fair Representation Framework for Skin Disease Classification
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Asonyu Senge Njih, Yvan Guifo Fodjo, Vianney Kengne Tchendji, Jerry Lacmou Zeutouo, Kerol Djoumessi</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18810v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Many Optimizers But Only One Training Path: Repeated Resampling for Adaptive Optimizer Selection
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ronald Richman, Mario V. Wüthrich</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18419v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Mechanistic Interpretability of Structure-Aware Numerical Reasoning in LLaMA 3.1 8B
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Rahul Chowdhury, Timothy A Rupprecht, Senhao Cao, Jiahao Liu, Octavia Camps, David Bau, Pu Zhao, Yanzhi Wang</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18274v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Model Card for OpenAI Privacy Filter
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Charles de Bourcy, Sahra Ghalebikesabi, Avi Schwarzschild, Alex Gorbachev, Mihai Maruseac, Annie Chu, Vol Kyrylov, Tong Mu, Ally Bennett, Andy Nguyen, Casey Meehan, Jessica Gan Lee, Shane Bauer, Harold Nguyen, Rodolpho Eckhardt, Yuqi Liu, Charlie Oxborough, Marco Rougeth, Omar Chedid, Caio Costa, Yash Parikh, Yao Li, Congzheng Song, Om Thakkar, Vinnie Monaco</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18982v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Monroe: A Molecular Foundation Model for In-Context Probabilistic Inference
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Blazej Banaszewski, Andrew W. Fitzgibbon</p>
+                
+                <p><strong>Stage1:</strong> tier3 exclude hit: ['drug discovery'] <span style="opacity: 0.7;">[hits: drug discovery]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18558v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        MorphoGP: A Nonparametric Framework for Predicting Equilibrium Beach Profiles Under Tidal Influence
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Xi Wu, Yanqing Wei, Hang Yin, Pengze Li, Hongshuai Qi, Xi Chen</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19049v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Multi-Agent Off-Policy Deep Reinforcement Learning for Smart Campus Coverage
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Omar Rady, Mohamed Ayman, Ali Arafa, Mohamed Shalma</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: reinforcement learning]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18716v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Multi-Class Electrical and Mechanical Fault Classification Using Random Convolutional Kernels
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Mouhamadou Mansour Lo, Mouad Talbaoui, Gildas Morvan, Mathieu Rossi, Fabrice Morganti, David Mercier</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18429v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Multi-Objective Optimization Under Uncertainty of Part Quality in Fused Filament Fabrication
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Berkcan Kapusuzoglu, Paromita Nath, Matthew Sato, Sankaran Mahadevan, Paul Witherell</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18851v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Multi-stage neural operator learning with application for convolutions
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zhiping Mao, Zhenye Wen, Yong Zhang, Xiaofei Zhao</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18571v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        NanoSleep: A Parameter-Efficient Hybrid Temporal Convolutional Network for Single-Channel Sleep Stage Classification
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> S M Asif Hossain, Shruti Kshirsagar</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18597v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Off-Manifold Collapse in Guided Protein Language Models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Shuibai Zhang, Xinchi Liu, Fred Zhangzhi Peng, Zhihan Yang, Shutong Wu, Yingzi Ma, Jiawei Zhang</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18910v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        On the Slow Convergence to Trivial Solutions of Algorithms for Hard Optimization Problems
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ali Hussaini Umar, Jean Barbier, Matthieu Jonckheere, Manuel Sáenz</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19098v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Open-MOPD: Diagnosing and Fixing Capability Imbalance in Multi-Teacher On-Policy Distillation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Huan-ang Gao, Haohan Chi, Yong Yan, Shiyuan Feng, Hanlin Wu, Zheng Jiang, Bingxiang He, Wei-Ying Ma, Ya-Qin Zhang, Hao Zhou</p>
+                
+                <p><strong>Stage1:</strong> tier3 exclude hit: ['pathology', 'reinforcement learning'] <span style="opacity: 0.7;">[hits: pathology, reinforcement learning]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19121v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        PGFS++: Molecular Property Improvement under Synthesis and Diversity Constraints
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Boqiao Zhang, Godbless James, Sai Krishna Gottipati, Andrew Fitzgibbon</p>
+                
+                <p><strong>Stage1:</strong> tier3 exclude hit: ['drug discovery', 'reinforcement learning'] <span style="opacity: 0.7;">[hits: drug discovery, reinforcement learning]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18531v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Pairwise Ranking Outperforms Single-Action RL for Offline Explanation Selection: A Practical Lesson
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Tanay Chowdhury, Saeideh Shahrokh Esfahani</p>
+                
+                <p><strong>Stage1:</strong> tier3 exclude hit: ['recommendation systems'] <span style="opacity: 0.7;">[hits: recommendation systems]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18438v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Pedagogical AI in Mental Health: A Tri-Stream Fine-Tuned LLM Framework for Automated Clinical Supervision and Risk Triage
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Shreeya Sharma, Ravish Gupta, Saket Kumar, Abhishek Aggarwal</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18555v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Performance Drift Detection in Machine Learning as a Service (MLaaS) for IoT Environments
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Deepak Kanneganti, Sajib Mistry, Sheik Mohammad Mostakim Fattah, Erik Elmroth, Aneesh Krishna, Monowar Bhuyan</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18495v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Physics-Unrolled Neural Operator for Wireless Field Modeling
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Rafid Umayer Murshed, Saif Ur Rahman, Mingyue Tang, Elahe Soltanaghai</p>
+                
+                <p><strong>Stage1:</strong> score=2 below threshold 5 <span style="opacity: 0.7;">[hits: localization]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18631v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Preference Reasoning under Indeterminacy in Large Language Models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Hadi Hosseini, Samarth Khanna, Xiyuan Wang</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19115v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Pretraining Reusable Inference Across Views with Synthetic Task Priors
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jielong Lu, Zhihao Wu, Jiajun Yu, Zhaoliang Chen, Haishuai Wang</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18431v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Process Optimization Under Uncertainty for Improving the Bond Quality of Polymer Filaments in Fused Filament Fabrication
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Berkcan Kapusuzoglu, Matthew Sato, Sankaran Mahadevan, Paul Witherell</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18643v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        ProxyGuard: Direct Reliability Inference for Randomized Data Release Mechanisms with Shared Targets
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Dipesh Tharu Mahato, Pramod Dhungana</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19306v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Quantum Gaussian processes for prediction of channel observations
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jonas Jäger, Yaroslav Khmelnitskiy, Paolo Braccia, Artur Miroszewski, Diego García-Martín, M. Cerezo, Piotr Czarnik</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19304v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Quantum Kernel Estimation for the Discovery of Early Lung Cancer Detection
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Hamed Javidi, Alex Zajichek, Hakan Doga, Laxmi Parida, Filippo Utro, Peter J. Mazzone</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18901v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Quantum Tensor Network Learning with DMRG
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Gustav J L Jäger, Martin B Plenio, Hans-Martin Rieser</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18659v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Quantum-Logic Tsetlin Machines: Interpretable Quantum Machine Learning with Commuting Projector Clauses
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Krishna Bhatia</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19282v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Recovering Nonlinear Functions of Latent Variables: A Plausible-Value Neural Network Framework
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Eunjeong Song, Sehee Hong</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18260v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Redakto - The Incognito Tab for LLMs
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Saurav Kumar Saha, Tom Röhr, Felix Bießmann</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18742v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Regularised Iterative Generalised Least Squares with Optimal Selection of the Hyper-Parameter for Identifying Nonlinear Phenomenological Models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Mark Cary, Charles Bokor</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18271v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Rethinking Privileged Information in On-Policy Self-Distillation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Samyak Shrestha, Alexander Tessier</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19073v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Robust Risk Under Evolving Uncertainty: A Wasserstein Counterpart of the Entropic Value-at-Risk
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Deep Kumar Ganguly, Jan Křetínský</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19134v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        SCORE: Subject Coordinate Recovery for Label-Free Cross-Subject EEG-to-Image Retrieval
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zhenyao Cui, Siyuan Kan, Siyang Li, Ziwei Wang, Dongrui Wu</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18303v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        SESSE: Sketch, Expand, Sort, Summarize, Evaluate -- LLM-as-Judge Evaluation via Structured Decomposition
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Dae Lee, Mihai Delgeanu, Adel Youssef</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18263v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        SIGMA: Symmetry-aware, Intelligent, Geometric, Multi-objective Adaptive Control for Robust, Dependable Traffic Management
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Pratham Payra, Jagadish B, Tanmay Sen, Tanujit Chakraborty</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19080v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        SPK: Eliciting Structured Prior Knowledge for Interpretable Out-of-Distribution Detection in Real-Time Object Detection
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Changshun Wu, Weicheng He, Xiaowei Huang, Saddek Bensalem</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18611v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Scalable Geospatial Machine Learning for Power-Line Asset Risk: Integrating Remote Sensing for Lightning and Vegetation Risk Modelling
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Artur Sokolovsky, Bhavik Merai, Moe Jafari, Muen Chen</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18918v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Score the Algebra, Not the Span: Dimension Reduction for Transfer Operator Models of Dynamical Systems
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Mark Kozdoba, Shie Mannor</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18379v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Selection, Recombination, or a Fresh Solve? A Candidate-Free Control for Single-Pass Test-Time Aggregation
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Guiv Farmanfarmaian</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18282v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Self-supervised In-context Operator Learning for Stochastic Mean-Field Control
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Suyi Gao, Mo Zhou, Rongjie Lai</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18863v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Sharper Regret Bounds for Time-Varying Gaussian Process Bandits with Constant Exploration
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Matthias Mandl, Hanne Kekkonen</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18915v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Simple, Safe, and Overlooked: Reclaiming Sustainable Domain Generalization with Statistical Color Matching
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Sebastian Doerrich, Francesco Di Salvo, Shyam Nandan Rai, Marco Lents, Christian Ledig</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18319v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        SingularClip: Preventing Spectral Collapse to Maintain Plasticity in Continual and Reinforcement Learning
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Tyler Kastner, Nimrod De La Vega, Amir-massoud Farahmand</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: reinforcement learning]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18237v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Sobolev Regularized Score Difference Estimation in Diffusion Models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Chenghan Xie, Jose Blanchet, Renyuan Xu</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18351v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Task-Conditioned Least-Privilege Learning for Executable Terminal and MCP Agents
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Alexander Tu, Michael Tu</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18808v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Tensor Field Models
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Alexander Strunk, Roland Assam</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18415v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        The Road Taken: The Role of Optimizers at the Edge of Stability
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jaerin Lee, Kyoung Mu Lee</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18222v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Think Shallow, Solve Deep: Controlling Recurrent Dynamics for Reliable Test-Time Depth
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ivan Viakhirev, Kirill Borodin, Amirah Almutairi, Serguei Barannikov, Maxim Abramov, Grach Mkrtchian</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18500v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Tianmu-TC: Physics-constraints Generative Artificial Intelligence for Global Tropical Cyclone Forecasting
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Shiqi Zhang, Pan Mu, Cheng Huang, Hanting Yan, Yuchao Zhu, Jinglin Zhang, Shengyong Chen, Shoujuan Shu, Cong Bai</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18940v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Training Chemical Plausibility-Aware Large Language Models for Single-Step Retrosynthesis
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Bogdan Zagribelnyy, Ivan Ilin, Nikita Bondarev, Maksim Kuznetsov, Mathieu Reymond, Vladimir Aladinskiy, Alex Aliper, Alex Zhavoronkov</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18687v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Transforming Heart Disease Prediction with Advanced Machine Learning Techniques
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Sami Ullah, Muhammad Mohsin Khan</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18932v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Transportable Causal Effect Estimation across Networks under Interference
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Xiaojing Du, Jiuyong Li, Lin Liu, Debo Cheng, Jixue Liu, Thuc Duy Le</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18825v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Understanding Multilingual Medical ASR Adaptation Through Layer-Wise Analysis
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Souranil Kahali, Rituparna Bose, Abner Hernandez, Tomas Arias-Vergara, Andreas Maier, Ning Ma, Paula Andrea Perez-Toro</p>
+                
+                <p><strong>Stage1:</strong> tier3 exclude hit: ['asr', 'speech recognition'] <span style="opacity: 0.7;">[hits: asr, speech recognition]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18572v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        VQC-ZTI: Variational Quantum Control for Zero Trust Protection of the Tactile Internet
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Mubassir Serneabat Sudipto, Shakil Ahmed, Ashfaq Khokhar</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18404v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Vector Symbolic Policy Gradient
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ryozo Masukawa, Sanggeon Yun, SungHeon Jeong, Hyunwoo Oh, Raheeb Hassan, Pietro Mercati, Nathaniel D. Bastian, Mahdi Imani, Mohsen Imani</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18727v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Visual-Aware Representation of Web Pages for Machine Learning Applications
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Radek Burget, Radek Hranický</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18246v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Visual-Prompt Guided Wildlife Instance-Level Recognition
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Mufhumudzi Muthivhi, Jiahao Huo, Terence van Zyl, Fredrik Gustafsson</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18280v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        What Makes Software Issue Resolution Tasks Difficult for Agents?
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ebtesam Al-Haque, Brittany Johnson</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.19072v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        What is Missing from AI Post-Training AI: An Empirical Analysis
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Joy Jia Yin Lim, Xin Huang, Hao Peng, Yaxi Lu, Xin Cong, Zhong Zhang, Maosong Sun, Yankai Lin</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18330v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        When Does Dynamic Ensembling Pay Off? Diagnosing Regionwise Gains in Regression under Distribution Shift
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Tianxin Zhou, Ruixi Lin</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18521v2" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Which Negatives Matter? Ask Your Text Encoder: Adaptive Similarity Margins for Dense-Caption Retrieval
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Haoyue Liu, Ye Chen, Zhichao Wang, Xiaoying Tang</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2608.18486v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        WhiteMatter: All-to-All Cross-Layer Connections via KV Mixing
+                        <i class="fas fa-up-right-from-square"></i>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Wenbo Zhang, Xiang Ren</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+        </div>
+    </section>
+
+    <footer class="footer">
+        Generated on 2026-08-21 02:17:31 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+    </footer>
+
+    
+    
+    <script type="application/json" id="papers-data">[{"title": "Decision-Metric Alignment in Latent World Models: Diagnostics and Action-Conditioned Objectives for MPC Planning", "summary": "JEPA-style latent world models can use Euclidean distance to a goal latent as the cost for model-predictive control (MPC). Strong decoding of task variables, however, does not guarantee that this particular cost ranks candidate action sequences by real task progress. We call the latter property \\emph{decision-metric alignment}. We introduce Plan-Real Spearman, which measures latent--real rank agreement on random plans, and CEM-stage Spearman, which measures the same agreement as cross-entropy-method (CEM) search concentrates its proposal. We analyze sufficient conditions under which latent distance preserves real-cost rankings, identifying encoder distortion, terminal rollout error, and candidate margins as the controlling quantities. Guided by the observed empirical alignment gap, DA-LeWM augments LeWM with inverse-dynamics and demonstration-conditioned goal-action heads. Across all our experiments, DA-LeWM accelerates convergence and achieves higher online success than LeWM, while probe scores remain similar. These results show that action-conditioned objectives improve the geometry used by Euclidean-cost, CEM-based latent MPC.", "url": "http://arxiv.org/abs/2608.18746v1", "authors": ["Jiawei Wang", "Ke Rui", "Yushen Zuo", "Yichun Feng", "Minglei Li"], "keywords": ["latent world model", "decision-metric alignment", "JEPA", "model-predictive control", "action-conditioned objectives"]},{"title": "Reinforced Planning with Latent World Models", "summary": "Humans solve complex problems by constructing plans and mentally simulating their outcomes with an internal model of the world. Machine learning has produced world models that similarly predict the outcomes of action sequences, but the improvement of candidate plans still isn\u0027t fully learned. Current planners are either hand-designed, distilled from a hand-designed optimizer, or learned only to inform an amortized policy rather than to revise the plan itself. We introduce the Reinforced Planning, a method based on the idea that search can be learned by reinforcing good search rules into a neural planner. Our implementation RP1 learns both how to evaluate imagined outcomes through a critic, as well as how to improve multi-step plans through an optimizer trained fully offline from imagined world-model roll-outs. To our knowledge, RP1 is the first method to fully learn how to improve multi-step plans. Furthermore, it can be trained independently of and attached to any pretrained latent world model. Across visual navigation, arm reaching, and robotic manipulation on two world-model backbones, RP1 substantially outperforms hand-designed search algorithms, reaching near-perfect success in several settings while using $1,000 \\times$ less world-model rollouts and being up to $67 \\times$ faster than the strongest alternative under concurrent planner inference.", "url": "http://arxiv.org/abs/2608.18669v1", "authors": ["Armin Sommer", "Jannik Schilling"], "keywords": ["reinforced planning", "latent world model", "multi-step plan improvement", "neural planner", "robotic manipulation"]},{"title": "The Embodiment Gap in Robot Foundation Models", "summary": "Robot foundation models (RFMs), including vision-language-action (VLA) policies, are often discussed through a scaling view: more data, larger models, and broader benchmarks should improve generalization. In robotics, however, a model can generalize while work still remains before it can run on a robot with a particular body. The work required differs across methods and target robots, and those differences affect practical deployment. We call the gap between reusable models, representations, or data and their use in execution on the target robot the embodiment gap. This survey examines what can be reused across robot embodiments and what must still be implemented on a new robot. We place existing methods on a two-axis map that shows the type of shared structure and the stage at which adaptation is needed for execution on the target robot. We then examine recent work through three overlapping research directions: sharing semantics and perception, sharing robot data and interfaces, and learning correspondence across embodiments. We also propose a reporting framework for adaptation work that success rate alone does not reveal. The framework identifies the work that should be checked when comparing cross-embodiment learning and highlights work that remains on a new robot and questions for future study.", "url": "http://arxiv.org/abs/2608.18433v1", "authors": ["Yukiyasu Domae", "Keisuke Shirai", "Hanbit Oh", "Ryoichi Nakajo", "Tomohiro Motoda", "Koshi Makihara", "Masaki Murooka", "Takuma Yagi", "Yoshiaki Bando", "Ryo Hanai"], "keywords": ["embodiment gap", "robot foundation models", "cross-embodiment learning", "adaptation work", "reporting framework"]},{"title": "Role-Conditioned Sub-Token Routing for Efficient Vision-Language-Action Policies", "summary": "Vision-Language-Action (VLA) models process long multimodal token sequences, making inference expensive in both memory and computation. Existing efficiency methods mainly reduce visual tokens, but aggressive token pruning becomes fragile because removing a token discards its entire representation. Sub-token compression provides a complementary alternative by retaining more tokens while reducing their value width. However, directly applying sub-token compression to VLA policies is less effective because information important for perception, language understanding, and control is distributed differently across the multimodal representation.\n  We introduce Role-Conditioned Sub-Token Routing (RoleSub), which learns how to compress the value representations of retained tokens. After visual token reduction, RoleSub partitions each retained value representation into groups in an orthogonal space and uses a lightweight router to determine which groups should be preserved. The routing decision is conditioned on the token representation, a learned latent role representation, and language context. The same mechanism can also be applied to language values, allowing visual and language representations to be compressed without removing additional tokens.\n  We evaluate RoleSub on OpenVLA-OFT-7B across the four LIBERO suites. At matched visual-KV budgets, RoleSub outperforms a trained token-only control in 33 of 36 settings, with the largest gains under aggressive compression. Combining visual and language compression reduces total KV to 9.2--11.3% of the original while retaining strong control performance on most tasks. These results show that reducing the representation within retained tokens provides an effective complement to token pruning for aggressive VLA compression.", "url": "http://arxiv.org/abs/2608.18410v1", "authors": ["Wei Jiang", "Wei Wang"], "keywords": ["sub-token compression", "value representation", "role-conditioned routing", "VLA efficiency", "token pruning"]},{"title": "GigaBrain-WBC-0.5: A Behavior World Model for Robust Whole-Body Control with Environment Interaction", "summary": "Whole-body motion tracking policies turn a humanoid into a robust control interface: the teleoperator---or an upstream model---only supplies a coarse movement intent, while the low-level policy keeps the robot balanced and physically feasible. Existing trackers deliver this interface only on flat ground: trained in empty scenes, they never learn how contact with terrain and objects reshapes their dynamics, and they attempt to teach the policy to balance under any command by continually enlarging the reference-motion corpus, which stops working once feasible behaviors become environment-dependent. We present GigaBrain-WBC-0.5, the first Behavior World Model (BWM) for humanoid whole-body control. Rather than a purely reactive tracker, we train a causal Transformer to jointly predict its next action, next state, and the distribution over its next latent behavior command, so the network that acts also models how the environment shapes what it can do next. An automatic terrain-annotation pipeline recovers full 3D contact geometry from retargeted motion, enabling terrain annotation at the scale of existing motion datasets. The predicted distribution is reused at deployment to detect implausible commands online and retract them onto learned behaviors, so the robot attempts tasks in a \"best-effort\" manner. The result is a unified policy that takes real-time command, interacts with environment, and stays robust to implausible commands, falls, and disturbances. GigaBrain-WBC-0.5 achieves the highest success rate across all four regimes among three large-scale tracker baselines: 81.3% on terrain interaction (4.3x the strongest baseline), 83.1% under implausible commands, and 99.3% fall recovery (16.8x the strongest baseline). Hardware trials show robust interaction under missing supports and disturbances; the Unitree G1 checkpoint transfers to the Maker L01 robot with simple fine-tuning.", "url": "http://arxiv.org/abs/2608.18234v1", "authors": ["Ziyang Cheng", "Tianshu Tang", "Jinxin Lan", "Xinze Chen", "Yuhan Gong", "Zhichao Liu", "Changzhong Wu", "Yahao Mao", "Zongyan Deng", "Mingxuan Ma", "Huasen Xi", "Yilong Liu", "Yutong Wu", "Xiaofeng Wang", "Yang Wang", "Yun Ye", "Guan Huang", "Xiaojie Jin", "Zheng Zhu", "Jiwen Lu"], "keywords": ["behavior world model", "whole-body control", "humanoid", "terrain interaction", "robust tracking"]},{"title": "Progressive Experience Fusion for Multi-Task World Model Control in Endovascular Navigation", "summary": "Autonomous endovascular navigation could support the delivery of mechanical thrombectomy to underserved areas, but controllers must navigate long, multi-stage paths across varying vascular anatomies. This study investigates Progressive Experience Fusion (PEF) to train a multi-task TD-MPC2 controller. We additionally evaluate a heuristic that changes the Model Predictive Path Integral planning horizon using residual action-sequence dispersion, and fine-tuning in a patient-specific simulation. Across five subtasks in ten known training anatomies with held-out targets, PEF achieved a mean success rate of 74%, compared with 37% for Soft Actor-Critic (p \u003c 0.001) and 65% for base TD-MPC2 (p = 0.053). A PEF controller with adaptive-horizon planning trained on 30 vasculatures achieved a mean success rate of 90% in ten held-out vasculatures. The PEF agent successfully transferred to an unseen in vitro stroke patient vasculature under fluoroscopy, achieving a mean path ratio improvement from 63% to 80% with fine-tuning (p \u003c 0.001), following 40x103 fine-tuning steps (corresponding to approximately 107 min of clinical inter-hospital transfer time). This work represents a proof of concept for multi-vasculature training and patient-specific adaptation, while further validation is required before clinical deployment.", "url": "http://arxiv.org/abs/2608.18647v1", "authors": ["Harry Robertshaw", "Maxence Boels", "Nikola Fischer", "Sebastien Ourselin", "Christos Bergeles", "Alejandro Granados", "Thomas C Booth"], "keywords": ["Progressive Experience Fusion", "multi-task TD-MPC2", "world model control", "endovascular navigation", "model predictive path integral"]},{"title": "Partition the Support, Reconstruct the Residual: Training-Free Sparse Attention for Video Generation and World Models", "summary": "Training-free block-sparse attention can accelerate video transformers, but row-wise attention concentration does not by itself specify an executable sparse operator. Queries sharing a block route may have poorly overlapping supports, while retained attention mass alone does not determine the post-softmax error from skipped interactions. We show that partition geometry affects both pooled support and the predictability of the remaining residual from the sparse output. We introduce SparsePR, which combines Response-Coupled Partitioning with Probe-Fitted Residual Reconstruction. Sampled-query key responses form paired K/V groups, whose centroids induce query-response coordinates for shared routing. A small set of exact query rows then calibrates a call-specific affine correction from the sparse output within the output subspace observed in the probe residuals. Across four heterogeneous video generation and world models, SparsePR consistently reduces attention-reconstruction error. Ablations show that probe fitting accounts for most of this reduction, while response-coupled partitioning lowers hard-drop error and improves reconstruction under a finite probe budget. SparsePR preserves generation quality at 22.0-26.0% realized executed-pair density while achieving 1.48x-2.61x end-to-end speedups. Project page: https://pardistaghavi.github.io/SparsePR-website/", "url": "http://arxiv.org/abs/2608.18484v1", "authors": ["Pardis Taghavi", "Reza Langari", "Gaurav Pandey"], "keywords": ["block-sparse attention", "training-free", "video generation", "world models"]},{"title": "The Impact of CutMix on Reliability and Robustness in Semantic Segmentation", "summary": "Ensuring not only high accuracy but also reliable and robust predictions is critical for the deployment of semantic segmentation models in safety-critical applications such as autonomous driving. Despite the widespread use of CutMix - a simple yet powerful data augmentation strategy - its effect on the reliability and robustness in dense predictions tasks remains unexplored. Motivated by recent findings that semi-supervised segmentation methods, where CutMix is a core component, can severely degrade reliability, this study isolates and systematically analyzes the influence of CutMix on segmentation accuracy, calibration, and uncertainty quality. We evaluate two representative architectures, the CNN-based DeepLabV3+ and the transformer-based SegFormer, across both in-domain and out-of-domain scenarios. Our results show that CutMix has only a minor impact on segmentation accuracy but consistently improves the reliability, particularly under distribution shifts. These improvements indicate that CutMix primarily enhances the trustworthiness of the model\u0027s calibration and uncertainty rather than the raw segmentation prediction itself. This distinction is crucial for safety-critical deployment, where reliable confidence estimates are as important as raw performance.", "url": "http://arxiv.org/abs/2608.18715v1", "authors": ["Steven Landgraf", "Markus Ulrich"], "keywords": ["CutMix", "semantic segmentation", "reliability", "robustness", "autonomous driving"]},{"title": "MLREF: Efficient Module Reuse for Reward Design in Reinforcement Learning via Large Language Models", "summary": "Reward function design remains a bottleneck in reinforcement learning. While large language models (LLMs) have enabled automated reward generation, existing methods generate and revise reward functions as monolithic programs, making it difficult to reliably preserve and reuse effective components discovered in earlier iterations, leading to unstable performance across iterations. To address this, we propose Module Level Reward Evolution Framework (MLREF). At the core of MLREF is a module pool, a persistent repository of reusable reward components. MLREF treats the module pool as the primary optimization object: the pool evolves across iterations by accumulating successful modules, refining underperforming ones, and reusing proven components; while reward functions are constructed as linear combinations of modules drawn from this pool. To drive this evolution, MLREF integrates three mechanisms: reflection-based refinement, hybrid credit assignment, and a merge strategy with rollback, which together improve the effectiveness and robustness of reward optimization. Experiments on 17 tasks show that MLREF outperforms strong baselines by 25.2% in locomotion and 6.6% in manipulation, with more stable optimization dynamics.", "url": "http://arxiv.org/abs/2608.18827v1", "authors": ["Chenglin Liu", "Xun Wang", "Ruishuo Chen", "Zhuoran Li", "Longbo Huang"], "keywords": ["reward design", "module-level evolution", "large language models", "reinforcement learning"]},{"title": "To Go Far, Go Together: Diverse Preferences Induce a Curriculum for Reward Optimization", "summary": "Learning a reward model from human feedback and optimizing a policy against it is one approach to aligning AI systems with individual users. From a fairness perspective, existing work improves such alignment by developing data-efficient and accurate reward models that capture minority preferences despite scarce data. We push this line of inquiry one step further and argue that data-efficient and accurate per-user reward models are not sufficient: users whose reward models are difficult to \\textit{optimize} at the policy level can become a new underserved group. We start from the observation that one user\u0027s reward model can be easy to optimize from the initial policy while another\u0027s is not. We argue that, given a sufficiently diverse user population, a curriculum naturally emerges between easy- and hard-to-optimize reward models. Building on this insight, we propose CurriPO, which grows a tree-structured curriculum to accommodate diverse user-specific objectives, covering the population in a single traversal. Specifically, CurriPO automatically constructs a curriculum over diverse user reward models, allowing it to branch from the existing curriculum and reuse reward models previously incorporated into the curriculum. To the best of our knowledge, this is the first work to explicitly exploit multi-user structure to address optimization in AI alignment. Extensive experiments on personalized continuous control in a simulated environment show that CurriPO achieves $1.2$--$2.1\\times$ the population satisfaction of the strongest baseline while substantially reducing training time. Additional analysis attributes much of this improvement to the users left underserved by conventional optimization.", "url": "http://arxiv.org/abs/2608.18770v1", "authors": ["Taehyung Kim", "Jongeun Choi"], "keywords": ["reward model", "curriculum learning", "AI alignment", "personalized continuous control", "multi-user optimization"]}]</script>
+
+    <!-- SparkMD5: Zotero's WebDAV format requires md5; SubtleCrypto can't do MD5 -->
+    <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
+    <!-- JSZip: needed to build the <key>.zip wrapper Zotero expects on WebDAV -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="../js/zotero.js"></script>
+    <script src="../js/webdav.js"></script>
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
+</body>
+</html>
