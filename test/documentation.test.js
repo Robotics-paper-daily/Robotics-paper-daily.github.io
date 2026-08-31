@@ -124,6 +124,44 @@ function matchingBlock(markdown, patterns, message) {
   return block;
 }
 
+function hardWrappedProseLines(markdown) {
+  const lines = String(markdown || "").split("\n");
+  const wrapped = [];
+  let fence = null;
+
+  for (let index = 0; index < lines.length - 1; index += 1) {
+    const line = lines[index];
+    const marker = line.match(/^\s{0,3}(`{3,}|~{3,})/u)?.[1] || "";
+    if (marker && !fence) {
+      fence = { character: marker[0], length: marker.length };
+      continue;
+    }
+    if (
+      marker &&
+      fence &&
+      marker[0] === fence.character &&
+      marker.length >= fence.length
+    ) {
+      fence = null;
+      continue;
+    }
+    if (fence || !line.trim()) continue;
+
+    const next = lines[index + 1];
+    if (!next.trim()) continue;
+    if (
+      /^\s{0,3}(?:#{1,6}\s|[-+*]\s+|\d+\.\s+|`{3,}|~{3,}|---+\s*$|\*\*\*+\s*$|___+\s*$)/u.test(
+        next
+      )
+    ) {
+      continue;
+    }
+    wrapped.push(index + 2);
+  }
+
+  return wrapped;
+}
+
 test("English and Chinese documentation pairs exist and cross-link each other", () => {
   for (const [english, chinese] of DOCUMENT_PAIRS) {
     assert.ok(fs.existsSync(path.join(ROOT, english)), `${english} must exist`);
@@ -158,6 +196,20 @@ test("core documentation contains no retired automatic-update surface", () => {
     /electron[ _-]*updater|auto[ _-]*updat(?:e|es|er|ing)|automatic[ _-]*updat(?:e|es|er|ing)|(?:in[ -]app|self)[ -]updat(?:e|es|er|ing)|app-update\.ya?ml|latest-mac(?:\.ya?ml)?|\bblockmap\b|自动更新|自动升级|应用内(?:更新|升级)/iu;
   for (const source of CORE_DOCUMENTS) {
     assert.doesNotMatch(read(source), retiredUpdateTerms, source);
+  }
+});
+
+test("release publishing uses tag-only titles and renderer-managed wrapping", () => {
+  const workflow = read(".github/workflows/build-app.yml");
+  assert.match(workflow, /--title "\$\{GITHUB_REF_NAME\}"/u);
+  assert.doesNotMatch(workflow, /--title "PaperReader /u);
+
+  for (const source of ["RELEASES_NOTES.md", "RELEASES_NOTES_ZH.md"]) {
+    assert.deepEqual(
+      hardWrappedProseLines(read(source)),
+      [],
+      `${source} must keep each prose paragraph or list item on one source line`
+    );
   }
 });
 
