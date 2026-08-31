@@ -126,4 +126,3 @@ artifact verification.
   credentials, vault content, or unrelated generated churn.
 - Do not change a candidate version to “published stable” until the official
   tag, Release, architecture-correct assets, and checksum manifest exist.
-
