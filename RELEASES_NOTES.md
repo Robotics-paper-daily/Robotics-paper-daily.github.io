@@ -1,210 +1,151 @@
-# v0.3 — PaperReader desktop app (一键「帮我读」+ 已读标记)
+# PaperReader v0.3.0 for macOS
 
-## TL;DR
+[中文发布说明](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/blob/v0.3.0/RELEASES_NOTES_ZH.md)
 
-A cross-platform **Electron desktop app** (`app/`, Windows + macOS) wraps the
-daily-papers site and drives your **local Claude Code subscription** to
-deep-read any candidate paper with the `paper-reading` skill — generating a
-structured Obsidian note straight from the paper list. It live-fetches the
-latest papers on launch (no git pull), marks papers already read in your local
-vault, and unlocks the existing Zotero controls in-app. The public GitHub Pages
-site is unchanged — the read button is the app's own injection and never
-appears there. The app is local-only and adds **no new repository secrets**.
+PaperReader v0.3.0 moves Zotero saves and local AI-assisted reading into the
+desktop app. The public GitHub Pages site remains a read-only paper archive.
 
-> macOS support ships in the code; verify on a Mac (or via the CI workflow)
-> before relying on it.
+> **Security action for v0.2 users:** revoke and recreate every Zotero API key
+> and WebDAV password that was ever placed in the retired encrypted website
+> bundle. v0.3.0 does not use that bundle, but removing it from the current tree
+> cannot revoke credentials preserved in earlier Git history.
 
----
+## Release assets
 
-## Highlights
+The app release contains two installers for macOS 12 or newer and one checksum
+manifest:
 
-### Desktop app (new)
+- `PaperReader-0.3.0-arm64.dmg` for Apple Silicon;
+- `PaperReader-0.3.0-x64.dmg` for Intel Mac; and
+- `SHA256SUMS.txt` covering both DMGs.
 
-- **「帮我读」 per paper.** A button on every candidate spawns the local `claude`
-  CLI (`--permission-mode bypassPermissions`, subscription OAuth — never an API
-  key) with the vault's `paper-reading` skill to deep-read the paper and write a
-  structured note folder `<vault>/<date>/<title>/`. Live stream-json progress in a
-  sidebar; "open folder / open in Obsidian" on finish; a bounded job queue with
-  cancel + a watchdog.
-- **Always-latest data, no git pull.** A custom `app://` protocol live-fetches
-  `reports.json` + report pages from the published site on each load (cached to
-  userData for offline; bundled snapshot as last resort), and injects the read
-  button into the fetched pages — so the public site needs no change.
-- **Already-read markers.** On load the app scans the **local** vault for existing
-  notes and shows those papers as **✓ 已读** → click opens the note. Cross-device
-  is your own Obsidian sync; the app only ever reads this machine.
-- **Zotero unlock in-app.** A launch password overlay decrypts the same
-  `secrets.enc.js` bundle as the public gate, enabling "Add to Zotero" inside the
-  app (or skip it for read-only).
-- **Settings + packaging.** Configurable vault/claude paths, model
-  (default `opus`), concurrency (default 10), per-read budget cap, and data
-  source. Installers build via `electron-builder` — Windows `.exe` locally; macOS
-  `.dmg` via the `Build PaperReader app` GitHub Actions workflow.
+Download the matching DMG and `SHA256SUMS.txt` attached to this Release. If you
+are reading this file in the repository, use the official
+[Releases page](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases).
 
-### Skill / notes
+Verify the downloaded installer before opening it:
 
-- **paper-reading diagrams reworked.** The skill now draws a **skeleton** overview
-  pipeline (collapse repeated structure, ≤ ~12 nodes), wraps it in a collapsed
-  callout, and color-codes stages — so the Mermaid diagram fits the note width and
-  stops dominating the page. A `mermaid-fit` Obsidian CSS snippet makes existing
-  diagrams responsive too.
+```bash
+cd ~/Downloads
+# Apple Silicon:
+grep 'PaperReader-0.3.0-arm64.dmg$' SHA256SUMS.txt | shasum -a 256 -c -
+# Intel:
+grep 'PaperReader-0.3.0-x64.dmg$' SHA256SUMS.txt | shasum -a 256 -c -
+```
 
----
+Run only the command for the architecture you downloaded. It must report `OK`.
 
-## Notes
+The DMGs are not signed with an Apple Developer ID and are not notarized. A
+checksum detects corruption, but it does not replace Apple signing or prove
+provenance if the release channel itself is compromised.
 
-- The desktop app is **local-only** — it drives this machine's Claude
-  subscription and Obsidian vault, and is not part of the public site. Build
-  artifacts (`app/dist`, `app/node_modules`, `app/site`) are git-ignored.
-- No new repository secrets. The app reuses the existing encrypted Zotero bundle
-  for its optional in-app unlock.
-
----
-
-## 中文摘要
-
-v0.3 新增**桌面应用 PaperReader**（`app/`，Windows + macOS）：在每日论文列表里一键
-**「帮我读」**——调用你**本地 Claude Code 订阅** + vault 里的 `paper-reading` 技能
-深读论文并生成结构化 Obsidian 笔记；启动 **live-fetch 最新论文**（无需 git pull）、
-标记本机 vault 里**已读**的论文、应用内解锁 **Zotero**。公网站点零改动（读按钮是 app
-自己注入，公开站不显示），且不新增任何仓库 secret。另：`paper-reading` 技能的总览流程图
-改为**骨架化 + 折叠 + 上色**，不再占篇幅、自适应宽度。macOS 端代码已就绪，上线前请在
-Mac（或 CI）实测。
-
----
-
-# v0.2 — Personal Mode + Zotero/WebDAV + UI Overhaul
-
-## TL;DR
-
-The site gains an optional **personal mode**, gated by a site password, that
-adds one-click Zotero collection and WebDAV-backed PDF auto-upload. The
-filter pipeline gains a standalone Stage-1 rescoring tool. All entry pages
-and the daily report template are redesigned. Documentation is rewritten
-in formal style with a setup walkthrough.
-
-The public site continues to function as before in guest-only mode without
-any of the new secrets configured.
-
----
+v0.3.0 is macOS-only. Windows is planned but is not included or supported in
+this release; `app/run-windows.bat` is an experimental source-development
+launcher, not a product or installer. Linux is unsupported. See the
+[Windows roadmap](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/blob/v0.3.0/docs/WINDOWS_ROADMAP.md).
 
 ## Highlights
 
-### Personal mode (new)
+### App-local Zotero workflow
 
-- **Site-password gate.** A site-wide passphrase decrypts a per-fork
-  Zotero credentials bundle stored client-side at `js/secrets.enc.js`
-  (AES-GCM, 600 000-iteration PBKDF2-SHA256 over `SITE_PASSWORD`). The
-  bundle is regenerated on every workflow run and force-pushed past
-  `.gitignore`.
-- **One-click Zotero collection.** A per-paper "Add to Zotero" control
-  writes a typed `preprint` item (with arXiv DOI, authors, abstract) into
-  a `Daily Paper / YYYY-MM-DD` collection, created on demand.
-- **WebDAV PDF upload.** The arXiv PDF is fetched through a Cloudflare
-  Worker (CORS bypass), wrapped in Zotero's `<key>.zip` + `<key>.prop`
-  format, and PUT to the user's existing Zotero WebDAV server. After the
-  next desktop sync, the file opens locally without further action.
-- **arXiv-to-bilingual translation.** A per-paper button opens
-  [hjfy.top](https://hjfy.top) with the relevant arXiv ID for bilingual
-  reading. The deep-link requires a prior login at hjfy.top in the same
-  browser session; without authentication the request is redirected to
-  the hjfy.top homepage. The translation button is exposed in **both
-  guest and personal modes** — hjfy.top credentials are managed entirely
-  by hjfy.top and are not part of this project's secrets.
+- Users connect their own 24-character Zotero API key. PaperReader verifies
+  personal-library read/write access, derives the numeric user ID, and encrypts
+  both locally with Electron `safeStorage`; plaintext fallback is refused.
+- A paginated read-only scan recognizes existing arXiv items across the whole
+  personal library. Presence-only matches are not duplicated, modified, or
+  exposed as removable items.
+- Newly created parent items carry the visible Zotero tag
+  `paperreader-managed-v1`. Repair and Remove require that tag and current
+  membership in the `Daily Paper` collection tree.
+- PDFs are validated and written into Zotero's OneDrive-backed Linked
+  Attachment Base Directory. PaperReader checks the active Zotero profile,
+  confirms the OneDrive cloud state, re-hashes the committed file, and then
+  creates `linked_file` metadata.
+- PDF download, local placement, OneDrive confirmation, and final verification
+  use a fixed four-slot FIFO queue. Duplicate queued or running operations are
+  coalesced; larger bursts wait for a slot. Zotero API calls before and after
+  this stage retain separate timeouts and reconciliation.
+- Retries reconcile lost API responses instead of blindly creating duplicate
+  items. Remove deletes eligible managed Zotero metadata but intentionally
+  leaves the validated PDF in OneDrive.
 
-### UI overhaul
+### Local reading and Obsidian notes
 
-- All entry pages (`index`, `personal`, `guest`, `list`, `search`)
-  redesigned with a unified glass-morphism language, gradient accents,
-  and icon-led navigation.
-- Daily report cards now use **bold, larger Chinese summaries and TLDRs**
-  for at-a-glance scanning.
-- The daily template's redundant inline quick-nav is removed; navigation
-  is now provided by the iframe parent only.
-- All 149 historical daily reports are regenerated under the new template.
+- **「帮我读」** sends a paper to a locally installed and authenticated Codex or
+  Claude CLI. Trae remains available only to users who independently have a
+  supported `trae-cli` or `trae-agent` build and account.
+- The bundled `paper-reading` skill writes structured results to
+  `<vault>/<date>/<title>/`. Existing notes can be opened from the paper card;
+  checking the note's final `- [ ] ✅ 已读` item changes the card to **✓ 已读**.
+- AI reading concurrency defaults to `10` and can be configured from `1` to
+  `16`. It is independent of the fixed four-slot Zotero PDF queue.
+- Provider discovery, vault scans, cache maintenance, and historical search
+  indexing run as bounded background work to reduce main-process blocking.
+- Paper extraction requires `python3` and PyMuPDF (`fitz`). The supported source
+  dependency range is recorded in `skills/paper-reading/requirements.txt`.
 
-### Filter pipeline
+### Product and security boundary
 
-- New tool [`src/rescore_stage1.py`](src/rescore_stage1.py) re-applies
-  the current keyword taxonomy to every historical JSON file without
-  invoking the LLM, allowing retroactive policy changes at zero API cost.
-- Filter configuration extracted into [`src/config.py`](src/config.py)
-  for clarity and easier downstream tuning.
-- Stage-1 keyword tiers (Tier-0 core / Tier-1 strong / Tier-2 weak /
-  Tier-3 hard exclude) refined for higher recall on borderline robotics
-  papers. See [Tuning the filter](README.md#tuning-the-filter).
+- Add to Zotero and **「帮我读」** are available only in PaperReader. The public
+  site continues to provide browsing, search, daily reports, and outbound links.
+- Report content runs in a restricted sandbox and receives only typed app
+  actions. Zotero credentials and arbitrary filesystem or network access are
+  not exposed to report pages.
+- PaperReader has no built-in analytics or telemetry. Feature-required traffic
+  still reaches the public report site, arXiv, Zotero, OneDrive/macOS File
+  Provider, and the selected AI provider.
+- Codex, Claude, and Trae are external services. Their CLIs may transmit the
+  paper, prompt, and generated context under their own terms. PaperReader does
+  not collect or save their login credentials.
 
-### Documentation
+## Install and configure
 
-- README fully rewritten in formal style; both English
-  ([`README.md`](README.md)) and Chinese
-  ([`README_ZH.md`](README_ZH.md)) versions are now feature-complete and
-  in sync.
-- Cover image added.
-- Quick-start path documented for GitHub-only deployment (no local
-  environment required apart from the Cloudflare Worker).
+1. Download the correct DMG, open it, and copy PaperReader to Applications.
+2. For the first launch, Control-click or right-click PaperReader in Finder,
+   choose **Open**, and confirm **Open**. Do not disable Gatekeeper globally.
+3. Install and run Zotero and OneDrive. Sign Zotero into the same personal
+   library account as the API key, enable Zotero Sync, and complete one sync.
+4. Set Zotero's Linked Attachment Base Directory to a folder inside OneDrive.
+5. Create a 24-character Zotero API key with personal-library read/write access,
+   paste it into PaperReader Settings, and save it after verification.
+6. Confirm the detected Zotero profile and OneDrive attachment directory.
+7. To use **「帮我读」**, select a dedicated Obsidian vault and a logged-in Codex
+   or Claude CLI, or an independently provisioned Trae CLI. Do not select a
+   filesystem root, home directory, broad top-level home folder, or a path that
+   overlaps PaperReader data, `$CODEX_HOME`, or SSH files.
+8. Confirm that login-shell `python3 -c 'import fitz'` succeeds. A source checkout
+   can install the supported range from `skills/paper-reading/requirements.txt`.
 
----
+See the [PaperReader guide](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/blob/v0.3.0/app/README.md)
+for the complete walkthrough and troubleshooting.
 
-## Breaking changes
+## Upgrading from an earlier build
 
-- **`js/secrets.enc.js` is now `.gitignore`d.** Forks that previously
-  committed the bundle should drop it; the workflow regenerates and
-  force-adds it on every run.
-- **Daily template structure changed.** TLDR ordering was revised and
-  the inline `.quick-nav` block was removed. Forks with custom CSS
-  targeting `.quick-nav` should adjust.
-- **Three new repository secrets** are required to enable WebDAV PDF
-  upload: `WEBDAV_URL`, `WEBDAV_USER`, `WEBDAV_PASS`. Without them the
-  personal mode falls back to "link only" — Zotero items are created but
-  no PDF is attached. None of these are required for guest mode.
+- Quit PaperReader, verify the new DMG, and replace the app in `/Applications`.
+  Do not delete `~/Library/Application Support/PaperReader/`; settings, site
+  cache, and encrypted Zotero credentials are preserved when the app bundle is
+  replaced.
+- Browser-personal-mode credentials are not imported. Configure a new app-local
+  Zotero key and rotate every key or WebDAV password previously used by v0.2.
+- Existing linked attachments remain valid while Zotero's Linked Attachment
+  Base Directory resolves to the same OneDrive folder. Reconfirm the directory
+  after moving OneDrive storage or switching Zotero profiles.
 
----
+## Known limitations
 
-## Migration (existing forks)
+- Only full DMGs are distributed. App replacement is manual, and there are no
+  incremental-distribution assets.
+- The DMGs are unsigned and unnotarized, so first launch requires Finder's
+  explicit **Open** action.
+- Windows and Linux have no supported installers or validated end-to-end
+  workflows in v0.3.0.
+- OneDrive must be installed, signed in, and healthy when a PDF is added. Zotero
+  must expose a readable active profile and configured Linked Attachment Base
+  Directory.
+- AI-provider availability and quota depend on the user's local provider
+  account.
+- A late Zotero API failure can leave a validated PDF in OneDrive. Retrying the
+  same paper is safe; removing a managed Zotero item does not remove that file.
 
-1. Pull `v0.2`.
-2. Register the new repository secrets — see
-   [Configuration](README.md#configuration).
-3. Deploy the Cloudflare Worker (≈3 minutes, copy-paste). Set
-   `PDF_PROXY_URL`. See [Cloudflare Worker](README.md#cloudflare-worker).
-4. Re-run the workflow once. This will regenerate `js/secrets.enc.js`
-   and refresh the historical daily reports under the new template.
-
-If none of the personal-mode secrets are configured, the site continues
-to function in guest-only mode without any modification.
-
----
-
-## Quick start (new users)
-
-The full stack runs on GitHub Actions; no local environment is required.
-The only out-of-GitHub step is deploying a Cloudflare Worker. See
-[Quick start](README.md#quick-start-github-only-deployment) for the
-seven-step walkthrough.
-
----
-
-## Commits
-
-- `76be3a3` — chore: ignore `.claude/` worktrees and encrypted credentials bundle
-- `83ca570` — feat(filter): two-stage rescoring pipeline + config extraction
-- `8e9cf0c` — feat: personal mode with Zotero + WebDAV PDF upload, UI overhaul
-- `94e3c75` — docs: rewrite README in formal style + add cover image
-
----
-
-## 中文摘要
-
-v0.2 在保持每日 arXiv 自动摘要核心流程的基础上，新增**个人模式**：
-
-- 站点密码门控的 **Zotero 一键收藏 + WebDAV PDF 自动上传**（AES-GCM
-  加密 bundle，PBKDF2-SHA256 600k 次迭代）
-- 接入 [hjfy.top](https://hjfy.top) 的 **arXiv 中英对照** 翻译跳转
-  （访客与个人模式均可用，需先在 hjfy.top 登录）
-- **全站 UI 升级** —— 玻璃拟态语言，卡片中文摘要 / TLDR 加粗
-- 过滤流程新增 **Stage-1 重打分工具**，可零 LLM 成本回溯调整关键词策略
-
-升级现有 fork 需补三个 WebDAV secret 并部署 Cloudflare Worker；不部署
-时仍以访客模式运行，全部内容可读。详见
-[README_ZH.md](README_ZH.md)。
+For the complete security and privacy model, read the
+[Security Policy](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/blob/v0.3.0/SECURITY.md).

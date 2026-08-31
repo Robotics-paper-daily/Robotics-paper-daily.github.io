@@ -1,6 +1,8 @@
 const test = require("node:test");
 const assert = require("node:assert");
 const { loadSearchIndex } = require("../js/search-index");
+const fs = require("node:fs");
+const path = require("node:path");
 
 
 function response(value, status = 200) {
@@ -108,4 +110,18 @@ test("loadSearchIndex can fall back to the bounded legacy index", async () => {
   assert.strictEqual(result.legacy, true);
   assert.strictEqual(result.papers[0].title, "legacy");
   assert.strictEqual(fallbackErrors.length, 1);
+});
+
+test("desktop search builds the large MiniSearch index without blocking the UI", () => {
+  const source = fs.readFileSync(path.join(__dirname, "..", "app", "renderer.js"), "utf8");
+  assert.match(source, /await miniSearch\.addAllAsync\(data, \{ chunkSize: 100 \}\)/);
+  assert.doesNotMatch(source, /\n\s*miniSearch\.addAll\(data\);/);
+});
+
+test("desktop Zotero search actions follow the current credential session", () => {
+  const source = fs.readFileSync(path.join(__dirname, "..", "app", "renderer.js"), "utf8");
+  assert.match(source, /const liveSaver = getZoteroSaver\(\)/);
+  assert.match(source, /credentialGeneration !== _zoteroCredentialGeneration/);
+  assert.match(source, /if \(indexState === "ready"\) renderSearch\(\)/);
+  assert.match(source, /这篇论文已在你的 Zotero 库中，PaperReader 不会重复创建/);
 });

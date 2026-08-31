@@ -106,6 +106,11 @@
         transition: background 0.15s ease;
       }
       .read-any-btn:hover { background: #e7dcf2; }
+      .read-any-btn[hidden] { display: none; }
+      #zotero-setup-btn {
+        color: #92400e; background: #fffbeb; border-color: #fde68a;
+      }
+      #zotero-setup-btn:hover { background: #fef3c7; }
       .tb-ico {
         width: 17px; height: 17px; display: block;
         stroke: currentColor; stroke-width: 2; fill: none;
@@ -169,6 +174,9 @@
       }
       webview { display: flex; }
       .view-hidden { display: none !important; }
+      /* Keep the sandboxed report mounted behind web tabs so its scroll state
+         survives without allowing the shell to read or write the report DOM. */
+      #report-frame.view-hidden { display: block !important; visibility: hidden; pointer-events: none; }
       .tab-spin { animation: tab-spin 0.8s linear infinite; transform-origin: center; }
       @keyframes tab-spin { to { transform: rotate(360deg); } }
       #topbar .icon-btn.spinning .tb-ico { animation: tab-spin 0.8s linear infinite; transform-origin: center; }
@@ -221,10 +229,11 @@
       .sr-chip { background: #f1edf7; color: #6b1f8f; font-size: 0.68rem; font-weight: 600; padding: 0.12rem 0.55rem; border-radius: 999px; }
       .sr-spacer { flex: 1; }
       .sr-btn {
-        display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.32rem 0.7rem; font-family: inherit;
-        font-size: 0.74rem; font-weight: 600; border-radius: 0.45rem; cursor: pointer; border: 1px solid transparent;
+        box-sizing: border-box; display: inline-flex; align-items: center; gap: 0.4rem;
+        min-height: 36px; padding: 0.42rem 0.75rem; font-family: inherit; line-height: 1.2;
+        font-size: 0.78rem; font-weight: 600; border-radius: 0.45rem; cursor: pointer; border: 1px solid transparent;
       }
-      .sr-btn svg { width: 13px; height: 13px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .sr-btn svg { width: 16px; height: 16px; flex: 0 0 16px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
       .sr-read { color: #047857; background: rgba(5, 150, 105, 0.08); border-color: rgba(5, 150, 105, 0.22); }
       .sr-read:hover { background: rgba(5, 150, 105, 0.16); }
       .sr-read.busy { color: #b45309; background: rgba(217, 119, 6, 0.1); border-color: rgba(217, 119, 6, 0.3); cursor: progress; }
@@ -286,8 +295,8 @@
       .job-detail { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.3rem; word-break: break-all; }
       .job-tokens { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.3rem; font-variant-numeric: tabular-nums; }
 
-      /* Modal overlays: Zotero unlock gate + "read any paper" + search panel. */
-      #unlock-overlay, #read-overlay, #search-overlay {
+      /* Modal overlays: "read any paper" + search panel. */
+      #read-overlay, #search-overlay {
         position: fixed; inset: 0; z-index: 100;
         background: rgba(30, 41, 59, 0.55); backdrop-filter: blur(3px);
         display: none; align-items: center; justify-content: center;
@@ -298,11 +307,11 @@
       }
       .unlock-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
       .unlock-sub { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1rem; }
-      #unlock-pw, #read-input {
+      #read-input {
         width: 100%; padding: 0.6rem 0.75rem; border: 1px solid var(--border);
         border-radius: 0.55rem; font-size: 0.9rem; font-family: inherit;
       }
-      #unlock-pw:focus, #read-input:focus { outline: none; border-color: var(--primary); }
+      #read-input:focus { outline: none; border-color: var(--primary); }
       .unlock-err { color: #b91c1c; font-size: 0.8rem; min-height: 1.1rem; margin: 0.4rem 0; }
       .unlock-actions { display: flex; gap: 0.6rem; justify-content: flex-end; }
       .unlock-actions button {
@@ -341,6 +350,10 @@
         </div>
       </div>
       <div class="right">
+        <button id="zotero-setup-btn" class="read-any-btn" type="button" title="配置自己的 Zotero API key 与 OneDrive 链接附件目录" hidden>
+          <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z" fill="currentColor" stroke="none"></path></svg>
+          <span>配置 Zotero</span>
+        </button>
         <button id="btn-search" class="read-any-btn" type="button" title="查找文献（跨所有日期全文检索）">
           <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-3.5-3.5"></path></svg>
           <span>搜索</span>
@@ -373,14 +386,18 @@
           <button id="nav-ext" class="nav-ext" type="button" title="在系统浏览器打开"><svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg><span>用浏览器打开</span></button>
         </div>
         <div id="view-stack">
-          <iframe id="report-frame" title="report"></iframe>
+          <iframe
+            id="report-frame"
+            title="report"
+            sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
+          ></iframe>
         </div>
       </div>
       <aside id="sidebar">
         <div class="sidebar-head">阅读任务 <span id="env-badge"></span></div>
         <div id="job-list">
           <div id="job-empty">
-            点击论文卡片上的「帮我读」开始。<br />会调用你本地的 Claude 订阅，用
+            点击论文卡片上的「帮我读」开始。<br />会调用设置中选择的本地 AI CLI，用
             paper-reading 技能精读并在 Obsidian vault 生成笔记。<br /><br />一次深读约几分钟。
           </div>
         </div>
@@ -417,30 +434,8 @@
         <div id="search-results" class="search-results"></div>
       </div>
     </div>
-    <div id="unlock-overlay">
-      <div class="unlock-card">
-        <div class="unlock-title">解锁个人模式（Zotero）</div>
-        <div class="unlock-sub">
-          输入密码解密 Zotero 凭据（与网页版同一密码），解锁后即可在论文卡片上「Add to
-          Zotero」。也可跳过，仅使用「帮我读」。
-        </div>
-        <input type="password" id="unlock-pw" placeholder="密码" autocomplete="off" />
-        <div id="unlock-err" class="unlock-err"></div>
-        <div class="unlock-actions">
-          <button id="unlock-skip" type="button">跳过</button>
-          <button id="unlock-go" type="button" class="primary">解锁</button>
-        </div>
-      </div>
-    </div>
-    <!-- crypto.js + the encrypted bundle (window.__ZOTERO_ENC) power the unlock,
-         same as the public site's index.html gate. -->
-    <script src="vendor/spark-md5.min.js"></script>
-    <script src="vendor/jszip.min.js"></script>
     <script src="vendor/minisearch.min.js"></script>
-    <script src="site/js/crypto.js"></script>
-    <script src="site/js/secrets.enc.js"></script>
     <script src="site/js/zotero.js"></script>
-    <script src="site/js/webdav.js"></script>
     <script src="site/js/search-index.js"></script>
     <script src="calendar.js"></script>
     <script src="zotero-save.js"></script>

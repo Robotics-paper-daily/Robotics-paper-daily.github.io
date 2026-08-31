@@ -1,5 +1,5 @@
-// Parse the `claude --output-format stream-json --verbose` NDJSON stream and
-// map each raw event to a normalized, user-facing progress descriptor.
+// Parse Claude stream-json or Codex/TraeCode exec --json NDJSON and map all
+// providers to the same user-facing progress descriptors.
 //
 // Stream shape (verified against CLI 2.1.150):
 //   {type:"system",subtype:"init", cwd, model, skills:[...], permissionMode}
@@ -56,6 +56,40 @@ function imageLike(p) {
   return typeof p === "string" && /\.(png|jpe?g|webp|gif)$/i.test(p);
 }
 
+function commandPhase(command, detail) {
+  const cmd = String(command || "");
+  for (const [re, phase, label] of SCRIPT_PHASES) {
+    if (re.test(cmd)) return { kind: "phase", phase, label, detail };
+  }
+  return { kind: "phase", phase: "run", label: "执行脚本", detail: detail || cmd };
+}
+
+function lastLine(text) {
+  if (!text) return null;
+  const line = String(text).trim().split("\n").filter(Boolean).pop();
+  return line ? line.slice(0, 120) : null;
+}
+
+function codexUsage(raw) {
+  const u = raw || {};
+  return {
+    input: u.input_tokens || 0,
+    output: u.output_tokens || 0,
+    cacheRead: u.cached_input_tokens || 0,
+    cacheCreate: u.cache_creation_input_tokens || 0,
+  };
+}
+
+function fileChangePath(item) {
+  if (typeof item.path === "string") return item.path;
+  if (!Array.isArray(item.changes)) return "";
+  for (const change of item.changes) {
+    const p = change && (change.path || change.file_path || change.move_path);
+    if (typeof p === "string" && /\.md$/i.test(p)) return p;
+  }
+  return "";
+}
+
 // Map a raw stream-json event → normalized descriptor, or null to ignore.
 // Returned shapes (all carry `kind`):
 //   {kind:'init', skills, model, permissionMode}
@@ -65,6 +99,59 @@ function imageLike(p) {
 //   {kind:'done', isError, resultText, denials, durationMs}
 function mapEvent(raw) {
   if (!raw || typeof raw !== "object") return null;
+
+  if (raw.type === "thread.started") return null;
+  if (raw.type === "turn.started") {
+    return { kind: "init", skills: null, model: raw.model, permissionMode: raw.permission_mode };
+  }
+
+  if ((raw.type === "item.started" || raw.type === "item.completed") && raw.item) {
+    const item = raw.item;
+    if (item.type === "command_execution") {
+      return commandPhase(item.command, item.command);
+    }
+    if (item.type === "agent_message") {
+      const line = lastLine(item.text);
+      return line ? { kind: "text", text: line } : null;
+    }
+    if (item.type === "file_change") {
+      const p = fileChangePath(item);
+      if (/\.md$/i.test(p)) return { kind: "phase", phase: "write", label: "写笔记", detail: p };
+    }
+    if (item.type === "mcp_tool_call" || item.type === "dynamic_tool_call") {
+      const name = String(item.tool || item.name || item.tool_name || "");
+      if (/apply_patch|write|edit/i.test(name)) {
+        const args = item.arguments || item.input || {};
+        const p = args.path || args.file_path || args.absolute_file_path || "";
+        if (/\.md$/i.test(p)) return { kind: "phase", phase: "write", label: "写笔记", detail: p };
+      }
+    }
+  }
+
+  if (raw.type === "turn.completed") {
+    return {
+      kind: "done",
+      isError: false,
+      resultText: "",
+      denials: [],
+      durationMs: raw.duration_ms,
+      usage: codexUsage(raw.usage),
+      costUsd: null,
+    };
+  }
+
+  if (raw.type === "turn.failed" || raw.type === "error") {
+    const err = raw.error || {};
+    return {
+      kind: "done",
+      isError: true,
+      resultText: err.message || raw.message || "AI CLI 运行失败",
+      denials: [],
+      durationMs: raw.duration_ms,
+      usage: codexUsage(raw.usage),
+      costUsd: null,
+    };
+  }
 
   if (raw.type === "system" && raw.subtype === "init") {
     return {
@@ -94,10 +181,7 @@ function mapEvent(raw) {
         const input = block.input || {};
         if (name === "Bash" || name === "PowerShell") {
           const cmd = String(input.command || "");
-          for (const [re, phase, label] of SCRIPT_PHASES) {
-            if (re.test(cmd)) return { kind: "phase", phase, label, detail: input.description };
-          }
-          return { kind: "phase", phase: "run", label: "执行脚本", detail: input.description };
+          return commandPhase(cmd, input.description);
         }
         if (name === "Read" && imageLike(input.file_path)) {
           return { kind: "phase", phase: "read_image", label: "读图", detail: input.file_path };
@@ -113,7 +197,7 @@ function mapEvent(raw) {
       }
     }
     if (lastText) {
-      const line = lastText.trim().split("\n").filter(Boolean).pop();
+      const line = lastLine(lastText);
       if (line) return { kind: "text", text: line.slice(0, 120) };
     }
     return null;

@@ -1,56 +1,18 @@
-// Wires up the "Add to Zotero" buttons in per-day report HTML pages.
+// Wires up "Add to Zotero" inside PaperReader's sandboxed report frame.
 //
-// Activates only when sessionStorage has decrypted Zotero credentials, which
-// the password gate (index.html) puts there before redirecting to personal.html.
-// In guest mode the buttons stay hidden via CSS.
-//
-// PDF upload path (when WebDAV credentials are present in the bundle):
-//   1. Fetch PDF bytes via Cloudflare Worker proxy (CORS workaround)
-//   2. Compute MD5 of PDF
-//   3. Create Zotero imported_url attachment with md5/mtime/filename set
-//   4. PUT <key>.zip + <key>.prop to user's WebDAV via Worker proxy
-//   5. Desktop Zotero picks up file on next sync
-//
-// Zotero holds the paper only (PDF). The arxiv LaTeX typesetting source is
-// deliberately NOT uploaded — it is not the implementation; code understanding
-// is the paper-reading skill's job (it fetches the GitHub repo into the note).
-//
-// Without WebDAV creds, falls back to a linked_url attachment so user at
-// least has a clickable arXiv link from inside Zotero.
-//
-// Persists "saved" state in localStorage so the button keeps its "In Zotero"
-// look across reloads without a Zotero round-trip.
+// v0.3.0 intentionally supports writes only through the desktop App. A static
+// website cannot atomically write Zotero linked files into the user's local
+// OneDrive folder or confirm that macOS File Provider uploaded them. Keeping a
+// second WebDAV/imported-file path would create two incompatible attachment
+// models, so public report pages stay read-only and show an App-only notice.
 
 (function () {
-  const SESSION_SECRETS = "zotero_secrets";
-  // sessionStorage key bumped to invalidate caches from earlier
-  // "DailyPaper" naming.
-  const SESSION_ROOT_COLLECTION = "zotero_daily_paper_root";
   const LOCAL_LIKED_MAP = "zotero_liked_map";
   const ROOT_COLLECTION_NAME = "Daily Paper";
   // Background reconcile against the real Zotero library (source of truth).
   // Cached per session so day-switches (iframe reloads) don't re-hit the API.
-  const SESSION_ADDED_CACHE = "zotero_added_cache"; // { ts, map: {baseArxivId: itemKey} }
+  const SESSION_ADDED_CACHE = "zotero_added_cache"; // { ts, map: {baseId: {state,itemKey?}} }
   const ADDED_CACHE_TTL_MS = 5 * 60 * 1000;
-
-  /**
-   * Read credentials from sessionStorage. Tries the current document first,
-   * then the parent frame as a defensive fallback in case some browser
-   * configuration breaks same-origin iframe storage sharing.
-   */
-  function readSession() {
-    try {
-      const raw = sessionStorage.getItem(SESSION_SECRETS);
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    if (window.parent && window.parent !== window) {
-      try {
-        const raw = window.parent.sessionStorage.getItem(SESSION_SECRETS);
-        if (raw) return JSON.parse(raw);
-      } catch {}
-    }
-    return null;
-  }
 
   function readLikedMap() {
     try {
@@ -61,7 +23,63 @@
   }
 
   function writeLikedMap(map) {
-    localStorage.setItem(LOCAL_LIKED_MAP, JSON.stringify(map));
+    // Unique-origin sandboxed reports have no usable localStorage. This map is
+    // only a UI cache; the Zotero RPC reconcile remains the source of truth, so
+    // storage denial must never turn a committed add/remove into a false error.
+    try {
+      localStorage.setItem(LOCAL_LIKED_MAP, JSON.stringify(map));
+    } catch {}
+  }
+
+  function appZoteroApi() {
+    const rpc = window.PaperReaderReportBridge;
+    if (rpc && rpc.zoteroEnabled) {
+      return {
+        isUnlocked: () => true,
+        add: (paper) => rpc.zoteroAdd(paper),
+        remove: (itemRef) => rpc.zoteroRemove(itemRef),
+        listDailyPaperArxivMap: (_rootName, baseIds) => rpc.zoteroList(baseIds),
+      };
+    }
+    return null;
+  }
+
+  function isAppReport() {
+    try {
+      return new URLSearchParams(window.location.search || "").get("app") === "1";
+    } catch {
+      return false;
+    }
+  }
+
+  function showAppOnlyNotice() {
+    if (isAppReport() || document.getElementById("zotero-app-only-notice")) return;
+    const notice = document.createElement("aside");
+    notice.id = "zotero-app-only-notice";
+    notice.setAttribute("role", "note");
+    notice.innerHTML =
+      '<strong>Add to Zotero 已迁移至 PaperReader Mac App。</strong>' +
+      '<span> 网页版现为只读浏览，不再写入 Zotero/WebDAV，以免产生失效附件。</span>' +
+      '<a href="https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io#v030-paperreader-for-macos" target="_blank" rel="noopener noreferrer">查看 v0.3.0 发布状态</a>';
+    const style = document.createElement("style");
+    style.textContent =
+      "#zotero-app-only-notice{max-width:1180px;margin:1rem auto;padding:.75rem 1rem;" +
+      "border:1px solid #d8b4fe;border-radius:.75rem;background:#faf5ff;color:#581c87;" +
+      "font:500 .86rem/1.55 Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}" +
+      "#zotero-app-only-notice a{margin-left:.65rem;color:#6b21a8;font-weight:700;text-decoration:underline}";
+    (document.head || document.documentElement).appendChild(style);
+    document.body.insertBefore(notice, document.body.firstChild);
+  }
+
+  function reportDate() {
+    try {
+      const match = String(window.location && window.location.pathname).match(
+        /(\d{4})[-_](\d{2})[-_](\d{2})/
+      );
+      return match ? `${match[1]}-${match[2]}-${match[3]}` : "";
+    } catch {
+      return "";
+    }
   }
 
   function readPapersData() {
@@ -75,26 +93,70 @@
     }
   }
 
-  // Inline Zotero "Z" — Simple Icons (CC0). Sized via .zotero-icon (1em).
-  const ZOTERO_SVG =
-    '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg>';
-  const SPINNER_SVG = '<i class="fas fa-spinner fa-spin"></i>';
+  function zoteroSvg(name, body, spinning = false) {
+    return (
+      `<svg class="zotero-svg-icon${spinning ? " zotero-svg-icon-spin" : ""}" ` +
+      `data-zotero-icon="${name}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">` +
+      `${body}</svg>`
+    );
+  }
+
+  // Inline Zotero "Z" — Simple Icons (CC0). All transient state icons are
+  // inline too, because App reports intentionally cannot load icon webfonts.
+  const ZOTERO_SVG = zoteroSvg(
+    "zotero",
+    '<path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/>'
+  );
+  const SPINNER_SVG = zoteroSvg(
+    "loading",
+    '<circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="40 14"/>',
+    true
+  );
+  const SYNC_DONE_SVG = zoteroSvg(
+    "done",
+    '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="m8 12 2.6 2.6L16.5 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+  );
+  const SYNC_ERROR_SVG = zoteroSvg(
+    "error",
+    '<path d="M12 3 2.8 20h18.4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 8v5m0 3.2v.1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>'
+  );
+
+  function injectZoteroIconStyles() {
+    if (document.getElementById("zotero-inline-icon-styles")) return;
+    const style = document.createElement("style");
+    style.id = "zotero-inline-icon-styles";
+    style.textContent =
+      ".zotero-svg-icon{display:block;width:1em;height:1em;overflow:visible;fill:currentColor;flex:0 0 auto}" +
+      ".zotero-icon .zotero-svg-icon{width:100%;height:100%}" +
+      ".zotero-svg-icon-spin{animation:zotero-icon-spin .8s linear infinite}" +
+      "#zotero-sync-status .zotero-svg-icon{width:16px;height:16px}" +
+      "@keyframes zotero-icon-spin{to{transform:rotate(360deg)}}";
+    (document.head || document.documentElement).appendChild(style);
+  }
 
   function setBtnState(btn, state) {
+    injectZoteroIconStyles();
     btn.dataset.state = state;
-    btn.classList.toggle("saved", state === "saved");
+    btn.classList.toggle("saved", state === "saved" || state === "existing");
     btn.disabled = state === "loading";
     const icon = btn.querySelector(".zotero-icon");
     const label = btn.querySelector(".zotero-label");
     if (state === "saved") {
       if (icon) icon.innerHTML = ZOTERO_SVG;
+      if (label) label.textContent = "In Zotero · Remove";
+      btn.title = "从 Zotero 删除条目（OneDrive 中的链接 PDF 会保留）";
+    } else if (state === "existing") {
+      if (icon) icon.innerHTML = ZOTERO_SVG;
       if (label) label.textContent = "In Zotero";
+      btn.title = "你的 Zotero 库中已有此论文；PaperReader 不会重复创建或删除原条目";
     } else if (state === "loading") {
       if (icon) icon.innerHTML = SPINNER_SVG;
       if (label) label.textContent = "Adding...";
+      btn.title = "";
     } else {
       if (icon) icon.innerHTML = ZOTERO_SVG;
       if (label) label.textContent = "Add to Zotero";
+      btn.title = "将论文与 OneDrive 链接 PDF 加入 Zotero";
     }
   }
 
@@ -116,147 +178,45 @@
     }, 4000);
   }
 
-  async function getOrCreateTodayCollection(client) {
-    let rootKey = sessionStorage.getItem(SESSION_ROOT_COLLECTION);
-    if (!rootKey) {
-      rootKey = await client.getOrCreateCollection(ROOT_COLLECTION_NAME);
-      sessionStorage.setItem(SESSION_ROOT_COLLECTION, rootKey);
-    }
-    const today = new Date().toLocaleDateString("sv"); // YYYY-MM-DD
-    return client.getOrCreateCollection(today, rootKey);
-  }
-
-  // Module-scoped — set in init() from the decrypted bundle.
-  let proxyUrl = "";
-  let webdavClient = null;
-
-  /**
-   * Fetch arbitrary bytes through the Worker proxy. Throws on any failure
-   * (network, non-2xx, suspiciously small payload). Returns Uint8Array.
-   */
-  async function fetchViaProxy(targetUrl) {
-    const proxyFetchUrl = `${proxyUrl.replace(/\/$/, "")}/?url=${encodeURIComponent(targetUrl)}`;
-    console.log("[zotero] proxy fetch:", proxyFetchUrl);
-    let res;
-    try {
-      res = await fetch(proxyFetchUrl);
-    } catch (e) {
-      throw new Error(`代理 fetch 异常: ${e.message}`);
-    }
-    if (!res.ok) {
-      throw new Error(`代理返回 HTTP ${res.status}`);
-    }
-    const buf = await res.arrayBuffer();
-    console.log("[zotero] proxy returned", buf.byteLength, "bytes");
-    if (buf.byteLength < 1024) {
-      throw new Error(`代理响应过小 (${buf.byteLength}B)`);
-    }
-    return new Uint8Array(buf);
-  }
-
-  /**
-   * Common tail: compute MD5, register Zotero imported_url attachment with
-   * WebDAV-bound metadata, PUT <key>.zip + <key>.prop to WebDAV. Throws on
-   * any step's failure; returns the new attachment key on success.
-   *
-   * @param {{sourceUrl, filename, title, contentType}} opts
-   */
-  async function uploadFileToZoteroAndWebdav(client, parentKey, bytes, opts) {
-    const md5 = computeMd5(bytes);
-    const mtime = Date.now();
-    console.log("[zotero] md5:", md5, "mtime:", mtime, "name:", opts.filename);
-
-    const attachmentKey = await client.createImportedAttachment(parentKey, {
-      title: opts.title,
-      url: opts.sourceUrl,
-      filename: opts.filename,
-      contentType: opts.contentType,
-      md5,
-      mtime,
-    });
-    console.log("[zotero] attachment key:", attachmentKey);
-
-    await webdavClient.upload(attachmentKey, bytes, opts.filename, mtime);
-    return attachmentKey;
-  }
-
-  /**
-   * PDF upload flow. Returns {ok: true} on success, {ok: false, reason} on
-   * any step failure. Caller falls back to linked_url attachment on failure.
-   */
-  async function tryUploadPdf(client, parentKey, pdfUrl, arxivId) {
-    if (!proxyUrl) return { ok: false, reason: "未配置 Worker 代理" };
-    if (!webdavClient || !webdavClient.isConfigured()) {
-      return { ok: false, reason: "未配置 WebDAV 凭据" };
-    }
-    let bytes;
-    try {
-      bytes = await fetchViaProxy(pdfUrl);
-    } catch (e) {
-      return { ok: false, reason: e.message };
-    }
-    try {
-      await uploadFileToZoteroAndWebdav(client, parentKey, bytes, {
-        sourceUrl: pdfUrl,
-        filename: `${arxivId || "paper"}.pdf`,
-        title: "Full Text PDF",
-        contentType: "application/pdf",
-      });
-      return { ok: true };
-    } catch (e) {
-      return { ok: false, reason: e.message };
-    }
-  }
-
   async function addPaper(btn, paper, client) {
     setBtnState(btn, "loading");
     try {
-      const collKey = await getOrCreateTodayCollection(client);
-      const itemKey = await client.createPreprintItem(paper, collKey);
-
-      // Force https: arXiv's feed returns http:// URLs but the Worker
-      // allowlist usually checks for https://arxiv.org/, so http variants
-      // would get rejected with a 403 even though the redirect works.
-      const pdfUrl = (paper.url || "")
-        .replace(/^http:\/\//i, "https://")
-        .replace("/abs/", "/pdf/");
-      const arxivIdMatch = pdfUrl.match(/arxiv\.org\/pdf\/([^?#\s]+?)(?:\.pdf)?$/i);
-      const arxivId = arxivIdMatch ? arxivIdMatch[1] : null;
-
-      let pdfResult = { ok: false, reason: "无 PDF URL" };
-
-      if (pdfUrl && pdfUrl !== paper.url) {
-        if (webdavClient && webdavClient.isConfigured()) {
-          pdfResult = await tryUploadPdf(client, itemKey, pdfUrl, arxivId);
-        } else {
-          pdfResult = { ok: false, reason: "WebDAV 未配置" };
-        }
-        if (!pdfResult.ok) {
-          try {
-            await client.addLinkedAttachment(itemKey, pdfUrl, "View arXiv PDF");
-          } catch (e) {
-            console.warn("[zotero] linked attachment also failed:", e);
-          }
-        }
-      }
+      if (!client) throw new Error("Add to Zotero 仅在 PaperReader App 中可用");
+      const result = await client.add({ ...paper, date: reportDate() });
+      const itemKey = result && result.itemKey;
+      const libraryOnly = !!(
+        result &&
+        (result.state === "existing" || result.status === "already-in-library")
+      );
+      if (!libraryOnly && !itemKey) throw new Error("App 未返回 Zotero 条目 key");
 
       const map = readLikedMap();
-      map[paper.url] = itemKey;
+      if (libraryOnly) delete map[paper.url];
+      else map[paper.url] = itemKey;
       writeLikedMap(map);
-      patchAddedCache(paperBaseId(paper), itemKey);
+      patchAddedCache(
+        paperBaseId(paper),
+        libraryOnly
+          ? { state: "existing" }
+          : { state: "managed", itemKey }
+      );
 
-      btn.dataset.itemKey = itemKey;
-      setBtnState(btn, "saved");
-
-      let toastMsg, toastKind;
-      if (pdfResult.ok) {
-        toastMsg = "已保存到 Zotero（PDF 已上传 WebDAV，Sync 后桌面可见）";
-        toastKind = "success";
+      if (libraryOnly) {
+        delete btn.dataset.itemKey;
+        setBtnState(btn, "existing");
       } else {
-        toastMsg = `已保存到 Zotero（仅链接，原因：${pdfResult.reason}）`;
-        toastKind = "info";
+        btn.dataset.itemKey = itemKey;
+        setBtnState(btn, "saved");
       }
-      showToast(toastMsg, toastKind);
+
+      showToast(
+        libraryOnly
+          ? "已在你的 Zotero 库中（不会重复创建或改动原条目）"
+          : result.status === "already-added"
+            ? "已在 Zotero 中（未重复创建）"
+            : "已保存到 Zotero（OneDrive 云端已确认）",
+        "success"
+      );
     } catch (e) {
       console.error("[zotero] add failed:", e);
       setBtnState(btn, "idle");
@@ -268,17 +228,50 @@
     setBtnState(btn, "loading");
     try {
       const itemKey = btn.dataset.itemKey;
+      const localApp = client || appZoteroApi();
+      if (!localApp) throw new Error("Zotero 删除仅在 PaperReader App 中可用");
+      let removal = null;
       if (itemKey) {
-        await client.deleteItem(itemKey);
+        removal = await localApp.remove(itemKey);
       }
       const map = readLikedMap();
+
+      // Historical versions of the wheel created duplicate parents for some
+      // base arXiv IDs. Delete only the explicit item (never bulk-delete), and
+      // keep the button honest when another duplicate remains.
+      if (removal && removal.remainingItemKey) {
+        map[paper.url] = removal.remainingItemKey;
+        writeLikedMap(map);
+        patchAddedCache(paperBaseId(paper), {
+          state: "managed",
+          itemKey: removal.remainingItemKey,
+        });
+        btn.dataset.itemKey = removal.remainingItemKey;
+        setBtnState(btn, "saved");
+        showToast(
+          `已删除一个重复 Zotero 条目；仍有 ${removal.remainingDuplicates} 个同 ID 条目`,
+          "info"
+        );
+        return;
+      }
+
+      if (removal && removal.libraryMatchRemaining) {
+        delete map[paper.url];
+        writeLikedMap(map);
+        patchAddedCache(paperBaseId(paper), { state: "existing" });
+        delete btn.dataset.itemKey;
+        setBtnState(btn, "existing");
+        showToast("已删除 PaperReader 条目；你的 Zotero 库中仍有同一论文", "info");
+        return;
+      }
+
       delete map[paper.url];
       writeLikedMap(map);
       patchAddedCache(paperBaseId(paper), null);
 
       delete btn.dataset.itemKey;
       setBtnState(btn, "idle");
-      showToast("已从 Zotero 删除", "success");
+      showToast("已从 Zotero 删除（OneDrive 中的链接文件会保留）", "success");
     } catch (e) {
       console.error("[zotero] remove failed:", e);
       setBtnState(btn, "saved");
@@ -289,8 +282,11 @@
   // ---- Zotero reconcile: keep "In Zotero" honest against the real library ----
 
   function paperBaseId(paper) {
-    if (!paper || !window.baseArxivId || !window.extractArxivId) return null;
-    return window.baseArxivId(window.extractArxivId(paper.url));
+    if (!paper) return null;
+    const match = String(paper.url || "").match(
+      /arxiv\.org\/(?:abs|pdf)\/((?:\d{4}\.\d{4,5}|[a-z][a-z0-9.-]*\/\d{7}))(?:v\d+)?/i
+    );
+    return match ? match[1].toLowerCase() : null;
   }
 
   // Session cache of the added-map so switching days doesn't re-query Zotero.
@@ -307,12 +303,12 @@
     } catch {}
   }
   // Keep the cache coherent after a manual add/remove (don't refresh the TTL).
-  function patchAddedCache(baseId, itemKey) {
+  function patchAddedCache(baseId, match) {
     if (!baseId) return;
     try {
       const c = JSON.parse(sessionStorage.getItem(SESSION_ADDED_CACHE) || "null");
       const map = (c && c.map) || {};
-      if (itemKey) map[baseId] = itemKey;
+      if (match) map[baseId] = match;
       else delete map[baseId];
       sessionStorage.setItem(
         SESSION_ADDED_CACHE,
@@ -340,6 +336,7 @@
   let syncHideTimer = null;
   function setSyncStatus(state, text) {
     injectSyncStyles();
+    injectZoteroIconStyles();
     let el = document.getElementById("zotero-sync-status");
     if (!el) {
       el = document.createElement("div");
@@ -357,10 +354,10 @@
     el.className = "show" + (state === "error" ? " error" : state === "done" ? " done" : "");
     const icon =
       state === "syncing"
-        ? '<i class="fas fa-spinner fa-spin"></i>'
+        ? SPINNER_SVG
         : state === "done"
-          ? '<i class="fas fa-circle-check"></i>'
-          : '<i class="fas fa-triangle-exclamation"></i>';
+          ? SYNC_DONE_SVG
+          : SYNC_ERROR_SVG;
     el.innerHTML = icon + '<span class="zss-text"></span>';
     el.querySelector(".zss-text").textContent = text;
     if (state === "done" || state === "error") {
@@ -370,10 +367,10 @@
 
   /**
    * Reconcile every button on the page against the real Zotero library: mark
-   * papers already in the Daily Paper tree as saved, clear stale "saved" state
-   * for papers no longer there, and rewrite localStorage to match. Uses the
-   * session cache when fresh (silent); otherwise queries Zotero with a visible
-   * indicator. Network failure keeps the localStorage-based state untouched.
+   * every paper found anywhere in the connected personal library. App-managed
+   * Daily Paper items remain removable; all other matches are presence-only.
+   * Uses the session cache when fresh (silent); otherwise queries Zotero with a
+   * visible indicator. Network failure keeps local state untouched.
    */
   async function reconcileWithZotero(client, buttons, papers) {
     if (!buttons.length) return;
@@ -382,7 +379,10 @@
     if (!map) {
       setSyncStatus("syncing", "Zotero 同步中…");
       try {
-        map = await client.listDailyPaperArxivMap(ROOT_COLLECTION_NAME);
+        map = await client.listDailyPaperArxivMap(
+          ROOT_COLLECTION_NAME,
+          papers.map((paper) => paperBaseId(paper)).filter(Boolean)
+        );
         writeAddedCache(map);
       } catch (e) {
         console.warn("[zotero] reconcile failed:", e);
@@ -397,68 +397,53 @@
       const paper = papers[idx];
       if (!paper) return;
       const baseId = paperBaseId(paper);
-      const itemKey = baseId ? map[baseId] : null;
-      if (itemKey) {
+      const match = baseId ? map[baseId] : null;
+      const legacyItemKey = typeof match === "string" ? match : null;
+      const state = legacyItemKey ? "managed" : match && match.state;
+      const itemKey = legacyItemKey || (match && match.itemKey);
+      if (state === "managed" && itemKey) {
         btn.dataset.itemKey = itemKey;
         setBtnState(btn, "saved");
         liked[paper.url] = itemKey;
+      } else if (state === "existing") {
+        delete liked[paper.url];
+        delete btn.dataset.itemKey;
+        setBtnState(btn, "existing");
       } else {
         // not in Zotero (anymore) → drop stale saved state
         delete liked[paper.url];
         delete btn.dataset.itemKey;
-        if (btn.dataset.state === "saved") setBtnState(btn, "idle");
+        if (btn.dataset.state === "saved" || btn.dataset.state === "existing") {
+          setBtnState(btn, "idle");
+        }
       }
     });
     writeLikedMap(liked);
     if (!fromCache) {
-      setSyncStatus("done", `Zotero 已同步（库中 ${Object.keys(map).length} 篇）`);
+      // The shell deliberately returns only matches for this report, not a
+      // count/enumeration of the user's whole library. Label the number
+      // honestly so a successful full-library bind is not mistaken for an
+      // inventory containing only the papers visible today.
+      setSyncStatus("done", `Zotero 已同步（本页匹配 ${Object.keys(map).length} 篇）`);
     }
   }
 
   function init() {
-    const session = readSession();
-    if (!session) {
-      // Guest mode: leave body without `.zotero-mode`, buttons stay hidden via CSS.
-      return;
-    }
-
-    if (typeof ZoteroClient === "undefined") {
-      console.error("[zotero] ZoteroClient not loaded — js/zotero.js missing?");
+    const localApp = appZoteroApi();
+    const appUnlocked = !!(
+      localApp &&
+      (typeof localApp.isUnlocked !== "function" || localApp.isUnlocked())
+    );
+    if (!appUnlocked) {
+      // Public reports are intentionally read-only. In an App guest session,
+      // the shell owns the setup affordance and no website notice is needed.
+      showAppOnlyNotice();
       return;
     }
 
     document.body.classList.add("zotero-mode");
 
-    proxyUrl = session.pdfProxyUrl || "";
-    console.log("[zotero] init: proxy =", proxyUrl || "(none)");
-
-    // WebDAV client: only construct if all three creds are present.
-    if (
-      session.webdavUrl &&
-      session.webdavUser &&
-      session.webdavPass &&
-      typeof WebdavSync !== "undefined"
-    ) {
-      webdavClient = new WebdavSync({
-        baseUrl: session.webdavUrl,
-        user: session.webdavUser,
-        pass: session.webdavPass,
-        proxyUrl,
-      });
-      console.log("[zotero] init: webdav =", session.webdavUrl);
-    } else {
-      const reasons = [];
-      if (!session.webdavUrl) reasons.push("webdavUrl");
-      if (!session.webdavUser) reasons.push("webdavUser");
-      if (!session.webdavPass) reasons.push("webdavPass");
-      if (typeof WebdavSync === "undefined") reasons.push("WebdavSync class");
-      console.log(
-        "[zotero] init: webdav DISABLED — missing:",
-        reasons.join(", ") || "(unknown)"
-      );
-    }
-
-    const client = new ZoteroClient(session.apiKey, session.userId);
+    const client = localApp;
     const papers = readPapersData();
     const likedMap = readLikedMap();
     const buttons = document.querySelectorAll(".zotero-btn");
@@ -484,6 +469,10 @@
 
       btn.addEventListener("click", () => {
         if (btn.dataset.state === "loading") return;
+        if (btn.dataset.state === "existing") {
+          showToast("这篇论文已在你的 Zotero 库中，PaperReader 不会重复创建", "info");
+          return;
+        }
         if (btn.dataset.state === "saved") {
           removePaper(btn, paper, client);
         } else {

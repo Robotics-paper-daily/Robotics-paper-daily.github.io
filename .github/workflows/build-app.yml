@@ -1,50 +1,128 @@
-name: Build PaperReader app
+name: Build PaperReader for macOS
 
-# Manual / tag-triggered. Builds the Electron desktop app installers.
-# Windows -> .exe (nsis), macOS -> .dmg. The macOS dmg MUST be built on a mac
-# runner (cannot cross-build/sign from Windows); that's the whole reason this
-# job exists rather than building locally.
+# Manual runs produce tested unsigned artifacts. A semantic-version tag also
+# creates the GitHub release and uploads both macOS DMGs plus their checksums.
 on:
   workflow_dispatch:
   push:
     tags:
-      - "app-v*"
+      - "v*"
+
+permissions:
+  contents: read
 
 jobs:
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: windows-latest
-            script: "dist:win"
-          - os: macos-latest
-            script: "dist:mac"
-    runs-on: ${{ matrix.os }}
+  build-macos:
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
 
-      - name: Install app deps
+      - name: Install locked app dependencies
         working-directory: app
-        run: npm install
+        run: npm ci
 
-      - name: Build installer
+      - name: Audit npm dependencies
         working-directory: app
-        # predist:* hooks run sync-site.js first, snapshotting the committed
-        # daily_html/ js/ reports.json into app/site before packaging.
-        run: npm run ${{ matrix.script }}
+        run: npm audit --audit-level=high
+
+      - name: Run Node tests
+        working-directory: app
+        run: npm test
+
+      - name: Run Python tests
+        working-directory: .
+        run: python3 -m unittest discover -s test -p 'test_*.py'
+
+      - name: Verify stable tag matches package version
+        if: startsWith(github.ref, 'refs/tags/v')
+        working-directory: app
+        run: |
+          node - <<'NODE'
+          const version = require('./package.json').version;
+          const tag = process.env.GITHUB_REF_NAME;
+          if (!/^v\d+\.\d+\.\d+$/.test(tag) || tag !== `v${version}`) {
+            throw new Error(`stable release tag ${tag} does not match package version ${version}`);
+          }
+          NODE
+
+      - name: Build unsigned Apple Silicon and Intel DMGs
+        working-directory: app
+        run: npm run dist:mac
         env:
-          # Personal/unsigned build — don't attempt code signing/notarization.
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
+
+      - name: Audit packaged privacy boundary
+        working-directory: app
+        run: node release-audit.js --dist
+
+      - name: Validate both installers and write SHA-256 manifest
+        working-directory: app/dist
+        run: |
+          version="$(node -p "require('../package.json').version")"
+          arm64="PaperReader-${version}-arm64.dmg"
+          x64="PaperReader-${version}-x64.dmg"
+          test -f "${arm64}"
+          test -f "${x64}"
+          test "$(find . -maxdepth 1 -type f -name 'PaperReader-*.dmg' | wc -l | tr -d ' ')" = "2"
+          test "$(find . -maxdepth 1 -type f -name 'PaperReader-*' | wc -l | tr -d ' ')" = "2"
+          test "$(find . -maxdepth 1 -type f -name '*mac*.yml' | wc -l | tr -d ' ')" = "0"
+          shasum -a 256 "${arm64}" "${x64}" > SHA256SUMS.txt
+          test "$(wc -l < SHA256SUMS.txt | tr -d ' ')" = "2"
+          grep -Eq "^[[:xdigit:]]{64}  ${arm64}$" SHA256SUMS.txt
+          grep -Eq "^[[:xdigit:]]{64}  ${x64}$" SHA256SUMS.txt
+          shasum -a 256 -c SHA256SUMS.txt
 
       - uses: actions/upload-artifact@v4
         with:
-          name: paperreader-${{ matrix.os }}
+          name: paperreader-macos
           path: |
-            app/dist/*.exe
             app/dist/*.dmg
-          if-no-files-found: ignore
+            app/dist/SHA256SUMS.txt
+          if-no-files-found: error
+
+  publish-release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build-macos
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: paperreader-macos
+          path: release-artifacts
+
+      - name: Verify downloaded release assets
+        working-directory: release-artifacts
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          test -f "PaperReader-${version}-arm64.dmg"
+          test -f "PaperReader-${version}-x64.dmg"
+          test "$(find . -maxdepth 1 -type f -name 'PaperReader-*.dmg' | wc -l | tr -d ' ')" = "2"
+          test "$(find . -maxdepth 1 -type f | wc -l | tr -d ' ')" = "3"
+          test "$(wc -l < SHA256SUMS.txt | tr -d ' ')" = "2"
+          grep -Eq "^[[:xdigit:]]{64}  PaperReader-${version}-arm64.dmg$" SHA256SUMS.txt
+          grep -Eq "^[[:xdigit:]]{64}  PaperReader-${version}-x64.dmg$" SHA256SUMS.txt
+          sha256sum -c SHA256SUMS.txt
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          gh release create "${GITHUB_REF_NAME}" \
+            release-artifacts/PaperReader-${version}-*.dmg \
+            release-artifacts/SHA256SUMS.txt \
+            --title "PaperReader ${GITHUB_REF_NAME} for macOS" \
+            --notes-file RELEASES_NOTES.md \
+            --verify-tag \
+            --latest

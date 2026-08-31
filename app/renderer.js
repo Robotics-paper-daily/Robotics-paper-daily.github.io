@@ -1,7 +1,7 @@
 // Shell renderer (top frame). Owns the report iframe, the date picker, and the
 // progress sidebar. It is the single subscriber to paperBridge.onProgress and
-// relays each event into the report iframe (same-origin under app://) so the
-// originating card can reflect its own job.
+// relays each event into the sandboxed report through a narrow message channel
+// so the originating card can reflect its own job.
 
 const bridge = window.paperBridge;
 const frame = document.getElementById("report-frame");
@@ -12,6 +12,7 @@ const dateNext = document.getElementById("date-next");
 const jobListEl = document.getElementById("job-list");
 const jobEmptyEl = document.getElementById("job-empty");
 const envBadge = document.getElementById("env-badge");
+const zoteroSetupBtn = document.getElementById("zotero-setup-btn");
 
 // jobId -> { el, data }
 const rows = new Map();
@@ -93,7 +94,9 @@ async function refreshAll() {
   refreshEnv();
 }
 function setReport(file) {
-  frame.src = `site/daily_html/${file}`;
+  resetReportRpcState();
+  const zoteroEnabled = !!getZoteroSaver();
+  frame.src = `site/daily_html/${file}?app=1&zotero=${zoteroEnabled ? "1" : "0"}`;
   document.title = `PaperReader · ${file.replace(".html", "").replace(/_/g, "-")}`;
 }
 // Reflect the current selection in the pill label, and enable/disable ‹ › at the
@@ -126,6 +129,9 @@ select.addEventListener("change", () => {
 if (datePrev) datePrev.addEventListener("click", () => selectReportByIndex(select.selectedIndex + 1));
 if (dateNext) dateNext.addEventListener("click", () => selectReportByIndex(select.selectedIndex - 1));
 document.getElementById("btn-settings").addEventListener("click", () => bridge.openSettings());
+if (zoteroSetupBtn) {
+  zoteroSetupBtn.addEventListener("click", () => bridge.openSettings());
+}
 
 // ---- manual refresh ----
 const btnRefresh = document.getElementById("btn-refresh");
@@ -280,10 +286,25 @@ const TAB_ICON = {
 };
 
 const webTabs = new Map(); // id -> { id, url, webview, tabEl, titleEl, icoEl }
+const MAX_WEB_TABS = 8;
 let activeTabId = "home";
 let tabSeq = 0;
 
+// The report is a unique-origin sandbox. CSS keeps it mounted (but invisible)
+// while a web tab is active, so its own scroll position remains intact without
+// granting the shell DOM access.
+let reportScrollY = 0;
+function readReportScroll() {
+  reportScrollY = 0;
+}
+function restoreReportScroll() {
+  reportScrollY = 0;
+}
+
 function setActiveTab(id) {
+  const leavingHome = activeTabId === "home" && id !== "home";
+  const enteringHome = activeTabId !== "home" && id === "home";
+  if (leavingHome) readReportScroll(); // snapshot before display:none tears it down
   activeTabId = id;
   frame.classList.toggle("view-hidden", id !== "home");
   tabHome.classList.toggle("active", id === "home");
@@ -296,6 +317,7 @@ function setActiveTab(id) {
   const web = id !== "home" ? webTabs.get(id) : null;
   navBar.classList.toggle("view-hidden", !web);
   if (web) updateNav(web);
+  if (enteringHome) restoreReportScroll(); // reapply once visible (self-schedules across frames)
 }
 
 function updateNav(t) {
@@ -315,6 +337,10 @@ function openTab(url, opts = {}) {
   if (!/^https?:\/\//i.test(url || "")) return;
   for (const t of webTabs.values()) {
     if (t.url === url) { setActiveTab(t.id); return; } // dedup: focus existing
+  }
+  if (webTabs.size >= MAX_WEB_TABS) {
+    showShellToast(`最多同时打开 ${MAX_WEB_TABS} 个网页标签`, "info");
+    return;
   }
   const id = "tab" + ++tabSeq;
   const webview = document.createElement("webview");
@@ -389,24 +415,475 @@ navExt.addEventListener("click", () => {
 
 if (bridge && bridge.onOpenTab) bridge.onOpenTab((url) => openTab(url, { background: true }));
 
-// ---- shell-side Zotero saver (read modal + search panel; null in guest mode) ----
+// ---- shell-side Zotero saver (read modal + search panel; null until set up) ----
+// Each user owns a local API key encrypted by Electron safeStorage (Keychain on
+// macOS). Main returns it only to this immutable shell; the sandboxed report
+// never sees credentials and receives only opaque Zotero references.
+let _zoteroCredentials = null;
 let _zoteroSaver = null;
 let _zoteroSaverTried = false;
-function getZoteroSaver() {
+let _zoteroCredentialGeneration = 0;
+async function reloadZoteroCredentials() {
+  const generation = ++_zoteroCredentialGeneration;
+  let credentials = null;
+  try {
+    credentials = await bridge.getZoteroSession();
+  } catch (error) {
+    console.warn("[renderer] local Zotero credentials unavailable:", error);
+  }
+  if (generation !== _zoteroCredentialGeneration) return !!_zoteroCredentials;
+  _zoteroCredentials = credentials && credentials.apiKey && credentials.userId
+    ? credentials
+    : null;
+  _zoteroSaver = null;
+  _zoteroSaverTried = false;
+  if (zoteroSetupBtn) zoteroSetupBtn.hidden = !!_zoteroCredentials;
+  return !!_zoteroCredentials;
+}
+const getZoteroSaver = () => {
   if (_zoteroSaverTried) return _zoteroSaver;
   _zoteroSaverTried = true;
   try {
-    const raw = sessionStorage.getItem("zotero_secrets");
-    if (raw && window.ZoteroSave) _zoteroSaver = window.ZoteroSave.fromSession(JSON.parse(raw));
+    if (_zoteroCredentials && window.ZoteroSave) {
+      _zoteroSaver = window.ZoteroSave.fromSession(_zoteroCredentials, bridge);
+    }
   } catch (e) {
     console.warn("[renderer] zotero saver init failed:", e);
   }
   return _zoteroSaver;
+};
+
+function zoteroLibraryBaseId(value) {
+  const id =
+    typeof window.extractArxivId === "function"
+      ? window.extractArxivId(String(value || ""))
+      : null;
+  const base =
+    id && typeof window.baseArxivId === "function" ? window.baseArxivId(id) : id;
+  return base ? String(base).toLowerCase() : null;
 }
+
+// The report iframe is a unique-origin sandbox and cannot reach this facade
+// directly. The schema-checked parent RPC below is its only Zotero path.
+window.paperReaderZotero = Object.freeze({
+  isUnlocked() {
+    return !!getZoteroSaver();
+  },
+  add(paper) {
+    const saver = getZoteroSaver();
+    if (!saver) return Promise.reject(new Error("请先在设置中配置自己的 Zotero API key"));
+    return saver.add(paper);
+  },
+  remove(itemKey, expectedBaseId) {
+    const saver = getZoteroSaver();
+    if (!saver) return Promise.reject(new Error("请先在设置中配置自己的 Zotero API key"));
+    return saver.remove(itemKey, expectedBaseId);
+  },
+  listDailyPaperArxivMap(rootName) {
+    const saver = getZoteroSaver();
+    if (!saver) return Promise.reject(new Error("请先在设置中配置自己的 Zotero API key"));
+    return saver.listAddedMap(rootName);
+  },
+});
+
+// ---- sandboxed report RPC -------------------------------------------------
+// The live daily HTML is deliberately a unique-origin sandbox. It can request
+// only these paper-scoped operations; it cannot see paperBridge, settings,
+// decrypted credentials, or arbitrary filesystem/network IPC.
+const REPORT_RPC_CHANNEL = "paperreader-report-v1";
+const reportZoteroRefs = new Map(); // opaque ref -> { itemKey, baseId, title }
+const reportZoteroKeyRefs = new Map(); // real key -> opaque ref
+const reportNoteRefs = new Map(); // opaque ref -> { relNoExt, baseId }
+const reportNotePathRefs = new Map(); // real relative path -> opaque ref
+let readPapersCache = null;
+let reportRpcRateStartedAt = 0;
+let reportRpcRateCount = 0;
+
+function resetReportRpcState() {
+  reportZoteroRefs.clear();
+  reportZoteroKeyRefs.clear();
+  reportNoteRefs.clear();
+  reportNotePathRefs.clear();
+  delete frame.dataset.reportReady;
+}
+
+function reportNoteRef(relNoExt, baseId) {
+  const safePath = cleanRelativeNotePath(relNoExt);
+  const current = reportNotePathRefs.get(safePath);
+  if (current) return current;
+  const suffix =
+    window.crypto && typeof window.crypto.randomUUID === "function"
+      ? window.crypto.randomUUID()
+      : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+  const ref = `nr_${suffix}`;
+  reportNoteRefs.set(ref, { relNoExt: safePath, baseId });
+  reportNotePathRefs.set(safePath, ref);
+  return ref;
+}
+
+function reportItemRef(itemKey, metadata = {}) {
+  if (!/^[A-Z0-9]{8}$/i.test(itemKey || "")) {
+    throw new Error("Zotero 返回了无效的 item key");
+  }
+  const normalizedKey = String(itemKey).toUpperCase();
+  const current = reportZoteroKeyRefs.get(normalizedKey);
+  if (current) {
+    const record = reportZoteroRefs.get(current);
+    if (record) Object.assign(record, metadata);
+    return current;
+  }
+  const suffix =
+    window.crypto && typeof window.crypto.randomUUID === "function"
+      ? window.crypto.randomUUID()
+      : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+  const ref = `zr_${suffix}`;
+  reportZoteroRefs.set(ref, { itemKey: normalizedKey, ...metadata });
+  reportZoteroKeyRefs.set(normalizedKey, ref);
+  return ref;
+}
+
+function requireCurrentReport(payload) {
+  const requested = cleanString(payload && payload.reportFile, 100);
+  if (!requested || requested !== reportFileName()) {
+    throw new Error("报告来源不匹配，请刷新后重试");
+  }
+}
+
+function cleanBaseArxivId(value) {
+  const id = cleanString(value, 100).trim().toLowerCase();
+  if (!/^(?:\d{4}\.\d{4,5}|[a-z][a-z0-9.-]*\/\d{7})$/.test(id)) return "";
+  return id;
+}
+
+function arxivIdentity(url) {
+  const match = String(url || "").match(
+    /arxiv\.org\/(?:abs|pdf)\/((?:\d{4}\.\d{4,5}|[a-z][a-z0-9.-]*\/\d{7})(?:v\d+)?)/i
+  );
+  return match ? match[1] : "";
+}
+
+async function requireReportGesture(action, details = {}) {
+  if (!bridge || typeof bridge.consumeReportGesture !== "function") {
+    const error = new Error("当前 App 不支持安全单击授权，请升级或重启 App");
+    error.code = "GESTURE_GATE_UNAVAILABLE";
+    throw error;
+  }
+  // A real interaction in a child navigable activates its ancestors. This
+  // renderer check is paired with a browser-process input sequence that can be
+  // consumed only once; a boolean supplied by the report is never trusted.
+  if (!navigator.userActivation || navigator.userActivation.isActive !== true) {
+    const error = new Error("请直接点击操作按钮后重试");
+    error.code = "USER_GESTURE_REQUIRED";
+    throw error;
+  }
+  const result = await bridge.consumeReportGesture({
+    action,
+    reportFile: reportFileName(),
+    identity: cleanString(details.identity, 200),
+  });
+  if (!result || result.allowed !== true) {
+    const error = new Error(
+      result && result.code === "USER_GESTURE_CONSUMED"
+        ? "这次点击已执行过一个操作，请重新点击"
+        : "请直接点击操作按钮后重试"
+    );
+    error.code = (result && result.code) || "USER_GESTURE_REQUIRED";
+    throw error;
+  }
+}
+
+function reportFileName() {
+  try {
+    return new URL(frame.src).pathname.split("/").pop() || "";
+  } catch {
+    return "";
+  }
+}
+
+function cleanString(value, max) {
+  return typeof value === "string" ? value.slice(0, max) : "";
+}
+
+function cleanArxivUrl(value) {
+  let url;
+  try {
+    url = new URL(String(value || ""));
+  } catch {
+    throw new Error("无效的 arXiv URL");
+  }
+  if (
+    !["http:", "https:"].includes(url.protocol) ||
+    url.hostname !== "arxiv.org" ||
+    url.port ||
+    !/^\/(?:abs|pdf)\/(?:\d{4}\.\d{4,5}|[a-z][a-z0-9.-]*\/\d{7})(?:v\d+)?(?:\.pdf)?$/i.test(
+      url.pathname
+    )
+  ) {
+    throw new Error("只允许 arXiv 论文链接");
+  }
+  return url.href;
+}
+
+function cleanRelativeNotePath(value) {
+  const rel = cleanString(value, 1000).trim();
+  if (
+    !rel ||
+    /^[\\/]/.test(rel) ||
+    /^[a-z]:/i.test(rel) ||
+    /(^|[\\/])\.\.([\\/]|$)/.test(rel) ||
+    /\0/.test(rel)
+  ) {
+    throw new Error("无效的笔记路径");
+  }
+  return rel;
+}
+
+function cleanPaper(value) {
+  const paper = value && typeof value === "object" ? value : {};
+  return {
+    title: cleanString(paper.title, 4000),
+    summary: cleanString(paper.summary, 100000),
+    url: cleanArxivUrl(paper.url),
+    authors: Array.isArray(paper.authors)
+      ? paper.authors.slice(0, 100).map((name) => cleanString(name, 500))
+      : [],
+    keywords: Array.isArray(paper.keywords)
+      ? paper.keywords.slice(0, 100).map((tag) => cleanString(tag, 200))
+      : [],
+    date: /^\d{4}-\d{2}-\d{2}$/.test(paper.date || "") ? paper.date : "",
+  };
+}
+
+async function handleReportRequest(method, payload) {
+  switch (method) {
+    case "paper:read": {
+      const p = payload && typeof payload === "object" ? payload : {};
+      const reportFile = cleanString(p.reportFile, 100);
+      if (reportFile !== reportFileName()) throw new Error("报告来源不匹配");
+      const url = cleanArxivUrl(p.url);
+      const derivedArxivId = arxivIdentity(url);
+      if (!derivedArxivId) throw new Error("无法从论文 URL 派生 arXiv ID");
+      const request = {
+        url,
+        title: cleanString(p.title, 4000),
+        // Never trust a separately supplied ID: the gesture scope and the CLI
+        // request must describe the exact same validated URL.
+        arxivId: derivedArxivId,
+        paperIndex: /^\d{1,5}$/.test(String(p.paperIndex)) ? String(p.paperIndex) : "",
+        reportFile,
+      };
+      await requireReportGesture("paper-read", { identity: request.arxivId });
+      return bridge.read(request);
+    }
+    case "job:list": {
+      requireCurrentReport(payload);
+      const currentFile = reportFileName();
+      const jobs = await bridge.listJobs();
+      return (Array.isArray(jobs) ? jobs : [])
+        .filter((job) => job && job.reportFile === currentFile)
+        .map((job) => ({
+          id: cleanString(job.id, 128),
+          reportFile: currentFile,
+          paperIndex: cleanString(job.paperIndex, 10),
+          state: cleanString(job.state, 30),
+          phase: cleanString(job.phase, 40),
+          label: cleanString(job.label, 300),
+        }));
+    }
+    case "vault:readPapers": {
+      requireCurrentReport(payload);
+      const requested = Array.isArray(payload && payload.baseIds)
+        ? payload.baseIds.slice(0, 250).map(cleanBaseArxivId).filter(Boolean)
+        : [];
+      if (!requested.length) return {};
+      if (!readPapersCache || Date.now() - readPapersCache.at > 30_000) {
+        readPapersCache = { at: Date.now(), value: await bridge.readPapers() };
+      }
+      const source = readPapersCache.value;
+      const scoped = {};
+      for (const baseId of new Set(requested)) {
+        const entry = source && source[baseId];
+        if (!entry || !entry.rel) continue;
+        scoped[baseId] = {
+          rel: reportNoteRef(entry.rel, baseId),
+          read: entry.read === true,
+        };
+      }
+      return scoped;
+    }
+    case "vault:openNote": {
+      requireCurrentReport(payload);
+      const record = reportNoteRefs.get(cleanString(payload && payload.noteRef, 100));
+      if (!record) throw new Error("笔记引用已失效，请刷新后重试");
+      await requireReportGesture("vault-open", { identity: record.baseId });
+      return bridge.openNote(record.relNoExt);
+    }
+    case "vault:setReadStatus": {
+      requireCurrentReport(payload);
+      const record = reportNoteRefs.get(cleanString(payload && payload.noteRef, 100));
+      if (!record) throw new Error("笔记引用已失效，请刷新后重试");
+      await requireReportGesture("vault-update", {
+        identity: `${record.baseId}:${payload && payload.read ? "read" : "unread"}`,
+      });
+      return bridge.setReadStatus(record.relNoExt, !!(payload && payload.read));
+    }
+    case "job:openInObsidian": {
+      requireCurrentReport(payload);
+      const jobId = cleanString(payload && payload.jobId, 128);
+      if (!/^[a-z0-9_-]+$/i.test(jobId)) throw new Error("无效的任务 ID");
+      const jobs = await bridge.listJobs();
+      if (!(jobs || []).some((job) => job && job.id === jobId && job.reportFile === reportFileName())) {
+        throw new Error("任务不属于当前报告");
+      }
+      await requireReportGesture("vault-open", { identity: jobId });
+      return bridge.openInObsidian(jobId);
+    }
+    case "zotero:add": {
+      requireCurrentReport(payload);
+      const paper = cleanPaper(payload && payload.paper);
+      const identity = arxivIdentity(paper.url);
+      await requireReportGesture("zotero-add", { identity });
+      const result = await window.paperReaderZotero.add(paper);
+      if (!result || result.ok !== true) throw new Error("Zotero 未返回有效结果");
+      const baseId = cleanBaseArxivId(identity.replace(/v\d+$/i, ""));
+      const managed =
+        result.managed !== false && result.status !== "already-in-library";
+      if (managed && !result.itemKey) throw new Error("Zotero 未返回已创建条目");
+      const itemRef = managed
+        ? reportItemRef(result.itemKey, { baseId, title: paper.title })
+        : null;
+      const pdf = result.pdf
+        ? {
+            storage: cleanString(result.pdf.storage, 40),
+            state: cleanString(result.pdf.state, 40),
+            cloudConfirmed: result.pdf.cloudConfirmed === true,
+          }
+        : undefined;
+      return {
+        ok: result.ok === true,
+        status: cleanString(result.status, 40),
+        state: managed ? "managed" : "existing",
+        ...(itemRef ? { itemKey: itemRef } : {}),
+        ...(pdf ? { pdf } : {}),
+      };
+    }
+    case "zotero:remove": {
+      requireCurrentReport(payload);
+      const itemRef = cleanString(payload && payload.itemRef, 100);
+      const record = reportZoteroRefs.get(itemRef);
+      if (!record) throw new Error("Zotero 条目引用已失效，请刷新后重试");
+      await requireReportGesture("zotero-remove", { identity: record.baseId });
+      const result = await window.paperReaderZotero.remove(record.itemKey, record.baseId);
+      reportZoteroRefs.delete(itemRef);
+      reportZoteroKeyRefs.delete(record.itemKey);
+      let remainingItemKey = null;
+      if (result && result.remainingItemKey) {
+        remainingItemKey = reportItemRef(result.remainingItemKey, {
+          baseId: record.baseId,
+          title: record.title,
+        });
+      }
+      return {
+        ok: !!(result && result.ok),
+        linkedFilePreserved: !!(result && result.linkedFilePreserved),
+        remainingItemKey,
+        remainingDuplicates: Number(result && result.remainingDuplicates) || 0,
+        libraryMatchRemaining: !!(result && result.libraryMatchRemaining),
+      };
+    }
+    case "zotero:list": {
+      requireCurrentReport(payload);
+      const requested = Array.isArray(payload && payload.baseIds)
+        ? payload.baseIds.slice(0, 250).map(cleanBaseArxivId).filter(Boolean)
+        : [];
+      if (!requested.length) return {};
+      const source = await window.paperReaderZotero.listDailyPaperArxivMap("Daily Paper");
+      const scoped = {};
+      for (const baseId of new Set(requested)) {
+        const match = source && source[baseId];
+        if (!match) continue;
+        if (typeof match === "string") {
+          scoped[baseId] = {
+            state: "managed",
+            itemKey: reportItemRef(match, { baseId }),
+          };
+          continue;
+        }
+        if (match.state === "managed" && match.itemKey) {
+          scoped[baseId] = {
+            state: "managed",
+            itemKey: reportItemRef(match.itemKey, { baseId }),
+          };
+        } else {
+          scoped[baseId] = { state: "existing" };
+        }
+      }
+      return scoped;
+    }
+    default:
+      throw new Error("不允许的 report RPC 方法");
+  }
+}
+
+window.addEventListener("message", (event) => {
+  if (event.source !== frame.contentWindow || event.origin !== "null") return;
+  const message = event.data;
+  if (!message || message.channel !== REPORT_RPC_CHANNEL) return;
+  if (message.type === "event" && message.event === "ready") {
+    frame.dataset.reportReady = "true";
+    return;
+  }
+  if (message.type !== "request" || typeof message.id !== "string") return;
+  const id = message.id.slice(0, 100);
+  const now = Date.now();
+  if (now - reportRpcRateStartedAt >= 1000) {
+    reportRpcRateStartedAt = now;
+    reportRpcRateCount = 0;
+  }
+  reportRpcRateCount += 1;
+  if (reportRpcRateCount > 40) {
+    try {
+      event.source.postMessage(
+        {
+          channel: REPORT_RPC_CHANNEL,
+          type: "response",
+          id,
+          ok: false,
+          error: { message: "报告请求过于频繁", code: "RPC_RATE_LIMIT" },
+        },
+        "*"
+      );
+    } catch {}
+    return;
+  }
+  Promise.resolve()
+    .then(() => handleReportRequest(message.method, message.payload))
+    .then(
+      (result) => ({ ok: true, result }),
+      (error) => ({
+        ok: false,
+        error: {
+          message: (error && error.message) || String(error),
+          code: (error && error.code) || "REPORT_REQUEST_FAILED",
+        },
+      })
+    )
+    .then((response) => {
+      try {
+        event.source.postMessage(
+          { channel: REPORT_RPC_CHANNEL, type: "response", id, ...response },
+          "*"
+        );
+      } catch {}
+    });
+});
 function looksLikeArxiv(raw) {
   const v = (raw || "").trim();
   if (!v) return false;
-  return /arxiv\.org\/(abs|pdf)\//i.test(v) || /\b\d{4}\.\d{4,5}(v\d+)?\b/.test(v) || /^arxiv:/i.test(v);
+  return (
+    /^https?:\/\/(?:www\.)?arxiv\.org\/(?:abs|pdf)\/(?:\d{4}\.\d{4,5}|[a-z][a-z0-9.-]*\/\d{7})(?:v\d+)?(?:\.pdf)?(?:[/?#].*)?$/i.test(v) ||
+    /^(?:arxiv:\s*)?(?:\d{4}\.\d{4,5}|[a-z][a-z0-9.-]*\/\d{7})(?:v\d+)?$/i.test(v)
+  );
 }
 
 // ---- "read any paper" modal (topbar 读论文 button) ----
@@ -415,19 +892,46 @@ const readInput = document.getElementById("read-input");
 const readErr = document.getElementById("read-err");
 const readGo = document.getElementById("read-go");
 const readZoteroBtn = document.getElementById("read-zotero");
+let readZoteroLookupSequence = 0;
 
-// The 加入 Zotero action only applies to an arxiv link/ID (a name has no id until
-// the read resolves it) and only in personal mode.
+// The 加入 Zotero action only applies to an arXiv link/ID (a name has no ID until
+// the read resolves it) and is shown only after the user configures Zotero.
 function updateReadZoteroBtn() {
   if (!readZoteroBtn) return;
-  if (!getZoteroSaver()) {
+  const saver = getZoteroSaver();
+  if (!saver) {
     readZoteroBtn.style.display = "none";
     return;
   }
   readZoteroBtn.style.display = "inline-flex";
   const ok = looksLikeArxiv(readInput.value);
   readZoteroBtn.disabled = !ok;
+  readZoteroBtn.textContent = "加入 Zotero";
   readZoteroBtn.title = ok ? "把这篇加入 Zotero（PDF）" : "仅支持 arXiv 链接 / ID（论文名请直接开读）";
+  const match = String(readInput.value || "").match(
+    /((?:\d{4}\.\d{4,5}|[a-z][a-z0-9.-]*\/\d{7}))(?:v\d+)?/i
+  );
+  const baseId = match ? match[1].toLowerCase() : null;
+  const sequence = ++readZoteroLookupSequence;
+  const credentialGeneration = _zoteroCredentialGeneration;
+  if (!ok || !baseId) return;
+  saver
+    .listAddedMap("Daily Paper")
+    .then((map) => {
+      if (
+        sequence !== readZoteroLookupSequence ||
+        credentialGeneration !== _zoteroCredentialGeneration ||
+        !map ||
+        !map[baseId]
+      ) return;
+      readZoteroBtn.disabled = true;
+      readZoteroBtn.textContent = "已在 Zotero";
+      readZoteroBtn.title = "你的 Zotero 库中已有此论文";
+    })
+    .catch(() => {
+      // A transient reconcile failure must not disable the explicit Add path;
+      // Saver.add performs the same duplicate check before any write.
+    });
 }
 
 function openReadModal() {
@@ -444,8 +948,10 @@ function closeReadModal() {
 function toArxivUrl(s) {
   const v = (s || "").trim();
   if (!v) return null;
-  if (/^https?:\/\//i.test(v)) return v;
-  const m = v.match(/^\s*(\d{4}\.\d{4,5}(?:v\d+)?)\s*$/);
+  if (/^https?:\/\//i.test(v)) return looksLikeArxiv(v) ? v : null;
+  const m = v.match(
+    /^(?:arxiv:\s*)?((?:\d{4}\.\d{4,5}|[a-z][a-z0-9.-]*\/\d{7})(?:v\d+)?)$/i
+  );
   if (m) return `https://arxiv.org/abs/${m[1]}`;
   return null;
 }
@@ -487,9 +993,14 @@ async function submitReadZotero() {
       url: m.url,
       authors: m.authors,
       keywords: m.categories,
+      published: m.published,
     });
     showShellToast(
-      res.pdf && res.pdf.ok ? "已加入 Zotero（PDF 已上传 WebDAV）" : "已加入 Zotero（仅链接）",
+      res.status === "already-in-library"
+        ? "已在你的 Zotero 库中（未重复创建或改动原条目）"
+        : res.status === "already-added"
+        ? "已在 Zotero 中（未重复创建）"
+        : "已加入 Zotero（OneDrive 云端已确认）",
       "success"
     );
     closeReadModal();
@@ -534,6 +1045,7 @@ let searchTotal = 0;
 let searchDateRange = "";
 let searchIndexIsLegacy = false;
 const searchReadByJob = new Map(); // jobId -> the search result's read button
+let searchZoteroReconcileSequence = 0;
 
 function escHtml(s) {
   const d = document.createElement("div");
@@ -585,7 +1097,13 @@ async function loadSearchIndex() {
         prefix: (t) => t.length >= 3,
       },
     });
-    miniSearch.addAll(data);
+    // Building ~50k documents synchronously freezes the shell for several
+    // seconds, which makes every visible control look broken while Search is
+    // opened for the first time. MiniSearch's async path indexes in small
+    // timer-yielding chunks so Close, Settings, date navigation, etc. keep
+    // receiving input throughout the build.
+    searchStatus.textContent = `正在构建检索索引（${data.length} 篇，期间仍可继续操作）…`;
+    await miniSearch.addAllAsync(data, { chunkSize: 100 });
     indexState = "ready";
     renderSearch();
   } catch (e) {
@@ -628,6 +1146,7 @@ function renderSearch() {
   searchResults.innerHTML = "";
   const saver = getZoteroSaver();
   results.slice(0, 100).forEach((r) => searchResults.appendChild(buildResultCard(r, saver)));
+  if (saver) void reconcileSearchZoteroButtons(saver);
   if (results.length > 100) {
     const more = document.createElement("div");
     more.className = "search-empty";
@@ -664,9 +1183,41 @@ function buildResultCard(r, saver) {
   });
   card.querySelector(".sr-read").addEventListener("click", (e) => startSearchRead(e.currentTarget, r));
   if (saver) {
-    card.querySelector(".sr-zotero").addEventListener("click", (e) => addSearchZotero(e.currentTarget, r, saver));
+    const zoteroButton = card.querySelector(".sr-zotero");
+    zoteroButton.dataset.baseId = zoteroLibraryBaseId(r.url) || "";
+    zoteroButton.addEventListener("click", (e) => {
+      const liveSaver = getZoteroSaver();
+      if (!liveSaver) {
+        showShellToast("请先在设置中配置自己的 Zotero API key", "info");
+        return;
+      }
+      addSearchZotero(e.currentTarget, r, liveSaver);
+    });
   }
   return card;
+}
+
+async function reconcileSearchZoteroButtons(saver) {
+  if (!saver) return;
+  const sequence = ++searchZoteroReconcileSequence;
+  const credentialGeneration = _zoteroCredentialGeneration;
+  try {
+    const map = await saver.listAddedMap("Daily Paper");
+    if (
+      sequence !== searchZoteroReconcileSequence ||
+      credentialGeneration !== _zoteroCredentialGeneration
+    ) return;
+    for (const btn of searchResults.querySelectorAll(".sr-zotero")) {
+      const baseId = btn.dataset.baseId;
+      if (!baseId || !map || !map[baseId]) continue;
+      btn.classList.add("saved");
+      btn.title = "你的 Zotero 库中已有此论文";
+      const label = btn.querySelector(".lbl");
+      if (label) label.textContent = "已在库中";
+    }
+  } catch (error) {
+    console.warn("[renderer] search Zotero reconcile failed:", error);
+  }
 }
 
 function setSearchReadBtn(btn, state, label) {
@@ -698,7 +1249,11 @@ function startSearchRead(btn, r) {
 }
 
 async function addSearchZotero(btn, r, saver) {
-  if (btn.disabled || btn.classList.contains("saved")) return;
+  if (btn.disabled) return;
+  if (btn.classList.contains("saved")) {
+    showShellToast("这篇论文已在你的 Zotero 库中，PaperReader 不会重复创建", "info");
+    return;
+  }
   btn.disabled = true;
   const l = btn.querySelector(".lbl");
   const orig = l ? l.textContent : "";
@@ -710,11 +1265,18 @@ async function addSearchZotero(btn, r, saver) {
       url: r.url,
       authors: r.authors,
       keywords: r.categories,
+      date: r.date,
     });
     btn.classList.add("saved");
-    if (l) l.textContent = "已加入";
+    if (l) {
+      l.textContent = res.status === "already-in-library" ? "已在库中" : "已加入";
+    }
     showShellToast(
-      res.pdf && res.pdf.ok ? "已加入 Zotero（PDF 已上传 WebDAV）" : "已加入 Zotero（仅链接）",
+      res.status === "already-in-library"
+        ? "已在你的 Zotero 库中（未重复创建或改动原条目）"
+        : res.status === "already-added"
+        ? "已在 Zotero 中（未重复创建）"
+        : "已加入 Zotero（OneDrive 云端已确认）",
       "success"
     );
   } catch (e) {
@@ -756,11 +1318,18 @@ envBadge.addEventListener("click", () => bridge.openSettings());
 async function refreshEnv() {
   try {
     const p = await bridge.probeEnv();
+    const providerName = p.provider === "codex" ? "Codex" : p.provider === "trae" ? "Trae" : "Claude";
     if (p.ready) {
-      envBadge.textContent = "环境就绪";
+      envBadge.textContent = `${providerName} 就绪`;
       envBadge.className = "ok";
     } else {
-      envBadge.textContent = !p.claude.ok ? "claude 未就绪" : "vault 未就绪";
+      envBadge.textContent = !p.vault.ok
+        ? "vault 未就绪"
+        : !p.cli.ok
+          ? `${providerName} 未就绪`
+          : p.python && !p.python.ok
+            ? "Python 未就绪"
+            : "环境未就绪";
       envBadge.className = "warn";
     }
   } catch {}
@@ -770,7 +1339,24 @@ async function refreshEnv() {
 function relayToFrame(evt) {
   try {
     const w = frame.contentWindow;
-    if (w && typeof w.__readPaperApply === "function") w.__readPaperApply(evt);
+    if (w && evt && evt.reportFile === reportFileName()) {
+      w.postMessage(
+        {
+          channel: REPORT_RPC_CHANNEL,
+          type: "event",
+          event: "progress",
+          payload: {
+            jobId: cleanString(evt.jobId || evt.id, 128),
+            reportFile: reportFileName(),
+            paperIndex: cleanString(evt.paperIndex, 10),
+            state: cleanString(evt.state, 30),
+            phase: cleanString(evt.phase, 40),
+            label: cleanString(evt.label, 300),
+          },
+        },
+        "*"
+      );
+    }
   } catch {}
 }
 
@@ -920,60 +1506,35 @@ if (bridge && bridge.onProgress) {
   });
 }
 
+let appStarted = false;
 function startApp() {
+  if (appStarted) return;
+  appStarted = true;
   loadReports();
   refreshEnv();
   restoreJobs();
   setInterval(refreshEnv, 30000);
 }
 
-// Personal-mode unlock gate (mirrors index.html). If the encrypted Zotero
-// bundle is present and there's no session yet, ask for the password BEFORE
-// loading the report — so the iframe's like.js sees the session and reveals the
-// Zotero buttons. Skipping (or no bundle / already unlocked) → load straight to
-// guest mode, where only 帮我读 shows.
-(function unlockGate() {
-  const overlay = document.getElementById("unlock-overlay");
-  const pw = document.getElementById("unlock-pw");
-  const err = document.getElementById("unlock-err");
-  const go = document.getElementById("unlock-go");
-  const skip = document.getElementById("unlock-skip");
-
-  const haveSession = !!sessionStorage.getItem("zotero_secrets");
-  const haveBundle = !!window.__ZOTERO_ENC && typeof window.decryptZoteroBundle === "function";
-  if (haveSession || !haveBundle) {
-    startApp();
-    return;
-  }
-
-  overlay.style.display = "flex";
-  setTimeout(() => pw.focus(), 50);
-
-  async function unlock() {
-    err.textContent = "";
-    if (!pw.value) return;
-    go.disabled = true;
-    const label = go.textContent;
-    go.textContent = "验证中…";
-    try {
-      const creds = await window.decryptZoteroBundle(pw.value);
-      sessionStorage.setItem("zotero_secrets", JSON.stringify(creds));
-      overlay.style.display = "none";
-      startApp();
-    } catch (e) {
-      go.disabled = false;
-      go.textContent = label;
-      err.textContent = e.message === "wrong password" ? "密码错误，请重试" : "验证失败：" + e.message;
-      pw.focus();
-      pw.select();
-    }
-  }
-  go.addEventListener("click", unlock);
-  pw.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") unlock();
+if (bridge && typeof bridge.onZoteroCredentialsChanged === "function") {
+  bridge.onZoteroCredentialsChanged(async (status) => {
+    const configured = await reloadZoteroCredentials();
+    if (select.value) setReport(select.value);
+    updateReadZoteroBtn();
+    if (indexState === "ready") renderSearch();
+    showShellToast(
+      configured && status && status.configured !== false
+        ? "Zotero 已连接；Add to Zotero 现在可用"
+        : "Zotero 已断开；可在设置中重新配置",
+      configured ? "success" : "info"
+    );
   });
-  skip.addEventListener("click", () => {
-    overlay.style.display = "none";
-    startApp();
-  });
+}
+
+(async function bootstrapApp() {
+  const configured = await reloadZoteroCredentials();
+  startApp();
+  if (!configured) {
+    showShellToast("Zotero 尚未配置；需要时可在设置中粘贴自己的 API key", "info");
+  }
 })();
