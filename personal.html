@@ -1,256 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人模式 — Robotics Daily Papers</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #7B2C9F;
-            --primary-hover: #6B1F8F;
-            --secondary: #B794D3;
-            --text: #1e293b;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-        }
-        * { box-sizing: border-box; }
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            color: var(--text);
-            background: #f8fafc;
-        }
-        #topbar {
-            flex-shrink: 0;
-            height: 46px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 1.1rem;
-            background: linear-gradient(135deg, var(--primary) 0%, #8E3DAE 50%, var(--secondary) 100%);
-            color: #fff;
-            font-size: 0.85rem;
-            box-shadow: 0 4px 14px rgba(123, 44, 159, 0.22);
-            position: relative;
-            z-index: 5;
-        }
-        #topbar .left {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            font-weight: 600;
-        }
-        #topbar .zotero-mark {
-            width: 18px;
-            height: 18px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.18);
-            border-radius: 5px;
-            padding: 2px;
-        }
-        #topbar .zotero-mark svg {
-            width: 100%;
-            height: 100%;
-            color: #fff;
-            display: block;
-        }
-        #topbar .badge {
-            background: rgba(255, 255, 255, 0.22);
-            padding: 0.18rem 0.65rem;
-            border-radius: 999px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 0.02em;
-            backdrop-filter: blur(4px);
-        }
-        #topbar .right {
-            display: flex;
-            gap: 0.35rem;
-            align-items: center;
-        }
-        #topbar a, #topbar button {
-            color: #fff;
-            text-decoration: none;
-            font-size: 0.8rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.28);
-            padding: 0.36rem 0.85rem;
-            border-radius: 0.55rem;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: 500;
-            transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-        #topbar a svg, #topbar button svg {
-            width: 14px;
-            height: 14px;
-            flex-shrink: 0;
-            opacity: 0.92;
-        }
-        #topbar a:hover, #topbar button:hover {
-            background: rgba(255, 255, 255, 0.22);
-            border-color: rgba(255, 255, 255, 0.55);
-            transform: translateY(-1px);
-        }
-        #topbar .signout {
-            background: transparent;
-            border-color: rgba(255, 255, 255, 0.38);
-            color: rgba(255, 255, 255, 0.92);
-        }
-        #topbar .signout:hover {
-            background: rgba(255, 255, 255, 0.14);
-            color: #fff;
-        }
-        @media (max-width: 720px) {
-            #topbar a .nav-label, #topbar button .nav-label {
-                display: none;
-            }
-            #topbar a, #topbar button {
-                padding: 0.4rem 0.55rem;
-                gap: 0;
-            }
-            #topbar a svg, #topbar button svg {
-                width: 16px;
-                height: 16px;
-            }
-        }
-        #content-wrapper {
-            flex: 1 1 auto;
-            overflow: hidden;
-            position: relative;
-            background: #f8fafc;
-        }
-        iframe {
-            border: none;
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-        #loading-message, #error-message {
-            padding: 3rem 1rem;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-        #error-message p { color: #b91c1c; margin: 0; }
-        #error-message a { color: var(--primary); }
-
-        #footer {
-            flex-shrink: 0;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-top: 1px solid var(--border);
-            font-size: 0.82rem;
-            background: rgba(255, 255, 255, 0.7);
-        }
-        #footer a {
-            color: var(--primary);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            transition: opacity 0.2s ease;
-        }
-        #footer a:hover { opacity: 0.75; }
-        #footer svg { width: 16px; height: 16px; }
-
-        @media (max-width: 600px) {
-            #topbar { padding: 0 0.75rem; height: auto; flex-wrap: wrap; gap: 0.4rem; padding-top: 0.45rem; padding-bottom: 0.45rem; }
-            #topbar a, #topbar button { padding: 0.28rem 0.6rem; }
-        }
-    </style>
-    <script>
-        // Guard: if no Zotero session, bounce back to the gate.
-        if (!sessionStorage.getItem('zotero_secrets')) {
-            window.location.replace('index.html');
-        }
-
-        async function loadLatestReportIntoIframe() {
-            const iframe = document.getElementById('report-frame');
-            const loadingMessage = document.getElementById('loading-message');
-            const errorMessageDiv = document.getElementById('error-message');
-
-            try {
-                const response = await fetch('reports.json');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const reports = await response.json();
-
-                if (reports && reports.length > 0) {
-                    const latestReportFile = reports[0];
-                    iframe.src = `./daily_html/${latestReportFile}`;
-                    document.title = `个人模式 - ${latestReportFile.replace('.html', '').replace(/_/g, '-')}`;
-                    loadingMessage.style.display = 'none';
-                    iframe.style.display = 'block';
-                } else {
-                    throw new Error('未找到报告文件。');
-                }
-            } catch (error) {
-                console.error('Error loading report:', error);
-                loadingMessage.style.display = 'none';
-                errorMessageDiv.innerHTML = `<p>加载最新报告失败: ${error.message} 请 <a href="./list.html">查看报告列表</a>。</p>`;
-                errorMessageDiv.style.display = 'block';
-            }
-        }
-
-        function signOut() {
-            sessionStorage.removeItem('zotero_secrets');
-            sessionStorage.removeItem('zotero_daily_paper_root');
-            window.location.replace('index.html');
-        }
-
-        window.addEventListener('DOMContentLoaded', loadLatestReportIntoIframe);
-    </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="0; url=guest.html">
+  <title>网页版已改为只读 — Robotics Daily Papers</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 1.5rem;
+      box-sizing: border-box;
+      background: #f8fafc;
+      color: #334155;
+      font: 500 1rem/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      text-align: center;
+    }
+    a { color: #6b21a8; }
+  </style>
+  <script>location.replace("guest.html");</script>
 </head>
 <body>
-    <div id="topbar">
-        <div class="left">
-            <span class="zotero-mark" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg>
-            </span>
-            <span>Zotero 已连接</span>
-            <span class="badge">个人模式</span>
-        </div>
-        <div class="right">
-            <a href="list.html" title="报告列表">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                <span class="nav-label">报告列表</span>
-            </a>
-            <a href="search.html" title="论文检索">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-3.5-3.5"/></svg>
-                <span class="nav-label">论文检索</span>
-            </a>
-            <button class="signout" type="button" onclick="signOut()" title="退出个人模式">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                <span class="nav-label">退出</span>
-            </button>
-        </div>
-    </div>
-    <div id="content-wrapper">
-        <div id="loading-message">正在加载最新报告…</div>
-        <div id="error-message" style="display:none"></div>
-        <iframe id="report-frame" style="display:none"></iframe>
-    </div>
-    <div id="footer">
-        <a href="https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io" target="_blank" rel="noopener noreferrer">
-            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.7 7.7 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-            View on GitHub
-        </a>
-    </div>
+  <p>
+    网页版已改为只读，正在前往<a href="guest.html">论文浏览页</a>。<br>
+    Add to Zotero 与本地精读请使用
+    PaperReader Mac App（<a href="https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io#v030-paperreader-for-macos">查看 v0.3.0 发布状态</a>）。
+  </p>
 </body>
 </html>

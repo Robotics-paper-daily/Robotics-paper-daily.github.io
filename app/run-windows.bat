@@ -1,10 +1,10 @@
 @echo off
-REM Double-click to launch PaperReader on Windows.
-REM Requires: Node.js (npm) + the claude CLI installed & logged in.
+REM Source/development launcher for Windows; v0.3.0 has no Windows release.
+REM Requires: Node.js (npm) + Codex, Claude Code, or TraeCode CLI installed and logged in.
 cd /d "%~dp0"
 if not exist "node_modules\electron" (
   echo First run - installing dependencies, please wait...
-  call npm install
+  call npm ci
 )
 echo Starting PaperReader...
 call npm start

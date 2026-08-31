@@ -1,375 +1,406 @@
 # Robotics Daily Papers
-![](cover.png)
 
-> 如果你也想有一个自己研究领域持续更新的0服务器成本论文摘要站点，欢迎**Star+Fork**本仓库,按需调整关键词与主题分类。部署仅需额外Cloudflare Worker，开箱即用，五分钟搞定~
+![封面](cover.png)
 
-机器人学论文 arXiv 每日自动摘要。GitHub Actions 定时工作流摄取 `cs.RO`、`cs.AI`、`cs.CV`、`cs.LG` 类目下的最新投稿，依次经关键词预筛与 LLM 评分两级过滤，并按 **VLA**、**世界（动作）模型**、**自动驾驶**、**具身智能** 四条研究主线进行分类，最终渲染为静态站点经 GitHub Pages 发布。
+[English](README.md) · [在线站点](https://robotics-paper-daily.github.io/)
 
-可选的**个人模式**经站点密码门控，提供基于 Zotero 的一键收藏，及向 WebDAV 文件库的 PDF 自动上传，并集成 [hjfy.top](https://hjfy.top) 的 arXiv 中英对照阅读跳转。
-
-**v0.3 新增**：跨平台**桌面应用**（[`app/`](app/README.md)，Windows + macOS），在每日列表里一键 **「帮我读」**——用你*本地*的 Claude Code 订阅深读任一论文并生成结构化 Obsidian 笔记，并带已读标记与启动即最新。公网站点不受影响。
-
-
-
----
-
-## 功能
-
-### 每日流水线（始终启用）
-
-1. **数据摄取** — arXiv API 客户端，含针对 HTTP 429 的重试与指数退避。
-2. **两级过滤**
-    - *一级（关键词预筛，不调 LLM）：* 四级关键词分级（Tier-0 核心、Tier-1 强支撑、Tier-2 弱上下文、Tier-3 硬排除），定义在 [src/config.py](src/config.py)。标题命中权重高于摘要命中；`cs.RO` / `cs.AI` 类别附加分；Tier-3 命中即拒。词边界正则配合轻量复数容忍，避免子串误判。
-    - *二级（LLM 评分，DeepSeek）：* 通过预筛的论文获得 `relevance`、`novelty`、`clarity`、`potential_impact`、`overall_priority` 五项 `[1, 10]` 整数评分；从 `{VLA, WorldModel, AutonomousDriving, VLN, Manipulation, Locomotion, HumanoidEmbodied, RLRobot, Perception3D, Other}` 中产出唯一主题标签；附短关键词标签与中英文 TLDR。Prompt 内置 few-shot 校准样本以稳定打分分布。
-3. **JSON 归档** — 按日期键入的记录置于 `daily_json/`，包含标题、摘要、链接、评分、主题、关键词与一级命中明细。
-4. **HTML 渲染** — Jinja2 模板（[templates/paper_template.html](templates/paper_template.html)）每日产出三段：headline（`overall ≥ 6`）、低分（`< 6`）、一级未通过；主题标签以彩色 chip 呈现。
-5. **持续部署** — 工作流 [.github/workflows/daily_arxiv.yml](.github/workflows/daily_arxiv.yml)。
-6. **缺日补全** — `daily_json/` 中缺失日期由 `--backfill --backfill-limit N` 检测并按批处理。
-7. **一级回填** — [src/rescore_stage1.py](src/rescore_stage1.py) 对所有历史 JSON 重新应用当前关键词分类，不调用 LLM，零 API 成本支持回溯调整。
-8. **全文检索** — [MiniSearch](https://lucaong.github.io/minisearch/) 客户端索引覆盖标题、摘要、TLDR 与作者，AND 匹配。完整历史按月生成带体积上限的分片，避免每日工作流再次产生超过 GitHub 100 MiB 限制的单文件。
-
-### 个人模式（可选，密码门控）
-
-9. **Zotero 集成** — 每篇论文一个 "Add to Zotero" 控件，向按需创建的 `Daily Paper / YYYY-MM-DD` 子集合写入 `preprint` 类型条目（含 arXiv DOI、作者、摘要）。
-10. **WebDAV PDF + LaTeX 源码上传** — 经 Cloudflare Worker（绕开 CORS）抓取 arXiv PDF *与* 源码 tarball（`https://arxiv.org/e-print/<id>`），分别封装为 Zotero 的 `<key>.zip` + `<key>.prop` 格式，PUT 至用户的 WebDAV 服务器。下次桌面同步后两份文件均本地可用。源码上传为尽力而为，单文件上限 50 MB；仅 PDF 投稿（无 LaTeX 源）按 `%PDF` 魔数检测后跳过。
-11. **翻译跳转** — 每篇论文附跳转控件，按 arXiv ID 打开 [hjfy.top](https://hjfy.top) 进行中英对照阅读。该深层链接要求用户预先在同一浏览器会话中登录 hjfy.top；未登录时请求会被重定向至 hjfy.top 首页。翻译控件在访客模式与个人模式中均可见，hjfy.top 账户凭据完全由 hjfy.top 自行管理，不属于本项目的 secrets。
-12. **默认访客模式** — 公网站点公开全部内容但隐藏个人功能控件；只有通过密码门解密凭据 bundle 后方可解锁。
-
-### 桌面应用 PaperReader（v0.3，可选）
-
-一个跨平台 Electron 应用（[`app/`](app/README.md)，Windows + macOS），用你**本地的 Claude Code 订阅**直接从每日列表精读论文。公网站点不受影响——这些控件是 app 自己注入的，公开站永不显示。
-
-13. **「帮我读」** — 每篇论文一个按钮，调用本地 `claude` CLI 跑 `paper-reading` 技能（在你的 Obsidian vault 内），深读该论文并生成结构化笔记文件夹；右侧栏实时显示进度，完成后可"在 Obsidian 打开"。走订阅（OAuth），不用 API key。
-14. **已读标记** — 本机 vault 里已有笔记的论文显示 **✓ 已读** 按钮，点击直接打开已有笔记而非重读。跨设备靠你自己的 Obsidian 同步，app 只读本机。
-15. **启动即最新，无需 git pull** — app 启动时从已发布站点 live-fetch `reports.json` 与报告页（离线缓存），各设备无需拉取仓库即显示最新论文。
-16. **应用内 Zotero** — 同一道密码门在 app 内解锁个人模式，报告里的 "Add to Zotero" 按钮一并可用。
-
-前置条件、运行/打包、设置详见 [app/README.md](app/README.md)。
-
----
-
-## 快速上手（仅 GitHub 部署）
-
-整套系统在 GitHub Actions 中运行，无需本地环境。GitHub 之外仅需部署一个 Cloudflare Worker（约 3 分钟，复制粘贴即可）。
-
-1. Fork 本仓库。
-2. **Settings → Pages**：source 选 "Deploy from a branch"，branch 设为 `main`，folder 设为 `/`。
-3. 准备 [配置](#配置) 一节列出的 secrets。仅 `DEEPSEEK_API_KEY` 必须，其余可选，按需逐步启用。
-4. *（仅个人模式）* 部署 Cloudflare Worker — 见 [Cloudflare Worker](#cloudflare-worker)。
-5. **Settings → Secrets and variables → Actions**：注册各 secret。
-6. **Actions → Daily arXiv Paper Fetch and Filter → Run workflow** 触发首次构建。
-7. 工作流完成后（通常 3–5 分钟），站点经 `https://<用户名>.github.io/<仓库名>/` 访问；后续每日 `00:00 UTC`（北京时间 `08:00`）自动更新。
-
-本地开发流程见 [本地开发](#本地开发) 一节，但部署本身并不依赖。
-
----
-
-## 配置
-
-凭据本地经环境变量、GitHub Actions 经仓库 secrets 注入。可选字段彼此独立，缺省时前端优雅降级。
-
-| Secret | 用途 | 备注 |
+| 文档 | 中文 | English |
 |---|---|---|
-| `DEEPSEEK_API_KEY` | 过滤流水线 | 二级 LLM 评分 |
-| `ZOTERO_API_KEY`   | 个人模式 | 24 位 Zotero API 密钥，需读+写权限 |
-| `ZOTERO_USER_ID`   | 个人模式 | zotero.org 数字 user ID |
-| `SITE_PASSWORD`    | 个人模式 | 站点访问口令（≥ 8 字符），用于加密凭据 bundle |
-| `PDF_PROXY_URL`    | 个人模式 | Cloudflare Worker URL |
-| `WEBDAV_URL`       | PDF 上传 | 完整目录路径，含 Zotero 桌面所用的 `/zotero/` 子路径 |
-| `WEBDAV_USER`      | PDF 上传 | basic auth 用户名 |
-| `WEBDAV_PASS`      | PDF 上传 | basic auth 密码 |
+| 项目概览与快速开始 | 本文件 | [README.md](README.md) |
+| PaperReader 用户与开发说明 | [app/README_ZH.md](app/README_ZH.md) | [app/README.md](app/README.md) |
+| v0.3.0 版本说明 | [RELEASES_NOTES_ZH.md](RELEASES_NOTES_ZH.md) | [RELEASES_NOTES.md](RELEASES_NOTES.md) |
+| 安全政策 | [SECURITY_ZH.md](SECURITY_ZH.md) | [SECURITY.md](SECURITY.md) |
+| 贡献指南 | [CONTRIBUTING_ZH.md](CONTRIBUTING_ZH.md) | [CONTRIBUTING.md](CONTRIBUTING.md) |
+| 维护者发布检查清单 | [RELEASE_CHECKLIST_ZH.md](RELEASE_CHECKLIST_ZH.md) | [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) |
+| Windows 后续规划 | [docs/WINDOWS_ROADMAP_ZH.md](docs/WINDOWS_ROADMAP_ZH.md) | [docs/WINDOWS_ROADMAP.md](docs/WINDOWS_ROADMAP.md) |
 
-当 `ZOTERO_API_KEY`、`ZOTERO_USER_ID`、`SITE_PASSWORD` 任一缺失时，工作流的 `Build encrypted Zotero credentials bundle` 步骤将向 `js/secrets.enc.js` 写入 disabled 占位，站点回退至访客模式继续可用，无错误。
+[第三方声明](THIRD_PARTY_NOTICES.md)为英文权威法律与归属文本；产品、使用、安全、
+发布说明与维护流程均提供了中英文配套。
 
-二级 LLM 默认使用 DeepSeek（经 SJTU 镜像）— 见 [src/filter.py](src/filter.py)。任意 OpenAI 兼容接口均可支持，调整该文件中的 base URL 与 model 标识符即可。
+Robotics Daily Papers 是一个机器人学 arXiv 每日摘要项目。GitHub Actions
+定时收集 `cs.RO`、`cs.AI`、`cs.CV` 与 `cs.LG` 的新投稿，先做关键词预筛，
+再由 LLM 评分与分类，最终发布为可搜索的静态归档。
 
----
+公开网页现在明确定位为**只读站点**：普通浏览器可以查看、搜索每日论文，
+并打开论文或翻译链接；**Add to Zotero** 与 **「帮我读」** 只在 PaperReader
+桌面应用中提供。网页不会接触本机 OneDrive 目录、本地凭据或 AI CLI。
 
-## 个人模式配置
+## v0.3.0：macOS 版 PaperReader
 
-### Zotero 凭据
+PaperReader 是论文站的本地配套应用。它可以直接从论文卡片完成：
 
-1. 在 [zotero.org](https://www.zotero.org/) 进入 *Settings → Feeds/API*。
-2. 创建 private key，勾选 `Allow library access`、`Allow notes access`、`Allow write access`。
-3. 记录 24 位 API key 与同页面显示的数字 user ID。
+- 将经过校验的 arXiv PDF 写入 OneDrive 内的 Zotero 链接附件目录，
+  并创建对应 Zotero 条目；
+- 调用本机已登录的 OpenAI Codex CLI（`codex`）、Claude Code CLI 或
+  TraeCode CLI 深读论文；
+- 把结构化笔记写入 Obsidian vault、展示实时进度并打开已有笔记；
+- 启动时获取最新公开报告，失败时回退到本地缓存或内置快照。
 
-### WebDAV（可选）
+> **发布状态：** 当前源码以 macOS v0.3.0 为目标。在对应 tag、GitHub Release、
+> 两份 DMG 与 `SHA256SUMS.txt` 实际存在前，它仍是发布候选版，不能描述为已经
+> 发布的稳定版。请以官方
+> [Releases 页面](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases)
+> 为准。项目源码继续以 MIT License 开源。
 
-WebDAV 文件存储适用于超出 Zotero 自带 300 MB 免费配额的库。所需信息：
+| 平台 | v0.3.0 状态 |
+|---|---|
+| macOS 12+（`arm64`、`x64`） | 发布目标；候选包未签名且未公证 |
+| Windows | 已规划但尚未支持；没有安装包或经过验证的端到端流程 |
+| Linux | 不支持；没有安装包或经过验证的端到端流程 |
 
-- **WebDAV URL** — 必须与 Zotero 桌面所用目录一致，包含桌面端追加的 `/zotero/` 子路径。可在 *Edit → Preferences → Sync → File Syncing* 处确认。示例：`https://mori.teracloud.jp/dav/zotero`。
-- **用户名** — 通常为账户用户名。
-- **密码** — 部分服务商（TeraCloud、Synology 等）需在后台单独生成 WebDAV 专用密码，与账户登录密码不同。
+`app/run-windows.bat` 只是实验性的源码开发启动脚本，不是受支持的产品、发布版
+或安装包。后续工作与验收门槛见 [Windows 路线图](docs/WINDOWS_ROADMAP_ZH.md)。
 
-未配置 WebDAV 时，"Add to Zotero" 控件仍可创建父条目，但仅附挂可点击 URL；后续可在 Zotero 桌面端经 *Find Available PDF* 拉取文件。
+## 安装 PaperReader
 
-### Cloudflare Worker
+在官方 v0.3.0 Release 实际存在后，请从
+[GitHub Releases 页面](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases)
+下载。此前下列文件只是预期发布产物，不是可用下载：
 
-需要 Worker 的两个原因：arXiv 不返回 CORS 头（浏览器无法直接拉 PDF），且多数 WebDAV 服务器不响应浏览器发起的 PUT 预检（同因）。Worker 转发上述两类请求。Cloudflare 免费版足够支撑。
+| Mac | 安装包 |
+|---|---|
+| Apple Silicon（M1/M2/M3/M4 及更新） | `PaperReader-0.3.0-arm64.dmg` |
+| Intel | `PaperReader-0.3.0-x64.dmg` |
 
-步骤：
+同时下载 `SHA256SUMS.txt`，打开 DMG 前校验：
 
-1. 创建 Cloudflare 账户 → *Workers & Pages → Create Worker*。
-2. 以下方代码替换默认模板。
-3. 将 `WEBDAV_HOST` 设为 WebDAV 服务器域名。
-4. Save 并 Deploy；记录返回的 `*.workers.dev` URL。
-
-```javascript
-// arxiv-pdf-proxy
-//   GET  /?url=<https://arxiv.org/pdf/...>     → 抓取 arXiv PDF
-//   GET  /?url=<https://arxiv.org/e-print/...> → 抓取 arXiv LaTeX 源码
-//   PUT  /?webdav-put=<https://webdav/...>     → 转发 PUT 至 WebDAV
-// 三种模式均返回 CORS 头。upstream Content-Type 透传
-// （PDF 仍为 application/pdf，源码为 application/gzip）。
-
-const ARXIV_HOST = 'arxiv.org';
-const WEBDAV_HOST = 'mori.teracloud.jp';   // ← 设为你的 WebDAV 域名
-
-export default {
-  async fetch(request) {
-    if (request.method === 'OPTIONS') {
-      return cors(new Response(null, { status: 204 }));
-    }
-
-    const url = new URL(request.url);
-
-    // WebDAV PUT 转发
-    const webdavTarget = url.searchParams.get('webdav-put');
-    if (webdavTarget) {
-      if (request.method !== 'PUT') {
-        return cors(new Response('webdav-put requires PUT', { status: 405 }));
-      }
-      let target;
-      try { target = new URL(webdavTarget); }
-      catch { return cors(new Response('bad webdav target url', { status: 400 })); }
-      if (target.protocol !== 'https:' || target.hostname !== WEBDAV_HOST) {
-        return cors(new Response(`forbidden host: ${target.hostname}`, { status: 403 }));
-      }
-      const auth = request.headers.get('X-WebDAV-Auth');
-      if (!auth) {
-        return cors(new Response('missing X-WebDAV-Auth', { status: 401 }));
-      }
-      // 缓存请求体以显式设置 Content-Length；部分 WebDAV 服务器
-      // 不接受客户端的 chunked transfer-encoding。
-      const bodyBytes = await request.arrayBuffer();
-      const upstream = await fetch(target.toString(), {
-        method: 'PUT',
-        headers: {
-          'Authorization': auth,
-          'Content-Type': request.headers.get('Content-Type') || 'application/octet-stream',
-          'Content-Length': String(bodyBytes.byteLength),
-        },
-        body: bodyBytes,
-      });
-      const text = await upstream.text();
-      return cors(new Response(text || `webdav ${upstream.status}`, { status: upstream.status }));
-    }
-
-    // arXiv GET 转发
-    const arxivUrl = url.searchParams.get('url');
-    if (arxivUrl) {
-      let target;
-      try { target = new URL(arxivUrl); }
-      catch { return cors(new Response('bad arxiv url', { status: 400 })); }
-      if (target.hostname !== ARXIV_HOST) {
-        return cors(new Response('forbidden host', { status: 403 }));
-      }
-      const upstream = await fetch(target.toString());
-      return cors(new Response(upstream.body, {
-        status: upstream.status,
-        headers: {
-          'Content-Type':
-            upstream.headers.get('Content-Type') || 'application/octet-stream',
-        },
-      }));
-    }
-
-    return cors(new Response('bad request', { status: 400 }));
-  },
-};
-
-function cors(response) {
-  const h = new Headers(response.headers);
-  h.set('Access-Control-Allow-Origin', '*');
-  h.set('Access-Control-Allow-Methods', 'GET, PUT, OPTIONS');
-  h.set('Access-Control-Allow-Headers', 'X-WebDAV-Auth, Content-Type');
-  h.set('Access-Control-Max-Age', '86400');
-  return new Response(response.body, { status: response.status, headers: h });
-}
+```bash
+cd ~/Downloads
+# Apple Silicon：
+grep 'PaperReader-0.3.0-arm64.dmg$' SHA256SUMS.txt | shasum -a 256 -c -
+# Intel：
+grep 'PaperReader-0.3.0-x64.dmg$' SHA256SUMS.txt | shasum -a 256 -c -
 ```
 
-Worker 锁定域名：URL 泄露不致使其被用作通用代理，PUT 操作仍依赖调用方提供的 auth 头。
+只运行与已下载架构对应的一行；必须显示 `OK`，不匹配时请不要安装。不要用已经
+停用的 v0.2 网页写入功能替代 v0.3.0 候选版。
 
----
+### 前置条件
+
+- macOS 12 或更高版本；
+- 与 Mac 匹配的 DMG：Apple Silicon（M1 及更新）下载 `arm64`，Intel Mac
+  下载 `x64`；
+- 已安装并正在运行的 Zotero 桌面端；
+- 已登录且能在本机同步的 OneDrive 桌面端；
+- 一个 Obsidian vault；
+- 至少一个已安装并登录的精读 provider：
+  - [OpenAI Codex CLI（`codex`）](https://developers.openai.com/codex/cli/)：
+    安装公开 CLI，并在 CLI 中使用 ChatGPT 或其支持的 API 认证方式登录；
+  - [Claude Code](https://docs.anthropic.com/en/docs/claude-code/getting-started)：安装公开 CLI，
+    并用其订阅/OAuth 完成登录；
+  - TraeCode CLI（`trae-cli` / `trae-agent`）：仅适用于已经获得
+    受支持 CLI 与账号的用户；本项目不对外发布或开通 TraeCode CLI。
+- 可用的 `python3` 与 PyMuPDF。建议使用隔离环境，并安装技能所需版本：
+
+  ```bash
+  python3 -m venv "$HOME/.paperreader-python"
+  "$HOME/.paperreader-python/bin/python3" -m pip install 'PyMuPDF>=1.24,<2'
+  "$HOME/.paperreader-python/bin/python3" -c 'import fitz; print(fitz.VersionBind)'
+  ```
+
+  请把 `$HOME/.paperreader-python/bin` 加入登录 shell 的 `PATH`，然后重启
+  PaperReader，以便从 Finder 启动时也能找到这个 `python3`。从源码运行时
+  也可直接使用 [`skills/paper-reading/requirements.txt`](skills/paper-reading/requirements.txt)。
+
+v0.3.0 DMG **没有 Apple Developer ID 签名，也没有经过 Apple 公证**。
+首次启动时，请在 Finder 的“应用程序”中右键（或按住 Control 点击）
+PaperReader，选择**打开**，再确认**打开**。不建议全局关闭 Gatekeeper。
+
+### 手动升级且保留配置
+
+退出 PaperReader，下载并校验新版 DMG，然后把新版 App 拖到“应用程序”并
+替换旧版本。设置、报告缓存与加密的 Zotero 凭据仍保留在
+`~/Library/Application Support/PaperReader/`。如果移动 OneDrive 目录或切换
+Zotero profile，仍需重新确认路径。
+
+### 首次配置
+
+1. Zotero 桌面端登录的必须是 API key 所属的**同一个 Zotero 个人文献库账号**。
+   开启 Zotero Sync 并先手动成功同步一次。启动 OneDrive，等待附件文件夹
+   已在本机可用。
+2. 在 Zotero 打开**设置 → 高级 → 文件和文件夹**，把
+   **Linked Attachment Base Directory（链接附件基准目录）**设为 OneDrive
+   内的文件夹，例如 `OneDrive/Zotero-Attachments`。
+3. 在 [Zotero 官方 key 创建页](https://www.zotero.org/settings/keys/new)
+   为自己的个人文献库创建一个**24 个字符的私有 API key**，
+   开启文献库访问与写入权限。不要提交或分享这个 key。
+4. 打开 PaperReader → **设置**，粘贴 key 并选择**验证并安全保存**（或
+   **保存全部设置**）。
+   PaperReader 会向 Zotero 验证 key，并自动取得数字 user ID；普通用户
+   不需要查找或填写 user ID。
+5. PaperReader 会检测 Zotero 当前 profile 与链接附件目录。如果界面要求
+   手动选择目录，请选择 Zotero 中配置的同一个 OneDrive 文件夹；真实路径
+   不一致时应用会拒绝保存。
+6. 选择用于接收笔记的 Obsidian vault。`paper-reading` 技能已随应用打包，
+   新 vault 不需要再复制一份技能。请选择专用文件夹；PaperReader 会拒绝文件系统
+   根目录、用户主目录及其祖先目录，也会拒绝 `Documents`、`Downloads`、`Library`、
+   `.config`、`.local`、`.codex`、`.ssh` 等宽泛的主目录一级文件夹。像
+   `~/Documents/PaperReadingDaily` 这样的专用子目录可以使用。Codex 任务还会拒绝
+   与 PaperReader user-data/缓存目录、`$CODEX_HOME` 或用户 SSH 目录重叠的 vault。
+7. 选择 Codex、Claude 或 Trae，并确认自动检测到的 CLI 路径。开始精读前，
+   先用 provider 自己的 CLI 完成本机登录。Codex 直接使用本机 `codex` CLI
+   已有的 ChatGPT/API 登录；PaperReader 不会要求输入、收集或保存 ChatGPT
+   登录信息或 OpenAI API key。还应在登录 shell 里确认
+   `python3 -c 'import fitz'` 可成功执行。
+8. 如需跨设备同步笔记，只选一种方案：把**整个 Obsidian vault**
+   放在 OneDrive 中并让每台设备打开该同步文件夹；或者把 vault 放在
+   OneDrive 之外并使用 Obsidian Sync。同一个 vault 绝不叠加两个同步器。
+   Zotero PDF 附件目录应与 Obsidian vault 分开。
+
+首次新建配置时，provider 自动发现顺序为 Codex、Claude、Trae；三者都未检测
+到时，引导界面仍默认选择 Codex。已经明确选择过的 provider 永远不会被自动
+覆盖。`codexModel` 留空时使用 Codex 隔离任务的服务/内置默认模型，PaperReader
+不会读取个人 `config.toml`；填写后才会为精读任务显式指定模型。
+
+API key 与自动取得的 user ID 使用 Electron `safeStorage` 加密；在 macOS
+上走 Keychain 支持的系统安全存储，密文位于
+`~/Library/Application Support/PaperReader/zotero-credentials.secure.json`，非敏感设置
+位于同目录的 `config.json`。key 不会进入网页、仓库、报告 iframe、
+设置 JSON、日志或生成的笔记。凡是使用过 v0.2 旧网页写入功能的用户，
+都应撤销并轮换过去的 Zotero key 与 WebDAV 密码；删除历史文件无法撤销
+曾经出现在 Git 历史中的凭据。
+
+key 保存后，PaperReader 会分页、只读扫描个人文献库，并从不同文献类型与
+集合中识别 arXiv ID。因此重装 App 后，库中已有论文会恢复为 **In Zotero**，
+不再只认识 `Daily Paper` 集合。对于不属于 PaperReader 管理集合的旧条目，
+App 只显示“已在库中”，不会重复创建、移动、补附件或删除原条目。
+v0.3.0 新建的父条目会带可见 tag `paperreader-managed-v1`；只有同时带该 tag
+且仍在 `Daily Paper` 集合树中的条目可被 repair/Remove。无 tag 的旧条目或
+手动条目即使在该集合中，也始终只读。
+
+### 加入 Zotero
+
+Zotero 与 OneDrive 的职责不同：Zotero Web API 创建文献条目、集合与链接附件
+metadata；OneDrive 只同步 PDF 文件字节。之后 Zotero 桌面端通过官方
+Zotero Sync 取回 metadata，并用本机 Linked Attachment Base Directory
+解析 PDF 路径。
+
+点击一次 **Add to Zotero** 即可，不再弹出第二个 PaperReader 确认框。随后
+应用会：
+
+1. 重新读取 Zotero 当前 profile，确认 PaperReader 与 Zotero 解析到同一个
+   OneDrive 链接附件基准目录；
+2. 下载标准 arXiv PDF，校验内容，并在不覆盖冲突文件的前提下写入目录；
+3. 等待 macOS File Provider 确认 OneDrive 已上传且没有冲突，再次计算已提交
+   文件的哈希；
+4. 创建 Zotero 父条目及 `linked_file` 子附件，其路径为扁平的
+   `attachments:<filename>.pdf`。
+
+PDF 下载、本地提交、OneDrive 确认与最终重新哈希阶段使用固定 4 个 slot 的队列。
+一次提交超过 10 篇也会全部接收：最多同时运行 4 篇，其余严格按 FIFO（先进先出）
+排队；同一个 operation key 在 queued 或 running 时会合并，成功或失败都会释放
+slot。该队列与可配置的 AI 精读并发完全独立。
+
+日报卡片和搜索结果会归入 `Daily Paper/<报告日期>`；手动输入的
+arXiv 链接会归入 `Daily Paper/<arXiv 首次发布日期>`。因此集合日期可能
+不是你点击 Add 的当天，这是确定性行为。
+
+只要目录、PDF、云端状态或 Zotero API 请求中有一项无法验证，操作就会停止
+并给出可处理的错误。如果在 OneDrive 提交后 API 失败，附件目录可能保留
+一份已校验 PDF；这是可复用的安全状态，同一论文的重试会对账并复用它，
+不会盲目再上传一份。OneDrive 文件可能比 Zotero metadata 更早出现；请先
+等 App 报告最终成功，再在 Zotero 桌面端手动同步。**Remove** 只删除
+PaperReader 管理的 Zotero 条目，不删除 OneDrive 中的 PDF。
+
+### 精读到 Obsidian
+
+点击 **「帮我读」** 后，PaperReader 调用所选的本地 provider。OpenAI Codex
+CLI（`codex`）使用它已有的 ChatGPT/API 登录，Claude 使用已登录的 `claude`
+CLI 及其订阅/OAuth 会话，Trae 使用本机已登录的 `trae-cli` 或
+`trae-agent`。PaperReader 不收集或保存 AI provider 凭据。应用内会显示进度，
+结果默认写入：
+
+```text
+<vault>/<date>/<title>/
+```
+
+如果已经存在匹配笔记，论文卡片会显示**笔记**并直接打开，而不是重复
+精读。只有在 Obsidian 勾选笔记最后的 `- [ ] ✅ 已读`（变为 `- [x]`）后，
+卡片才显示 **✓ 已读**。精读中间文件位于 vault 之外、由 App 管理的
+`$PAPERREADER_CACHE_DIR`，不会当作笔记同步。
+
+所选 provider 是独立的云端服务：CLI 可能会把论文、prompt 与上下文发送给
+该 provider。PaperReader 会把内置 `paper-reading/SKILL.md` 解析后的精确路径
+传给 CLI。Codex 适配器以 `codex exec --json --ephemeral` 非交互运行，并使用基于
+Codex `:workspace` 边界的命名权限配置：文件读取默认拒绝，仅开放 Codex 最小运行
+时、内置技能、探测到的 Python/PyMuPDF 运行时、所选 vault 中除 `.obsidian` 外的
+内容和 App 缓存；这些 vault 内容与 App 缓存可写，系统临时目录被拒绝并重定向到 App 缓存，
+允许联网且不弹交互式授权。
+在把 Codex 标记为可用之前，环境检测会给 CLI 传入随机命名且明确不存在的 output
+schema 路径，强制它在本机真实解析全部安全相关配置；只有返回该精确的缺失文件错误才
+算通过。这个探针不会创建 schema 文件，也不会调用模型。
+适配器同时忽略用户通用的 Codex config/rules，并把 vault 标记为 untrusted，从而跳过
+项目级 `.codex` config/hooks/rules；还会停用用户目录/vault 中的 `AGENTS.md`
+发现、plugins、apps、hooks、技能发现、登录 shell 与 shell snapshot，并只向命令传递核心环境变量以及精确的缓存和 Python
+路径。沙箱命令不能读取 `$CODEX_HOME`、SSH 材料、PaperReader 设置或无关的用户
+目录文件，也不能读取或改写 vault 的 `.obsidian` 配置与插件；Codex 本身仍可通过
+`codex login` 认证。权限配置仍是 beta 级纵深防御，
+不是完整的 OS 安全边界。Claude 与 Trae 使用各自的非交互 bypass 模式。只对可信
+vault 使用，并阅读 provider 自己的条款。论文、PDF、HTML 与代码仓库
+内容都属于不可信输入；内置技能会拒绝其中的嵌入式指令，并禁止读取凭据或无关
+本地文件。若任务生成了与论文分析无关的命令或输出，应立即停止该任务。
+PaperReader 本身没有内置分析或遥测；为实现功能，它仍会按需访问公开报告站、arXiv、Zotero、
+OneDrive/File Provider 与所选 AI provider。Provider 选项、缓存和详细边界见
+[PaperReader 使用说明](app/README.md)。
+
+### 同步排障
+
+- **OneDrive 有 PDF，Zotero 没条目**：等 Add 返回最终成功；确认 API key 与
+  Zotero 桌面端是同一账号，点击 Zotero 同步，检查 `Daily Paper/<预期日期>`，
+  并按 arXiv ID 搜索整个库。
+- **zotero.org 有条目，桌面端没有**：Zotero metadata 同步尚未完成；它与
+  OneDrive 文件同步互相独立。
+- **另一台 Mac 有条目但打不开 PDF**：该 Mac 也要把 Linked Attachment Base
+  Directory 指向同一 OneDrive 文件夹在它本机的路径，并等文件下载。
+- **Add 写入 PDF 后失败**：保留已校验文件，直接对同一论文重试；期间
+  不要改名或复制。
+- **多端笔记冲突**：停止其中一个 vault 同步器，保留唯一主文件夹，等同步
+  完成后再在各设备打开。
+- **精读在解析前失败**：在登录 shell 运行 `python3 -c 'import fitz'`，并确认
+  所选 AI CLI 已安装、已登录。
+
+## 网页功能
+
+GitHub Pages 站点提供：
+
+1. 每日数据摄取：arXiv HTTP 429 使用有上限的 30/60/90 秒重试，DeepSeek
+   请求使用有上限的指数退避；
+2. 四级关键词预筛与后续 DeepSeek 评分；
+3. 主题标签、关键词与中英文 TLDR；
+4. 按日期归档的 JSON 与 HTML；
+5. 按月分片、大小受控的全文检索索引；
+6. 缺失日期补全；
+7. 无需再次调用 LLM 的历史 Stage-1 重打分。
+
+网页**不保存** Zotero 凭据，不写 PDF，不启动本地 CLI，也不修改 Obsidian
+vault。相关控件只在 PaperReader 中出现。这一边界是有意设计的：浏览器沙箱
+无法为链接附件流程提供所需的本地文件系统与云端确认保证。
+
+## 部署自己的只读站点
+
+1. Fork 本仓库。
+2. 在 **Settings → Pages** 中从 `main` 分支根目录 `/` 发布。
+3. 在 **Settings → Secrets and variables → Actions** 中添加
+   `DEEPSEEK_API_KEY`。
+4. 在 Actions 页手动运行一次 **Daily arXiv Paper Fetch and Filter**。
+
+生成的站点位于 `https://<username>.github.io/<repository>/`。部署网页不需要
+Zotero key、站点密码、OneDrive 凭据、WebDAV 服务或 Cloudflare Worker。
 
 ## 架构
 
-### 每日流水线
+### 每日发布流水线
 
-```
-arXiv API → scraper.py → filter.py（一级关键词）
-                            │
-                            ▼
-                       DeepSeek LLM（二级评分 + 主题 + TLDR）
-                            │
-                            ▼
-                       daily_json/YYYY-MM-DD.json
-                            │
-                            ▼
-                       html_generator.py（Jinja2）
-                            │
-                            ▼
-                       daily_html/YYYY_MM_DD.html
-                            │
-                            ▼
-                       GitHub Pages（cron，每日）
+```text
+arXiv API
+  → scraper.py
+  → filter.py（关键词 Stage 1 → DeepSeek Stage 2）
+  → daily_json/YYYY-MM-DD.json
+  → html_generator.py
+  → daily_html/YYYY_MM_DD.html
+  → GitHub Pages
 ```
 
-### 个人模式上传流程
+### PaperReader 本地流程
 
-```
-浏览器 ──[用户点击 Add to Zotero]──┐
-                                    │
-              [1] 经 Worker 拉取 PDF（绕开 CORS）
-              │
-   Cloudflare Worker ──► arxiv.org
-              │
-              ▼
-          PDF 字节
-              │
-              [2] 计算 PDF 的 MD5
-              │
-              [3] 创建 Zotero 附件（md5 / mtime / filename 预先填写）
-              │
-              [4] 构建 <key>.zip 与 <key>.prop，对 zip 取 MD5
-              │
-              [5] 经 Worker PUT 两个文件
-              │
-              ▼
-   WebDAV 服务器（如 mori.teracloud.jp/dav/zotero）
-              │
-              ▼
-   Zotero 桌面端同步 → PDF 本地可用
-
-   [6]（尽力而为）对 https://arxiv.org/e-print/<id>
-       重复 [1]–[5] 上传 LaTeX 源码 tarball ——
-       新的附件 key、第二组 <key>.zip + <key>.prop。
+```text
+只读公开报告
+  → 沙箱化报告视图 + 应用内置 bridge
+  ├─ Add to Zotero
+  │    → 校验 OneDrive 目录 → 校验 PDF → 云端确认
+  │    → Zotero Web API 父条目 + linked_file 元数据
+  └─ 「帮我读」
+       → 本地 Codex/Claude/Trae CLI → 内置 paper-reading 技能
+       → 结构化 Obsidian 笔记 + 进度事件
 ```
 
----
-
-## 安全模型
-
-- **加密 bundle** `js/secrets.enc.js` 公开发布。无站点密码时，Zotero API key、Worker URL、WebDAV 凭据均无法恢复。
-- **加密算法** 为认证加密 AES-GCM；密钥经 PBKDF2-SHA256 自站点密码派生，迭代 600 000 次（在现代浏览器中单次解密约 300 ms）。
-- **解密后的凭据** 仅存于 `sessionStorage`，作用域限定于当前标签页，关闭浏览器即丢弃。
-- **salt 与 nonce** 为确定性派生（`SHA-512(明文输入 ‖ 密码)`），输入不变时 bundle 字节稳定，避免 git diff 抖动。
-- **Worker** 锁定 GET 至 `arxiv.org`、PUT 至配置的 WebDAV 域名，限制 URL 泄露的影响半径。
-
----
+远程报告 HTML 被视为不可信内容：它在独立来源沙箱与严格内容策略下运行，
+凭据只留在可信应用层。特权请求经过窄化白名单与限定范围、限定时效的用户
+手势校验；报告本身不能请求任意文件系统或网络访问。
 
 ## 本地开发
 
-正常使用不要求本地环境，但开发与离线迭代支持本地运行。
+### 每日流水线与网页
 
 ```bash
 git clone <repository-url>
 cd Robotics-paper-daily.github.io
 python3 -m venv .venv
-source .venv/bin/activate          # Windows: .\.venv\Scripts\activate
-pip install -r requirements.txt
+source .venv/bin/activate
+python3 -m pip install -r requirements.txt
+
+export DEEPSEEK_API_KEY="..."
+python3 src/main.py
+python3 src/main.py --date YYYY-MM-DD
+python3 src/main.py --backfill --backfill-limit 3
+python3 src/rescore_stage1.py --dry-run
+python3 src/rebuild_html.py
 ```
 
-设置 `DEEPSEEK_API_KEY` 后：
+用 `python3 -m http.server 8000` 可预览静态输出。
+
+### PaperReader
 
 ```bash
-python src/main.py                       # 处理今日
-python src/main.py --date YYYY-MM-DD     # 处理指定日期
-python src/main.py --backfill            # 检测并补齐缺失日期
-python src/main.py --backfill --backfill-limit 3
-
-python src/rebuild_html.py               # 基于已有 JSON 重建全部 HTML
-python src/rescore_stage1.py             # 重新对所有 JSON 应用一级规则
-python src/rescore_stage1.py --dry-run   # 仅统计
+cd app
+npm ci
+npm test
+npm start
 ```
 
-本地重建加密 bundle（PowerShell）：
+PaperReader v0.3.0 使用 Electron 43 与 electron-builder 26；
+`app/package-lock.json` 提供锁定的可复现安装。
 
-```powershell
-$env:ZOTERO_API_KEY = "..."
-$env:ZOTERO_USER_ID = "..."
-$env:SITE_PASSWORD  = "..."
-$env:PDF_PROXY_URL  = "https://your-worker.workers.dev"
-$env:WEBDAV_URL     = "https://mori.teracloud.jp/dav/zotero"
-$env:WEBDAV_USER    = "..."
-$env:WEBDAV_PASS    = "..."
-python build_secrets.py
-```
-
-成功运行时日志将打印输出路径，并标注 `proxy embedded` / `(none)` 与 `webdav embedded` / `(none)` 状态。
-
-本地预览站点：
+在 macOS 本机同时构建两个架构：
 
 ```bash
-python -m http.server 8000
+cd app
+npm run dist:mac
 ```
 
----
+推送匹配 `v*` 的语义化版本 tag 会运行 macOS CI：安装锁定依赖、执行完整
+app 测试，构建未签名的 `arm64` 与 `x64` DMG，并把这两份安装包和
+`SHA256SUMS.txt` 发布到 GitHub Release。只有公开资产核验完成后，文档才能将
+其标为稳定版。打 tag 前维护者必须完成
+[发布检查清单](RELEASE_CHECKLIST_ZH.md)。
 
 ## 调整过滤策略
 
-一级关键词分级、权重、一级通过阈值、headline / 低分边界、翻译阈值集中在 [src/config.py](src/config.py)。修改后：
+Stage-1 关键词层级、权重、阈值与主题配置集中在
+[`src/config.py`](src/config.py)。修改后运行：
 
 ```bash
-python src/rescore_stage1.py    # 对历史 JSON 应用新规则
-python src/rebuild_html.py      # 全量重渲染 HTML
+python3 src/rescore_stage1.py
+python3 src/rebuild_html.py
 ```
 
-`rescore_stage1.py` 不调用 LLM，已有的二级评分保留。
+历史 Stage-2 结果会保留；重打分不会调用 LLM。
 
----
+## 仓库结构
 
-## 文件结构
-
-```
+```text
 .
-├── .github/workflows/daily_arxiv.yml   # 定时构建与部署
-├── src/
-│   ├── main.py                         # 抓取 + 过滤 + 渲染入口
-│   ├── config.py                       # 一级分级、权重、阈值、topic 枚举
-│   ├── scraper.py                      # arXiv API 客户端
-│   ├── filter.py                       # 一级预筛 + 二级 LLM 评分
-│   ├── html_generator.py               # Jinja2 渲染器
-│   ├── search_index.py                  # 带体积上限的检索分片生成器
-│   ├── rebuild_html.py                 # 基于 JSON 全量重建 HTML
-│   └── rescore_stage1.py               # 对历史 JSON 重新应用一级规则
-├── templates/paper_template.html       # 每日报告 Jinja2 模板
-├── daily_json/                         # YYYY-MM-DD.json（论文 + 评分）
-├── daily_html/                         # YYYY_MM_DD.html（渲染后的报告）
-├── build_secrets.py                    # 加密凭据 → js/secrets.enc.js
-├── js/
-│   ├── crypto.js                       # PBKDF2 + AES-GCM bundle 解密
-│   ├── zotero.js                       # Zotero Web API v3 客户端
-│   ├── webdav.js                       # ZIP + .prop 构建器与 WebDAV PUT
-│   ├── like.js                         # "Add to Zotero" 按钮逻辑
-│   ├── translate.js                    # hjfy.top 跳转辅助
-│   └── secrets.enc.js                  # 加密凭据（自动生成）
-├── index.html                          # 密码门（个人模式入口）
-├── personal.html                       # 已认证应用框架
-├── guest.html                          # 公开只读框架
-├── list.html                           # 历史报告索引
-├── search.html                         # MiniSearch 全文检索
-├── search_index/                       # 完整 manifest + 按月检索分片（自动生成）
-├── search_index.json                   # 有界的旧客户端兼容索引
-├── reports.json                        # 每日报告清单（自动生成）
-├── requirements.txt
-├── README.md / README_ZH.md
+├── .github/workflows/
+│   ├── daily_arxiv.yml          # 摄取、过滤、渲染与发布
+│   └── build-app.yml            # 测试 + 两架构 Mac 发布目标
+├── app/                         # PaperReader Electron 应用
+├── docs/                        # 平台规划与工程记录
+├── skills/paper-reading/        # 随 PaperReader 打包的技能
+├── src/                         # 摄取、过滤、渲染与搜索
+├── templates/                   # 每日报告模板
+├── daily_json/                  # 结构化每日归档
+├── daily_html/                  # 已渲染日报
+├── search_index/                # 按月搜索分片
+└── reports.json                 # 报告清单
 ```
 
----
+## 许可证与致谢
 
-## 致谢
+项目采用 [MIT License](LICENSE)。过滤流水线衍生自
+[Arxiv_Daily_AIGC](https://github.com/onion-liu/arxiv_daily_aigc)，中英对照阅读
+链接使用 [hjfy.top](https://hjfy.top)。打包依赖与外部服务边界见
+[第三方声明](THIRD_PARTY_NOTICES.md)。
 
-- 过滤流水线源自 [Arxiv_Daily_AIGC](https://github.com/onion-liu/arxiv_daily_aigc)。
-- 中英对照阅读由 [hjfy.top](https://hjfy.top) 提供。
-- WebDAV 集成遵循 Zotero 桌面客户端使用的文件存储 zip 格式约定。
+开发环境、生成文件规则、必需检查与 pull request 要求见
+[贡献指南](CONTRIBUTING_ZH.md)。可能的漏洞应按[安全政策](SECURITY_ZH.md)
+私密报告，不要直接写入公开 issue。

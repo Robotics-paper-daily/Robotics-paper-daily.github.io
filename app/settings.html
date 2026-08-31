@@ -16,7 +16,7 @@
       .field { margin-bottom: 0.95rem; }
       .field label { display: block; font-weight: 600; margin-bottom: 0.35rem; }
       .row { display: flex; gap: 0.5rem; }
-      input[type="text"], input[type="number"], select {
+      input[type="text"], input[type="password"], input[type="number"], select {
         flex: 1; padding: 0.45rem 0.6rem; border: 1px solid var(--border); border-radius: 0.5rem;
         font-family: inherit; font-size: 0.84rem; width: 100%;
       }
@@ -30,31 +30,63 @@
       .status .line { display: flex; gap: 0.4rem; align-items: center; }
       .ok { color: #047857; }
       .bad { color: #b91c1c; }
+      .save-error { min-height: 1rem; margin-top: 0.35rem; font-size: 0.75rem; color: #b91c1c; }
       .actions { display: flex; gap: 0.6rem; justify-content: flex-end; margin-top: 0.6rem; }
       .two { display: flex; gap: 0.8rem; }
       .two .field { flex: 1; }
+      .provider-block[hidden] { display: none; }
+      .zotero-status { margin-top: 0.45rem; line-height: 1.45; }
+      .zotero-status .line + .line { margin-top: 0.15rem; }
+      .inline-link { color: var(--primary); }
     </style>
   </head>
   <body>
     <h1>PaperReader 设置</h1>
-    <p class="sub">「帮我读」会用本地 Claude 订阅在下面的 vault 里跑 paper-reading 技能。</p>
+    <p class="sub">「帮我读」会用选定的本地 AI CLI，在下面的 vault 里运行 paper-reading 技能。</p>
 
     <div id="status" class="status"></div>
 
     <div class="field">
-      <label>Obsidian Vault 路径</label>
-      <div class="row">
-        <input type="text" id="vaultPath" placeholder="包含 .obsidian/ 和 paper-reading 技能的 vault" />
-        <button id="pickVault" type="button">选择…</button>
-      </div>
-      <div class="hint">需含 <code>.claude/skills/paper-reading/SKILL.md</code></div>
+      <label>本地 AI CLI</label>
+      <select id="provider">
+        <option value="codex">OpenAI Codex CLI（默认）</option>
+        <option value="claude">Claude Code</option>
+        <option value="trae">TraeCode CLI（仅已获提供的用户）</option>
+      </select>
+      <div class="hint">隐私提示：精读会把论文内容与提示发送给所选 CLI 服务。Codex 任务默认拒绝读取本机文件，仅开放最小运行时、内置技能、Python、所选 vault 中除 .obsidian 外的内容和 App 缓存；这些 vault 内容与缓存可写并允许联网，但 .obsidian 配置/插件、$CODEX_HOME、SSH、PaperReader 设置和无关用户文件不可读。该权限配置仍是 beta 级纵深防御，不是完整 OS 隔离。Claude/Trae 使用各自的非交互 bypass 模式。PaperReader 本身不做遥测，也不收集或保存 AI provider 凭据；登录由各 CLI 自己管理。</div>
     </div>
 
     <div class="field">
+      <label>Obsidian Vault 路径</label>
+      <div class="row">
+        <input type="text" id="vaultPath" placeholder="用于保存论文笔记的 Obsidian vault" />
+        <button id="pickVault" type="button">选择…</button>
+      </div>
+      <div id="skillHint" class="hint"></div>
+    </div>
+
+    <div class="field provider-block" data-provider="codex">
+      <label>codex 可执行文件（留空自动定位）</label>
+      <div class="row">
+        <input type="text" id="codexPath" placeholder="自动定位 PATH 上的 codex" />
+        <button id="pickCodex" type="button">选择…</button>
+      </div>
+      <div class="hint">请按 <a id="openCodexGuide" class="inline-link" href="https://developers.openai.com/codex/cli/" rel="noreferrer">Codex CLI 官方指南</a>安装，并先在终端用 ChatGPT 或 Codex CLI 支持的 API 认证完成登录；不要把该凭据粘贴到 PaperReader。</div>
+    </div>
+
+    <div class="field provider-block" data-provider="claude" hidden>
       <label>claude 可执行文件（留空自动定位）</label>
       <div class="row">
         <input type="text" id="claudePath" placeholder="自动定位（Windows: claude.exe / macOS: PATH 上的 claude）" />
         <button id="pickClaude" type="button">选择…</button>
+      </div>
+    </div>
+
+    <div class="field provider-block" data-provider="trae">
+      <label>Trae CLI 可执行文件（留空自动定位）</label>
+      <div class="row">
+        <input type="text" id="traePath" placeholder="自动定位 PATH 上的 trae-cli / trae-agent" />
+        <button id="pickTrae" type="button">选择…</button>
       </div>
     </div>
 
@@ -64,9 +96,45 @@
       <div class="hint">app 启动直接从这里拉最新论文，无需 git pull；抓取失败自动回退缓存/内置快照。</div>
     </div>
 
-    <div class="two">
+    <div class="field">
+      <label for="zoteroApiKey">Zotero API Key</label>
+      <div class="row">
+        <input
+          type="password"
+          id="zoteroApiKey"
+          placeholder="粘贴 24 位 API key"
+          autocomplete="new-password"
+          autocapitalize="none"
+          spellcheck="false"
+        />
+        <button id="saveZoteroCredentials" type="button">验证并安全保存</button>
+        <button id="clearZoteroCredentials" type="button">清除</button>
+      </div>
+      <div class="hint">
+        在
+        <a
+          id="openZoteroKeyPage"
+          class="inline-link"
+          href="https://www.zotero.org/settings/keys/new"
+          rel="noreferrer"
+        >Zotero 官方页面创建 key</a>，并允许访问个人文献库（读/写）。PaperReader 只在本机系统安全存储加密后保存；输入框不会回显已保存的 key，留空也不会将它清除。
+      </div>
+      <div id="zoteroCredentialStatus" class="zotero-status hint" aria-live="polite"></div>
+    </div>
+
+    <div class="field">
+      <label>Zotero 链接附件基准目录</label>
+      <div class="row">
+        <input type="text" id="zoteroLinkedAttachmentRoot" readonly placeholder="尚未配置" />
+        <button id="pickZoteroAttachmentRoot" type="button">选择目录…</button>
+      </div>
+      <div class="hint">必须与 Zotero 设置中的 “Linked Attachment Base Directory（链接附件基准目录）” 完全一致。</div>
+      <div id="zoteroSetupStatus" class="zotero-status hint" aria-live="polite"></div>
+    </div>
+
+    <div class="two provider-block" data-provider="claude" hidden>
       <div class="field">
-        <label>模型</label>
+        <label>Claude 模型</label>
         <select id="model">
           <option value="sonnet">sonnet（省额度，推荐）</option>
           <option value="opus">opus（更强，更耗额度）</option>
@@ -75,66 +143,465 @@
         </select>
       </div>
       <div class="field">
-        <label>并发数</label>
-        <input type="number" id="concurrency" min="1" max="16" />
-      </div>
-      <div class="field">
         <label>单次预算上限 $（0=不限）</label>
         <input type="number" id="maxBudgetUsd" min="0" step="0.5" />
       </div>
     </div>
 
+    <div class="two provider-block" data-provider="codex">
+      <div class="field">
+        <label>Codex 模型（留空使用隔离任务默认）</label>
+        <input type="text" id="codexModel" placeholder="不会读取个人 config.toml" />
+      </div>
+      <div class="field">
+        <label>Codex 推理强度</label>
+        <select id="codexReasoningEffort">
+          <option value="">隔离任务默认（不读取个人配置）</option>
+          <option value="minimal">minimal</option>
+          <option value="low">low</option>
+          <option value="medium">medium</option>
+          <option value="high">high</option>
+          <option value="xhigh">xhigh</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="provider-block" data-provider="trae">
+      <div class="field">
+        <label>Trae 模型</label>
+        <div class="row">
+          <select id="traeModel"></select>
+          <button id="refreshModels" type="button" title="从 Trae CLI 重新拉取可用模型">刷新</button>
+        </div>
+        <div id="modelHint" class="hint">模型列表来自本机 Trae CLI，负载越低越不容易排队卡住。</div>
+      </div>
+      <div class="two">
+        <div class="field">
+          <label>上下文档位</label>
+          <select id="traeBackendVariant">
+            <option value="max">max（默认）</option>
+            <option value="">标准</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>推理强度</label>
+          <select id="traeReasoningEffort">
+            <option value="ultra">ultra（默认）</option>
+            <option value="max">max</option>
+            <option value="xhigh">xhigh</option>
+            <option value="high">high</option>
+            <option value="medium">medium</option>
+            <option value="low">low</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>并发数</label>
+      <input type="number" id="concurrency" min="1" max="16" />
+    </div>
+
     <div class="actions">
       <button id="recheck" type="button">重新检测</button>
-      <button id="save" class="primary" type="button">保存</button>
+      <button id="save" class="primary" type="button">保存全部设置</button>
     </div>
+    <div id="saveError" class="save-error"></div>
 
     <script>
       const $ = (id) => document.getElementById(id);
       const bridge = window.paperBridge;
 
+      const DEFAULT_TRAE_MODEL = "gpt-5.4";
+      // Shown when the CLI can't be reached (offline / not installed). Kept in
+      // sync loosely with `trae-cli models`; the live list replaces it whenever
+      // the CLI answers.
+      const FALLBACK_TRAE_MODELS = [
+        "gpt-5.4",
+        "gpt-5.5",
+        "gpt-5.6-sol",
+        "gpt-5.6-terra",
+        "gpt-5.6-luna",
+      ].map((name) => ({ name }));
+
+      // The model the user currently wants selected — preserved across a manual
+      // refresh so re-pulling the list doesn't reset their choice.
+      let desiredTraeModel = DEFAULT_TRAE_MODEL;
+
+      function modelOptionLabel(m) {
+        const bits = [m.name];
+        if (typeof m.load === "number") bits.push(`负载 ${m.load}%${m.load >= 100 ? " ⚠" : ""}`);
+        if (m.supportsMaxMode) bits.push("max");
+        if (m.quotaDepleted) bits.push("配额耗尽");
+        return bits.join(" · ");
+      }
+
+      function renderModelOptions(models) {
+        const sel = $("traeModel");
+        sel.innerHTML = "";
+        const names = new Set();
+        for (const m of models) {
+          if (!m || !m.name || names.has(m.name)) continue;
+          names.add(m.name);
+          const o = document.createElement("option");
+          o.value = m.name;
+          o.textContent = modelOptionLabel(m);
+          sel.appendChild(o);
+        }
+        // Keep a saved model that the live list doesn't include (custom / renamed)
+        // so saving doesn't silently switch it.
+        if (desiredTraeModel && !names.has(desiredTraeModel)) {
+          const o = document.createElement("option");
+          o.value = desiredTraeModel;
+          o.textContent = `${desiredTraeModel}（当前配置）`;
+          sel.insertBefore(o, sel.firstChild);
+        }
+        sel.value = desiredTraeModel || DEFAULT_TRAE_MODEL;
+      }
+
+      async function populateModels() {
+        const hint = $("modelHint");
+        const btn = $("refreshModels");
+        btn.disabled = true;
+        hint.textContent = "正在从 Trae CLI 拉取可用模型…";
+        let res = null;
+        try {
+          res = await bridge.listTraeModels();
+        } catch {}
+        btn.disabled = false;
+        if (res && res.ok && res.models && res.models.length) {
+          renderModelOptions(res.models);
+          hint.textContent = "模型列表来自本机 Trae CLI，负载越低越不容易排队卡住。";
+        } else {
+          renderModelOptions(FALLBACK_TRAE_MODELS);
+          hint.textContent = `无法从 Trae CLI 获取模型${res && res.reason ? "（" + res.reason + "）" : ""}，已用内置列表。`;
+        }
+      }
+
+      function updateProviderUi() {
+        const provider = $("provider").value;
+        document.querySelectorAll(".provider-block").forEach((el) => {
+          el.hidden = el.dataset.provider !== provider;
+        });
+        $("skillHint").textContent = "paper-reading 技能已随 App 内置；这里只选择笔记保存位置。";
+      }
+
       async function loadSettings() {
         const s = await bridge.getSettings();
+        $("provider").value = s.provider || "codex";
         $("vaultPath").value = s.vaultPath || "";
+        $("codexPath").value = s.codexPath || "";
         $("claudePath").value = s.claudePath || "";
+        $("traePath").value = s.traePath || "";
         $("liveBase").value = s.liveBase != null ? s.liveBase : "";
+        $("zoteroLinkedAttachmentRoot").value = s.zoteroLinkedAttachmentRoot || "";
         $("model").value = s.model != null ? s.model : "sonnet";
+        $("codexModel").value = s.codexModel || "";
+        $("codexReasoningEffort").value = s.codexReasoningEffort || "";
+        desiredTraeModel = s.traeModel || DEFAULT_TRAE_MODEL;
+        $("traeBackendVariant").value = s.traeBackendVariant != null ? s.traeBackendVariant : "max";
+        $("traeReasoningEffort").value = s.traeReasoningEffort || "ultra";
         $("concurrency").value = s.concurrency || 2;
         $("maxBudgetUsd").value = s.maxBudgetUsd || 0;
+        updateProviderUi();
+        renderModelOptions(FALLBACK_TRAE_MODELS);
+        if ($("provider").value === "trae") await populateModels();
+      }
+
+      function formSettings() {
+        return {
+          provider: $("provider").value,
+          vaultPath: $("vaultPath").value.trim(),
+          codexPath: $("codexPath").value.trim(),
+          claudePath: $("claudePath").value.trim(),
+          traePath: $("traePath").value.trim(),
+          liveBase: $("liveBase").value.trim(),
+          zoteroLinkedAttachmentRoot: $("zoteroLinkedAttachmentRoot").value.trim(),
+          model: $("model").value,
+          codexModel: $("codexModel").value.trim(),
+          codexReasoningEffort: $("codexReasoningEffort").value,
+          traeModel: $("traeModel").value.trim() || DEFAULT_TRAE_MODEL,
+          traeBackendVariant: $("traeBackendVariant").value,
+          traeReasoningEffort: $("traeReasoningEffort").value,
+          concurrency: parseInt($("concurrency").value, 10) || 2,
+          maxBudgetUsd: parseFloat($("maxBudgetUsd").value) || 0,
+        };
+      }
+
+      function setStatusLines(container, lines) {
+        container.replaceChildren();
+        for (const line of lines) {
+          const el = document.createElement("div");
+          el.className = `line ${line.ok ? "ok" : "bad"}`;
+          el.textContent = `${line.ok ? "✓" : "✗"} ${line.text}`;
+          container.appendChild(el);
+        }
+      }
+
+      function credentialErrorText(error, submittedKey, fallback) {
+        const message = (error && error.message) || fallback;
+        return submittedKey ? String(message).split(submittedKey).join("[已隐藏]") : String(message);
+      }
+
+      async function verifyAndPersistPendingZoteroKey({ requireKey = false } = {}) {
+        const input = $("zoteroApiKey");
+        const keyButton = $("saveZoteroCredentials");
+        const allButton = $("save");
+        const clearButton = $("clearZoteroCredentials");
+        const apiKey = input.value.trim();
+        if (!apiKey) {
+          if (!requireKey) return { saved: false };
+          const error = new Error("请先粘贴 24 位 Zotero API key");
+          setStatusLines($("zoteroCredentialStatus"), [{ ok: false, text: error.message }]);
+          input.focus();
+          throw error;
+        }
+        if (!/^[A-Za-z0-9]{24}$/.test(apiKey)) {
+          const error = new Error("API key 应为 24 位字母或数字");
+          setStatusLines($("zoteroCredentialStatus"), [{ ok: false, text: error.message }]);
+          input.focus();
+          throw error;
+        }
+        if (typeof bridge.verifyAndSaveZoteroCredentials !== "function") {
+          const error = new Error("当前版本尚未启用凭据保存");
+          setStatusLines($("zoteroCredentialStatus"), [{ ok: false, text: error.message }]);
+          throw error;
+        }
+        const keyButtonWasDisabled = keyButton.disabled;
+        const allButtonWasDisabled = allButton.disabled;
+        const inputWasDisabled = input.disabled;
+        const clearButtonWasDisabled = clearButton.disabled;
+        let savedSuccessfully = false;
+        input.disabled = true;
+        keyButton.disabled = true;
+        allButton.disabled = true;
+        clearButton.disabled = true;
+        setStatusLines($("zoteroCredentialStatus"), [{
+          ok: true,
+          text: "正在通过 Zotero 验证并加密保存…",
+        }]);
+        try {
+          const result = await bridge.verifyAndSaveZoteroCredentials(apiKey);
+          if (!result || result.ok !== true || result.usable === false) {
+            throw new Error((result && result.reason) || "Zotero 未接受这个 API key");
+          }
+          input.value = "";
+          await refreshZoteroCredentialStatus();
+          savedSuccessfully = true;
+          return { saved: true };
+        } catch (error) {
+          const safeMessage = credentialErrorText(error, apiKey, "API key 验证或保存失败");
+          setStatusLines($("zoteroCredentialStatus"), [{ ok: false, text: safeMessage }]);
+          input.focus();
+          throw new Error(safeMessage);
+        } finally {
+          input.disabled = inputWasDisabled;
+          keyButton.disabled = keyButtonWasDisabled;
+          allButton.disabled = allButtonWasDisabled;
+          clearButton.disabled = savedSuccessfully ? false : clearButtonWasDisabled;
+        }
+      }
+
+      async function refreshZoteroCredentialStatus() {
+        const box = $("zoteroCredentialStatus");
+        const input = $("zoteroApiKey");
+        const clearButton = $("clearZoteroCredentials");
+        if (typeof bridge.getZoteroCredentialStatus !== "function") {
+          setStatusLines(box, [{ ok: false, text: "当前版本尚未启用本机 Zotero 凭据存储" }]);
+          return;
+        }
+        try {
+          const status = await bridge.getZoteroCredentialStatus();
+          if (status && status.configured && status.usable !== false) {
+            const user = status.userId ? `（User ID：${status.userId}）` : "";
+            input.placeholder = "已安全保存；粘贴新 key 可替换";
+            clearButton.disabled = false;
+            setStatusLines(box, [{
+              ok: true,
+              text: `API key 已加密保存到本机${user}，关闭或重启 App 后仍会使用`,
+            }]);
+          } else if (status && status.encryptionAvailable === false) {
+            input.placeholder = "粘贴 24 位 API key";
+            clearButton.disabled = !status.stored;
+            setStatusLines(box, [{ ok: false, text: "系统安全存储不可用，PaperReader 不会以明文保存 key" }]);
+          } else if (status && status.stored) {
+            input.placeholder = "粘贴新 key 以替换无法解密的旧值";
+            clearButton.disabled = false;
+            setStatusLines(box, [{ ok: false, text: "已保存的 API key 当前无法解密，请清除后重新配置" }]);
+          } else {
+            input.placeholder = "粘贴 24 位 API key";
+            clearButton.disabled = true;
+            setStatusLines(box, [{ ok: false, text: "尚未配置 API key" }]);
+          }
+        } catch (error) {
+          setStatusLines(box, [{ ok: false, text: error.message || String(error) }]);
+        }
+      }
+
+      async function refreshZoteroSetupStatus() {
+        const box = $("zoteroSetupStatus");
+        if (typeof bridge.getZoteroSetupStatus !== "function") {
+          setStatusLines(box, [{ ok: false, text: "当前版本尚未启用 Zotero 目录自动检测" }]);
+          return;
+        }
+        try {
+          const status = await bridge.getZoteroSetupStatus(
+            $("zoteroLinkedAttachmentRoot").value.trim()
+          );
+          if (!status || status.detected === false) {
+            setStatusLines(box, [{
+              ok: false,
+              text: (status && status.reason) || "未检测到 Zotero 的链接附件基准目录",
+            }]);
+            return;
+          }
+          const detectedPath = status.zoteroBaseDir || status.detectedRoot || "已检测";
+          const lines = [{ ok: true, text: `Zotero 自动检测：${detectedPath}` }];
+          if (status.match === true) {
+            lines.push({ ok: true, text: "PaperReader 与 Zotero 的目录完全一致" });
+          } else if (status.match === false) {
+            lines.push({
+              ok: false,
+              text: status.configuredRoot
+                ? "PaperReader 当前目录与 Zotero 不一致"
+                : "请用“选择目录…”选中上面检测到的同一目录",
+            });
+          }
+          setStatusLines(box, lines);
+        } catch (error) {
+          setStatusLines(box, [{ ok: false, text: error.message || String(error) }]);
+        }
+      }
+
+      async function refreshZoteroStatus() {
+        await Promise.all([refreshZoteroCredentialStatus(), refreshZoteroSetupStatus()]);
       }
 
       async function refreshStatus() {
-        const p = await bridge.probeEnv();
+        const p = await bridge.probeEnv(formSettings(), { force: true });
         const box = $("status");
-        const vIcon = p.vault.ok ? "✓" : "✗";
-        const cIcon = p.claude.ok ? "✓" : "✗";
-        const vCls = p.vault.ok ? "ok" : "bad";
-        const cCls = p.claude.ok ? "ok" : "bad";
+        const cliName = p.provider === "codex"
+          ? "Codex CLI"
+          : p.provider === "trae"
+            ? "Trae CLI"
+            : "claude";
+        const python = p.python || {
+          ok: false,
+          reason: "未返回 python3 / PyMuPDF 检测结果",
+        };
         box.style.background = p.ready ? "rgba(5,150,105,0.08)" : "rgba(185,28,28,0.06)";
-        box.innerHTML =
-          `<div class="line ${vCls}">${vIcon} Vault：${p.vault.ok ? p.vault.path : p.vault.reason}</div>` +
-          `<div class="line ${cCls}">${cIcon} claude：${p.claude.ok ? p.claude.path + "  (" + (p.claude.version || "") + ")" : p.claude.reason}</div>`;
+        setStatusLines(box, [
+          {
+            ok: p.vault.ok,
+            text: `Vault：${p.vault.ok ? p.vault.path : p.vault.reason}`,
+          },
+          {
+            ok: p.cli.ok,
+            text: `${cliName}：${p.cli.ok ? p.cli.path + "  (" + (p.cli.version || "") + ")" : p.cli.reason}`,
+          },
+          {
+            ok: python.ok,
+            text: `Python / PyMuPDF：${
+              python.ok
+                ? (python.path || "python3") + (python.version ? "  (fitz " + python.version + ")" : "")
+                : python.reason
+            }`,
+          },
+        ]);
+        await refreshZoteroStatus();
       }
 
       $("pickVault").addEventListener("click", async () => {
         const p = await bridge.pickVault();
         if (p) $("vaultPath").value = p;
       });
+      $("pickCodex").addEventListener("click", async () => {
+        const p = await bridge.pickCodex();
+        if (p) $("codexPath").value = p;
+      });
       $("pickClaude").addEventListener("click", async () => {
         const p = await bridge.pickClaude();
         if (p) $("claudePath").value = p;
       });
+      $("pickTrae").addEventListener("click", async () => {
+        const p = await bridge.pickTrae();
+        if (p) $("traePath").value = p;
+      });
+      $("pickZoteroAttachmentRoot").addEventListener("click", async () => {
+        const p = await bridge.pickZoteroAttachmentRoot();
+        if (p) {
+          $("zoteroLinkedAttachmentRoot").value = p;
+          await refreshZoteroSetupStatus();
+        }
+      });
+      $("openZoteroKeyPage").addEventListener("click", (event) => {
+        event.preventDefault();
+        bridge.openExternal("https://www.zotero.org/settings/keys/new");
+      });
+      $("openCodexGuide").addEventListener("click", (event) => {
+        event.preventDefault();
+        bridge.openExternal("https://developers.openai.com/codex/cli/");
+      });
+      $("saveZoteroCredentials").addEventListener("click", async () => {
+        try {
+          await verifyAndPersistPendingZoteroKey({ requireKey: true });
+        } catch {}
+      });
+      $("zoteroApiKey").addEventListener("keydown", (event) => {
+        if (event.key !== "Enter") return;
+        event.preventDefault();
+        $("saveZoteroCredentials").click();
+      });
+      $("clearZoteroCredentials").addEventListener("click", async () => {
+        const button = $("clearZoteroCredentials");
+        if (typeof bridge.clearZoteroCredentials !== "function") {
+          setStatusLines($("zoteroCredentialStatus"), [{ ok: false, text: "当前版本尚未启用凭据清除" }]);
+          return;
+        }
+        button.disabled = true;
+        try {
+          const result = await bridge.clearZoteroCredentials();
+          if (!result || result.ok !== true) {
+            throw new Error((result && result.reason) || "API key 清除失败");
+          }
+          $("zoteroApiKey").value = "";
+          await refreshZoteroCredentialStatus();
+        } catch (error) {
+          button.disabled = false;
+          setStatusLines($("zoteroCredentialStatus"), [{
+            ok: false,
+            text: error.message || "API key 清除失败",
+          }]);
+        }
+      });
+      $("provider").addEventListener("change", () => {
+        updateProviderUi();
+        if ($("provider").value === "trae") populateModels();
+      });
+      $("traeModel").addEventListener("change", () => {
+        desiredTraeModel = $("traeModel").value;
+      });
+      $("refreshModels").addEventListener("click", () => {
+        desiredTraeModel = $("traeModel").value || desiredTraeModel;
+        populateModels();
+      });
       $("recheck").addEventListener("click", refreshStatus);
       $("save").addEventListener("click", async () => {
-        await bridge.setSettings({
-          vaultPath: $("vaultPath").value.trim(),
-          claudePath: $("claudePath").value.trim(),
-          liveBase: $("liveBase").value.trim(),
-          model: $("model").value,
-          concurrency: parseInt($("concurrency").value, 10) || 2,
-          maxBudgetUsd: parseFloat($("maxBudgetUsd").value) || 0,
-        });
-        await refreshStatus();
+        const button = $("save");
+        button.disabled = true;
+        $("saveError").textContent = "";
+        try {
+          // The API key deliberately never enters config.json. If the user
+          // pasted one and chose the page-level save button, route it through
+          // the same verified safeStorage path before saving ordinary fields.
+          await verifyAndPersistPendingZoteroKey();
+          await bridge.setSettings(formSettings());
+          await refreshStatus();
+        } catch (e) {
+          $("saveError").textContent = e.message || String(e);
+        } finally {
+          button.disabled = false;
+        }
       });
 
       loadSettings().then(refreshStatus);

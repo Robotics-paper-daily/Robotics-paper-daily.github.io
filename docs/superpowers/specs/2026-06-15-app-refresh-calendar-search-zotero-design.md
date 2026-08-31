@@ -1,5 +1,11 @@
 # PaperReader — refresh · calendar popover · search panel · 读论文 Zotero
 
+> **Superseded historical design (v0.2).** This document describes the retired
+> browser credential/WebDAV implementation and must not be used as v0.3.0 setup
+> or security guidance. PaperReader v0.3.0 is App-only for Zotero and stores each
+> user's key locally through operating-system-protected storage. See the root
+> README and `app/README.md` for the supported workflow.
+
 Date: 2026-06-15. Approved by user ("可以，就对这些全量实现"). App-only + shared `js/`
 changes; **do not touch** `templates/`, `daily_html/`, `reports.json`.
 

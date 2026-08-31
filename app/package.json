@@ -2,33 +2,111 @@
   "name": "paperreader",
   "productName": "PaperReader",
   "version": "0.3.0",
-  "description": "Desktop wrapper for the daily-papers site that deep-reads a paper with the local Claude Code paper-reading skill.",
+  "description": "macOS desktop companion for daily papers, local AI reading, Obsidian notes, and OneDrive-linked Zotero attachments.",
   "author": "scpsyl",
   "license": "MIT",
   "main": "main.js",
   "scripts": {
+    "test": "node --test ../test/*.test.js",
     "sync-site": "node sync-site.js",
+    "audit:release": "node sync-site.js && node release-audit.js",
     "prestart": "node sync-site.js",
     "start": "electron .",
-    "predist": "node sync-site.js",
+    "predist": "npm run audit:release",
     "dist": "electron-builder",
-    "predist:win": "node sync-site.js",
-    "dist:win": "electron-builder --win",
-    "predist:mac": "node sync-site.js",
-    "dist:mac": "electron-builder --mac"
+    "predist:mac": "npm run audit:release",
+    "dist:mac": "electron-builder --mac --arm64 --x64"
   },
   "devDependencies": {
-    "electron": "^32.2.0",
-    "electron-builder": "^25.1.8"
+    "electron": "^43.3.0",
+    "electron-builder": "^26.15.3"
   },
   "build": {
     "appId": "com.scpsyl.paperreader",
     "productName": "PaperReader",
-    "directories": { "output": "dist", "buildResources": "build" },
-    "files": ["**/*", "!dist/**", "!**/*.md"],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "**/*",
+      "!dist/**",
+      "!release-audit.js",
+      "!**/*.md",
+      "!**/.DS_Store",
+      "!**/*.log",
+      "!**/*.dmp",
+      "!**/.env",
+      "!**/.env.*",
+      "!**/*.pem",
+      "!**/*.p12",
+      "!**/*.p8",
+      "!**/*.key",
+      "!**/*.mobileprovision",
+      "!**/.npmrc",
+      "!**/.pypirc",
+      "!**/config.json",
+      "!**/*.secure.json",
+      "!site/js/secrets.enc.js",
+      "!site/js/crypto.js",
+      "!site/js/webdav.js",
+      "!vendor/spark-md5.min.js",
+      "!vendor/jszip.min.js"
+    ],
+    "extraResources": [
+      {
+        "from": "../skills/paper-reading",
+        "to": "skills/paper-reading",
+        "filter": [
+          "**/*",
+          "!**/.DS_Store",
+          "!**/__pycache__/**",
+          "!**/*.pyc",
+          "!**/.env",
+          "!**/.env.*",
+          "!**/.npmrc",
+          "!**/.pypirc",
+          "!**/config.json",
+          "!**/*.secure.json",
+          "!**/*.pem",
+          "!**/*.p12",
+          "!**/*.p8",
+          "!**/*.key",
+          "!**/*.mobileprovision"
+        ]
+      },
+      {
+        "from": "../LICENSE",
+        "to": "LICENSE"
+      },
+      {
+        "from": "../THIRD_PARTY_NOTICES.md",
+        "to": "THIRD_PARTY_NOTICES.md"
+      },
+      {
+        "from": "README.md",
+        "to": "README.md"
+      },
+      {
+        "from": "README_ZH.md",
+        "to": "README_ZH.md"
+      }
+    ],
     "icon": "build/icon.png",
-    "win": { "target": ["nsis"] },
-    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true },
-    "mac": { "target": ["dmg"], "category": "public.app-category.productivity", "icon": "build/icon.icns" }
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.productivity",
+      "icon": "build/icon.icns",
+      "minimumSystemVersion": "12.0.0",
+      "identity": null,
+      "hardenedRuntime": false,
+      "notarize": false,
+      "artifactName": "PaperReader-${version}-${arch}.${ext}"
+    },
+    "dmg": {
+      "writeUpdateInfo": false
+    }
   }
 }

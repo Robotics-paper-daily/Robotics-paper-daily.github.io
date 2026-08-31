@@ -1,4 +1,4 @@
-// In-memory job queue: each job is one headless `claude` paper-reading run.
+// In-memory job queue: each job is one local AI CLI paper-reading run.
 // Bounded concurrency, url-dedup, cross-platform tree-kill cancel, a wall-clock
 // watchdog, and post-run mapping back to the produced note folder.
 
@@ -6,10 +6,13 @@ const { shell } = require("electron");
 const { spawn } = require("child_process");
 const path = require("path");
 const fs = require("fs");
-const { spawnRead, resolveClaudePath } = require("./spawn-claude");
+const codexAdapter = require("./spawn-codex");
+const claudeAdapter = require("./spawn-claude");
+const traeAdapter = require("./spawn-trae");
 const { makeParser, mapEvent } = require("./stream-parser");
-const { cleanPaperCache } = require("./cache-clean");
+const { cleanPaperCache, normalizeAppCacheDir } = require("./cache-clean");
 const { repairFigures } = require("./figure-repair");
+const { findBundledPaperReadingSkill } = require("./skill-locator");
 
 let _seq = 0;
 const nextId = () => "job_" + ++_seq;
@@ -23,13 +26,30 @@ function baseArxivId(id) {
   return id ? String(id).replace(/v\d+$/i, "") : null;
 }
 
+function safeExistingNote(vaultPath, notePath) {
+  let root;
+  let note;
+  try {
+    root = fs.realpathSync(vaultPath);
+    const candidate = path.isAbsolute(notePath) ? notePath : path.resolve(root, notePath);
+    note = fs.realpathSync(candidate);
+  } catch {
+    return null;
+  }
+  const rel = path.relative(root, note);
+  if (!rel || rel === ".." || rel.startsWith(".." + path.sep) || path.isAbsolute(rel)) return null;
+  return note;
+}
+
 const WATCHDOG_MS = 20 * 60 * 1000;
 
 class JobQueue {
-  // settings: () => current settings object; onProgress: (evt) => void
-  constructor({ settings, onProgress }) {
+  // settings: () => current settings object; onProgress: (evt) => void;
+  // cacheDir: the main-process-derived <userData>/paper-cache path.
+  constructor({ settings, onProgress, cacheDir }) {
     this.settings = settings;
     this.onProgress = onProgress || (() => {});
+    this.cacheDir = normalizeAppCacheDir(cacheDir);
     this.jobs = [];
   }
 
@@ -48,6 +68,7 @@ class JobQueue {
       durationMs: j.durationMs,
       usage: j.usage,
       costUsd: j.costUsd,
+      provider: j.provider,
       folderPath: j.folderPath,
       errorText: j.errorText,
     }));
@@ -63,7 +84,7 @@ class JobQueue {
     return this.jobs.filter((j) => j.state === "running").length;
   }
 
-  enqueue(payload) {
+  enqueue(payload, runtime = {}) {
     const job = {
       id: nextId(),
       payload,
@@ -85,6 +106,13 @@ class JobQueue {
       costUsd: null,
       durationMs: null,
       endedAt: 0,
+      provider: null,
+      runtime: {
+        pythonPath: typeof runtime.pythonPath === "string" ? runtime.pythonPath : "",
+        pythonReadRoots: Array.isArray(runtime.pythonReadRoots)
+          ? runtime.pythonReadRoots.slice()
+          : [],
+      },
     };
     this.jobs.push(job);
     this._emit(job);
@@ -109,6 +137,7 @@ class JobQueue {
       durationMs: job.durationMs,
       usage: job.usage,
       costUsd: job.costUsd,
+      provider: job.provider,
       ...(extra || {}),
     });
   }
@@ -124,10 +153,24 @@ class JobQueue {
   }
 
   _start(job, s) {
-    const claudePath = resolveClaudePath(s.claudePath);
-    if (!claudePath) return this._fail(job, "claude 未找到（请在设置中指定路径）");
+    const provider = ["codex", "claude", "trae"].includes(s.provider) ? s.provider : "codex";
+    const adapter =
+      provider === "codex" ? codexAdapter : provider === "claude" ? claudeAdapter : traeAdapter;
+    const executablePath = provider === "codex"
+      ? adapter.resolveCodexPath(s.codexPath)
+      : provider === "claude"
+        ? adapter.resolveClaudePath(s.claudePath)
+        : adapter.resolveTraePath(s.traePath);
+    if (!executablePath) {
+      const name = provider === "codex" ? "Codex CLI" : provider === "claude" ? "claude" : "Trae CLI";
+      return this._fail(job, `${name} 未找到（请在设置中指定路径）`);
+    }
     if (!s.vaultPath || !fs.existsSync(s.vaultPath)) return this._fail(job, "vault 路径无效");
+    const skillPath = findBundledPaperReadingSkill();
+    if (!skillPath) return this._fail(job, "App 内置的 paper-reading 技能缺失");
+    if (!this.cacheDir) return this._fail(job, "App 缓存目录无效，请重启 PaperReader");
 
+    job.provider = provider;
     job.state = "running";
     job.phase = "init";
     job.label = "启动中";
@@ -137,15 +180,47 @@ class JobQueue {
 
     let child;
     try {
-      child = spawnRead({
-        claudePath,
-        vaultPath: s.vaultPath,
-        url: job.payload.url,
-        query: job.payload.query,
-        model: s.model,
-        permissionMode: s.permissionMode,
-        maxBudgetUsd: s.maxBudgetUsd,
-      });
+      if (provider === "codex") {
+        child = adapter.spawnRead({
+          codexPath: executablePath,
+          vaultPath: s.vaultPath,
+          cacheDir: this.cacheDir,
+          skillPath,
+          url: job.payload.url,
+          query: job.payload.query,
+          model: s.codexModel,
+          reasoningEffort: s.codexReasoningEffort,
+          pythonPath: job.runtime && job.runtime.pythonPath,
+          pythonReadRoots: job.runtime && job.runtime.pythonReadRoots,
+        });
+      } else if (provider === "claude") {
+        child = adapter.spawnRead({
+          claudePath: executablePath,
+          vaultPath: s.vaultPath,
+          cacheDir: this.cacheDir,
+          skillPath,
+          url: job.payload.url,
+          query: job.payload.query,
+          model: s.model,
+          permissionMode: s.permissionMode,
+          maxBudgetUsd: s.maxBudgetUsd,
+          pythonPath: job.runtime && job.runtime.pythonPath,
+        });
+      } else {
+        child = adapter.spawnRead({
+          traePath: executablePath,
+          vaultPath: s.vaultPath,
+          cacheDir: this.cacheDir,
+          skillPath,
+          url: job.payload.url,
+          query: job.payload.query,
+          model: s.traeModel,
+          backendVariant: s.traeBackendVariant,
+          reasoningEffort: s.traeReasoningEffort,
+          permissionMode: s.permissionMode,
+          pythonPath: job.runtime && job.runtime.pythonPath,
+        });
+      }
     } catch (e) {
       return this._fail(job, "spawn 失败：" + e.message);
     }
@@ -175,7 +250,7 @@ class JobQueue {
     if (!ev) return;
     switch (ev.kind) {
       case "init":
-        if (!ev.skills.includes("paper-reading")) {
+        if (Array.isArray(ev.skills) && !ev.skills.includes("paper-reading")) {
           job.label = "⚠ 未发现 paper-reading 技能（vault 路径可能不对）";
           this._emit(job, { phase: "warn", label: job.label });
         }
@@ -195,7 +270,7 @@ class JobQueue {
         this._emit(job, { phase: job.phase || "running", label: job.label, detail: ev.text });
         return;
       case "done":
-        job._result = ev;
+        if (!job._result || !job._result.isError) job._result = ev;
         job.usage = ev.usage || null;
         job.costUsd = ev.costUsd != null ? ev.costUsd : null;
         if (ev.isError) job.errorText = ev.resultText || "读取出错";
@@ -208,16 +283,20 @@ class JobQueue {
       clearTimeout(job.watchdog);
       job.watchdog = null;
     }
-    if (job.state === "canceled") return this._pump();
+    if (["canceled", "error", "done"].includes(job.state)) return this._pump();
 
     const res = job._result;
     if (res && res.isError) return this._fail(job, job.errorText || `读取失败 (code ${code})`);
-    if (!res && code !== 0) {
+    if (code !== 0) {
       const tail = (job.stderr || "").trim().split("\n").filter(Boolean).pop();
       return this._fail(job, tail || `退出码 ${code}`);
     }
+    if (!res && code === 0) {
+      return this._fail(job, "CLI 已退出，但未返回完成事件");
+    }
 
     job.folderPath = this._resolveFolder(job);
+    if (!job.folderPath) return this._fail(job, "CLI 已完成，但未找到本次生成的笔记");
     job.endedAt = Date.now();
     job.durationMs = job.endedAt - job.startedAt;
     job.state = "done";
@@ -235,7 +314,7 @@ class JobQueue {
   _repairFigures(job) {
     if (!job.folderPath) return;
     const vaultPath = this.settings().vaultPath;
-    repairFigures(job.folderPath, vaultPath)
+    repairFigures(job.folderPath, vaultPath, { provider: job.provider })
       .then((r) => {
         if (r && r.fetched > 0) {
           this._emit(job, { phase: "done", label: `已生成（补回 ${r.fetched} 张缺图）` });
@@ -247,10 +326,8 @@ class JobQueue {
       .catch((e) => console.error("[queue] figure repair failed:", e));
   }
 
-  // After a note is produced, drop this paper's intermediate cache files so
-  // <vault>/.cache never accumulates or gets synced. Per-paper only (never the
-  // whole .cache — concurrent reads may still be using it). Backstop for the
-  // skill's own cleanup step.
+  // After a note is produced, drop this paper's intermediate files from the
+  // app-owned cache. Per-paper only: concurrent reads may still use the root.
   _cleanCache(job) {
     try {
       let id = job.payload.arxivId;
@@ -258,7 +335,7 @@ class JobQueue {
         const pdf = fs.readdirSync(job.folderPath).find((f) => /\.pdf$/i.test(f));
         if (pdf) id = pdf.replace(/\.pdf$/i, ""); // base id from the produced folder (covers name-based reads)
       }
-      cleanPaperCache(this.settings().vaultPath, id);
+      cleanPaperCache(this.cacheDir, id);
     } catch {}
   }
 
@@ -281,6 +358,18 @@ class JobQueue {
   // contains <id>.pdf (exact even with concurrent reads into the same date).
   _resolveFolder(job) {
     const s = this.settings();
+    if (job.notePath) {
+      const note = safeExistingNote(s.vaultPath, job.notePath);
+      if (note) {
+        try {
+          if (fs.statSync(note).mtimeMs >= job.t0 - 5000) {
+            const folder = path.dirname(note);
+            const id = baseArxivId(job.payload.arxivId);
+            if (!id || fs.existsSync(path.join(folder, id + ".pdf"))) return folder;
+          }
+        } catch {}
+      }
+    }
     const dir = path.join(s.vaultPath, job.dateAtStart || localDate());
     if (!fs.existsSync(dir)) return null;
     let entries = [];
@@ -293,22 +382,32 @@ class JobQueue {
           let t = 0;
           try {
             const st = fs.statSync(p);
-            t = st.birthtimeMs || st.mtimeMs;
+            t = Math.max(st.birthtimeMs || 0, st.mtimeMs || 0);
+            for (const file of fs.readdirSync(p)) {
+              if (!/\.(md|pdf)$/i.test(file)) continue;
+              try {
+                t = Math.max(t, fs.statSync(path.join(p, file)).mtimeMs || 0);
+              } catch {}
+            }
           } catch {}
           return { p, t };
         });
     } catch {
       return null;
     }
-    const fresh = entries.filter((e) => e.t >= job.t0 - 5000);
-    const pool = fresh.length ? fresh : entries;
+    const pool = entries.filter((e) => e.t >= job.t0 - 5000);
+    if (!pool.length) return null;
     const id = baseArxivId(job.payload.arxivId);
     if (id) {
       const m = pool.find((e) => fs.existsSync(path.join(e.p, id + ".pdf")));
       if (m) return m.p;
+      return null;
     }
-    pool.sort((a, b) => b.t - a.t);
-    return pool.length ? pool[0].p : null;
+    const candidates = pool.filter((e) => {
+      const expected = path.join(e.p, path.basename(e.p) + ".md");
+      return fs.existsSync(expected);
+    });
+    return candidates.length === 1 ? candidates[0].p : null;
   }
 
   cancel(jobId) {
@@ -339,7 +438,7 @@ class JobQueue {
     if (!child || child.pid == null) return;
     try {
       if (process.platform === "win32") {
-        // /T kills the whole tree (claude.exe + its python grandchildren), /F force.
+        // /T kills the CLI + its subprocess tree; /F forces termination.
         spawn("taskkill", ["/pid", String(child.pid), "/T", "/F"]);
       } else {
         try {
@@ -396,4 +495,4 @@ class JobQueue {
   }
 }
 
-module.exports = { JobQueue, localDate, baseArxivId };
+module.exports = { JobQueue, localDate, baseArxivId, safeExistingNote };

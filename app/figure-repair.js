@@ -10,6 +10,7 @@ const fs = require("fs");
 const path = require("path");
 const { execFile } = require("child_process");
 const { promisify } = require("util");
+const { findPaperReadingSkill } = require("./skill-locator");
 const pexec = promisify(execFile);
 
 // Match figure embeds that live under an attachments/<id>/ folder, tolerating an
@@ -34,6 +35,40 @@ function parseFigureRefs(text) {
   return out;
 }
 
+function insideVault(vaultRoot, candidate) {
+  const rel = path.relative(vaultRoot, candidate);
+  return rel !== "" && !rel.startsWith(".." + path.sep) && rel !== ".." && !path.isAbsolute(rel);
+}
+
+function safeVaultTarget(vaultPath, rel) {
+  if (path.isAbsolute(rel) || rel.split(/[\\/]+/).includes("..")) return null;
+  let root;
+  try {
+    root = fs.realpathSync(vaultPath);
+  } catch {
+    return null;
+  }
+  const target = path.resolve(root, rel);
+  if (!insideVault(root, target)) return null;
+  let cursor = root;
+  for (const part of path.relative(root, target).split(path.sep)) {
+    cursor = path.join(cursor, part);
+    try {
+      if (fs.lstatSync(cursor).isSymbolicLink()) return null;
+    } catch (e) {
+      if (e.code !== "ENOENT") return null;
+    }
+  }
+  return target;
+}
+
+function safeFigureRefs(text, vaultPath) {
+  return parseFigureRefs(text).flatMap((ref) => {
+    const abs = safeVaultTarget(vaultPath, ref.rel);
+    return abs ? [{ ...ref, abs, absDir: path.dirname(abs) }] : [];
+  });
+}
+
 // Repair dangling figure embeds in the note inside `noteDir`. Async (network +
 // child processes) so it never blocks the main thread. Returns a summary.
 async function repairFigures(noteDir, vaultPath, opts = {}) {
@@ -42,22 +77,23 @@ async function repairFigures(noteDir, vaultPath, opts = {}) {
   const md = path.join(noteDir, path.basename(noteDir) + ".md");
   if (!fs.existsSync(md)) return result;
 
+  const skillFile = findPaperReadingSkill(vaultPath, opts.provider || "codex");
   const scriptPath =
     opts.scriptPath ||
-    path.join(vaultPath, ".claude/skills/paper-reading/scripts/fetch_html_figures.py");
-  if (!fs.existsSync(scriptPath)) return result;
-  const python = opts.python || "python3";
+    (skillFile && path.join(path.dirname(skillFile), "scripts", "fetch_html_figures.py"));
+  if (!scriptPath || !fs.existsSync(scriptPath)) return result;
+  const python = opts.python || (process.platform === "win32" ? "python" : "python3");
 
-  const refs = parseFigureRefs(fs.readFileSync(md, "utf8"));
+  const refs = safeFigureRefs(fs.readFileSync(md, "utf8"), vaultPath);
   result.checked = refs.length;
-  const missing = refs.filter((r) => !fs.existsSync(path.join(vaultPath, r.rel)));
+  const missing = refs.filter((r) => !fs.existsSync(r.abs));
   result.missing = missing.length;
   if (!missing.length) return result;
 
   // group missing refs by their attachments folder
   const groups = {};
   for (const r of missing) {
-    const outDir = path.join(vaultPath, r.dir);
+    const outDir = r.absDir;
     (groups[outDir] = groups[outDir] || { id: r.id, nums: new Set(), want: new Set() });
     groups[outDir].nums.add(r.num);
     groups[outDir].want.add(path.basename(r.rel));
@@ -90,7 +126,11 @@ async function repairFigures(noteDir, vaultPath, opts = {}) {
       }
       try {
         if (/\.svg$/i.test(alt)) await pexec("rsvg-convert", ["-o", wantAbs, path.join(outDir, alt)]);
-        else await pexec("sips", ["-s", "format", "png", path.join(outDir, alt), "--out", wantAbs]);
+        else if (process.platform === "darwin") {
+          await pexec("sips", ["-s", "format", "png", path.join(outDir, alt), "--out", wantAbs]);
+        } else {
+          await pexec("magick", [path.join(outDir, alt), wantAbs]);
+        }
         fs.unlinkSync(path.join(outDir, alt));
         result.fetched++;
       } catch (e) {
@@ -101,4 +141,4 @@ async function repairFigures(noteDir, vaultPath, opts = {}) {
   return result;
 }
 
-module.exports = { parseFigureRefs, repairFigures };
+module.exports = { parseFigureRefs, safeVaultTarget, safeFigureRefs, repairFigures };

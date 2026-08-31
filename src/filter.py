@@ -23,11 +23,14 @@ from config import (
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# DeepSeek API 配置
-# 在 GitHub Actions 中，DEEPSEEK_API_KEY 应设置为 Secret
+# DeepSeek API configuration. The default sends the key only to DeepSeek's
+# official API. Self-hosters may deliberately choose another OpenAI-compatible
+# endpoint, but must opt in with DEEPSEEK_API_BASE and trust that operator with
+# both the key and paper prompts.
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
-DEEPSEEK_API_URL = "https://models.sjtu.edu.cn/api/v1/chat/completions"
-MODEL_NAME = "deepseek-chat"
+DEEPSEEK_API_BASE = os.getenv("DEEPSEEK_API_BASE", "https://api.deepseek.com").rstrip("/")
+DEEPSEEK_API_URL = f"{DEEPSEEK_API_BASE}/chat/completions"
+MODEL_NAME = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash")
 
 
 # ============================================================================
