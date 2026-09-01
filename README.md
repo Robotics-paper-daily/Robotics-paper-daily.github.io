@@ -304,13 +304,14 @@ See the [full App guide](app/README.md) for error-specific checks.
 
 The GitHub Pages site provides:
 
-1. daily ingestion with bounded arXiv HTTP 429 retries at 30/60/90-second
+1. daily ingestion with bounded arXiv client retries plus 30/60-second outer
    delays, while DeepSeek calls use bounded exponential backoff;
 2. a four-tier keyword prefilter followed by DeepSeek scoring;
 3. topic labels, keyword tags, and bilingual TLDRs;
 4. date-keyed JSON and rendered HTML archives;
 5. a size-bounded, monthly sharded full-text search index;
-6. missing-day backfill; and
+6. missing-day backfill plus automatic repair of reports whose entire AI rating
+   stage failed; and
 7. historical Stage-1 rescoring without another LLM call.
 
 The site does **not** store Zotero credentials, write PDFs, start local CLIs, or
@@ -322,8 +323,19 @@ cloud-confirmation guarantees required by the linked-file workflow.
 
 1. Fork this repository.
 2. In **Settings → Pages**, deploy `main` from `/`.
-3. Add `DEEPSEEK_API_KEY` under **Settings → Secrets and variables → Actions**.
-4. Run **Daily arXiv Paper Fetch and Filter** once from the Actions tab.
+3. Add a provider-issued `DEEPSEEK_API_KEY` under **Settings → Secrets and
+   variables → Actions**.
+4. Add repository variables `DEEPSEEK_API_BASE` and `DEEPSEEK_MODEL` for the
+   same provider. For the official service, use `https://api.deepseek.com` and
+   `deepseek-v4-flash`. If omitted, forks default to that official pair; only
+   the canonical `Robotics-paper-daily` repository keeps its legacy
+   SJTU-compatible gateway and `deepseek-chat` contract.
+5. Run **Daily arXiv Paper Fetch and Filter** once from the Actions tab.
+
+The endpoint operator receives both the API key and paper prompts. Never reuse
+one provider's key at another endpoint. The pipeline does not fall back between
+providers: authentication/configuration failures stop publication instead of
+creating a report with zero AI ratings.
 
 The generated site will appear at
 `https://<username>.github.io/<repository>/`. No Zotero key, site password,
@@ -367,6 +379,9 @@ network access.
 
 ### Daily pipeline and site
 
+Use Python 3.10 or newer. CI is fixed to Python 3.14; the pinned `arxiv` and
+`requests` versions do not support Python 3.9.
+
 ```bash
 git clone <repository-url>
 cd Robotics-paper-daily.github.io
@@ -375,6 +390,9 @@ source .venv/bin/activate
 python3 -m pip install -r requirements.txt
 
 export DEEPSEEK_API_KEY="..."
+# Optional. Local runs default to the official DeepSeek endpoint/model.
+export DEEPSEEK_API_BASE="https://api.deepseek.com"
+export DEEPSEEK_MODEL="deepseek-v4-flash"
 python3 src/main.py
 python3 src/main.py --date YYYY-MM-DD
 python3 src/main.py --backfill --backfill-limit 3

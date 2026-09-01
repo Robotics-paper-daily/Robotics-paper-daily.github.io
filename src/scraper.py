@@ -8,6 +8,10 @@ from typing import List, Dict, Optional, Any
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
+class ArxivFetchError(RuntimeError):
+    """The arXiv client failed, as distinct from a valid empty result set."""
+
+
 def fetch_cv_papers(category: str = 'cs.CV', max_results: int = 2000, specified_date: Optional[date] = None) -> List[Dict[str, Any]]:
     """Fetches papers from the specified category submitted on arXiv for a given date.
 
@@ -21,7 +25,11 @@ def fetch_cv_papers(category: str = 'cs.CV', max_results: int = 2000, specified_
         List[Dict[str, Any]]: A list of dictionaries, where each dictionary contains
                               the 'title', 'summary', 'url', 'published_date',
                               'updated_date', 'categories', and 'authors' of a paper.
-                              Returns an empty list if an error occurs or no papers are found.
+                              Returns an empty list only when the query succeeds
+                              and no papers are found.
+
+    Raises:
+        ArxivFetchError: The arXiv client failed after bounded retries.
     """
     if specified_date is None:
         # Default to today (UTC)
@@ -55,9 +63,11 @@ def fetch_cv_papers(category: str = 'cs.CV', max_results: int = 2000, specified_
         sort_by=arxiv.SortCriterion.SubmittedDate
     )
 
-    papers: List[Dict[str, Any]] = []
     max_attempts = 3
+    required_empty_confirmations = 3
+    consecutive_empty_results = 0
     for attempt in range(1, max_attempts + 1):
+        papers: List[Dict[str, Any]] = []
         try:
             results = client.results(search)
             count = 0
@@ -72,26 +82,45 @@ def fetch_cv_papers(category: str = 'cs.CV', max_results: int = 2000, specified_
                     'authors': [author.name for author in result.authors],
                 })
                 count += 1
-            logging.info(f"Successfully fetched {count} papers submitted on {specified_date.strftime('%Y-%m-%d')} from {category}.")
-            break  # 成功则跳出重试循环
+            if papers:
+                logging.info(f"Successfully fetched {count} papers submitted on {specified_date.strftime('%Y-%m-%d')} from {category}.")
+                return papers
+            consecutive_empty_results += 1
+            if consecutive_empty_results == required_empty_confirmations:
+                logging.info(
+                    "Confirmed an empty arXiv result for %s after %s consecutive responses.",
+                    category,
+                    required_empty_confirmations,
+                )
+                return []
+            logging.warning(
+                "arXiv returned an empty first page; confirming it is not transient "
+                f"(confirmation {consecutive_empty_results}/"
+                f"{required_empty_confirmations}, attempt {attempt}/{max_attempts})."
+            )
 
         except arxiv.UnexpectedEmptyPageError as e:
-            logging.warning(f"arXiv query returned an empty page (potentially no results for the date/query): {e}")
-            break  # 空页面不需要重试
+            consecutive_empty_results = 0
+            logging.warning(
+                "arXiv returned an unexpected empty page "
+                f"(attempt {attempt}/{max_attempts}): {e}"
+            )
         except arxiv.HTTPError as e:
-            wait = 30 * attempt  # 30s, 60s, 90s 递增等待
+            consecutive_empty_results = 0
             logging.warning(f"HTTP error (attempt {attempt}/{max_attempts}): {e}")
-            if attempt < max_attempts:
-                logging.info(f"Waiting {wait}s before retrying...")
-                time.sleep(wait)
-                papers = []  # 清空部分结果，重新抓取
-            else:
-                logging.error(f"All {max_attempts} attempts failed for {category}. Skipping.")
         except Exception as e:
-            logging.error(f"An unexpected error occurred during arXiv search: {e}", exc_info=True)
-            break
+            raise ArxivFetchError(
+                f"Unexpected arXiv client failure for {category}: {type(e).__name__}"
+            ) from e
 
-    return papers
+        if attempt < max_attempts:
+            wait = 30 * attempt  # 30s, then 60s before the final attempt
+            logging.info(f"Waiting {wait}s before retrying...")
+            time.sleep(wait)
+
+    raise ArxivFetchError(
+        f"arXiv fetch failed after {max_attempts} attempts for {category}."
+    )
 
 if __name__ == '__main__':
     logging.info("Starting arXiv paper fetching example...")

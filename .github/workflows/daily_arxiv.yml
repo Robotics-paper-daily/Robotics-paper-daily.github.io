@@ -20,14 +20,14 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         ref: ${{ github.event.repository.default_branch }}
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
-        python-version: '3.x' # Use the latest available 3.x version
+        python-version: '3.14'
 
     - name: Install dependencies
       run: |
@@ -37,6 +37,10 @@ jobs:
     - name: Run script to fetch, filter, and generate report
       env:
         DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        # Only the canonical repository keeps its legacy SJTU key contract.
+        # Forks without explicit variables default to the official provider.
+        DEEPSEEK_API_BASE: ${{ vars.DEEPSEEK_API_BASE || (github.repository == 'Robotics-paper-daily/Robotics-paper-daily.github.io' && 'https://models.sjtu.edu.cn/api/v1' || 'https://api.deepseek.com') }}
+        DEEPSEEK_MODEL: ${{ vars.DEEPSEEK_MODEL || (github.repository == 'Robotics-paper-daily/Robotics-paper-daily.github.io' && 'deepseek-chat' || 'deepseek-v4-flash') }}
       run: python src/main.py --backfill
 
     - name: Commit and push changes

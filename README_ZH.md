@@ -263,13 +263,13 @@ OneDrive/File Provider 与所选 AI provider。Provider 选项、缓存和详细
 
 GitHub Pages 站点提供：
 
-1. 每日数据摄取：arXiv HTTP 429 使用有上限的 30/60/90 秒重试，DeepSeek
-   请求使用有上限的指数退避；
+1. 每日数据摄取：arXiv 客户端内部重试后再使用有上限的 30/60 秒外层等待，
+   DeepSeek 请求使用有上限的指数退避；
 2. 四级关键词预筛与后续 DeepSeek 评分；
 3. 主题标签、关键词与中英文 TLDR；
 4. 按日期归档的 JSON 与 HTML；
 5. 按月分片、大小受控的全文检索索引；
-6. 缺失日期补全；
+6. 缺失日期补全，以及 AI 评分阶段全量失败日报的自动修复；
 7. 无需再次调用 LLM 的历史 Stage-1 重打分。
 
 网页**不保存** Zotero 凭据，不写 PDF，不启动本地 CLI，也不修改 Obsidian
@@ -280,9 +280,17 @@ vault。相关控件只在 PaperReader 中出现。这一边界是有意设计�
 
 1. Fork 本仓库。
 2. 在 **Settings → Pages** 中从 `main` 分支根目录 `/` 发布。
-3. 在 **Settings → Secrets and variables → Actions** 中添加
+3. 在 **Settings → Secrets and variables → Actions** 中添加对应服务商签发的
    `DEEPSEEK_API_KEY`。
-4. 在 Actions 页手动运行一次 **Daily arXiv Paper Fetch and Filter**。
+4. 为同一个服务商添加仓库变量 `DEEPSEEK_API_BASE` 和 `DEEPSEEK_MODEL`。
+   使用 DeepSeek 官方服务时分别填写 `https://api.deepseek.com` 和
+   `deepseek-v4-flash`；如果不设置，fork 默认使用这组官方配置。只有规范仓库
+   `Robotics-paper-daily` 会保留原有的 SJTU 兼容网关与 `deepseek-chat` 配置。
+5. 在 Actions 页手动运行一次 **Daily arXiv Paper Fetch and Filter**。
+
+API endpoint 的运营方会收到密钥与论文 prompt。不要把一家服务商的密钥发往
+另一家 endpoint。流水线不会在服务商之间自动回退：认证或配置错误会停止发布，
+而不是生成 AI 评分为 0 的日报。
 
 生成的站点位于 `https://<username>.github.io/<repository>/`。部署网页不需要
 Zotero key、站点密码、OneDrive 凭据、WebDAV 服务或 Cloudflare Worker。
@@ -322,6 +330,9 @@ arXiv API
 
 ### 每日流水线与网页
 
+请使用 Python 3.10 或更高版本。CI 固定为 Python 3.14；当前锁定的 `arxiv`
+与 `requests` 版本不支持 Python 3.9。
+
 ```bash
 git clone <repository-url>
 cd Robotics-paper-daily.github.io
@@ -330,6 +341,9 @@ source .venv/bin/activate
 python3 -m pip install -r requirements.txt
 
 export DEEPSEEK_API_KEY="..."
+# 可选；本地运行默认使用 DeepSeek 官方 endpoint/model。
+export DEEPSEEK_API_BASE="https://api.deepseek.com"
+export DEEPSEEK_MODEL="deepseek-v4-flash"
 python3 src/main.py
 python3 src/main.py --date YYYY-MM-DD
 python3 src/main.py --backfill --backfill-limit 3

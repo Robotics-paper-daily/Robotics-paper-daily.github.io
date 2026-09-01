@@ -6,6 +6,7 @@ import time
 import json
 import logging
 from typing import Optional, Any
+from urllib.parse import urlsplit
 
 from config import (
     TIER0_KEYWORDS, TIER0_TOKENS,
@@ -31,6 +32,30 @@ DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 DEEPSEEK_API_BASE = os.getenv("DEEPSEEK_API_BASE", "https://api.deepseek.com").rstrip("/")
 DEEPSEEK_API_URL = f"{DEEPSEEK_API_BASE}/chat/completions"
 MODEL_NAME = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash")
+
+
+class LLMAPIError(RuntimeError):
+    """Base error for failures that must stop report publication."""
+
+
+class LLMConfigurationError(LLMAPIError):
+    """The configured endpoint, model, or credential was rejected."""
+
+
+class LLMUnavailableError(LLMAPIError):
+    """The LLM service could not produce any usable ratings."""
+
+
+def _safe_endpoint_origin(endpoint: str) -> str:
+    """Return a credential-free origin for diagnostics."""
+    try:
+        parsed = urlsplit(endpoint)
+        if parsed.scheme not in ('http', 'https') or not parsed.hostname:
+            return '<configured endpoint>'
+        port = f":{parsed.port}" if parsed.port else ''
+        return f"{parsed.scheme}://{parsed.hostname}{port}"
+    except (TypeError, ValueError):
+        return '<configured endpoint>'
 
 
 # ============================================================================
@@ -273,11 +298,13 @@ def call_llm_api(
         timeout (int): 单次请求超时秒数。
 
     Returns:
-        Optional[str]: 模型的响应文本，如果发生错误则返回 None。
+        Optional[str]: 模型响应文本；暂时性错误重试耗尽后返回 None。
+
+    Raises:
+        LLMConfigurationError: 密钥缺失，或服务端拒绝 endpoint/model/key 配置。
     """
     if not DEEPSEEK_API_KEY:
-        logging.error("未设置 DEEPSEEK_API_KEY 环境变量。无法调用 API。")
-        return None
+        raise LLMConfigurationError("未设置 DEEPSEEK_API_KEY 环境变量。")
 
     headers = {
         "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
@@ -314,14 +341,27 @@ def call_llm_api(
                     f"API 返回 {status_code} (尝试 {attempt + 1}/{max_retries + 1})"
                 )
             else:
-                # 4xx 客户端错误（非 429）不重试
-                logging.error(f"API 客户端错误 {status_code}，不重试: {e}")
-                return None
+                # Do not include response bodies or headers here: they may
+                # contain provider-specific diagnostics or credentials.
+                raise LLMConfigurationError(
+                    "LLM API 拒绝了当前配置 "
+                    f"(HTTP {status_code}, endpoint={_safe_endpoint_origin(DEEPSEEK_API_BASE)}, "
+                    f"model={MODEL_NAME})。"
+                    "请检查 DEEPSEEK_API_KEY、DEEPSEEK_API_BASE 和 DEEPSEEK_MODEL。"
+                ) from None
+        except requests.exceptions.RequestException as e:
+            logging.warning(
+                "API 请求错误 %s at %s (尝试 %s/%s)",
+                type(e).__name__,
+                _safe_endpoint_origin(DEEPSEEK_API_BASE),
+                attempt + 1,
+                max_retries + 1,
+            )
         except (KeyError, IndexError) as e:
             logging.error(f"解析 API 响应结构出错: {e}")
             return None
         except Exception as e:
-            logging.error(f"调用 API 时发生意外错误: {e}", exc_info=True)
+            logging.error("调用 API 时发生意外错误: %s", type(e).__name__)
             return None
 
         # 指数退避 + 随机抖动
@@ -424,22 +464,66 @@ def _coerce_topic(value: Any) -> str:
 
 def _coerce_keywords(value: Any) -> list[str]:
     if isinstance(value, list):
-        return [str(k).strip() for k in value if str(k).strip()][:5]
+        return [k.strip() for k in value if isinstance(k, str) and k.strip()][:5]
     if isinstance(value, str):
         # comma-separated fallback
         return [k.strip() for k in value.split(",") if k.strip()][:5]
     return []
 
 
+_REQUIRED_RATING_FIELDS = {
+    'tldr', 'tldr_zh', 'topic', 'keywords', 'relevance_score',
+    'novelty_claim_score', 'clarity_score', 'potential_impact_score',
+    'overall_priority_score',
+}
+
+
+def _rating_validation_errors(parsed: dict) -> list[str]:
+    missing = sorted(_REQUIRED_RATING_FIELDS - parsed.keys())
+    if missing:
+        return [f"missing:{field}" for field in missing]
+
+    errors = []
+    for field in ('tldr', 'tldr_zh'):
+        if not isinstance(parsed.get(field), str) or not parsed[field].strip():
+            errors.append(f"invalid:{field}")
+    topic = parsed.get('topic')
+    known_topics = {value.lower() for value in TOPICS}
+    if not isinstance(topic, str) or topic.strip().lower() not in known_topics:
+        errors.append("invalid:topic")
+    keywords = parsed.get('keywords')
+    if (
+        not isinstance(keywords, list)
+        or not keywords
+        or not all(isinstance(value, str) and value.strip() for value in keywords)
+    ):
+        errors.append("invalid:keywords")
+    for field in (
+        'relevance_score', 'novelty_claim_score', 'clarity_score',
+        'potential_impact_score', 'overall_priority_score',
+    ):
+        value = parsed.get(field)
+        if isinstance(value, bool):
+            errors.append(f"invalid:{field}")
+            continue
+        try:
+            score = float(value)
+        except (TypeError, ValueError):
+            errors.append(f"invalid:{field}")
+            continue
+        if not score.is_integer() or not 1 <= score <= 10:
+            errors.append(f"invalid:{field}")
+    return errors
+
+
 def filter_and_rate_papers(papers: list) -> list:
     """Stage 2: send each (Stage-1-passing) paper to the LLM for full scoring.
 
-    Adds tldr / tldr_zh / topic / keywords / 5 score fields. Papers that fail
-    to parse are marked ``ai_processed=False`` and kept for downstream display.
+    Adds tldr / tldr_zh / topic / keywords / 5 score fields. A failed or
+    malformed rating raises instead of allowing an incomplete report to ship.
     """
-    if not DEEPSEEK_API_KEY:
-        logging.error("未设置 DEEPSEEK_API_KEY 环境变量。无法进行评分。")
-        return papers
+    if papers and not DEEPSEEK_API_KEY:
+        raise LLMConfigurationError("未设置 DEEPSEEK_API_KEY 环境变量，无法进行评分。")
 
     logging.info(f"开始逐篇评分 {len(papers)} 篇论文...")
 
@@ -451,16 +535,27 @@ def filter_and_rate_papers(papers: list) -> list:
         ai_response = call_llm_api(prompt, max_tokens=400)
 
         if ai_response is None:
-            logging.warning(f"论文 {i+1}/{len(papers)}: '{title[:50]}...' API 调用失败 (ai_processed=False)")
             paper['ai_processed'] = False
-            continue
+            raise LLMUnavailableError(
+                f"论文 {i+1}/{len(papers)} 在重试后仍无法评分，停止发布不完整日报。"
+            )
 
         parsed = extract_json_from_response(ai_response)
 
         if parsed is None or not isinstance(parsed, dict):
-            logging.warning(f"论文 {i+1}/{len(papers)}: '{title[:50]}...' JSON 解析失败 (ai_processed=False)。原始回复: {ai_response[:300]}")
             paper['ai_processed'] = False
-            continue
+            raise LLMUnavailableError(
+                f"论文 {i+1}/{len(papers)} 的 API 响应不是有效评分 JSON，停止发布。"
+            )
+
+        validation_errors = _rating_validation_errors(parsed)
+        if validation_errors:
+            paper['ai_processed'] = False
+            raise LLMUnavailableError(
+                "论文 "
+                f"{i+1}/{len(papers)} 的 API 评分结构无效 "
+                f"({', '.join(validation_errors)})，停止发布。"
+            )
 
         # String fields
         for key in ('tldr', 'tldr_zh'):
@@ -485,6 +580,10 @@ def filter_and_rate_papers(papers: list) -> list:
 
     rated_count = sum(1 for p in papers if p.get('ai_processed'))
     logging.info(f"评分完成，成功 {rated_count}/{len(papers)} 篇。")
+    if rated_count != len(papers):
+        raise LLMUnavailableError(
+            f"仅成功评分 {rated_count}/{len(papers)} 篇，停止发布不完整日报。"
+        )
     return papers
 
 
@@ -507,9 +606,8 @@ def translate_summaries(
     Returns:
         包含翻译摘要的字典列表，成功的论文包含 'summary_zh' 字段。
     """
-    if not DEEPSEEK_API_KEY:
-        logging.error("未设置 DEEPSEEK_API_KEY 环境变量。无法进行翻译。")
-        return papers
+    if papers and not DEEPSEEK_API_KEY:
+        raise LLMConfigurationError("未设置 DEEPSEEK_API_KEY 环境变量，无法进行翻译。")
 
     logging.info(
         f"开始翻译摘要（目标语言: {target_language}，仅 overall_priority_score >= {min_overall_score}）..."

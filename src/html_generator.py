@@ -1,6 +1,7 @@
 import json
 import os
 import logging
+import tempfile
 from datetime import date, datetime, timezone
 from jinja2 import Environment, FileSystemLoader
 
@@ -16,15 +17,8 @@ def generate_html_from_json(json_file_path: str, template_dir: str, template_nam
         template_name: Name of the Jinja2 template file.
         output_dir: Directory where the generated HTML file will be saved.
     """
-    try:
-        with open(json_file_path, 'r', encoding='utf-8') as f:
-            papers = json.load(f)
-    except FileNotFoundError:
-        logging.error(f"JSON file not found at {json_file_path}")
-        return
-    except json.JSONDecodeError:
-        logging.error(f"Could not decode JSON from {json_file_path}")
-        return
+    with open(json_file_path, 'r', encoding='utf-8') as f:
+        papers = json.load(f)
 
     env = Environment(loader=FileSystemLoader(template_dir))
     template = env.get_template(template_name)
@@ -93,12 +87,23 @@ def generate_html_from_json(json_file_path: str, template_dir: str, template_nam
 
     os.makedirs(output_dir, exist_ok=True)
 
+    temp_filepath = None
     try:
-        with open(output_filepath, 'w', encoding='utf-8') as f:
+        with tempfile.NamedTemporaryFile(
+            mode='w',
+            encoding='utf-8',
+            dir=output_dir,
+            prefix=f".{output_filename}.",
+            suffix='.tmp',
+            delete=False,
+        ) as f:
+            temp_filepath = f.name
             f.write(html_content)
+        os.replace(temp_filepath, output_filepath)
         logging.info(f"Successfully generated HTML: {output_filepath}")
-    except IOError as e:
-        logging.error(f"Error writing HTML file {output_filepath}: {e}")
+    finally:
+        if temp_filepath and os.path.exists(temp_filepath):
+            os.remove(temp_filepath)
 
 # Example usage (for testing purposes):
 if __name__ == '__main__':
