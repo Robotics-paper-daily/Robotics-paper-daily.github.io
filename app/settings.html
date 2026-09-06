@@ -91,6 +91,15 @@
     </div>
 
     <div class="field">
+      <label>Python 3 解释器（留空自动探测）</label>
+      <div class="row">
+        <input type="text" id="pythonPath" placeholder="自动探测（Windows: py -3 / python.exe；macOS: PATH 上的 python3）" />
+        <button id="pickPython" type="button">选择…</button>
+      </div>
+      <div class="hint">论文抽取依赖该解释器可导入 PyMuPDF（fitz）。自动探测失败时，在这里指定已安装 PyMuPDF 的 python 可执行文件。</div>
+    </div>
+
+    <div class="field">
       <label>论文数据源（启动时拉取最新；留空=仅用内置离线快照）</label>
       <input type="text" id="liveBase" placeholder="https://robotics-paper-daily.github.io" />
       <div class="hint">app 启动直接从这里拉最新论文，无需 git pull；抓取失败自动回退缓存/内置快照。</div>
@@ -293,6 +302,7 @@
         $("codexPath").value = s.codexPath || "";
         $("claudePath").value = s.claudePath || "";
         $("traePath").value = s.traePath || "";
+        $("pythonPath").value = s.pythonPath || "";
         $("liveBase").value = s.liveBase != null ? s.liveBase : "";
         $("zoteroLinkedAttachmentRoot").value = s.zoteroLinkedAttachmentRoot || "";
         $("model").value = s.model != null ? s.model : "sonnet";
@@ -315,6 +325,7 @@
           codexPath: $("codexPath").value.trim(),
           claudePath: $("claudePath").value.trim(),
           traePath: $("traePath").value.trim(),
+          pythonPath: $("pythonPath").value.trim(),
           liveBase: $("liveBase").value.trim(),
           zoteroLinkedAttachmentRoot: $("zoteroLinkedAttachmentRoot").value.trim(),
           model: $("model").value,
@@ -487,7 +498,7 @@
             : "claude";
         const python = p.python || {
           ok: false,
-          reason: "未返回 python3 / PyMuPDF 检测结果",
+          reason: "未返回 Python 3 / PyMuPDF 检测结果",
         };
         box.style.background = p.ready ? "rgba(5,150,105,0.08)" : "rgba(185,28,28,0.06)";
         setStatusLines(box, [
@@ -503,7 +514,7 @@
             ok: python.ok,
             text: `Python / PyMuPDF：${
               python.ok
-                ? (python.path || "python3") + (python.version ? "  (fitz " + python.version + ")" : "")
+                ? (python.path || python.command || "python3") + (python.version ? "  (fitz " + python.version + ")" : "")
                 : python.reason
             }`,
           },
@@ -526,6 +537,10 @@
       $("pickTrae").addEventListener("click", async () => {
         const p = await bridge.pickTrae();
         if (p) $("traePath").value = p;
+      });
+      $("pickPython").addEventListener("click", async () => {
+        const p = await bridge.pickPython();
+        if (p) $("pythonPath").value = p;
       });
       $("pickZoteroAttachmentRoot").addEventListener("click", async () => {
         const p = await bridge.pickZoteroAttachmentRoot();

@@ -213,7 +213,7 @@ test("release publishing uses tag-only titles and renderer-managed wrapping", ()
   }
 });
 
-test("README and App guides describe Windows as planned and unsupported", () => {
+test("README and App guides describe Windows 10/11 as a supported release target", () => {
   const englishDocs = ["README.md", "app/README.md"];
   const chineseDocs = ["README_ZH.md", "app/README_ZH.md"];
 
@@ -221,8 +221,8 @@ test("README and App guides describe Windows as planned and unsupported", () => 
     const contents = read(source);
     matchingBlock(
       contents,
-      [/\bWindows\b/iu, /\bplanned\b/iu, /\b(?:not (?:yet )?supported|unsupported)\b/iu],
-      `${source} must describe Windows as planned and unsupported in one passage`
+      [/\bWindows\b/iu, /\b10\b/u, /\b11\b/u, /\bx64\b/iu],
+      `${source} must describe Windows 10/11 x64 as a supported release target in one passage`
     );
     const launcherContext = matchingBlock(
       contents,
@@ -241,8 +241,8 @@ test("README and App guides describe Windows as planned and unsupported", () => 
     const contents = read(source);
     matchingBlock(
       contents,
-      [/Windows/iu, /(?:规划|计划)/u, /(?:尚未支持|暂不支持|不支持|未支持)/u],
-      `${source} 必须在同一段说明 Windows 已规划但尚不受支持`
+      [/Windows/iu, /10/u, /11/u, /x64/iu],
+      `${source} 必须在同一段说明 Windows 10/11 x64 已成为受支持的发布目标`
     );
     const launcherContext = matchingBlock(
       contents,

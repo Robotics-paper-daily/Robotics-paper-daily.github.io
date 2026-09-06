@@ -2,31 +2,49 @@
 
 [中文版本](WINDOWS_ROADMAP_ZH.md)
 
-This document records engineering work that would be required before PaperReader
-can publish and support a Windows release. It is a planning document, not a
-compatibility announcement or release commitment.
+This document recorded the engineering work required before PaperReader could
+publish and support a Windows release. v0.3.1 implements that work; the
+document is kept as the acceptance record and hardening backlog, not a
+compatibility announcement for the platforms that remain unshipped.
+
+## Status: implemented by v0.3.1
+
+- v0.3.1 ships a supported Windows 10/11 x64 build:
+  `PaperReader-0.3.1-x64-Setup.exe`, an unsigned NSIS per-user installer
+  published alongside the two macOS DMGs and one merged `SHA256SUMS.txt`.
+- Phases 0–4 below have been addressed: platform storage adapters (Windows
+  Zotero profile discovery, OneDrive root validation, fail-closed cloud-state
+  confirmation), Windows Python runtime detection with a persisted interpreter,
+  a shell-agnostic paper-reading skill, NSIS packaging, and native
+  `windows-latest` CI with a per-platform release audit.
+- The remainder of this document is retained as the acceptance record and the
+  hardening backlog — for example the real-machine test matrix in section 6,
+  the Authenticode signing decision, and a Windows arm64 build.
 
 ## 1. Current support boundary
 
-- PaperReader v0.3.0 is the current macOS 12+ release target. It remains a
-  candidate until its tag, GitHub Release, two DMGs, and checksum manifest
-  actually exist.
-- The v0.3.0 target has no Windows installer, no Windows GitHub Release asset,
-  and no validated Windows end-to-end workflow.
-- `app/run-windows.bat` is an experimental source launcher for contributors. It
-  runs `npm ci` and `npm start`; it is not an installed product and is not
-  evidence that the app is Windows-compatible.
-- Windows, Linux, and source-only runs are outside the v0.3.0 desktop support
-  matrix unless a later release explicitly says otherwise.
-- No minimum Windows version, CPU architecture, installer format, preview
-  version, or release date is promised yet.
+- PaperReader v0.3.1 is the current release target for macOS 12+ (`arm64`,
+  `x64`) and Windows 10/11 (`x64`). It remains a candidate until its tag,
+  GitHub Release, three installers, and checksum manifest actually exist.
+- The v0.3.1 target ships a Windows installer built and audited on native
+  `windows-latest` CI; its feature set matches macOS.
+- `app/run-windows.bat` remains an experimental source launcher for
+  contributors. It runs `npm ci` and `npm start`; it is not the installed
+  product and is not the supported Windows entry point — the Setup installer
+  is.
+- Windows arm64 and Linux are outside the desktop support matrix unless a later
+  release explicitly says otherwise.
+- No Authenticode signature is applied yet; that decision stays open in the
+  backlog. Checksum verification remains mandatory, and documentation must
+  never recommend globally disabling Windows security controls.
 - The current product and this roadmap use manual replacement upgrades only.
   Any different distribution policy would require a separate design and review.
 
 ## 2. Reusable foundation already present
 
-The repository contains useful cross-platform groundwork, but each item still
-requires Windows CI and real-machine validation:
+The repository contained useful cross-platform groundwork that the v0.3.1
+Windows port built on; each item now runs under Windows CI, while the
+real-machine acceptance matrix in section 6 remains the validation backlog:
 
 - the Electron shell, sandboxed report rendering, search, cache, and Obsidian
   note-state logic are largely platform-neutral;
@@ -42,9 +60,10 @@ requires Windows CI and real-machine validation:
 - the PDF writer already performs validation, bounded downloads, hashing, and
   staged file commits that can serve as the basis for a Windows implementation.
 
-These are implementation starting points, not supported Windows features.
+## 3. Core blockers (recorded before v0.3.1)
 
-## 3. Core blockers
+The blockers below are preserved as written while Windows was unshipped; they
+double as the acceptance record of what the v0.3.1 adapters had to implement.
 
 ### 3.1 Zotero and OneDrive integration
 
@@ -109,7 +128,7 @@ These are implementation starting points, not supported Windows features.
   a Windows user must not reach macOS-only Zotero setup and receive a generic
   failure.
 
-## 4. Phased implementation
+## 4. Phased implementation (delivered by v0.3.1)
 
 ### Phase 0: Freeze the contract
 
@@ -229,6 +248,9 @@ Windows may be marked supported only when all of these conditions are true:
 5. maintainers have completed an updated release checklist that covers both the
    existing macOS channel and the new Windows channel.
 
-Until then, repository text and issue responses must say **Windows planned, not
-supported or released**, and must not use “compatible,” “preview available,” or a
-release date without corresponding tested artifacts.
+With v0.3.1, Windows 10/11 on x64 is a supported release target on this basis,
+and the checklist above remains the standard every later Windows release must
+keep meeting. For configurations without corresponding tested artifacts —
+currently Windows arm64 and every Linux target — repository text and issue
+responses must continue to say **planned, not supported or released**, and must
+not use “compatible,” “preview available,” or a release date.

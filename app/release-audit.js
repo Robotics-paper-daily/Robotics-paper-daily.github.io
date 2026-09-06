@@ -141,6 +141,13 @@ function inspectText(label, buffer, options = {}) {
       label: "absolute macOS user path",
       pattern: /\/Users\/(?!test(?:\/|\b)|alice(?:\/|\b)|example(?:\/|\b)|<username>(?:\/|\b))[^/\s"'<>]+\//,
     },
+    {
+      label: "absolute Windows user path",
+      // Match real per-user paths in either separator style while permitting
+      // the documentation placeholders and the generic shared profiles.
+      pattern:
+        /[A-Za-z]:[\\/]Users[\\/](?!test(?:[\\/]|\b)|alice(?:[\\/]|\b)|example(?:[\\/]|\b)|Public(?:[\\/]|\b)|Default(?:[\\/]|\b)|<username>(?:[\\/]|\b))[^\\/\s"'<>]+[\\/]/,
+    },
   ];
   for (const signature of signatures) {
     if (signature.pattern.test(text)) fail(`${label} contains a ${signature.label}`);
@@ -303,12 +310,21 @@ function findFilesNamed(root, basename, out = []) {
 }
 
 function auditAsar(asarPath, asarApi, options = {}) {
-  const entries = asarApi.listPackage(asarPath).map((entry) => entry.replace(/^[/\\]+/, ""));
+  // @electron/asar lists entries with the host separator (backslashes on
+  // Windows). Check against normalized paths, but hand the archive back its
+  // own original spelling when extracting.
+  const entries = asarApi.listPackage(asarPath).map((raw) => ({
+    // The extraction path keeps the archive's own separator style but must
+    // not carry a leading separator.
+    raw: String(raw).replace(/^[/\\]+/, ""),
+    normalized: String(raw).replaceAll("\\", "/").replace(/^\/+/, ""),
+  }));
   for (const entry of entries) {
-    if (isForbiddenFile(entry)) fail(`${asarPath} contains ${entry}`);
+    if (isForbiddenFile(entry.normalized)) fail(`${asarPath} contains ${entry.normalized}`);
   }
 
   const jsEntries = entries
+    .map((entry) => entry.normalized)
     .filter((entry) => entry.startsWith("site/js/") && entry.split("/").length === 3)
     .map((entry) => path.posix.basename(entry));
   const unexpected = jsEntries.filter((name) => !ALLOWED_SITE_JS.has(name));
@@ -316,9 +332,9 @@ function auditAsar(asarPath, asarApi, options = {}) {
   if (unexpected.length || missing.length) fail(`${asarPath} has an invalid site/js allowlist`);
 
   for (const entry of entries) {
-    if (!isTextFile(entry)) continue;
-    if (entry.startsWith("node_modules/")) continue;
-    inspectText(`${asarPath}:${entry}`, asarApi.extractFile(asarPath, entry), options);
+    if (!isTextFile(entry.normalized)) continue;
+    if (entry.normalized.startsWith("node_modules/")) continue;
+    inspectText(`${asarPath}:${entry.normalized}`, asarApi.extractFile(asarPath, entry.raw), options);
   }
 }
 
@@ -343,6 +359,11 @@ function auditPackagedResources(resourcesDir, options = {}) {
   }
 }
 
+// Per-platform packaged-artifact manifest: how many app.asar payloads one
+// `dist` run of this platform's build script must produce. macOS builds both
+// architectures (arm64 + x64); the Windows build produces one x64 payload.
+const PACKAGED_ASAR_COUNTS = Object.freeze({ darwin: 2, win32: 1 });
+
 function auditDist(distDir = path.join(APP_DIR, "dist"), options = {}) {
   let asarApi = options.asarApi;
   if (!asarApi) {
@@ -353,8 +374,21 @@ function auditDist(distDir = path.join(APP_DIR, "dist"), options = {}) {
     }
   }
 
+  const platform = options.platform || process.platform;
+  const expectedAsarCount =
+    options.expectedAsarCount === undefined
+      ? PACKAGED_ASAR_COUNTS[platform]
+      : options.expectedAsarCount;
+  if (!Number.isInteger(expectedAsarCount) || expectedAsarCount < 1) {
+    fail(`no packaged-app manifest is defined for platform ${platform}`);
+  }
+
   const asars = findFilesNamed(distDir, "app.asar");
-  if (asars.length !== 2) fail(`expected exactly two packaged app.asar files, found ${asars.length}`);
+  if (asars.length !== expectedAsarCount) {
+    fail(
+      `expected exactly ${expectedAsarCount} packaged app.asar file(s) for ${platform}, found ${asars.length}`
+    );
+  }
   for (const asarPath of asars) {
     auditAsar(asarPath, asarApi, options);
     auditPackagedResources(path.dirname(asarPath), options);
@@ -380,6 +414,7 @@ module.exports = {
   ALLOWED_SITE_JS,
   FORBIDDEN_EXTENSIONS,
   FORBIDDEN_NAMES,
+  PACKAGED_ASAR_COUNTS,
   PUBLIC_PAPER_DATA_DIRS,
   PUBLIC_PAPER_DATA_FILES,
   RETIRED_REPORT_REFERENCE,

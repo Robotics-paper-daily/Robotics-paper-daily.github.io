@@ -10,6 +10,7 @@ const {
   probeCodex,
   codexConfigProbeArgs,
   probePython,
+  pythonCandidates,
   normalizePythonReadRoots,
   probeEnv,
 } = require("../app/env-probe");
@@ -120,7 +121,7 @@ test("Codex config probe resolves every security-sensitive override before model
 
 test("obsidianConfigFiles uses platform-generic application data locations", () => {
   assert.deepStrictEqual(obsidianConfigFiles("/Users/alice", "darwin", {}), [
-    "/Users/alice/Library/Application Support/obsidian/obsidian.json",
+    path.join("/Users/alice", "Library", "Application Support", "obsidian", "obsidian.json"),
   ]);
   assert.deepStrictEqual(
     obsidianConfigFiles("C:\\Users\\alice", "win32", { APPDATA: "C:\\Users\\alice\\AppData\\Roaming" }),
@@ -157,6 +158,7 @@ test("configuredObsidianVaults fails soft for a missing or malformed Obsidian co
 test("probePython runs python3 and verifies the fitz import without installing anything", () => {
   let invocation = null;
   const result = probePython({
+    platform: "darwin",
     env: { PATH: "/test/bin" },
     execFileSync(command, args, options) {
       invocation = { command, args, options };
@@ -177,6 +179,43 @@ test("probePython runs python3 and verifies the fitz import without installing a
   assert.deepStrictEqual(result.readRoots, [TEST_PYTHON_ROOT]);
 });
 
+test("pythonCandidates prefers the launcher then python.exe on Windows and honours overrides", () => {
+  assert.deepStrictEqual(pythonCandidates("darwin"), [{ command: "python3", prefixArgs: [] }]);
+  assert.deepStrictEqual(pythonCandidates("win32"), [
+    { command: "py", prefixArgs: ["-3"] },
+    { command: "python", prefixArgs: [] },
+    { command: "python3", prefixArgs: [] },
+  ]);
+  assert.deepStrictEqual(pythonCandidates("win32", "C:\\tools\\python\\python.exe"), [
+    { command: "C:\\tools\\python\\python.exe", prefixArgs: [] },
+  ]);
+});
+
+test("probePython falls through failed Windows candidates to a working interpreter", () => {
+  const invocations = [];
+  const result = probePython({
+    platform: "win32",
+    execFileSync(command, args) {
+      invocations.push({ command, args: args.slice(0, args.length - 1) });
+      if (command === "py") {
+        const error = new Error("spawn py ENOENT");
+        error.code = "ENOENT";
+        throw error;
+      }
+      return (
+        "C:\\Python312\\python.exe\n1.26.5\n" +
+        `__PAPERREADER_PYTHON_ROOTS__:${JSON.stringify([TEST_PYTHON_ROOT])}\n`
+      );
+    },
+  });
+
+  assert.deepStrictEqual(invocations.map((entry) => entry.command), ["py", "python"]);
+  assert.deepStrictEqual(invocations[0].args, ["-3", "-c"]);
+  assert.strictEqual(result.ok, true);
+  assert.strictEqual(result.command, "python");
+  assert.strictEqual(result.path, "C:\\Python312\\python.exe");
+});
+
 test("normalizePythonReadRoots accepts bounded absolute non-root paths only", () => {
   assert.deepStrictEqual(
     normalizePythonReadRoots([TEST_PYTHON_ROOT, TEST_PYTHON_ROOT, "relative", path.parse(TEST_PYTHON_ROOT).root]),
@@ -186,6 +225,7 @@ test("normalizePythonReadRoots accepts bounded absolute non-root paths only", ()
 
 test("probePython distinguishes a missing python3 from a missing fitz module", () => {
   const missingPython = probePython({
+    platform: "darwin",
     execFileSync() {
       const error = new Error("spawn python3 ENOENT");
       error.code = "ENOENT";
@@ -195,7 +235,20 @@ test("probePython distinguishes a missing python3 from a missing fitz module", (
   assert.strictEqual(missingPython.ok, false);
   assert.match(missingPython.reason, /未找到 python3/);
 
+  const missingOnWindows = probePython({
+    platform: "win32",
+    execFileSync() {
+      const error = new Error("spawn ENOENT");
+      error.code = "ENOENT";
+      throw error;
+    },
+  });
+  assert.strictEqual(missingOnWindows.ok, false);
+  assert.match(missingOnWindows.reason, /Python 3/);
+  assert.match(missingOnWindows.reason, /py launcher|python\.exe/);
+
   const missingFitz = probePython({
+    platform: "darwin",
     execFileSync() {
       const error = new Error("python exited 42");
       error.stdout =
@@ -208,6 +261,26 @@ test("probePython distinguishes a missing python3 from a missing fitz module", (
   assert.strictEqual(missingFitz.fitzOk, false);
   assert.match(missingFitz.reason, /PyMuPDF（fitz）/);
   assert.match(missingFitz.reason, /手动安装/);
+
+  // A found-but-unusable interpreter must win over "not found" when a later
+  // Windows candidate is absent entirely.
+  const fitzBeatsNotFound = probePython({
+    platform: "win32",
+    execFileSync(command) {
+      if (command === "py") {
+        const error = new Error("python exited 42");
+        error.stdout =
+          "C:\\Python312\\python.exe\n__PAPERREADER_FITZ_ERROR__:ModuleNotFoundError: No module named fitz\n";
+        throw error;
+      }
+      const error = new Error("spawn ENOENT");
+      error.code = "ENOENT";
+      throw error;
+    },
+  });
+  assert.strictEqual(fitzBeatsNotFound.ok, false);
+  assert.match(fitzBeatsNotFound.reason, /PyMuPDF（fitz）/);
+  assert.strictEqual(fitzBeatsNotFound.path, "C:\\Python312\\python.exe");
 });
 
 test("probeEnv gates readiness on python3 plus fitz", (t) => {

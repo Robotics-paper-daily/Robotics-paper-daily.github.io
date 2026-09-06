@@ -314,7 +314,8 @@ class JobQueue {
   _repairFigures(job) {
     if (!job.folderPath) return;
     const vaultPath = this.settings().vaultPath;
-    repairFigures(job.folderPath, vaultPath, { provider: job.provider })
+    const python = (job.runtime && job.runtime.pythonPath) || undefined;
+    repairFigures(job.folderPath, vaultPath, { provider: job.provider, python })
       .then((r) => {
         if (r && r.fetched > 0) {
           this._emit(job, { phase: "done", label: `已生成（补回 ${r.fetched} 张缺图）` });
@@ -439,7 +440,10 @@ class JobQueue {
     try {
       if (process.platform === "win32") {
         // /T kills the CLI + its subprocess tree; /F forces termination.
-        spawn("taskkill", ["/pid", String(child.pid), "/T", "/F"]);
+        spawn("taskkill", ["/pid", String(child.pid), "/T", "/F"], {
+          windowsHide: true,
+          stdio: "ignore",
+        });
       } else {
         try {
           process.kill(-child.pid, "SIGTERM"); // negative pid = the process group

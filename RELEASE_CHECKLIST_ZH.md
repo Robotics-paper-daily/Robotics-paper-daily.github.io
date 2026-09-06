@@ -2,9 +2,10 @@
 
 [English](RELEASE_CHECKLIST.md)
 
-本清单适用于 v0.3.0 及之后的 macOS 稳定版。v0.3 是 **macOS-only** 发布；
-Windows 路线图不阻塞当前 Mac 版本。tag 是发布触发器，在所有阻塞项完成前不要
-推送 tag。对应 tag、Release 与资产实际存在前，本源码树中的 v0.3.0 必须视为
+本清单适用于 v0.3.1 及之后的稳定版。自 v0.3.1 起，一次发布同时覆盖
+**macOS 12+ 与 Windows 10/11（x64）**；Linux 仍不在范围内。tag 是发布触发器，
+在所有阻塞项完成前不要
+推送 tag。对应 tag、Release 与资产实际存在前，本源码树中的 v0.3.1 必须视为
 候选版。
 
 ## 1. 范围与版本
@@ -13,12 +14,12 @@ Windows 路线图不阻塞当前 Mac 版本。tag 是发布触发器，在所有
   文件名与发布说明中的版本完全一致。
 - [ ] 只有在所有门禁完成、即将由 tag 触发正式发布时，发布说明才把该版本描述为
   **稳定版**，而不是 early-access 版本。
-- [ ] 本次 v0.3 发布范围明确为 macOS 12+ 的 Apple Silicon 与 Intel 架构；不得
-  声称 Windows 或 Linux 已受支持。
-- [ ] Windows 的后续路线图和准备工作不阻塞当前 macOS 发布，也不得被描述为
-  已交付功能。
-- [ ] `app/run-windows.bat` 只是源码开发辅助脚本，不是 Windows 支持证明，也不是
-  v0.3 发布资产。
+- [ ] 本次 v0.3.1 发布范围明确为 macOS 12+（Apple Silicon 与 Intel）加
+  Windows 10/11（x64）；不得声称 Linux 或 Windows arm64 已受支持。
+- [ ] 仍未完成的 Windows 加固事项（真实机器验收矩阵、Authenticode 签名决策、
+  Windows arm64 构建）继续记录在路线图待办中，不得被描述为已交付功能。
+- [ ] `app/run-windows.bat` 只是源码开发辅助脚本，不是发布资产；受支持的
+  Windows 入口是 Setup 安装包。
 - [ ] commit 中没有无关的本地构建、缓存、凭据、vault 或用户文件。
 - [ ] 网页被记录并渲染为只读；本地 Zotero 与 AI 操作仅在 App 中提供。
 - [ ] 以下中英文文档配对存在、顶部互链，并对当前行为、版本、平台与发布状态表述
@@ -99,34 +100,60 @@ Windows 路线图不阻塞当前 Mac 版本。tag 是发布触发器，在所有
 
 ## 4. 构建与产物审计
 
-- [ ] 在受支持的 macOS runner 上构建未签名的 `arm64` 与 `x64` DMG。
+### macOS
+
+- [ ] 在受支持的 macOS runner 上构建未签名的 `arm64` 与 `x64` DMG（CI 的
+  `build-macos` job 或 `npm run dist:mac`）。
 - [ ] 在匹配架构的干净 Mac、干净 VM 或干净用户 profile 上安装每一份 DMG。
 - [ ] 确认首次启动使用 Finder 的 Control-click/右键 **打开**流程，不需要全局关闭
   Gatekeeper。
 - [ ] 确认打包资源包含 `paper-reading` skill、scripts、references、requirements
   声明、icons 与最小只读站点 snapshot。
 - [ ] 针对 unpacked App 与两份 DMG 运行 release artifact audit。
-- [ ] 从最终且不可再修改的 DMG 生成 `SHA256SUMS.txt`，并使用
-  `shasum -a 256 -c SHA256SUMS.txt` 验证。
-- [ ] 确认上传资产只包含两份架构正确的 DMG 与 `SHA256SUMS.txt`，没有本地重复或
-  过期 package。GitHub 自动生成的 source archives 可以单独存在。
-- [ ] 确认没有 `.exe`、`.msi`、Windows portable archive、增量分发清单、ZIP
-  补丁资产或 `run-windows.bat` 被作为 v0.3 发布资产上传。
+
+### Windows
+
+- [ ] 通过 CI 的 `windows-latest` job，或在 Windows x64 本机使用
+  `npm run dist:win`，构建未签名的 Windows x64 NSIS 安装包。
+- [ ] 使用 `Get-FileHash`（PowerShell）或 `sha256sum -c`（Git Bash）核对合并
+  `SHA256SUMS.txt` 中 `PaperReader-<version>-x64-Setup.exe` 那一行与最终产物
+  一致。
+- [ ] 在干净的 Windows 10 与 Windows 11（x64）上做全新安装 smoke test：只对
+  已校验文件执行 SmartScreen **更多信息** → **仍要运行**，按用户安装且可
+  自选目录，完成首次启动、一次带云端确认的 Add to Zotero 和一次「帮我读」。
+- [ ] 手动升级 smoke test：在旧版之上运行新的 Setup 安装包，确认
+  `%APPDATA%\PaperReader` 下的设置、缓存与加密凭据仍然可用。
+- [ ] 针对解包后的 Windows App 与 Setup 安装包运行 release artifact audit。
+
+### 发布资产
+
+- [ ] 确认合并的 `SHA256SUMS.txt` 由最终且不可再修改的安装包生成，并能对三份
+  安装包全部验证通过。
+- [ ] 确认上传资产只包含两份架构正确的 DMG、一份 Windows x64 Setup 安装包与
+  合并的 `SHA256SUMS.txt`——即只上传三份安装包加 `SHA256SUMS.txt`，没有本地
+  重复或过期 package。GitHub 自动生成的 source archives 可以单独存在。
+- [ ] 确认没有 `.msi`、便携版压缩包、增量分发清单、额外的 `.yml` 元数据或
+  feed 文件、ZIP 补丁资产或 `run-windows.bat` 被作为发布资产上传。
 
 ## 5. 发布与发布后检查
 
 - [ ] 确认 release workflow 创建稳定 GitHub Release，且未设置 early-access flag。
 - [ ] 仅在 release commit 已审查并授权后创建和推送 annotated release tag；该 tag
   可按维护者政策选择 Git 签名。
-- [ ] 确认 GitHub Release 标题、发布说明、架构标签、未签名/未公证警告、checksum
-  指令、手动升级说明与链接均正确。
-- [ ] 确认对应 tag、GitHub Release、两份 DMG 与 `SHA256SUMS.txt` 均已实际存在，
-  然后才把文档中的候选状态改为已发布稳定版。
+- [ ] 确认 GitHub Release 标题、发布说明、平台/架构标签、未签名警告（DMG 未
+  公证 / Setup 无 Authenticode 签名）、checksum 指令、手动升级说明与链接均
+  正确。
+- [ ] 确认对应 tag、GitHub Release、三份安装包与合并的 `SHA256SUMS.txt` 均已
+  实际存在，然后才把文档中的候选状态改为已发布稳定版。
 - [ ] 重新下载全部已发布资产，并独立验证 checksum。
-- [ ] 测试公开 Release 页面，并从已发布 DMG 完成一次干净安装。
-- [ ] 用新 DMG 替换已安装的旧版，确认 App 设置、cache 与加密凭据仍可使用。
+- [ ] 测试公开 Release 页面，并分别从已发布 DMG 和 Setup 安装包完成一次干净
+  安装。
+- [ ] 用新 DMG（macOS）或新 Setup 安装包（Windows）替换已安装的旧版，确认 App
+  设置、cache 与加密凭据仍可使用。
 - [ ] 确认公开网页仍只暴露只读功能。
 - [ ] 记录发现的 regression，并通过安全渠道处理安全问题；如果审计发现真实 secret，
   立即轮换该凭据。
-- [ ] 将未来 Windows 工作继续保留为独立 roadmap；它不阻塞此次 macOS 发布，也不
-  改变本次 Release 的平台支持声明。
+- [ ] 将仍未完成的 Windows 加固事项（真实机器验收矩阵、Authenticode 签名
+  决策、Windows arm64）与未来的 Linux 工作继续保留在独立
+  [Windows 路线图](docs/WINDOWS_ROADMAP_ZH.md)中；待办事项不改变本次 Release
+  的平台支持声明。

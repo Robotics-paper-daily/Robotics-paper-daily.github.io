@@ -219,8 +219,9 @@ test("a real bundled daily report survives hardening without remote executable c
   assert.match(html, /app:\/\/local\/site\/js\/app-rpc\.js/);
   assert.match(html, /app:\/\/local\/site\/js\/like\.js/);
   assert.match(html, /app:\/\/local\/site\/js\/read-paper\.js/);
-  assert.match(html, /data-report-icon="star(?:-half|-outline)?"/);
-  assert.match(html, /data-report-icon="pdf"/);
+  // Which icon kinds appear varies with each day's generated content (some
+  // days ship no ratings or PDF chips), so assert the stable pair plus the
+  // inline-icon mechanism instead of pinning a day-specific icon set.
   assert.match(html, /data-report-icon="language"/);
   assert.match(html, /data-report-icon="external"/);
   assert.doesNotMatch(html, /font-awesome|fontawesome/i);

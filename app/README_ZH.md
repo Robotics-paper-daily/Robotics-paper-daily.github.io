@@ -1,4 +1,4 @@
-# PaperReader v0.3.0 中文指南
+# PaperReader v0.3.1 中文指南
 
 [English](README.md) · [Windows 路线图](../docs/WINDOWS_ROADMAP_ZH.md) ·
 [安全政策](../SECURITY_ZH.md)
@@ -6,16 +6,21 @@
 PaperReader 是 Robotics Daily Papers 的桌面配套应用。公开站点保持只读；所有需要
 本地文件或本地凭据的操作都在这个 Electron App 中完成。
 
-本源码树的目标版本是 v0.3.0。在 `v0.3.0` tag、官方 GitHub Release、以下两份
-DMG 和 `SHA256SUMS.txt` **全部实际存在之前**，它只是候选版，不能描述为已经发布
-的稳定版：
+本源码树的目标版本是 v0.3.1。在 `v0.3.1` tag、官方 GitHub Release、以下三份
+安装包和合并的 `SHA256SUMS.txt` **全部实际存在之前**，它只是候选版，不能描述
+为已经发布的稳定版：
 
-- `PaperReader-0.3.0-arm64.dmg`：Apple Silicon（M1 及更新）
-- `PaperReader-0.3.0-x64.dmg`：Intel Mac
+- `PaperReader-0.3.1-arm64.dmg`：Apple Silicon（M1 及更新）
+- `PaperReader-0.3.1-x64.dmg`：Intel Mac
+- `PaperReader-0.3.1-x64-Setup.exe`：Windows 10/11（`x64`），NSIS 按用户安装
 
-v0.3.0 只支持 macOS 12 或更高版本。Windows **已规划但尚未支持**，Linux 也未
-受支持；两者都没有正式安装包。`run-windows.bat` 只是供贡献者实验性从源码启动
-的脚本，不是发布资产，也不能证明 Windows 兼容性；后续工作见
+v0.3.1 支持 macOS 12 或更高版本（`arm64`、`x64`）以及 Windows 10 与
+Windows 11（仅 `x64`，功能与 macOS 完全一致）。Windows arm64 未构建，Linux
+仍不受支持。
+
+`run-windows.bat` 只是供贡献者实验性从源码启动的开发脚本，不是受支持的产品、
+发布资产或安装包；Windows 上受支持的入口是正式 Setup 安装包。已交付的工程
+工作与仍在清单中的加固事项见
 [Windows 路线图](../docs/WINDOWS_ROADMAP_ZH.md)。
 
 ## App 的功能
@@ -34,9 +39,10 @@ Add to Zotero 与精读控件由 PaperReader 注入。它们不再作为浏览�
 
 ## 运行要求
 
-- macOS 12 或更高版本；
+- macOS 12 或更高版本，或 Windows 10/11（`x64`）；
 - 已安装并正在运行的 Zotero 桌面端；
-- 已登录并在本机同步的 OneDrive 桌面端；
+- 已登录并在本机同步的 OneDrive 桌面端（Windows 上请保持 OneDrive
+  Files On-Demand 开启，这是当前 OneDrive 的默认设置）；
 - 一个包含 `.obsidian/` 的专用 Obsidian vault。PaperReader 会拒绝文件系统根
   目录、用户主目录及其祖先，也会拒绝 `Documents`、`Downloads`、`Library`、
   `.config`、`.local`、`.codex`、`.ssh` 等宽泛的主目录一级文件夹。专用的
@@ -49,8 +55,8 @@ Add to Zotero 与精读控件由 PaperReader 注入。它们不再作为浏览�
     安装公开 `claude` CLI，并使用其订阅/OAuth 登录；或
   - TraeCode CLI：仅适用于已经独立获得受支持 `trae-cli` 或 `trae-agent` 与
     账号的用户。PaperReader 不分发或开通 TraeCode CLI；
-- Finder 启动的 App 所使用的 login-shell `PATH` 中必须有 `python3` 和
-  PyMuPDF（`fitz`）。一种隔离安装方式是：
+- 带 PyMuPDF（`fitz`）的 Python 3。macOS 上，它必须出现在 Finder 启动的 App
+  所使用的 login-shell `PATH` 中；一种隔离安装方式是：
 
   ```bash
   python3 -m venv "$HOME/.paperreader-python"
@@ -59,7 +65,19 @@ Add to Zotero 与精读控件由 PaperReader 注入。它们不再作为浏览�
   ```
 
   把 `$HOME/.paperreader-python/bin` 加入 login-shell `PATH`，重启 App，并在
-  login shell 中验证 `python3 -c 'import fitz'`。从源码构建的用户也可使用
+  login shell 中验证 `python3 -c 'import fitz'`。Windows 上，请从
+  [python.org](https://www.python.org/downloads/) 安装 Python 3（自带 `py`
+  launcher），然后例如：
+
+  ```bat
+  py -3 -m venv %USERPROFILE%\.paperreader-python
+  %USERPROFILE%\.paperreader-python\Scripts\python.exe -m pip install "PyMuPDF>=1.24,<2"
+  ```
+
+  再在设置中选择该 `python.exe`（**Python 3 解释器 / Python 3
+  interpreter**），或确保 `py -3 -c "import fitz"` 可用。Windows 检测会依次
+  尝试 `py -3`、`python`、`python3`，持久化解析出的确切 `python.exe`，并自动
+  拒绝 Microsoft Store 的 python stub。从源码构建的用户也可使用
   [`../skills/paper-reading/requirements.txt`](../skills/paper-reading/requirements.txt)。
 
 PaperReader 不收集或保存任何 AI provider 凭据。Codex 使用本机 `codex` CLI 已
@@ -68,31 +86,41 @@ Trae 同样使用各自的本地 CLI 会话。用量、可用模型与配额取�
 
 ## 下载、校验与安装
 
-只有当官方 `v0.3.0` tag、Release、两份 DMG 与 `SHA256SUMS.txt` 均已实际存在时，
-才按稳定版执行以下步骤；此前请把本源码树视为候选版：
+只有当官方 `v0.3.1` tag、Release、三份安装包与合并的 `SHA256SUMS.txt` 均已
+实际存在时，才按稳定版执行以下步骤；此前请把本源码树视为候选版：
 
 1. 打开[官方 Releases 页面](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases)，
-   确认 v0.3.0 Release 与上述三项资产真实存在，再下载与 Mac 架构匹配的 DMG
+   确认 v0.3.1 Release 与上述资产真实存在，再下载与设备匹配的安装包
    和 `SHA256SUMS.txt`。
-2. 在 Terminal 中运行 `cd ~/Downloads`，然后校验已下载的架构：
-   - Apple Silicon：`grep 'PaperReader-0.3.0-arm64.dmg$' SHA256SUMS.txt | shasum -a 256 -c -`
-   - Intel：`grep 'PaperReader-0.3.0-x64.dmg$' SHA256SUMS.txt | shasum -a 256 -c -`
-   对应 DMG 必须显示 `OK`。
-3. 打开 DMG，把 PaperReader 拖入“应用程序”。
-4. 在 Finder 中打开“应用程序”，按住 Control 点击或右键 PaperReader，选择
-   **打开**，再确认**打开**。
+2. 先校验已下载的文件。macOS 在 Terminal 中运行 `cd ~/Downloads` 后：
+   - Apple Silicon：`grep 'PaperReader-0.3.1-arm64.dmg$' SHA256SUMS.txt | shasum -a 256 -c -`
+   - Intel：`grep 'PaperReader-0.3.1-x64.dmg$' SHA256SUMS.txt | shasum -a 256 -c -`
+   Windows 在 PowerShell 中运行
+   `Get-FileHash .\PaperReader-0.3.1-x64-Setup.exe -Algorithm SHA256`，并把输出
+   哈希与 `SHA256SUMS.txt` 中 Setup.exe 那一行对比；或在 Git Bash 中运行
+   `grep 'PaperReader-0.3.1-x64-Setup.exe$' SHA256SUMS.txt | sha256sum -c -`。
+   校验必须通过才能安装。
+3. macOS：打开 DMG，把 PaperReader 拖入“应用程序”。Windows：运行 Setup
+   安装包（NSIS 按用户安装，可自选安装目录）。
+4. macOS 首次启动：在 Finder 中打开“应用程序”，按住 Control 点击或右键
+   PaperReader，选择**打开**，再确认**打开**。Windows 首次运行：如出现
+   Microsoft Defender SmartScreen 提示，请只对这一个已校验文件选择
+   **更多信息** → **仍要运行**。
 
-这些候选 DMG 没有 Apple Developer ID 签名，也没有经过 Apple 公证。右键
-**打开**只为这个 App 创建首次启动例外，不需要也不应全局关闭 Gatekeeper。
-SHA-256 可以发现下载损坏，但不能替代签名或公证，也不能在发布渠道失陷时证明
-产物来源。
+这些候选安装包均未签名：DMG 没有 Apple Developer ID 签名、未经过 Apple
+公证，Windows Setup 安装包没有 Authenticode 签名。上述针对单个文件的首启
+确认（Finder 右键**打开**、SmartScreen **仍要运行**）已经足够，不需要也不应
+全局关闭 Gatekeeper、SmartScreen 或其他系统安全机制。SHA-256 可以发现下载
+损坏，但不能替代签名或公证，也不能在发布渠道失陷时证明产物来源。
 
 ### 手动升级且不重置设置
 
-退出 PaperReader，下载并校验新版 DMG，把新版 App 拖入“应用程序”并替换旧版。
-新版会继续使用 `~/Library/Application Support/PaperReader/` 下的设置、报告缓存
-与加密 Zotero 凭据。移动 OneDrive 目录或切换 Zotero profile 后，仍需重新确认
-附件路径。
+退出 PaperReader，下载并校验新版安装包，然后替换旧版：macOS 把新版 App 拖入
+“应用程序”并替换旧副本；Windows 直接在旧版之上运行新的 Setup 安装包。新版会
+继续使用 macOS `~/Library/Application Support/PaperReader/` 或 Windows
+`%APPDATA%\PaperReader\` 下的设置、报告缓存与加密 Zotero 凭据。移动 OneDrive
+目录或切换 Zotero profile 后，仍需重新确认附件路径。Windows 卸载会保留
+`%APPDATA%\PaperReader` 中的按用户数据；如需彻底清理，可手动删除该目录。
 
 ## 首次配置
 
@@ -106,8 +134,11 @@ SHA-256 可以发现下载损坏，但不能替代签名或公证，也不能在
 5. 把 **Linked Attachment Base Directory** 设为 OneDrive 中的文件夹，例如
    `OneDrive/Zotero-Attachments`。
 
-使用专用、扁平的附件目录。PaperReader 会拒绝当前 macOS OneDrive container
-之外的位置，也会拒绝与 Zotero 当前 profile 解析结果不同的路径。
+使用专用、扁平的附件目录。PaperReader 会拒绝所在平台 OneDrive 范围之外的
+位置——macOS 为当前 OneDrive File Provider container；Windows 为当前登录账号
+的 OneDrive 同步文件夹，通过每用户的 `OneDrive` / `OneDriveConsumer` /
+`OneDriveCommercial` 环境变量发现，并按解析后的真实路径做大小写不敏感比较——
+也会拒绝与 Zotero 当前 profile 解析结果不同的路径。
 
 ### 2. 创建并保存 Zotero key
 
@@ -121,12 +152,13 @@ PaperReader 会调用 Zotero current-key endpoint，验证所需权限，并自�
 user ID。用户只需要输入 API key。
 
 key 与 user ID 使用 Electron `safeStorage` 加密；macOS 使用由 Keychain 支持的
-系统存储能力。加密 envelope 以私有文件权限保存在 App user-data 目录。没有明文
+系统存储能力，Windows 使用由 DPAPI 支持的系统存储能力。加密 envelope 以私有
+文件权限保存在 App user-data 目录。没有明文
 回退：系统加密不可用时，PaperReader 会拒绝保存凭据。Settings 页面不会再次显示
 已保存的 key。
 
 如果已停用的 v0.2 网页 writer 曾经保存过 Zotero key 或 WebDAV 密码，请在配置
-v0.3.0 前撤销并轮换这些凭据。从当前 checkout 删除旧 bundle 无法撤销已经进入
+v0.3.1 前撤销并轮换这些凭据。从当前 checkout 删除旧 bundle 无法撤销已经进入
 Git 历史的 secret。
 
 保存 key 后，shell 还会对整个个人文献库做分页、只读的 presence index。App 会
@@ -134,13 +166,15 @@ Git 历史的 secret。
 之外的已有条目会显示为 **In Zotero**，但报告拿不到它的真实 item key，也不会
 获得 Remove 或 repair 权限。
 
-v0.3.0 新建的父条目带可见 Zotero tag `paperreader-managed-v1`。Repair 与 Remove
+v0.3.0 及之后新建的父条目带可见 Zotero tag `paperreader-managed-v1`。Repair 与 Remove
 必须同时满足该 tag 仍存在，且条目仍属于 `Daily Paper` collection tree。无 tag
 的旧条目或手动条目即使位于该 tree 中，也始终只是 presence-only。
 
 ### 3. 确认附件目录
 
-PaperReader 会检测 Zotero 当前 profile 及其配置的 linked-file base directory。
+PaperReader 会检测 Zotero 当前 profile 及其配置的 linked-file base
+directory——即读取 macOS `~/Library/Application Support/Zotero` 或 Windows
+`%APPDATA%\Zotero\Zotero` 下的 `profiles.ini` 与 `prefs.js`。
 如果目录未自动填入，请在 PaperReader Settings 中选择同一个 OneDrive 文件夹。
 App 比较解析后的真实路径，而不是显示字符串，并会在每次写入前重新验证。
 
@@ -185,7 +219,9 @@ Attachment Base Directory 解析 `attachments:<filename>.pdf`。因此，在 One
 2. 检查 Zotero profile 与 OneDrive base directory 的精确真实路径；
 3. 下载 PDF，校验响应、文件签名与大小；
 4. 使用独占临时文件写入，再原子提交，并且不替换有冲突的现有文件；
-5. 要求 macOS File Provider 确认 OneDrive 已上传且没有冲突；
+5. 要求所在平台的云端检查确认 OneDrive 已上传且没有冲突——macOS 为 File
+   Provider；Windows 为 OneDrive 同步引擎设置的 NTFS cloud-files placeholder
+   属性（需要开启 Files On-Demand，即默认设置），且始终 fail-closed；
 6. 重新打开已提交 PDF 并计算哈希；
 7. 创建或对账 Zotero 父条目与 `linked_file` 子条目，使用扁平的
    `attachments:<filename>.pdf` 路径。
@@ -230,15 +266,20 @@ FIFO 启动；相同 operation key 在 queued 或 running 时会合并为同一�
 笔记最后的 `- [ ] ✅ 已读` 勾选为 `- [x]` 后，卡片才显示 **✓ 已读**。该 checkbox
 是唯一阅读状态信号；只生成或打开笔记不会改变状态。
 
-精读临时输入位于 vault 外、由 App 管理的
-`~/Library/Application Support/PaperReader/paper-cache/`，以
-`$PAPERREADER_CACHE_DIR` 传给 provider。完成的任务只删除自身中间文件；启动时
+精读临时输入位于 vault 外、由 App 管理的缓存目录（macOS 为
+`~/Library/Application Support/PaperReader/paper-cache/`，Windows 为
+`%APPDATA%\PaperReader\paper-cache\`），以
+`$PAPERREADER_CACHE_DIR` 传给 provider。Windows 上 provider 以 `shell: false`
+直接启动原生可执行文件（`codex.exe`、`claude.exe`、`trae-cli.exe` /
+`trae-agent.exe`），取消时用 `taskkill` 结束整个进程树。完成的任务只删除自身中间文件；启动时
 会清理遗留 scratch entry，但不会删除 cache root。完成后的笔记文件夹、原始 PDF、
 抽取图片与可选代码是预期 vault 内容，会随 vault 同步。
 
 ## Settings 参考
 
-所有 App 私有本地文件位于 `~/Library/Application Support/PaperReader/`：非敏感
+所有 App 私有本地文件位于 App user-data 目录（macOS 为
+`~/Library/Application Support/PaperReader/`，Windows 为
+`%APPDATA%\PaperReader\`）：非敏感
 设置在 `config.json`，加密 Zotero 数据在 `zotero-credentials.secure.json`，下载
 的报告 cache 在 `site-cache/`，可丢弃精读 scratch 在 `paper-cache/`。Zotero/
 OneDrive linked PDF 与所选 Obsidian vault 留在用户选择的路径。向公开 issue 附加
@@ -252,6 +293,7 @@ support directory 或 vault 前，必须检查并移除私有路径和内容。
 | `codexPath` | 自动检测 | `codex` executable override |
 | `claudePath` | 自动检测 | `claude` executable override |
 | `traePath` | 自动检测 | `trae-cli` / `trae-agent` override |
+| `pythonPath` | 空 | 可选的「Python 3 解释器 / Python 3 interpreter」override；为空时自动探测（macOS 为 `python3`；Windows 依次为 `py -3`、`python`、`python3`），所选解释器必须能导入 PyMuPDF |
 | `codexModel` | 空 | 可选 Codex 模型 override；为空时使用隔离任务的服务/内置默认值，不加载用户 `config.toml` |
 | `codexReasoningEffort` | 空 | 可选 Codex reasoning override；为空时使用隔离任务的服务/内置默认值，不加载用户 `config.toml` |
 | `model` | `sonnet` | Claude 模型 alias |
@@ -300,12 +342,13 @@ vault 的 `.obsidian` 配置和插件也不可读写。Codex 自身仍可通过 
 凭据或无关本地文件；如果任务生成的命令或输出与论文分析无关，应立即停止。
 
 PaperReader 没有内置分析或遥测。实现功能所需的流量仍会访问公开报告站、arXiv、
-Zotero、macOS/OneDrive File Provider 与所选 AI provider。完整数据流和披露政策
+Zotero、OneDrive（macOS File Provider 或 Windows OneDrive 同步引擎）与所选
+AI provider。完整数据流和披露政策
 见[中文安全政策](../SECURITY_ZH.md)。
 
 ## 从源码运行
 
-受支持的 macOS 开发流程：
+macOS 与 Windows 通用的开发流程：
 
 ```bash
 cd app
@@ -317,10 +360,9 @@ npm start
 `prestart` 会在 Electron 启动前刷新内置站点 snapshot。App 使用 Electron 43 与
 electron-builder 26，由 `package-lock.json` 锁定。
 
-`run-windows.bat` 只是实验性的 Windows 源码启动器。它不安装 Windows 产品、不
-验证 Zotero/OneDrive 事务，也不表示 Windows 已受支持。不要把它打入 GitHub
-Release；Windows 正式支持的全部阻塞项见
-[Windows 路线图](../docs/WINDOWS_ROADMAP_ZH.md)。
+`run-windows.bat` 仍只是实验性的 Windows 源码开发启动器：它只运行 `npm ci`
+与 `npm start`，不是受支持的产品入口，也不是发布资产；普通 Windows 用户请
+安装经过校验的 Setup 安装包。不要把它打入 GitHub Release。
 
 ## 构建与发布
 
@@ -331,19 +373,28 @@ cd app
 npm run dist:mac
 ```
 
-`Build PaperReader for macOS` GitHub Actions workflow 可以手动运行。匹配 `v*`
+在 Windows x64 上构建 Windows 安装包：
+
+```bash
+cd app
+npm run dist:win
+```
+
+`Build PaperReader` GitHub Actions workflow 可以手动运行。匹配 `v*`
 的 tag 还会执行稳定版发布流程：
 
-1. 使用 `npm ci` 安装依赖；
-2. 运行 `npm test`；
-3. 构建未签名的 Apple Silicon（`arm64`）与 Intel（`x64`）DMG；
-4. 生成 `SHA256SUMS.txt`；
-5. 把两份安装包和 checksum manifest 发布到稳定 GitHub Release。
+1. 在 macOS 与 Windows runner 上使用 `npm ci` 安装依赖；
+2. 在两个平台上运行 `npm test` 与 Python 测试；
+3. 在 macOS 构建未签名的 Apple Silicon（`arm64`）与 Intel（`x64`）DMG，在
+   Windows 构建未签名的 `x64` NSIS 安装包；
+4. 审计打包产物，并把各 job 的 checksum 合并为一份 `SHA256SUMS.txt`；
+5. 把三份安装包和合并的 checksum manifest 发布到稳定 GitHub Release。
 
 tag 推送前必须完成[中文发布检查清单](../RELEASE_CHECKLIST_ZH.md)或对应的
 [英文清单](../RELEASE_CHECKLIST.md)。只有 tag、Release 和全部资产实际存在后，
-文档才能把 v0.3.0 从候选版改为已发布稳定版。v0.3 只发布 Mac DMG，不得上传
-`.exe`、`.msi`、Windows archive、`run-windows.bat` 或增量分发资产。
+文档才能把 v0.3.1 从候选版改为已发布稳定版。发布资产只包含两份 Mac DMG、一份
+Windows Setup 安装包与合并的 `SHA256SUMS.txt`；不得上传 `.msi`、便携版压缩包、
+`run-windows.bat`、增量分发资产或任何额外的 `.yml` 元数据文件。
 
 ## 排错
 
@@ -376,8 +427,11 @@ tag 推送前必须完成[中文发布检查清单](../RELEASE_CHECKLIST_ZH.md)�
   默认模型；PaperReader 不加载用户 `config.toml`。
 - **无法安装 Trae：**本版本不提供公开 TraeCode installer。除非已独立获得受支持
   Trae CLI 与账号，否则使用 Codex 或 Claude。
-- **缺少 `fitz`：**确认 login-shell 中 `python3 -c 'import fitz'` 成功，把隔离环境
-  的 `bin` 目录加入 login-shell `PATH`，并重启 PaperReader。
+- **缺少 `fitz`：**macOS 上确认 login-shell 中 `python3 -c 'import fitz'` 成功，
+  把隔离环境的 `bin` 目录加入 login-shell `PATH`，并重启 PaperReader。Windows
+  上从 python.org 安装 Python 3，按前文创建隔离环境，并在设置中选择该环境的
+  `python.exe`（**Python 3 解释器 / Python 3 interpreter**）；Microsoft Store
+  的 python stub 会被自动拒绝。
 - **多设备 vault 冲突：**只使用 OneDrive 或 Obsidian Sync 其中之一；先让唯一
   canonical copy 完成同步，再在其他设备重新打开。
 - **Provider 配额耗尽：**降低 AI 精读 `concurrency`，或切换模型/provider。
@@ -386,9 +440,12 @@ tag 推送前必须完成[中文发布检查清单](../RELEASE_CHECKLIST_ZH.md)�
 - **macOS 阻止首次启动：**从官方 Release 重新下载，验证 `SHA256SUMS.txt`，再在
   Finder 中 Control-click/右键 PaperReader，选择**打开**。不要全局关闭
   Gatekeeper。
-- **Windows 无法完成 Zotero/OneDrive 流程：**Windows 尚未受支持；不要把
-  `run-windows.bat` 当作安装包或兼容性保证。参阅
-  [Windows 路线图](../docs/WINDOWS_ROADMAP_ZH.md)。
+- **Windows 首次运行出现 SmartScreen 提示：**先用 `SHA256SUMS.txt` 校验 Setup
+  安装包，再只对这一个文件选择**更多信息** → **仍要运行**。不要全局关闭
+  SmartScreen、Defender 或其他 Windows 安全功能。
+- **Windows 上云端状态一直无法确认：**保持 OneDrive 运行且已登录，保持
+  Files On-Demand 开启，并确认链接目录位于当前登录账号的 OneDrive 同步
+  文件夹内；同步暂停或未登录时绝不会被当作已确认。
 
 ## 重要文件
 
@@ -399,10 +456,10 @@ tag 推送前必须完成[中文发布检查清单](../RELEASE_CHECKLIST_ZH.md)�
 | `renderer.js` / `shell.html` | 可信 shell、导航、任务与 Zotero 控件 |
 | `report-sandbox.js` / `report-gesture.js` | 报告 content policy 与真实用户手势门禁 |
 | `zotero-credentials.js` / `zotero-key-verify.js` | 安全存储与 Zotero key 验证 |
-| `zotero-profile.js` | 当前 profile 与 linked directory 检测 |
+| `zotero-profile.js` | 当前 profile 与 linked directory 检测（macOS 与 Windows 布局） |
 | `zotero-linked-store.js` | 已校验、原子的 linked-PDF 写入 |
 | `zotero-pdf-queue.js` | 固定最大并发 4、FIFO、相同 key 合并的 Zotero PDF/OneDrive 队列 |
-| `onedrive-cloud-verify.js` | macOS File Provider 云端确认 |
+| `onedrive-cloud-verify.js` | 云端上传确认：macOS File Provider / Windows cloud-files placeholder 属性 |
 | `zotero-save.js` | 幂等 Zotero item/attachment reconciliation |
 | `job-queue.js` | AI provider 路由、可配置精读并发、取消与 watchdog |
 | `spawn-codex.js` / `spawn-claude.js` / `spawn-trae.js` | 本地 provider 适配器 |

@@ -1,5 +1,6 @@
 @echo off
-REM Source/development launcher for Windows; v0.3.0 has no Windows release.
+REM Source/development launcher for Windows contributors. End users should
+REM install the released PaperReader-<version>-x64-Setup.exe instead.
 REM Requires: Node.js (npm) + Codex, Claude Code, or TraeCode CLI installed and logged in.
 cd /d "%~dp0"
 if not exist "node_modules\electron" (

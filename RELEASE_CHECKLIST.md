@@ -2,10 +2,11 @@
 
 [中文版本](RELEASE_CHECKLIST_ZH.md)
 
-Use this checklist for v0.3.0 and later stable macOS releases. v0.3 is a
-**macOS-only** release; the Windows roadmap does not block it. A tag is the
+Use this checklist for v0.3.1 and later stable releases. Since v0.3.1 a
+release covers **macOS 12+ and Windows 10/11 (x64)**; Linux stays out of
+scope. A tag is the
 publication trigger, so do not push one until every blocking item below is
-complete. Until the matching tag, Release, and assets actually exist, v0.3.0 in
+complete. Until the matching tag, Release, and assets actually exist, v0.3.1 in
 this source tree is a candidate.
 
 ## 1. Scope and version
@@ -14,12 +15,13 @@ this source tree is a candidate.
   lockfile, window/about UI, documentation, asset names, and release notes.
 - [ ] Release notes use **stable release** only when every gate is complete and
   the tag is about to publish that release; earlier source builds are candidates.
-- [ ] The v0.3 scope is macOS 12+ on Apple Silicon and Intel. Do not claim that
-  Windows or Linux is supported.
-- [ ] Future Windows work is documented as planned and does not block this macOS
-  release or appear as an already delivered feature.
+- [ ] The v0.3.1 scope is macOS 12+ on Apple Silicon and Intel plus
+  Windows 10/11 on x64. Do not claim that Linux or Windows arm64 is supported.
+- [ ] Remaining Windows hardening (the real-machine acceptance matrix, the
+  Authenticode signing decision, a Windows arm64 build) stays documented as
+  roadmap backlog and is not described as already delivered.
 - [ ] `app/run-windows.bat` is treated only as a source development helper, not
-  evidence of Windows support and not a v0.3 release artifact.
+  a release artifact; the supported Windows entry point is the Setup installer.
 - [ ] No unrelated local build, cache, credential, vault, or user file is in the
   commit.
 - [ ] The website is documented and rendered as read-only; local Zotero and AI
@@ -116,20 +118,46 @@ this source tree is a candidate.
 
 ## 4. Build and artifact audit
 
-- [ ] Build unsigned `arm64` and `x64` DMGs on the supported macOS runner.
+### macOS
+
+- [ ] Build unsigned `arm64` and `x64` DMGs on the supported macOS runner (CI
+  `build-macos` job or `npm run dist:mac`).
 - [ ] Install each DMG on a clean matching Mac or clean VM/user profile.
 - [ ] Confirm first launch uses Finder's Control-click/right-click **Open** flow
   and does not require disabling Gatekeeper globally.
 - [ ] Confirm packaged resources contain the `paper-reading` skill, scripts,
   references, requirement declaration, icons, and minimal read-only site snapshot.
 - [ ] Run the release artifact audit against the unpacked App and both DMGs.
-- [ ] Generate `SHA256SUMS.txt` from the final, immutable DMGs and verify it with
-  `shasum -a 256 -c SHA256SUMS.txt`.
+
+### Windows
+
+- [ ] Build the unsigned Windows x64 NSIS installer through the CI
+  `windows-latest` job or locally with `npm run dist:win` on Windows x64.
+- [ ] Verify the `PaperReader-<version>-x64-Setup.exe` line of the merged
+  `SHA256SUMS.txt` with `Get-FileHash` (PowerShell) or `sha256sum -c`
+  (Git Bash) against the final artifact.
+- [ ] Fresh-install smoke test on clean Windows 10 and Windows 11 (x64):
+  SmartScreen **More info** → **Run anyway** on the verified file only,
+  per-user install with a choosable directory, first launch, one Add to
+  Zotero with cloud confirmation, and one 「帮我读」 read.
+- [ ] Manual-upgrade smoke test: run the new Setup exe over the previous
+  install and confirm settings, caches, and encrypted credentials under
+  `%APPDATA%\PaperReader` remain available.
+- [ ] Run the release artifact audit against the unpacked Windows app and the
+  Setup exe.
+
+### Release assets
+
+- [ ] Confirm the merged `SHA256SUMS.txt` is generated from the final,
+  immutable installers and verifies against all three.
 - [ ] Confirm the uploaded assets contain exactly the two architecture-correct
-  DMGs and `SHA256SUMS.txt`, with no local duplicate/obsolete package.
-  GitHub-generated source archives may appear separately.
-- [ ] Confirm no `.exe`, `.msi`, Windows portable archive, incremental delivery
-  manifest, ZIP patch asset, or `run-windows.bat` is uploaded as a v0.3 asset.
+  DMGs, the Windows x64 Setup exe, and the merged `SHA256SUMS.txt` — only the
+  three installers and `SHA256SUMS.txt` are uploaded, with no local
+  duplicate/obsolete package. GitHub-generated source archives may appear
+  separately.
+- [ ] Confirm no `.msi`, portable archive, incremental delivery manifest, extra
+  `.yml` metadata or feed file, ZIP patch asset, or `run-windows.bat` is
+  uploaded as a release asset.
 
 ## 5. Publish and post-publish
 
@@ -137,17 +165,23 @@ this source tree is a candidate.
   set an early-access flag.
 - [ ] Create and push the annotated release tag (optionally Git-signed) only
   after the release commit is reviewed and authorized.
-- [ ] Verify the GitHub release title, notes, architecture labels, unsigned and
-  unnotarized warning, checksum instructions, manual-upgrade instructions, and links.
-- [ ] Confirm the tag, GitHub Release, two DMGs, and `SHA256SUMS.txt` actually
+- [ ] Verify the GitHub release title, notes, platform/architecture labels, the
+  unsigned (unnotarized DMG / no-Authenticode setup) warnings, checksum
+  instructions, manual-upgrade instructions, and links.
+- [ ] Confirm the tag, GitHub Release, three installers, and the merged
+  `SHA256SUMS.txt` actually
   exist before changing documentation from candidate to published stable.
 - [ ] Download all published assets again and independently verify checksums.
-- [ ] Test the public release page and one clean install from the published DMG.
-- [ ] Replace an older installed build with the new DMG and confirm App settings,
+- [ ] Test the public release page and one clean install from the published DMG
+  and one from the published Setup exe.
+- [ ] Replace an older installed build with the new DMG (macOS) or the new
+  Setup exe (Windows) and confirm App settings,
   cache, and encrypted credentials remain available.
 - [ ] Verify the public website still exposes only read-only functionality.
 - [ ] Record any discovered regression in the release notes and security channel;
   rotate a credential immediately if the audit finds a real secret.
-- [ ] Keep future Windows work in the separate
-  [Windows roadmap](docs/WINDOWS_ROADMAP.md); it neither blocks this macOS release
-  nor changes this Release's platform claim.
+- [ ] Keep the remaining Windows hardening backlog (real-machine acceptance
+  matrix, Authenticode signing decision, Windows arm64) and any future Linux
+  work in the separate
+  [Windows roadmap](docs/WINDOWS_ROADMAP.md); backlog items do not change this
+  Release's platform claims.

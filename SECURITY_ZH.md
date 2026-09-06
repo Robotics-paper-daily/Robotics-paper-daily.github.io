@@ -12,10 +12,11 @@ PaperReader 桌面版，则只有当前 `main` 分支属于支持范围。
 | 软件或平台 | 状态 |
 |---|---|
 | 当前 `main` 分支 | 支持 |
-| Releases 页面中实际存在的最新 PaperReader macOS 桌面稳定版 | 支持 |
-| 本源码树中的目标版本 v0.3.0 | 在对应 tag、Release、两份 DMG 与 `SHA256SUMS.txt` 实际发布前属于候选版 |
+| Releases 页面中实际存在的最新 PaperReader macOS（12+）桌面稳定版 | 支持 |
+| Releases 页面中实际存在的最新 PaperReader Windows 10/11（`x64`）桌面稳定版 | 支持 |
+| 本源码树中的目标版本 v0.3.1 | 在对应 tag、Release、三份安装包与合并的 `SHA256SUMS.txt` 实际发布前属于候选版 |
 | 已停用的 v0.2 网页写入功能 | 不支持；不得用于新安装 |
-| Windows | 不支持；当前没有正式安装包或发布承诺 |
+| Windows `arm64` | 不支持；未构建对应安装包 |
 | Linux | 不支持；当前没有正式安装包或发布承诺 |
 
 v0.2 的 WebDAV 上传流程与加密网页凭据包已经停用，不得用于新安装。
@@ -46,7 +47,7 @@ API key、密码、私有论文、vault 笔记，或未经脱敏的 App 支持�
 以下内容不属于本项目当前的支持范围：
 
 - 已停用的 v0.2 网页写入流程；
-- 尚未发布和支持的 Windows 或 Linux 版本；
+- 尚未发布和支持的平台版本（Linux、Windows `arm64`）；
 - Zotero、OneDrive、Obsidian、GitHub、arXiv 或 AI provider 本身的独立漏洞，
   除非问题由 PaperReader 的集成或边界处理直接造成；
 - 针对不属于报告者的账号、设备、文献库、vault 或部署进行的测试；
@@ -54,17 +55,18 @@ API key、密码、私有论文、vault 笔记，或未经脱敏的 App 支持�
 
 ## 数据与信任边界
 
-以下本地路径适用于当前受支持的 macOS 版本：
+以下本地路径按 macOS 布局书写；Windows 上同样的 PaperReader 文件位于
+`%APPDATA%\PaperReader\` 下，边界完全相同：
 
 | 数据或操作 | 目标位置 | 边界 |
 |---|---|---|
 | 公开报告 | 项目 GitHub Pages / 本地缓存 | 只读报告内容属于不可信输入，并在沙箱中运行 |
-| Zotero API key 与 user ID | `~/Library/Application Support/PaperReader/zotero-credentials.secure.json` | 使用 Electron `safeStorage` 加密；不允许明文回退 |
+| Zotero API key 与 user ID | `~/Library/Application Support/PaperReader/zotero-credentials.secure.json` | 使用 Electron `safeStorage` 加密（macOS 由 Keychain 支持，Windows 由 DPAPI 支持）；不允许明文回退 |
 | App 非敏感设置 | `~/Library/Application Support/PaperReader/config.json` | 本地文件；可能暴露私有文件系统路径 |
 | 报告缓存 | `~/Library/Application Support/PaperReader/site-cache/` | 缓存于本机的公开报告数据 |
 | 精读临时文件 | `~/Library/Application Support/PaperReader/paper-cache/` | 由 App 管理、位于 vault 外；以 `$PAPERREADER_CACHE_DIR` 提供给 provider |
 | Zotero 元数据 | Zotero Web API 与 Zotero Sync | 使用个人文献库读写 key；绝不发送到报告 HTML |
-| 链接 PDF 文件 | 用户选择的 OneDrive 文件夹 | 由 OneDrive / File Provider 同步；与 Zotero 元数据同步相互独立 |
+| 链接 PDF 文件 | 用户选择的 OneDrive 文件夹 | 由 OneDrive 同步，并以 fail-closed 方式确认——macOS 用 File Provider，Windows 用 NTFS cloud-files placeholder 状态；与 Zotero 元数据同步相互独立 |
 | 完成的论文笔记 | 用户选择的 Obsidian vault | 可能包含论文文本、图片、源码片段与私人批注 |
 | AI 精读请求 | 所选 OpenAI Codex CLI（`codex`）、Claude Code 或 TraeCode provider | provider CLI 可能依据其条款发送论文、prompt、上下文与诊断信息 |
 
@@ -113,7 +115,8 @@ Claude 使用自身的订阅/OAuth 会话。TraeCode 仅适用于已经获得受
 凭据。
 
 PaperReader 不包含内置分析或遥测。实现功能所需的网络流量仍会访问公开报告站、
-arXiv、Zotero、OneDrive/macOS File Provider 与所选 AI provider。外部服务可能
+arXiv、Zotero、OneDrive（macOS File Provider 或 Windows OneDrive 同步引擎）
+与所选 AI provider。外部服务可能
 采用其自己的日志和遥测政策。
 
 ## 凭据处理与迁移
@@ -131,17 +134,22 @@ arXiv、Zotero、OneDrive/macOS File Provider 与所选 AI provider。外部服�
 
 ## 发布完整性
 
-本源码树以 v0.3.0 为目标，但在对应 tag、GitHub Release、两份 DMG 与
+本源码树以 v0.3.1 为目标，但在对应 tag、GitHub Release、三份安装包与合并的
 `SHA256SUMS.txt` 实际存在前，它仍是候选版，不得描述为已经发布的稳定版。
 
-v0.3.0 候选 DMG 没有 Apple Developer ID 签名，也没有经过 Apple 公证。正式
-发布存在后，应从同一个官方 GitHub Release 下载与架构匹配的 DMG 和
+v0.3.1 候选安装包均未签名：DMG 没有 Apple Developer ID 签名、未经过 Apple
+公证，Windows Setup 安装包没有 Authenticode 签名。正式
+发布存在后，应从同一个官方 GitHub Release 下载与平台匹配的安装包和
 `SHA256SUMS.txt`，使用 [`README_ZH.md`](README_ZH.md) 中对应的校验命令，并
-要求该 DMG 显示 `OK`。SHA-256 校验可以发现下载损坏，但不能替代 Apple 签名或
-公证，也不能在发布账号或渠道失陷时证明来源真实性。
+要求校验通过。SHA-256 校验可以发现下载损坏，但不能替代 Apple 签名/公证或
+Windows Authenticode 签名，也不能在发布账号或渠道失陷时证明来源真实性。
 
 对于每个新下载的 App bundle，首次启动时可能需要在 Finder 中右键或按住 Control
 点击 PaperReader，选择**打开**；绝不能建议用户全局关闭 Gatekeeper。
+
+Windows 上，未签名安装包的首次运行可能触发 Microsoft Defender SmartScreen。
+在 SHA-256 校验通过后，**更多信息** → **仍要运行**只应用于这一个文件；绝不能
+建议用户全局关闭 SmartScreen、Defender 或其他 Windows 安全控制。
 
 维护者必须遵循中文[发布检查清单](RELEASE_CHECKLIST_ZH.md)或对应的
 [英文清单](RELEASE_CHECKLIST.md)，包括 secret 扫描、产物审计、测试、checksum

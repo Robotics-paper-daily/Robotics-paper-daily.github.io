@@ -13,10 +13,11 @@ branch is supported.
 | Software or platform | Status |
 |---|---|
 | Current `main` branch | Supported |
-| Latest PaperReader macOS stable release that actually exists on Releases | Supported |
-| v0.3.0 target in this source tree | Candidate until its tag, Release, two DMGs, and `SHA256SUMS.txt` actually exist |
+| Latest PaperReader macOS (12+) stable release that actually exists on Releases | Supported |
+| Latest PaperReader Windows 10/11 (`x64`) stable release that actually exists on Releases | Supported |
+| v0.3.1 target in this source tree | Candidate until its tag, Release, three installers, and the merged `SHA256SUMS.txt` actually exist |
 | Retired v0.2 browser writer | Unsupported; do not use for a new installation |
-| Windows | Unsupported; there is no official installer or release commitment |
+| Windows `arm64` | Unsupported; no build is produced |
 | Linux | Unsupported; there is no official installer or release commitment |
 
 The retired v0.2 WebDAV upload and encrypted website credential bundle must not
@@ -53,7 +54,7 @@ In scope:
 Out of scope:
 
 - the retired v0.2 browser mutation path;
-- unreleased and unsupported Windows or Linux builds;
+- unreleased and unsupported platform builds (Linux, Windows `arm64`);
 - vulnerabilities wholly within Zotero, OneDrive, Obsidian, GitHub, arXiv, or
   an AI provider unless PaperReader's integration or boundary handling causes
   the issue;
@@ -63,17 +64,18 @@ Out of scope:
 
 ## Data and trust boundaries
 
-The local paths below describe the currently supported macOS target.
+The local paths below use the macOS layout; on Windows the same PaperReader
+files live under `%APPDATA%\PaperReader\` and the same boundaries apply.
 
 | Data/action | Destination | Boundary |
 |---|---|---|
 | Public reports | Project GitHub Pages / local cache | Read-only report content is untrusted and sandboxed |
-| Zotero API key and user ID | `~/Library/Application Support/PaperReader/zotero-credentials.secure.json` | Encrypted with Electron `safeStorage`; plaintext fallback is refused |
+| Zotero API key and user ID | `~/Library/Application Support/PaperReader/zotero-credentials.secure.json` | Encrypted with Electron `safeStorage` (Keychain-backed on macOS, DPAPI-backed on Windows); plaintext fallback is refused |
 | Non-secret App settings | `~/Library/Application Support/PaperReader/config.json` | Local file; may reveal private filesystem paths |
 | Report cache | `~/Library/Application Support/PaperReader/site-cache/` | Public report data cached locally |
 | Reading scratch | `~/Library/Application Support/PaperReader/paper-cache/` | App-owned, outside the vault; exposed to a provider as `$PAPERREADER_CACHE_DIR` |
 | Zotero metadata | Zotero Web API and Zotero Sync | Personal-library read/write key; never sent into report HTML |
-| Linked PDF bytes | User-selected OneDrive folder | OneDrive/file-provider sync; separate from Zotero metadata sync |
+| Linked PDF bytes | User-selected OneDrive folder | OneDrive sync, confirmed fail-closed by macOS File Provider or the Windows NTFS cloud-files placeholder state; separate from Zotero metadata sync |
 | Finished paper notes | User-selected Obsidian vault | May include paper text, figures, source snippets, and private annotations |
 | AI reading request | Selected OpenAI Codex CLI (`codex`), Claude Code, or TraeCode provider | Provider CLI may transmit the paper, prompt, context, and diagnostics under provider terms |
 
@@ -130,8 +132,9 @@ supported CLI and account; this project does not distribute or provision it.
 PaperReader does not collect or save credentials for any AI provider.
 
 PaperReader contains no built-in analytics or telemetry. Feature-required
-network traffic still goes to the public report site, arXiv, Zotero,
-OneDrive/macOS File Provider, and the selected AI provider. External services
+network traffic still goes to the public report site, arXiv, Zotero, OneDrive
+(macOS File Provider or the Windows OneDrive sync engine), and the selected AI
+provider. External services
 may apply their own logging and telemetry policies.
 
 ## Credential handling and migration
@@ -152,20 +155,29 @@ may apply their own logging and telemetry policies.
 
 ## Release integrity
 
-This source tree targets v0.3.0, but it remains a candidate until the matching
-tag, GitHub Release, two DMGs, and `SHA256SUMS.txt` actually exist. Documentation
+This source tree targets v0.3.1, but it remains a candidate until the matching
+tag, GitHub Release, three installers, and the merged `SHA256SUMS.txt` actually
+exist. Documentation
 must not call it a published stable release before then.
 
-The candidate v0.3.0 DMGs are unsigned and unnotarized. After an official
-release exists, download the architecture-correct DMG and `SHA256SUMS.txt` from
-that same Release, use the selected checksum command in [`README.md`](README.md),
-and require the DMG to report `OK`. A SHA-256 match detects a corrupt download;
-it does not replace Apple signing or notarization and cannot prove provenance if
+The candidate v0.3.1 installers are unsigned: the DMGs are unnotarized and the
+Windows setup has no Authenticode signature. After an official
+release exists, download the platform-correct installer and `SHA256SUMS.txt`
+from that same Release, use the matching checksum command in
+[`README.md`](README.md),
+and require the check to pass. A SHA-256 match detects a corrupt download;
+it does not replace Apple signing/notarization or Windows Authenticode signing
+and cannot prove provenance if
 the release account or channel is compromised.
 
 Each newly downloaded App bundle may require Finder's Control-click/right-click
 **Open** exception on first launch. Never advise users to disable Gatekeeper
 globally.
+
+On Windows, first run of the unsigned installer may trigger Microsoft Defender
+SmartScreen. After the SHA-256 has been verified, **More info** → **Run
+anyway** applies to that one file only. Never advise users to disable
+SmartScreen, Defender, or other Windows security controls globally.
 
 Maintainers must follow the [English release checklist](RELEASE_CHECKLIST.md) or
 the [Chinese checklist](RELEASE_CHECKLIST_ZH.md), including secret scans,

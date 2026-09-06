@@ -1,8 +1,8 @@
 {
   "name": "paperreader",
   "productName": "PaperReader",
-  "version": "0.3.0",
-  "description": "macOS desktop companion for daily papers, local AI reading, Obsidian notes, and OneDrive-linked Zotero attachments.",
+  "version": "0.3.1",
+  "description": "Desktop companion (macOS and Windows) for daily papers, local AI reading, Obsidian notes, and OneDrive-linked Zotero attachments.",
   "author": "scpsyl",
   "license": "MIT",
   "main": "main.js",
@@ -15,7 +15,9 @@
     "predist": "npm run audit:release",
     "dist": "electron-builder",
     "predist:mac": "npm run audit:release",
-    "dist:mac": "electron-builder --mac --arm64 --x64"
+    "dist:mac": "electron-builder --mac --arm64 --x64",
+    "predist:win": "npm run audit:release",
+    "dist:win": "electron-builder --win --x64"
   },
   "devDependencies": {
     "electron": "^43.3.0",
@@ -107,6 +109,28 @@
     },
     "dmg": {
       "writeUpdateInfo": false
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png",
+      "artifactName": "PaperReader-${version}-${arch}-Setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "differentialPackage": false,
+      "shortcutName": "PaperReader",
+      "uninstallDisplayName": "PaperReader",
+      "deleteAppDataOnUninstall": false,
+      "artifactName": "PaperReader-${version}-${arch}-Setup.${ext}"
     }
   }
 }
