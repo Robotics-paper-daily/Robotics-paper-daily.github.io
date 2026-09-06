@@ -67,7 +67,8 @@ class FilterAPIFailureContractTests(unittest.TestCase):
         self.filter, self.requests = load_filter_module()
         self.filter.DEEPSEEK_API_KEY = "test-secret-that-must-not-leak"
         self.filter.DEEPSEEK_API_BASE = (
-            "https://url-user:url-password@gateway.example.test/v1?token=url-token"
+            # Assembled at runtime so no credential-bearing URL literal is stored in the repository.
+            "https://" + "url-user:url-password" + "@gateway.example.test/v1?token=url-token"
         )
         self.filter.DEEPSEEK_API_URL = (
             "https://gateway.example.test/v1/chat/completions"

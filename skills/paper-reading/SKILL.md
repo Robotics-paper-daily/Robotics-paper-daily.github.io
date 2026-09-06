@@ -52,16 +52,33 @@ SKILL.md). It is bundled with the app and lives **outside** the vault, so always
 resolve the scripts as `<skill_dir>/scripts/…` using the absolute path the
 caller gives you — do not assume a vault-relative `.claude/skills/…` location.
 
-`$PAPERREADER_CACHE_DIR` is the absolute, App-owned scratch directory supplied
-to the provider process. `$PAPERREADER_PYTHON` is the exact absolute Python
+`PAPERREADER_CACHE_DIR` is the absolute, App-owned scratch directory supplied
+to the provider process. `PAPERREADER_PYTHON` is the exact absolute Python
 executable that PaperReader already verified can import PyMuPDF. Both live
-outside the Obsidian vault and must be quoted in every shell command. Before
-doing any work, verify the cache and Python variables:
+outside the Obsidian vault and must be quoted in every shell command.
+
+**Shell syntax.** The commands in this skill are written in POSIX form
+(`"$PAPERREADER_PYTHON"`, `cp`, `ls`) for macOS/Linux shells. On Windows your
+shell is PowerShell or cmd: expand the same variables as `$env:PAPERREADER_PYTHON`
+(PowerShell) or `%PAPERREADER_PYTHON%` (cmd), invoke the interpreter as
+`& $env:PAPERREADER_PYTHON ...` in PowerShell, and use `Copy-Item` / `Get-ChildItem`
+where a POSIX example says `cp` / `ls`. Do not translate anything else — script
+paths, arguments, and workflow order are identical on every platform.
+
+Before doing any work, verify the cache and Python variables. The absolute-path
+check runs inside Python so it is correct on every platform (POSIX `/...` and
+Windows drive paths alike):
 
 ```bash
-test -n "$PAPERREADER_CACHE_DIR" && test "${PAPERREADER_CACHE_DIR#/}" != "$PAPERREADER_CACHE_DIR"
-test -n "$PAPERREADER_PYTHON" && test "${PAPERREADER_PYTHON#/}" != "$PAPERREADER_PYTHON" && test -x "$PAPERREADER_PYTHON"
+# POSIX (macOS/Linux)
+"$PAPERREADER_PYTHON" -c 'import os; assert all(os.path.isabs(os.environ.get(k, "")) for k in ("PAPERREADER_CACHE_DIR", "PAPERREADER_PYTHON")), "PaperReader runtime env missing"'
 "$PAPERREADER_PYTHON" -c 'import fitz; print(fitz.VersionBind)'
+```
+
+```powershell
+# Windows (PowerShell)
+& $env:PAPERREADER_PYTHON -c 'import os; assert all(os.path.isabs(os.environ.get(k, "")) for k in ("PAPERREADER_CACHE_DIR", "PAPERREADER_PYTHON")), "PaperReader runtime env missing"'
+& $env:PAPERREADER_PYTHON -c 'import fitz; print(fitz.VersionBind)'
 ```
 
 If either check fails, stop with an actionable error. Never fall back to a
@@ -74,8 +91,9 @@ user's global Python environment. The required package is declared in
 - **Vault root** = the folder containing `.obsidian/`; it is your current working
   directory, so all note paths below (`<date>/<title>/…`) are relative to it.
 - Base name `<title>` = the paper's short title / method name, **sanitized for Windows**
-  (drop `\ / : * ? " < > |`, collapse whitespace, ≤ ~90 chars to leave room
-  for nested attachments on Windows). Date = **today**.
+  (drop `\ / : * ? " < > |`, collapse whitespace, no trailing dot or space, never a
+  bare reserved device name like `CON`/`PRN`/`AUX`/`NUL`/`COM1`-`COM9`/`LPT1`-`LPT9`,
+  ≤ ~90 chars to leave room for nested attachments on Windows). Date = **today**.
 - **Every paper is a self-contained folder** `<vault>/<date>/<title>/`, all sitting
   side by side under the date. A folder always contains:
   - `<title>.md` — the note;
@@ -196,7 +214,8 @@ inside every generated string, and emit arrays as separate quoted elements
 rather than a comma-joined scalar.
 
 - **Copy the original PDF into the folder**:
-  `cp "$PAPERREADER_CACHE_DIR/papers/<id>.pdf" "<date>/<title>/<id>.pdf"`.
+  POSIX `cp "$PAPERREADER_CACHE_DIR/papers/<id>.pdf" "<date>/<title>/<id>.pdf"`;
+  PowerShell `Copy-Item "$env:PAPERREADER_CACHE_DIR/papers/<id>.pdf" "<date>/<title>/<id>.pdf"`.
 - **If open-source, weave the code into §模型结构** — after each component's design,
   show its implementation as **(a)** a short key snippet (1–3 lines: the loss / core
   module / head) in a ```python block, **(b)** a clickable **`[[code/<flatname>|<original/path>]]`
@@ -277,7 +296,8 @@ The user reads these in order; each has a job:
 - **No dangling figures (verify before finishing):** only embed a figure you
   actually fetched and viewed. After writing the note, re-check that **every**
   `![[…/attachments/<id>/figN.png]]` you embedded points to a file that exists on
-  disk (`ls "<date>/<title>/attachments/<id>/"`). If a figure wasn't downloaded, fetch it
+  disk (list the folder: POSIX `ls`, PowerShell `Get-ChildItem`
+  `"<date>/<title>/attachments/<id>/"`). If a figure wasn't downloaded, fetch it
   (re-run `fetch_html_figures.py`) or delete that embed line — never leave an embed
   pointing at a missing image. (PaperReader auto-repairs missing HTML figures after
   a read as a backstop, but don't rely on it.)

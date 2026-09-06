@@ -65,7 +65,9 @@ test("source collection starts at repo root, covers release inputs, and prunes b
   ];
   for (const relative of [...included, ...excluded]) write(root, relative);
 
-  const actual = new Set(collectSourceFiles(root).map((file) => path.relative(root, file)));
+  const actual = new Set(
+    collectSourceFiles(root).map((file) => path.relative(root, file).split(path.sep).join("/"))
+  );
   for (const relative of included) assert.strictEqual(actual.has(relative), true, relative);
   for (const relative of excluded) assert.strictEqual(actual.has(relative), false, relative);
 });
@@ -143,6 +145,57 @@ test("text inspection detects the configured home path without embedding a real 
   );
 });
 
+test("text inspection rejects absolute Windows user paths but permits placeholders", () => {
+  // Assemble at runtime so the repository never contains a real-looking path.
+  const separator = String.fromCharCode(92);
+  const realish = ["C:", "Users", "release-owner", "Documents", ""].join(separator);
+  assert.throws(
+    () => inspectText("fixture", `log at ${realish}`, { homeDir: "" }),
+    /absolute Windows user path/
+  );
+  // The forward-slash spelling also contains "/Users/...", so either the
+  // macOS or the Windows signature may fire first — both block the release.
+  // Assembled at runtime so this test file never contains the literal itself.
+  const forwardSlashes = ["C:", "Users", "release-owner", "Documents", "private.txt"].join("/");
+  assert.throws(
+    () => inspectText("fixture", forwardSlashes, { homeDir: "" }),
+    /absolute (?:Windows|macOS) user path/
+  );
+  for (const placeholder of ["test", "alice", "example", "Public", "Default", "<username>"]) {
+    const text = ["C:", "Users", placeholder, "Documents", ""].join(separator);
+    assert.doesNotThrow(() => inspectText("fixture", text, { homeDir: "" }), text);
+  }
+});
+
+test("packaged-app audit expects the per-platform artifact manifest", (t) => {
+  const { PACKAGED_ASAR_COUNTS, auditDist } = require("../app/release-audit");
+  assert.deepStrictEqual(PACKAGED_ASAR_COUNTS, { darwin: 2, win32: 1 });
+
+  const dist = tempDir(t, "paperreader-release-dist-");
+  const resources = path.join(dist, "win-unpacked", "resources");
+  write(resources, "app.asar", "not a real asar");
+  for (const relative of REQUIRED_PACKAGED_RESOURCES) write(resources, relative);
+  const asarApi = {
+    listPackage: () => [
+      "/package.json",
+      ...[...ALLOWED_SITE_JS].map((file) => `/site/js/${file}`),
+    ],
+    extractFile: () => Buffer.from("safe packaged text"),
+  };
+
+  assert.doesNotThrow(() =>
+    auditDist(dist, { platform: "win32", asarApi, homeDir: "" })
+  );
+  assert.throws(
+    () => auditDist(dist, { platform: "darwin", asarApi, homeDir: "" }),
+    /expected exactly 2 packaged app\.asar file\(s\) for darwin, found 1/
+  );
+  assert.throws(
+    () => auditDist(dist, { platform: "linux", asarApi, homeDir: "" }),
+    /no packaged-app manifest is defined for platform linux/
+  );
+});
+
 test("text inspection rejects realistic Zotero key literals but permits obvious fixtures", () => {
   // Assemble the detector fixture at runtime so the repository itself never
   // contains a realistic 24-character key-shaped literal.
@@ -174,6 +227,14 @@ test("ASAR audit enforces the exact site script allowlist and forbidden filename
     extractFile: () => Buffer.from("safe packaged text"),
   };
   assert.doesNotThrow(() => auditAsar("fixture.asar", asarApi, { homeDir: "" }));
+
+  // On Windows @electron/asar lists entries with backslashes; the audit must
+  // treat them identically.
+  const windowsApi = {
+    ...asarApi,
+    listPackage: () => cleanEntries.map((entry) => entry.replaceAll("/", "\\")),
+  };
+  assert.doesNotThrow(() => auditAsar("fixture.asar", windowsApi, { homeDir: "" }));
 
   const forbiddenApi = {
     ...asarApi,
@@ -213,8 +274,14 @@ test("electron-builder includes public release metadata and excludes local crede
   ]) {
     assert.ok(appPackage.build.files.includes(pattern), pattern);
   }
-  assert.strictEqual(Object.hasOwn(appPackage.scripts, "dist:win"), false);
-  assert.strictEqual(Object.hasOwn(appPackage.build, "win"), false);
+  assert.strictEqual(appPackage.scripts["predist:win"], "npm run audit:release");
+  assert.strictEqual(appPackage.scripts["dist:win"], "electron-builder --win --x64");
+  assert.deepStrictEqual(appPackage.build.win.target, [{ target: "nsis", arch: ["x64"] }]);
+  assert.strictEqual(appPackage.build.win.artifactName, "PaperReader-${version}-${arch}-Setup.${ext}");
+  assert.strictEqual(appPackage.build.nsis.oneClick, false);
+  assert.strictEqual(appPackage.build.nsis.perMachine, false);
+  assert.strictEqual(appPackage.build.nsis.differentialPackage, false);
+  assert.strictEqual(appPackage.build.nsis.deleteAppDataOnUninstall, false);
 
   assert.strictEqual(Object.hasOwn(appPackage, "dependencies"), false);
   assert.strictEqual(Object.hasOwn(appPackage.build, "publish"), false);
@@ -225,7 +292,7 @@ test("electron-builder includes public release metadata and excludes local crede
   assert.strictEqual(appPackage.build.dmg.writeUpdateInfo, false);
 });
 
-test("release workflow publishes only unsigned macOS DMGs and checksums", () => {
+test("release workflow publishes only unsigned installers and checksums", () => {
   const workflow = fs.readFileSync(
     path.join(__dirname, "..", ".github", "workflows", "build-app.yml"),
     "utf8"
@@ -234,11 +301,17 @@ test("release workflow publishes only unsigned macOS DMGs and checksums", () => 
     'CSC_IDENTITY_AUTO_DISCOVERY: "false"',
     "app/dist/*.dmg",
     "app/dist/SHA256SUMS.txt",
+    "app/dist/PaperReader-*-Setup.exe",
+    "app/dist/SHA256SUMS-windows.txt",
+    "runs-on: windows-latest",
+    "npm run dist:win",
     "release-artifacts/PaperReader-${version}-*.dmg",
+    "release-artifacts/PaperReader-${version}-x64-Setup.exe",
     "release-artifacts/SHA256SUMS.txt",
   ]) {
     assert.match(workflow, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), marker);
   }
   assert.doesNotMatch(workflow, /electron-updater|latest-mac\.yml|\.blockmap|\.zip/);
   assert.doesNotMatch(workflow, /MAC_CSC|APPLE_(?:ID|APP_SPECIFIC_PASSWORD|TEAM_ID)|codesign --verify|spctl --assess/);
+  assert.doesNotMatch(workflow, /WIN_CSC|CSC_LINK|CSC_KEY_PASSWORD/);
 });

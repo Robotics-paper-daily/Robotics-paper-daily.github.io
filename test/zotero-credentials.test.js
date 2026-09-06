@@ -162,6 +162,19 @@ test("does not call the Linux-only backend probe on macOS or Windows", (t) => {
   assert.deepStrictEqual(store.load(), { apiKey: API_KEY, userId: "42" });
 });
 
+test("Windows DPAPI-backed storage encrypts and round-trips credentials", (t) => {
+  const storage = makeSafeStorage();
+  storage.getSelectedStorageBackend = () => {
+    throw new Error("Linux-only API called");
+  };
+  const { userDataDir, store } = tempStore(t, storage, "win32");
+  assert.strictEqual(secureStorageStatus(storage, "win32").available, true);
+  store.save({ apiKey: API_KEY, userId: "42" });
+  assert.deepStrictEqual(store.load(), { apiKey: API_KEY, userId: "42" });
+  const raw = fs.readFileSync(path.join(userDataDir, FILE_NAME), "utf8");
+  assert.ok(!raw.includes(API_KEY), "stored envelope must not contain the plaintext key");
+});
+
 test("rejects a credential backend that returns the plaintext", (t) => {
   const { userDataDir, store } = tempStore(t, makeSafeStorage({ plaintext: true }));
   assert.throws(

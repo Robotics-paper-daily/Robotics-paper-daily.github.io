@@ -16,6 +16,7 @@ const DEFAULTS = {
   codexPath: "", // optional override; "" = auto-resolve (spawn-codex.js)
   claudePath: "", // optional override; "" = auto-resolve (spawn-claude.js)
   traePath: "", // optional override; "" = auto-resolve (spawn-trae.js)
+  pythonPath: "", // optional interpreter override; "" = auto-probe (env-probe.js)
   concurrency: 10, // simultaneous reads
   model: "sonnet", // --model alias; "" = CLI/settings default
   codexModel: "", // empty = Codex service/CLI default for this isolated job
@@ -118,6 +119,8 @@ function merge(patch) {
   if (typeof next.codexPath !== "string") next.codexPath = "";
   if (typeof next.claudePath !== "string") next.claudePath = "";
   if (typeof next.traePath !== "string") next.traePath = "";
+  if (typeof next.pythonPath !== "string") next.pythonPath = "";
+  else next.pythonPath = next.pythonPath.trim();
   if (typeof next.liveBase !== "string") next.liveBase = DEFAULTS.liveBase;
   next.liveBase = next.liveBase.trim().replace(/\/$/, "");
   if (!["sonnet", "opus", "haiku", ""].includes(next.model)) {

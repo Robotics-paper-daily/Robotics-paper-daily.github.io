@@ -8,11 +8,11 @@
 |---|---|---|
 | Project overview and quick start | This file | [README_ZH.md](README_ZH.md) |
 | PaperReader user and developer guide | [app/README.md](app/README.md) | [app/README_ZH.md](app/README_ZH.md) |
-| v0.3.0 release notes | [RELEASES_NOTES.md](RELEASES_NOTES.md) | [RELEASES_NOTES_ZH.md](RELEASES_NOTES_ZH.md) |
+| v0.3.1 release notes | [RELEASES_NOTES.md](RELEASES_NOTES.md) | [RELEASES_NOTES_ZH.md](RELEASES_NOTES_ZH.md) |
 | Security policy | [SECURITY.md](SECURITY.md) | [SECURITY_ZH.md](SECURITY_ZH.md) |
 | Contribution guide | [CONTRIBUTING.md](CONTRIBUTING.md) | [CONTRIBUTING_ZH.md](CONTRIBUTING_ZH.md) |
 | Maintainer release checklist | [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) | [RELEASE_CHECKLIST_ZH.md](RELEASE_CHECKLIST_ZH.md) |
-| Planned Windows work | [docs/WINDOWS_ROADMAP.md](docs/WINDOWS_ROADMAP.md) | [docs/WINDOWS_ROADMAP_ZH.md](docs/WINDOWS_ROADMAP_ZH.md) |
+| Windows roadmap and acceptance record | [docs/WINDOWS_ROADMAP.md](docs/WINDOWS_ROADMAP.md) | [docs/WINDOWS_ROADMAP_ZH.md](docs/WINDOWS_ROADMAP_ZH.md) |
 
 [Third-party notices](THIRD_PARTY_NOTICES.md) are maintained as canonical
 English legal and attribution text; the product, operating, security, and
@@ -29,7 +29,7 @@ browser, but **Add to Zotero** and **「帮我读」** are PaperReader desktop f
 The browser is not asked to handle a local OneDrive folder, local credentials,
 or a local AI CLI.
 
-## v0.3.0: PaperReader for macOS
+## v0.3.1: PaperReader for macOS and Windows
 
 PaperReader is the local companion app for the archive. From a paper card it can:
 
@@ -42,56 +42,75 @@ PaperReader is the local companion app for the archive. From a paper card it can
 - fetch the newest published reports on launch, with cache and bundled-snapshot
   fallbacks.
 
-> **Release status:** this source tree targets v0.3.0 for macOS. It remains a
-> release candidate until the matching tag, GitHub Release, two DMGs, and
-> `SHA256SUMS.txt` actually exist. Check the official
+> **Release status:** this source tree targets v0.3.1 for macOS and Windows. It
+> remains a release candidate until the matching tag, GitHub Release, three
+> installers, and the merged `SHA256SUMS.txt` actually exist. Check the official
 > [Releases page](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases)
 > before treating it as published. The source remains open under the MIT license.
 
-| Platform | v0.3.0 status |
+| Platform | v0.3.1 status |
 |---|---|
 | macOS 12+ (`arm64`, `x64`) | Release target; unsigned and unnotarized candidate |
-| Windows | Planned, not yet supported; no installer or validated end-to-end workflow |
+| Windows 10 and Windows 11 (`x64`) | Release target; unsigned NSIS installer candidate with the same feature set as macOS |
+| Windows `arm64` | Not built |
 | Linux | Unsupported; no installer or validated end-to-end workflow |
 
 `app/run-windows.bat` is an experimental source development launcher, not a
-supported product, release, or installer. See the
-[Windows roadmap](docs/WINDOWS_ROADMAP.md) for the required engineering and
-acceptance gates.
+supported product, release, or installer — the supported entry point on Windows
+is the Setup installer. See the [Windows roadmap](docs/WINDOWS_ROADMAP.md) for
+the delivered engineering work and the remaining hardening backlog.
 
 ## Install PaperReader
 
-After the official v0.3.0 Release exists, download its assets from the
+After the official v0.3.1 Release exists, download its assets from the
 [GitHub Releases page](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases).
 Before that, the files below are expected release artifacts, not available
 downloads:
 
-| Mac | Installer |
+| Machine | Installer |
 |---|---|
-| Apple Silicon (M1/M2/M3/M4 and newer) | `PaperReader-0.3.0-arm64.dmg` |
-| Intel | `PaperReader-0.3.0-x64.dmg` |
+| Apple Silicon Mac (M1/M2/M3/M4 and newer) | `PaperReader-0.3.1-arm64.dmg` |
+| Intel Mac | `PaperReader-0.3.1-x64.dmg` |
+| Windows 10/11 PC (`x64`) | `PaperReader-0.3.1-x64-Setup.exe` |
 
-Download `SHA256SUMS.txt` from the same release and verify before opening:
+Download `SHA256SUMS.txt` from the same release and verify before opening. On
+macOS:
 
 ```bash
 cd ~/Downloads
 # Apple Silicon:
-grep 'PaperReader-0.3.0-arm64.dmg$' SHA256SUMS.txt | shasum -a 256 -c -
+grep 'PaperReader-0.3.1-arm64.dmg$' SHA256SUMS.txt | shasum -a 256 -c -
 # Intel:
-grep 'PaperReader-0.3.0-x64.dmg$' SHA256SUMS.txt | shasum -a 256 -c -
+grep 'PaperReader-0.3.1-x64.dmg$' SHA256SUMS.txt | shasum -a 256 -c -
 ```
 
-Run the line for the downloaded architecture; it must report `OK`. Do not
-install an artifact whose checksum does not match. Do not use the retired v0.2
-browser writer as a substitute for the v0.3.0 candidate.
+On Windows, in PowerShell:
+
+```powershell
+cd "$env:USERPROFILE\Downloads"
+Get-FileHash .\PaperReader-0.3.1-x64-Setup.exe -Algorithm SHA256
+# Compare the printed hash with the Setup.exe line in SHA256SUMS.txt.
+```
+
+or in Git Bash:
+
+```bash
+grep 'PaperReader-0.3.1-x64-Setup.exe$' SHA256SUMS.txt | sha256sum -c -
+```
+
+Run the line for the downloaded file; it must report `OK` (or a hash that
+matches the manifest exactly). Do not install an artifact whose checksum does
+not match. Do not use the retired v0.2 browser writer as a substitute for the
+v0.3.1 candidate.
 
 ### Requirements
 
-- macOS 12 or newer;
-- the DMG matching the Mac: `arm64` for Apple Silicon (M1 and newer), or `x64`
-  for Intel;
+- macOS 12 or newer, or Windows 10/11 on `x64`;
+- the installer matching the machine: the `arm64` DMG for Apple Silicon (M1 and
+  newer), the `x64` DMG for Intel Macs, or the `x64` Setup exe for Windows;
 - Zotero desktop, installed and running;
-- OneDrive desktop, signed in and syncing locally;
+- OneDrive desktop, signed in and syncing locally (on Windows, keep OneDrive
+  Files On-Demand enabled — the current OneDrive default);
 - an Obsidian vault;
 - at least one locally installed and authenticated reading provider:
   - [OpenAI Codex CLI (`codex`)](https://developers.openai.com/codex/cli/):
@@ -102,8 +121,9 @@ browser writer as a substitute for the v0.3.0 candidate.
   - TraeCode CLI (`trae-cli` / `trae-agent`): only for users who have already
     been given a supported CLI build and account. This project does not publish
     or provision TraeCode CLI.
-- `python3` with PyMuPDF for paper extraction. Prefer an isolated environment
-  and install the pinned range from `skills/paper-reading/requirements.txt`:
+- Python 3 with PyMuPDF for paper extraction. Prefer an isolated environment
+  and install the pinned range from `skills/paper-reading/requirements.txt`.
+  On macOS:
 
   ```bash
   python3 -m venv "$HOME/.paperreader-python"
@@ -112,20 +132,37 @@ browser writer as a substitute for the v0.3.0 candidate.
   ```
 
   Add `$HOME/.paperreader-python/bin` to the login-shell `PATH` so a Finder-launched
-  App resolves that `python3` first, then restart PaperReader. Source builders
-  can instead install from [`skills/paper-reading/requirements.txt`](skills/paper-reading/requirements.txt).
+  App resolves that `python3` first, then restart PaperReader. On Windows,
+  install Python 3 from [python.org](https://www.python.org/downloads/) (it
+  includes the `py` launcher), then for example:
 
-The v0.3.0 DMGs are not signed with an Apple Developer ID and are not notarized.
-On first launch, open Applications in Finder, Control-click or right-click
-PaperReader, choose **Open**, then confirm **Open**. Do not disable Gatekeeper
-globally.
+  ```bat
+  py -3 -m venv %USERPROFILE%\.paperreader-python
+  %USERPROFILE%\.paperreader-python\Scripts\python.exe -m pip install "PyMuPDF>=1.24,<2"
+  ```
+
+  and select that `python.exe` in PaperReader Settings (**Python 3 解释器 /
+  Python 3 interpreter**), or ensure `py -3 -c "import fitz"` works. Detection
+  tries `py -3`, then `python`, then `python3`, and rejects the Microsoft Store
+  python stub automatically. Source builders can instead install from
+  [`skills/paper-reading/requirements.txt`](skills/paper-reading/requirements.txt).
+
+The v0.3.1 installers are unsigned: the DMGs have no Apple Developer ID
+signature and are not notarized, and the Windows setup carries no Authenticode
+signature. On macOS first launch, open Applications in Finder, Control-click or
+right-click PaperReader, choose **Open**, then confirm **Open**. On Windows
+first run, Microsoft Defender SmartScreen may warn; after verifying the
+SHA-256, choose **More info** → **Run anyway** for this one file. Do not
+disable Gatekeeper, SmartScreen, or other OS security globally.
 
 ### Manual upgrades without reconfiguration
 
-Quit PaperReader, download and verify the newer DMG, then drag the new App to
-Applications and replace the existing copy. Settings, report cache, and
-encrypted Zotero credentials remain under
-`~/Library/Application Support/PaperReader/`.
+Quit PaperReader, download and verify the newer installer, then replace the old
+build: on macOS, drag the new App to Applications and replace the existing
+copy; on Windows, run the newer Setup exe over the existing installation.
+Settings, report cache, and encrypted Zotero credentials remain under
+`~/Library/Application Support/PaperReader/` on macOS and
+`%APPDATA%\PaperReader\` on Windows.
 Moving the OneDrive linked-attachment directory or switching Zotero profiles
 requires confirming the directory again in Settings.
 
@@ -171,9 +208,11 @@ chosen explicitly is never replaced. An empty `codexModel` uses Codex's default
 for the isolated job; PaperReader does not load the user's `config.toml`.
 Filling it applies an explicit model to PaperReader jobs.
 
-The API key and derived user ID are encrypted with Electron `safeStorage` (the
-macOS Keychain-backed storage path) in
-`~/Library/Application Support/PaperReader/zotero-credentials.secure.json`.
+The API key and derived user ID are encrypted with Electron `safeStorage` — the
+Keychain-backed storage path on macOS, the Windows DPAPI-backed path on
+Windows — in `zotero-credentials.secure.json` inside the App's user-data
+directory (`~/Library/Application Support/PaperReader/` on macOS,
+`%APPDATA%\PaperReader\` on Windows).
 Non-secret settings are in `config.json` beside it. The key is never included
 in the website, repository, report iframe, settings JSON, logs, or generated
 notes. Anyone who used the retired v0.2 browser writer must revoke and rotate
@@ -185,7 +224,8 @@ personal library. It recognizes arXiv IDs across bibliographic item types and
 collections, so reinstalling the app restores **In Zotero** state for existing
 papers instead of treating only the `Daily Paper` collection as known. Items
 outside PaperReader's collection remain presence-only: the app will not
-duplicate, move, attach to, or delete them. New v0.3.0 parents have the visible
+duplicate, move, attach to, or delete them. Parents newly created by v0.3.0 and
+later have the visible
 tag `paperreader-managed-v1`; repair/Remove requires both that tag and current
 membership in the `Daily Paper` tree. Untagged legacy/manual entries are
 presence-only even if they are inside that tree.
@@ -204,8 +244,10 @@ The app then:
    resolve to the same OneDrive linked-attachment base directory;
 2. downloads the canonical arXiv PDF, validates its content, and writes it
    without overwriting a conflicting file;
-3. waits for macOS File Provider to confirm that OneDrive has uploaded the file
-   without a conflict, then hashes the committed file again; and
+3. waits for the platform cloud check — macOS File Provider, or on Windows the
+   NTFS cloud-files placeholder attributes maintained by the OneDrive sync
+   engine — to confirm that OneDrive has uploaded the file without a conflict,
+   then hashes the committed file again; and
 4. creates the Zotero parent item and a `linked_file` child whose path is a flat
    `attachments:<filename>.pdf` reference.
 
@@ -296,7 +338,8 @@ the chosen AI provider as required by the feature.
   keep a single canonical vault, let it finish, and then reopen that vault in
   Obsidian on each device.
 - **Reading fails before extraction:** run `python3 -c 'import fitz'` in a login
-  shell and verify the selected AI CLI is installed and logged in.
+  shell (on Windows, `py -3 -c "import fitz"` or the interpreter selected in
+  Settings) and verify the selected AI CLI is installed and logged in.
 
 See the [full App guide](app/README.md) for error-specific checks.
 
@@ -411,7 +454,7 @@ npm test
 npm start
 ```
 
-PaperReader v0.3.0 uses Electron 43 and electron-builder 26. The locked install
+PaperReader v0.3.1 uses Electron 43 and electron-builder 26. The locked install
 is reproducible from `app/package-lock.json`.
 
 To build both Mac architectures locally on macOS:
@@ -421,12 +464,21 @@ cd app
 npm run dist:mac
 ```
 
-Pushing a semantic-version tag matching `v*` runs the macOS CI workflow: it
-installs locked dependencies, runs the complete app test suite, builds unsigned
-Apple Silicon and Intel DMGs, and publishes those two installers plus
-`SHA256SUMS.txt` to a GitHub Release. Only after the published assets are
-verified may documentation mark it stable. Maintainers must complete [the
-release checklist](RELEASE_CHECKLIST.md) before tagging.
+To build the Windows installer locally on Windows x64:
+
+```bash
+cd app
+npm run dist:win
+```
+
+Pushing a semantic-version tag matching `v*` runs the CI workflow on macOS and
+Windows runners: it installs locked dependencies, runs the complete app test
+suite on both platforms, builds the unsigned Apple Silicon and Intel DMGs and
+the unsigned Windows NSIS installer, audits the packaged apps, and publishes
+the three installers plus one merged `SHA256SUMS.txt` to a GitHub Release. Only
+after the published assets are verified may documentation mark it stable.
+Maintainers must complete [the release checklist](RELEASE_CHECKLIST.md) before
+tagging.
 
 ## Tuning the filter
 
@@ -446,7 +498,7 @@ Historical Stage-2 results remain intact; rescoring does not call the LLM.
 .
 ├── .github/workflows/
 │   ├── daily_arxiv.yml          # fetch, filter, render, publish
-│   └── build-app.yml            # test + two-architecture Mac release target
+│   └── build-app.yml            # tests + Mac DMG and Windows installer release target
 ├── app/                         # PaperReader Electron application
 ├── docs/                        # platform plans and engineering records
 ├── skills/paper-reading/        # skill bundled into PaperReader

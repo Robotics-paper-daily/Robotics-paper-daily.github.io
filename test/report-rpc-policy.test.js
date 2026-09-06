@@ -3,7 +3,11 @@ const assert = require("node:assert");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const renderer = fs.readFileSync(path.join(__dirname, "..", "app", "renderer.js"), "utf8");
+// Normalize line endings so the structural regexes below work on a Windows
+// checkout (git autocrlf) exactly as they do on the LF repository content.
+const renderer = fs
+  .readFileSync(path.join(__dirname, "..", "app", "renderer.js"), "utf8")
+  .replace(/\r\n/g, "\n");
 
 test("paper-read derives the confirmed arXiv id from the validated URL", () => {
   const paperRead = renderer.match(/case "paper:read": \{([\s\S]*?)\n    \}\n    case "job:list"/);

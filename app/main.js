@@ -20,6 +20,7 @@ const { saveArxivPdf, verifySavedPdf } = require("./zotero-linked-store");
 const { verifyOneDriveCloudFile } = require("./onedrive-cloud-verify");
 const { readZoteroBaseAttachmentPath } = require("./zotero-profile");
 const { classifyOpenUrl } = require("./url-routing");
+const { windowsOneDriveRoots, isWithinRoot } = require("./onedrive-root");
 const { isAllowedReportFrameUrl, prepareAppReportHtml } = require("./report-sandbox");
 const { ReportGestureGate, wireReportGestureInput } = require("./report-gesture");
 const { createZoteroCredentialStore } = require("./zotero-credentials");
@@ -136,7 +137,7 @@ function linkedPdfErrorReason(error) {
     DESTINATION_UNAVAILABLE: "无法检查 OneDrive 中的现有附件",
     COMMIT_FAILED: "无法安全写入 OneDrive 链接附件目录",
     CONFIRMATION_TIMEOUT: "等待 OneDrive 云端上传确认超时，请检查同步状态后重试",
-    FILE_PROVIDER_COMMAND_FAILED: "无法读取 OneDrive File Provider 状态",
+    FILE_PROVIDER_COMMAND_FAILED: "无法读取 OneDrive 同步状态",
     FILE_NOT_ACCESSIBLE: "OneDrive 中的附件文件不可访问",
     SYMLINK_NOT_ALLOWED: "OneDrive 附件不能是符号链接",
     NOT_REGULAR_FILE: "OneDrive 附件不是普通文件",
@@ -148,20 +149,18 @@ function linkedPdfErrorReason(error) {
   return messages[code] || ((error && error.message) || String(error));
 }
 
-function resolveMacOneDriveRoot(configuredRoot) {
-  if (process.platform !== "darwin") {
-    const error = new Error("OneDrive cloud confirmation is unavailable on this platform");
-    error.code = "CLOUD_CONFIRM_UNAVAILABLE";
-    throw error;
-  }
-  let realRoot;
+function realConfiguredRoot(configuredRoot) {
   try {
-    realRoot = fs.realpathSync(configuredRoot || "");
+    return fs.realpathSync(configuredRoot || "");
   } catch (cause) {
     const error = new Error("The configured OneDrive root is unavailable", { cause });
     error.code = "INVALID_ROOT";
     throw error;
   }
+}
+
+function resolveMacOneDriveRoot(configuredRoot) {
+  const realRoot = realConfiguredRoot(configuredRoot);
   const cloudStorage = path.join(app.getPath("home"), "Library", "CloudStorage");
   const relative = path.relative(cloudStorage, realRoot);
   const provider = relative.split(path.sep)[0];
@@ -179,11 +178,49 @@ function resolveMacOneDriveRoot(configuredRoot) {
   return realRoot;
 }
 
+function resolveWindowsOneDriveRoot(configuredRoot) {
+  const realRoot = realConfiguredRoot(configuredRoot);
+  for (const candidate of windowsOneDriveRoots()) {
+    let realCandidate;
+    try {
+      realCandidate = fs.realpathSync(candidate);
+    } catch {
+      continue; // stale env var for a removed account
+    }
+    if (isWithinRoot(realCandidate, realRoot)) return realRoot;
+  }
+  const error = new Error("The configured root is not inside this account's OneDrive sync folder");
+  error.code = "INVALID_ROOT";
+  throw error;
+}
+
+// The single funnel every Zotero linked-attachment path goes through. Only
+// platforms with a trusted cloud-state confirmation adapter may resolve a
+// root; everything else fails closed before any write is attempted.
+function resolveOneDriveRoot(configuredRoot) {
+  if (process.platform === "darwin") return resolveMacOneDriveRoot(configuredRoot);
+  if (process.platform === "win32") return resolveWindowsOneDriveRoot(configuredRoot);
+  const error = new Error("OneDrive cloud confirmation is unavailable on this platform");
+  error.code = "CLOUD_CONFIRM_UNAVAILABLE";
+  throw error;
+}
+
+function zoteroProfileLookupOptions() {
+  return {
+    homeDir: app.getPath("home"),
+    appDataDir: process.platform === "win32" ? app.getPath("appData") : undefined,
+  };
+}
+
+function samePlatformPath(left, right) {
+  return process.platform === "win32" ? left.toLowerCase() === right.toLowerCase() : left === right;
+}
+
 function resolveVerifiedZoteroRoot(configuredRoot) {
-  const appRoot = resolveMacOneDriveRoot(configuredRoot);
-  const zoteroConfigured = readZoteroBaseAttachmentPath({ homeDir: app.getPath("home") });
-  const zoteroRoot = resolveMacOneDriveRoot(zoteroConfigured);
-  if (appRoot !== zoteroRoot) {
+  const appRoot = resolveOneDriveRoot(configuredRoot);
+  const zoteroConfigured = readZoteroBaseAttachmentPath(zoteroProfileLookupOptions());
+  const zoteroRoot = resolveOneDriveRoot(zoteroConfigured);
+  if (!samePlatformPath(appRoot, zoteroRoot)) {
     const error = new Error("PaperReader and Zotero attachment roots do not match");
     error.code = "ZOTERO_ROOT_MISMATCH";
     throw error;
@@ -373,10 +410,13 @@ async function firstRunInit() {
   if (!s.codexPath && d.codexPath) patch.codexPath = d.codexPath;
   if (!s.claudePath && d.claudePath) patch.claudePath = d.claudePath;
   if (!s.traePath && d.traePath) patch.traePath = d.traePath;
-  if (!s.zoteroLinkedAttachmentRoot && process.platform === "darwin") {
+  if (
+    !s.zoteroLinkedAttachmentRoot &&
+    (process.platform === "darwin" || process.platform === "win32")
+  ) {
     try {
-      const detected = readZoteroBaseAttachmentPath({ homeDir: app.getPath("home") });
-      patch.zoteroLinkedAttachmentRoot = resolveMacOneDriveRoot(detected);
+      const detected = readZoteroBaseAttachmentPath(zoteroProfileLookupOptions());
+      patch.zoteroLinkedAttachmentRoot = resolveOneDriveRoot(detected);
     } catch {
       // Zotero/OneDrive is optional; Settings will show an actionable status.
     }
@@ -953,17 +993,17 @@ function wireIpc() {
     const configuredRoot =
       typeof draftRoot === "string" ? draftRoot.trim() : settings.load().zoteroLinkedAttachmentRoot;
     try {
-      const detected = readZoteroBaseAttachmentPath({ homeDir: app.getPath("home") });
-      const zoteroBaseDir = resolveMacOneDriveRoot(detected);
+      const detected = readZoteroBaseAttachmentPath(zoteroProfileLookupOptions());
+      const zoteroBaseDir = resolveOneDriveRoot(detected);
       let appRoot = "";
       try {
-        if (configuredRoot) appRoot = resolveMacOneDriveRoot(configuredRoot);
+        if (configuredRoot) appRoot = resolveOneDriveRoot(configuredRoot);
       } catch {}
       return {
         detected: true,
         zoteroBaseDir,
         configuredRoot,
-        match: !!appRoot && appRoot === zoteroBaseDir,
+        match: !!appRoot && samePlatformPath(appRoot, zoteroBaseDir),
       };
     } catch (error) {
       return { detected: false, configuredRoot, reason: linkedPdfErrorReason(error) };
@@ -1105,6 +1145,13 @@ function wireIpc() {
     const r = await dialog.showOpenDialog(settingsWindow || mainWindow, {
       properties: ["openFile"],
       title: "选择 Trae CLI 可执行文件",
+    });
+    return r.canceled ? null : r.filePaths[0];
+  });
+  ipcMain.handle("settings:pickPython", async () => {
+    const r = await dialog.showOpenDialog(settingsWindow || mainWindow, {
+      properties: ["openFile"],
+      title: "选择 Python 3 可执行文件（需已安装 PyMuPDF）",
     });
     return r.canceled ? null : r.filePaths[0];
   });

@@ -1,7 +1,8 @@
-name: Build PaperReader for macOS
+name: Build PaperReader
 
-# Manual runs produce tested unsigned artifacts. A semantic-version tag also
-# creates the GitHub release and uploads both macOS DMGs plus their checksums.
+# Manual runs produce tested unsigned artifacts for both desktop platforms. A
+# semantic-version tag also creates the GitHub release and uploads the two
+# macOS DMGs, the Windows installer, and one merged checksum manifest.
 on:
   workflow_dispatch:
   push:
@@ -61,7 +62,7 @@ jobs:
         working-directory: app
         run: node release-audit.js --dist
 
-      - name: Validate both installers and write SHA-256 manifest
+      - name: Validate both installers and write the macOS SHA-256 manifest
         working-directory: app/dist
         run: |
           version="$(node -p "require('../package.json').version")"
@@ -86,9 +87,83 @@ jobs:
             app/dist/SHA256SUMS.txt
           if-no-files-found: error
 
+  build-windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install locked app dependencies
+        working-directory: app
+        run: npm ci
+
+      - name: Audit npm dependencies
+        working-directory: app
+        run: npm audit --audit-level=high
+
+      - name: Run Node tests
+        working-directory: app
+        run: npm test
+
+      - name: Run Python tests
+        working-directory: .
+        run: python -m unittest discover -s test -p 'test_*.py'
+
+      - name: Verify stable tag matches package version
+        if: startsWith(github.ref, 'refs/tags/v')
+        working-directory: app
+        run: |
+          node - <<'NODE'
+          const version = require('./package.json').version;
+          const tag = process.env.GITHUB_REF_NAME;
+          if (!/^v\d+\.\d+\.\d+$/.test(tag) || tag !== `v${version}`) {
+            throw new Error(`stable release tag ${tag} does not match package version ${version}`);
+          }
+          NODE
+
+      - name: Build the unsigned Windows x64 installer
+        working-directory: app
+        run: npm run dist:win
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+
+      - name: Audit packaged privacy boundary
+        working-directory: app
+        run: node release-audit.js --dist
+
+      - name: Validate the installer and write the Windows SHA-256 manifest
+        working-directory: app/dist
+        run: |
+          version="$(node -p "require('../package.json').version")"
+          setup="PaperReader-${version}-x64-Setup.exe"
+          test -f "${setup}"
+          test "$(find . -maxdepth 1 -type f -name 'PaperReader-*' | wc -l | tr -d ' ')" = "1"
+          sha256sum "${setup}" > SHA256SUMS-windows.txt
+          test "$(wc -l < SHA256SUMS-windows.txt | tr -d ' ')" = "1"
+          grep -Eq "^[[:xdigit:]]{64} [ *]${setup}$" SHA256SUMS-windows.txt
+          sha256sum -c SHA256SUMS-windows.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: paperreader-windows
+          path: |
+            app/dist/PaperReader-*-Setup.exe
+            app/dist/SHA256SUMS-windows.txt
+          if-no-files-found: error
+
   publish-release:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: build-macos
+    needs:
+      - build-macos
+      - build-windows
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -100,17 +175,32 @@ jobs:
           name: paperreader-macos
           path: release-artifacts
 
-      - name: Verify downloaded release assets
+      - uses: actions/download-artifact@v4
+        with:
+          name: paperreader-windows
+          path: release-artifacts
+
+      - name: Verify downloaded assets and merge the checksum manifest
         working-directory: release-artifacts
         run: |
           version="${GITHUB_REF_NAME#v}"
-          test -f "PaperReader-${version}-arm64.dmg"
-          test -f "PaperReader-${version}-x64.dmg"
+          arm64="PaperReader-${version}-arm64.dmg"
+          x64="PaperReader-${version}-x64.dmg"
+          setup="PaperReader-${version}-x64-Setup.exe"
+          test -f "${arm64}"
+          test -f "${x64}"
+          test -f "${setup}"
           test "$(find . -maxdepth 1 -type f -name 'PaperReader-*.dmg' | wc -l | tr -d ' ')" = "2"
-          test "$(find . -maxdepth 1 -type f | wc -l | tr -d ' ')" = "3"
-          test "$(wc -l < SHA256SUMS.txt | tr -d ' ')" = "2"
-          grep -Eq "^[[:xdigit:]]{64}  PaperReader-${version}-arm64.dmg$" SHA256SUMS.txt
-          grep -Eq "^[[:xdigit:]]{64}  PaperReader-${version}-x64.dmg$" SHA256SUMS.txt
+          test "$(find . -maxdepth 1 -type f -name 'PaperReader-*.exe' | wc -l | tr -d ' ')" = "1"
+          test "$(find . -maxdepth 1 -type f | wc -l | tr -d ' ')" = "5"
+          sha256sum -c SHA256SUMS.txt
+          sha256sum -c SHA256SUMS-windows.txt
+          sha256sum "${arm64}" "${x64}" "${setup}" > SHA256SUMS.txt
+          rm SHA256SUMS-windows.txt
+          test "$(wc -l < SHA256SUMS.txt | tr -d ' ')" = "3"
+          grep -Eq "^[[:xdigit:]]{64}  ${arm64}$" SHA256SUMS.txt
+          grep -Eq "^[[:xdigit:]]{64}  ${x64}$" SHA256SUMS.txt
+          grep -Eq "^[[:xdigit:]]{64}  ${setup}$" SHA256SUMS.txt
           sha256sum -c SHA256SUMS.txt
 
       - name: Create GitHub release
@@ -121,6 +211,7 @@ jobs:
           version="${GITHUB_REF_NAME#v}"
           gh release create "${GITHUB_REF_NAME}" \
             release-artifacts/PaperReader-${version}-*.dmg \
+            release-artifacts/PaperReader-${version}-x64-Setup.exe \
             release-artifacts/SHA256SUMS.txt \
             --title "${GITHUB_REF_NAME}" \
             --notes-file RELEASES_NOTES.md \

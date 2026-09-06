@@ -46,6 +46,7 @@ contextBridge.exposeInMainWorld("paperBridge", {
   pickCodex: () => ipcRenderer.invoke("settings:pickCodex"),
   pickClaude: () => ipcRenderer.invoke("settings:pickClaude"),
   pickTrae: () => ipcRenderer.invoke("settings:pickTrae"),
+  pickPython: () => ipcRenderer.invoke("settings:pickPython"),
   pickZoteroAttachmentRoot: () => ipcRenderer.invoke("settings:pickZoteroAttachmentRoot"),
   // Local linked-file storage. The main process derives and validates the
   // destination; renderer code can only provide the arXiv PDF URL.

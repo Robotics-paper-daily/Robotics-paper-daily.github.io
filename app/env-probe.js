@@ -179,7 +179,9 @@ function codexConfigProbeArgs(schemaPath) {
     "--config",
     `shell_environment_policy.set.PAPERREADER_CACHE_DIR=${JSON.stringify(probeCache)}`,
     "--config",
-    `shell_environment_policy.set.PAPERREADER_PYTHON=${JSON.stringify(path.join(probePython, "python3"))}`,
+    `shell_environment_policy.set.PAPERREADER_PYTHON=${JSON.stringify(
+      path.join(probePython, process.platform === "win32" ? "python.exe" : "python3")
+    )}`,
     "--config",
     `shell_environment_policy.set.TMPDIR=${JSON.stringify(probeCache)}`,
     "--config",
@@ -261,7 +263,9 @@ function probeCodex(binaryPath, run = execFileSync) {
     return cli;
   } catch (error) {
     const stderr = String((error && error.stderr) || "");
-    if (!stderr.includes(missingSchema)) {
+    // Windows CLIs may re-quote or normalize the path separators in the error
+    // text; the random basename is unique enough to identify our probe file.
+    if (!stderr.includes(missingSchema) && !stderr.includes(path.basename(missingSchema))) {
       cli.ok = false;
       cli.reason = "无法确认 Codex CLI 的隔离配置能力；请升级后重试";
       return cli;
@@ -291,6 +295,31 @@ function probeCodex(binaryPath, run = execFileSync) {
 const FITZ_ERROR_PREFIX = "__PAPERREADER_FITZ_ERROR__:";
 const PYTHON_ROOTS_PREFIX = "__PAPERREADER_PYTHON_ROOTS__:";
 
+// Interpreter candidates in probe order. macOS/Linux installs expose python3;
+// python.org Windows installs expose py.exe (launcher) and python.exe but NOT
+// python3 — that name usually resolves to the Microsoft Store stub, which
+// fails the probe and falls through naturally. An explicit override (settings
+// pythonPath) short-circuits the list.
+function pythonCandidates(platform = process.platform, override) {
+  if (typeof override === "string" && override.trim()) {
+    return [{ command: override.trim(), prefixArgs: [] }];
+  }
+  if (platform === "win32") {
+    return [
+      { command: "py", prefixArgs: ["-3"] },
+      { command: "python", prefixArgs: [] },
+      { command: "python3", prefixArgs: [] },
+    ];
+  }
+  return [{ command: "python3", prefixArgs: [] }];
+}
+
+function pythonNotFoundReason(platform = process.platform) {
+  return platform === "win32"
+    ? "未找到可用的 Python 3；请安装 python.org 的 Python 3（含 py launcher），或在设置中指定 python.exe 路径"
+    : "未找到 python3；请先安装 Python 3，并确保终端可运行 python3";
+}
+
 function normalizePythonReadRoots(values) {
   const roots = [];
   for (const value of Array.isArray(values) ? values : []) {
@@ -302,14 +331,39 @@ function normalizePythonReadRoots(values) {
   return roots.slice(0, 64);
 }
 
-// The paper-reading scripts invoke `python3` and import PyMuPDF as `fitz`.
-// Probe that exact runtime once (in background-task's worker), without ever
-// installing or mutating the user's Python environment.
+// The paper-reading scripts run through the exact interpreter PaperReader
+// probes here (passed to providers as $PAPERREADER_PYTHON), importing PyMuPDF
+// as `fitz`. The probe runs in background-task's worker and never installs or
+// mutates the user's Python environment. On success `path` is the verified
+// absolute sys.executable, which is what jobs receive.
 function probePython(options = {}) {
-  const command = options.command || "python3";
+  const platform = options.platform === undefined ? process.platform : options.platform;
+  const candidates = pythonCandidates(platform, options.command);
+  let fallback = null;
+  for (const candidate of candidates) {
+    const result = probePythonCandidate(candidate, options, platform);
+    if (result.ok) return result;
+    // A found interpreter that merely lacks PyMuPDF beats "not found": its
+    // reason tells the user the exact pip command for the right interpreter.
+    if (!fallback || (result.fitzFound && !fallback.fitzFound)) fallback = result;
+  }
+  const result = fallback || {
+    command: candidates[0].command,
+    path: "",
+    ok: false,
+    fitzOk: false,
+    version: "",
+    readRoots: [],
+    reason: pythonNotFoundReason(platform),
+  };
+  delete result.fitzFound;
+  return result;
+}
+
+function probePythonCandidate({ command, prefixArgs }, options = {}, platform = process.platform) {
   const run = options.execFileSync || execFileSync;
   const env = { ...(options.env || process.env) };
-  if (process.platform !== "win32") env.PATH = enrichedPath("", env.PATH);
+  if (platform !== "win32") env.PATH = enrichedPath("", env.PATH);
   const script = [
     "import json, os, site, sys, sysconfig",
     "print(sys.executable)",
@@ -341,7 +395,7 @@ function probePython(options = {}) {
     reason: "",
   };
   try {
-    const output = run(command, ["-c", script], {
+    const output = run(command, [...(prefixArgs || []), "-c", script], {
       encoding: "utf8",
       timeout: 12_000,
       windowsHide: true,
@@ -374,14 +428,15 @@ function probePython(options = {}) {
     if (fitzError) {
       const python = result.path || command;
       const shownCommand = /\s/.test(python) ? `"${python}"` : python;
+      result.fitzFound = true;
       result.reason =
         `已找到 ${python}，但无法导入 PyMuPDF（fitz）。` +
         `请为这个解释器手动安装依赖（例如：${shownCommand} -m pip install "PyMuPDF>=1.24,<2"）`;
     } else if (error && error.code === "ENOENT") {
-      result.reason = "未找到 python3；请先安装 Python 3，并确保终端可运行 python3";
+      result.reason = pythonNotFoundReason(platform);
     } else {
       const detail = String((error && error.message) || error || "未知错误").split(/\r?\n/)[0];
-      result.reason = `python3 / PyMuPDF 检测失败：${detail}`;
+      result.reason = `Python 3 / PyMuPDF 检测失败：${detail}`;
     }
     return result;
   }
@@ -448,7 +503,7 @@ function probeEnv(settings, options = {}) {
       ? probeCli("Trae CLI", resolveTraePath(s.traePath), ["--version"])
       : inactive(s.traePath);
   const cli = provider === "codex" ? codex : provider === "claude" ? claude : trae;
-  const python = (options.probePython || probePython)();
+  const python = (options.probePython || probePython)({ command: s.pythonPath || undefined });
 
   return {
     provider,
@@ -472,5 +527,6 @@ module.exports = {
   probeCodex,
   codexConfigProbeArgs,
   probePython,
+  pythonCandidates,
   normalizePythonReadRoots,
 };

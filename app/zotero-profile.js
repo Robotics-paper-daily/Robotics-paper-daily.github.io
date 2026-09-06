@@ -43,8 +43,9 @@ function profilePathFromIni(text, zoteroSupportDir) {
   // Newer Firefox-derived profile registries can bind an installation to a
   // profile through [Install<hash>] Default=Profiles/<name>, even when the
   // matching [ProfileN] section has no Default=1 flag. Zotero normally has a
-  // single installation on macOS; only treat the install mapping as
-  // authoritative when all install sections agree on one known profile.
+  // single installation per user on macOS and Windows; only treat the install
+  // mapping as authoritative when all install sections agree on one known
+  // profile.
   const installPaths = new Set(
     sections
       .filter((section) => /^Install/i.test(section.name) && section.values.Default)
@@ -81,13 +82,34 @@ function baseAttachmentPathFromPrefs(text) {
   }
 }
 
+// Where the Zotero desktop app keeps profiles.ini for the current user.
+// macOS: ~/Library/Application Support/Zotero
+// Windows: %APPDATA%\Zotero\Zotero (Roaming). Other platforms are unsupported.
+function zoteroSupportDir({ homeDir, appDataDir, platform }) {
+  if (platform === "darwin") {
+    return path.join(homeDir, "Library", "Application Support", "Zotero");
+  }
+  if (platform === "win32") {
+    const roaming =
+      typeof appDataDir === "string" && path.isAbsolute(appDataDir)
+        ? appDataDir
+        : path.join(homeDir, "AppData", "Roaming");
+    return path.join(roaming, "Zotero", "Zotero");
+  }
+  return null;
+}
+
 function readZoteroBaseAttachmentPath(options = {}) {
   const homeDir = options.homeDir;
   const fsImpl = options.fsImpl || fs;
+  const platform = options.platform === undefined ? process.platform : options.platform;
   if (typeof homeDir !== "string" || !path.isAbsolute(homeDir)) {
     fail("ZOTERO_PROFILE_UNAVAILABLE", "A valid home directory is required");
   }
-  const supportDir = path.join(homeDir, "Library", "Application Support", "Zotero");
+  const supportDir = zoteroSupportDir({ homeDir, appDataDir: options.appDataDir, platform });
+  if (!supportDir) {
+    fail("ZOTERO_PROFILE_UNAVAILABLE", "Zotero profile detection is not supported on this platform");
+  }
   try {
     const ini = fsImpl.readFileSync(path.join(supportDir, "profiles.ini"), "utf8");
     const profileDir = profilePathFromIni(ini, supportDir);
@@ -104,4 +126,5 @@ module.exports = {
   baseAttachmentPathFromPrefs,
   profilePathFromIni,
   readZoteroBaseAttachmentPath,
+  zoteroSupportDir,
 };
