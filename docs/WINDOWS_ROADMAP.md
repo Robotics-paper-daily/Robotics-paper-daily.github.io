@@ -2,255 +2,160 @@
 
 [中文版本](WINDOWS_ROADMAP_ZH.md)
 
-This document recorded the engineering work required before PaperReader could
-publish and support a Windows release. v0.3.1 implements that work; the
-document is kept as the acceptance record and hardening backlog, not a
-compatibility announcement for the platforms that remain unshipped.
+PaperReader v0.3.1 includes the first Windows installer. This document tracks
+the Windows implementation, available verification evidence, and remaining
+acceptance work.
 
-## Status: implemented by v0.3.1
+## 1. Published version
 
-- v0.3.1 ships a supported Windows 10/11 x64 build:
-  `PaperReader-0.3.1-x64-Setup.exe`, an unsigned NSIS per-user installer
-  published alongside the two macOS DMGs and one merged `SHA256SUMS.txt`.
-- Phases 0–4 below have been addressed: platform storage adapters (Windows
-  Zotero profile discovery, OneDrive root validation, fail-closed cloud-state
-  confirmation), Windows Python runtime detection with a persisted interpreter,
-  a shell-agnostic paper-reading skill, NSIS packaging, and native
-  `windows-latest` CI with a per-platform release audit.
-- The remainder of this document is retained as the acceptance record and the
-  hardening backlog — for example the real-machine test matrix in section 6,
-  the Authenticode signing decision, and a Windows arm64 build.
+The [v0.3.1 Release](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases/tag/v0.3.1)
+contains `PaperReader-0.3.1-x64-Setup.exe` for Windows 10/11 (x64), two macOS
+DMGs, and a combined `SHA256SUMS.txt`.
 
-## 1. Current support boundary
+The Windows package is an unsigned NSIS installer. It installs per user, allows
+the installation directory to be selected, and uses manual upgrades: quit the
+App and run the new Setup installer. The installer is configured to retain App
+data on uninstall; upgrade and reinstall behavior still need the acceptance
+checks below. Installation steps are in the [App guide](../app/README.md).
 
-- PaperReader v0.3.1 is the current release target for macOS 12+ (`arm64`,
-  `x64`) and Windows 10/11 (`x64`). It remains a candidate until its tag,
-  GitHub Release, three installers, and checksum manifest actually exist.
-- The v0.3.1 target ships a Windows installer built and audited on native
-  `windows-latest` CI; its feature set matches macOS.
-- `app/run-windows.bat` remains an experimental source launcher for
-  contributors. It runs `npm ci` and `npm start`; it is not the installed
-  product and is not the supported Windows entry point — the Setup installer
-  is.
-- Windows arm64 and Linux are outside the desktop support matrix unless a later
-  release explicitly says otherwise.
-- No Authenticode signature is applied yet; that decision stays open in the
-  backlog. Checksum verification remains mandatory, and documentation must
-  never recommend globally disabling Windows security controls.
-- The current product and this roadmap use manual replacement upgrades only.
-  Any different distribution policy would require a separate design and review.
+Windows arm64 and Linux packages are not available. Authenticode signing and
+additional architectures remain future work. Verify the installer checksum;
+do not globally disable Windows security controls. `app/run-windows.bat` is a
+source-development helper, not a downloadable release package.
 
-## 2. Reusable foundation already present
+## 2. Implemented in v0.3.1
 
-The repository contained useful cross-platform groundwork that the v0.3.1
-Windows port built on; each item now runs under Windows CI, while the
-real-machine acceptance matrix in section 6 remains the validation backlog:
+### Zotero and OneDrive
 
-- the Electron shell, sandboxed report rendering, search, cache, and Obsidian
-  note-state logic are largely platform-neutral;
-- Obsidian discovery includes `%APPDATA%` and `%USERPROFILE%` paths;
-- the Codex, Claude, and Trae adapters include Windows native executable lookup,
-  `shell: false`, hidden child processes, and `taskkill`-based cancellation;
-- settings use Electron's platform-specific `userData` directory, and the Zotero
-  credential store is structured around Electron `safeStorage`;
-- the Zotero Web API metadata/reconciliation layer is not inherently tied to
-  macOS;
-- the bundled Python utilities already force UTF-8 output in several Windows
-  console paths and apply an initial set of Windows filename restrictions; and
-- the PDF writer already performs validation, bounded downloads, hashing, and
-  staged file commits that can serve as the basis for a Windows implementation.
+- [Zotero profile discovery](../app/zotero-profile.js) reads the Windows
+  `%APPDATA%\Zotero\Zotero` layout and the configured linked attachment base.
+- [OneDrive root validation](../app/onedrive-root.js) handles Windows roots;
+  the App compares the configured attachment root with Zotero's setting.
+- [Sync-state checking](../app/onedrive-cloud-verify.js) uses a Windows
+  PowerShell file-attribute probe, with polling, cancellation, and a timeout.
+  The current Windows condition checks the reparse-point attribute. It does
+  not fetch the remote file or directly verify its contents, so confirmation
+  across real OneDrive sync states remains an acceptance item.
+- The shared PDF transaction validates and stages the PDF, waits for the
+  platform check, verifies its hash, then creates or reconciles Zotero metadata.
+  The four-task save queue and managed-item protections also apply on Windows.
 
-## 3. Core blockers (recorded before v0.3.1)
+### Reading and local data
 
-The blockers below are preserved as written while Windows was unshipped; they
-double as the acceptance record of what the v0.3.1 adapters had to implement.
+- [Environment probing](../app/env-probe.js) includes Windows Python discovery
+  and passes the verified interpreter path to reading tasks.
+- The [Codex](../app/spawn-codex.js), [Claude](../app/spawn-claude.js), and
+  [Trae](../app/spawn-trae.js) adapters contain Windows executable lookup and
+  process handling. Each provider still needs independent Windows end-to-end
+  validation with an available CLI and account.
+- The bundled [paper-reading skill](../skills/paper-reading/SKILL.md) uses
+  cross-platform Python tools for local file operations. Report browsing,
+  search, caching, and Obsidian note-state tracking use shared App modules.
+- Settings use Electron's platform-specific data directory. Zotero credentials
+  use Electron `safeStorage`; the App has no plaintext credential fallback.
 
-### 3.1 Zotero and OneDrive integration
+### Packaging and CI
 
-- `zotero-profile.js` currently discovers Zotero only under the macOS
-  `~/Library/Application Support/Zotero` layout. Windows profile discovery must
-  use documented Windows locations, parse the active profile safely, and remain
-  testable without reading a developer's real profile.
-- `main.js` currently accepts linked-attachment roots only inside a macOS
-  OneDrive File Provider domain.
-- `onedrive-cloud-verify.js` relies on `/usr/bin/fileproviderctl` and deliberately
-  rejects non-macOS platforms. Windows needs a trustworthy, bounded, fail-closed
-  cloud-state adapter; local file existence alone is not proof of completed
-  OneDrive upload.
-- Root comparison must account for drive letters, case-insensitive paths,
-  junctions, reparse points, symlinks, and multiple personal or business
-  OneDrive roots without allowing directory-boundary bypasses.
-- The full transaction order must remain: validate configuration, stage and
-  verify the PDF, confirm durable cloud state, create/reconcile Zotero metadata,
-  and preserve the documented retry and rollback behavior.
+- [Package configuration](../app/package.json) includes the Windows x64 NSIS
+  target and `npm run dist:win`.
+- [Build PaperReader](../.github/workflows/build-app.yml) has a native
+  `windows-latest` job that installs locked dependencies, audits dependencies,
+  runs Node and Python tests, builds the installer, audits packaged resources,
+  and generates its checksum.
+- [Release auditing](../app/release-audit.js) handles both platform layouts,
+  scans for Windows and macOS personal paths, and checks packaged resources.
+- The publish job depends on both platform builds. It verifies downloaded
+  artifacts and the three-installer checksum manifest before creating the
+  GitHub Release.
 
-### 3.2 Python and paper-reading runtime
+## 3. Verification evidence and limits
 
-- Environment probing currently assumes a `python3` command. Windows discovery
-  must safely resolve and persist an exact `python.exe` (or a verified Python
-  launcher result) that can import the supported PyMuPDF version.
-- `skills/paper-reading/SKILL.md` currently contains POSIX shell syntax such as
-  `test`, `$VAR`, and `cp`. The workflow must become shell-neutral or use trusted
-  app-owned orchestration instead of asking a provider to translate commands.
-- Codex, Claude, and Trae executable detection, login checks, argument handling,
-  streaming, cancellation, timeout, and process-tree cleanup must be exercised
-  on Windows, not inferred from macOS unit tests.
-- The Codex permission profile and protected runtime paths must be verified with
-  Windows path syntax and the actual Windows Codex sandbox implementation before
-  Codex can be declared supported.
+The v0.3.1 release assets and the build workflow provide evidence for packaging
+and the automated checks above. Tests cover Windows profile paths, OneDrive
+root validation and attribute responses, interpreter discovery, process
+adapters, and release auditing. Relevant tests include:
 
-### 3.3 Windows filesystem behavior
+- [Zotero profiles](../test/zotero-profile.test.js),
+  [OneDrive roots](../test/onedrive-root.test.js), and
+  [OneDrive state checking](../test/onedrive-cloud-verify.test.js);
+- [environment probing](../test/env-probe.test.js) and
+  [Codex](../test/spawn-codex.test.js), [Claude](../test/spawn-claude.test.js),
+  and [Trae](../test/spawn-trae.test.js) process adapters; and
+- [release audits](../test/release-audit.test.js).
 
-- Note, attachment, cache, and temporary names must reject reserved device names,
-  invalid characters, trailing dots or spaces, and unsafe alternate path forms.
-- Path-length behavior must be defined and tested for nested Obsidian notes,
-  attachments, downloaded source files, and packaged resources.
-- Atomic replace, rename, file locking, flush, cleanup, retry, and interrupted
-  write behavior must be tested on NTFS and OneDrive-synchronized directories.
-- Unicode, non-ASCII account names, network-unavailable states, and files held
-  open by Zotero, OneDrive, antivirus, or indexing software need explicit tests.
+These include fixture-based and injected-response tests. They do not establish
+that a real OneDrive account has uploaded a file, that a provider completes a
+read on every Windows configuration, or that Windows 10 and 11 installation
+and upgrade behavior have all passed.
 
-### 3.4 Packaging and application lifecycle
+This repository does not yet contain a completed real-machine acceptance
+record for the matrix below. Keep each item pending until its result is
+recorded with the commit, installer checksum, Windows version, dependency
+versions, and test date. Publishing the installer does not complete these
+checks.
 
-- Add an explicit electron-builder `win` configuration, Windows icon resources,
-  artifact naming, and a `dist:win` script only after the supported Windows and
-  CPU matrix is selected.
-- Select and test the installer format and scope, shortcut behavior, start-menu
-  integration, install location, repair/reinstall behavior, and clean uninstall.
-- Define manual upgrade behavior and verify that replacing or upgrading the app
-  preserves intended `%APPDATA%` settings, cache, and encrypted credentials.
-  Document separately whether uninstall retains or removes this data.
-- Decide and document the Authenticode/code-signing and SmartScreen policy before
-  public distribution. Checksums remain required whether or not artifacts are
-  signed, and documentation must never recommend globally disabling Windows
-  security controls.
-- Platform capability checks must hide or clearly disable unavailable workflows;
-  a Windows user must not reach macOS-only Zotero setup and receive a generic
-  failure.
+## 4. Remaining acceptance work
 
-## 4. Phased implementation (delivered by v0.3.1)
+Run this matrix on clean Windows 10 and Windows 11 x64 VMs and at least one
+representative real machine for each claimed configuration. Use
+maintainer-controlled accounts and disposable Zotero, OneDrive, and Obsidian
+data.
 
-### Phase 0: Freeze the contract
+- [ ] Download the installer, verify its checksum, install to the default and a
+  chosen directory, launch from shortcuts and the Start menu, quit, relaunch,
+  and check idle behavior.
+- [ ] Upgrade over the previous Windows build and verify settings, cache, vault
+  selection, and usable encrypted Zotero credentials. Test reinstall,
+  uninstall, and reinstall after uninstall; record which data remains and any
+  downgrade restrictions.
+- [ ] Test online and offline reports, search, navigation, external links, and
+  the report sandbox. Unavailable platform operations must be clearly disabled
+  or return an actionable error.
+- [ ] Verify Zotero credentials and active profiles; test OneDrive root matching
+  for personal and business accounts, multiple roots, drive-letter casing,
+  junctions, reparse points, and symlinks without bypassing directory checks.
+- [ ] Submit more than 10 PDF saves, confirm at most four run, and exercise
+  duplicate reconciliation, cancellation, timeout, retry, managed-item removal,
+  and interruption at each transaction stage.
+- [ ] Test OneDrive online-only, locally available, uploading, conflicted,
+  paused, signed-out, and offline states. Compare the Windows attribute probe
+  with actual remote availability; ensure Zotero metadata is not reported as
+  successfully saved before the PDF is available from the cloud.
+- [ ] Open linked PDFs on a second supported device, including a macOS/Windows
+  pair. Each device must use its corresponding local OneDrive attachment base.
+- [ ] Test Obsidian vault discovery, existing-note actions, manual read-state
+  changes, and rejection of broad or sensitive vault paths.
+- [ ] Test each advertised AI provider independently: executable and login
+  detection, one complete read, concurrent reads, cancellation, watchdog,
+  timeout, quota/error display, output parsing, notes, PDFs, figures, code
+  retrieval, and cache cleanup. Trae tests require an independently available
+  CLI and account.
+- [ ] Verify Codex permissions and protected runtime paths with the actual
+  Windows Codex sandbox. Confirm PyMuPDF works through the selected interpreter
+  and that tasks cannot read credentials or unrelated local files.
+- [ ] Test non-ASCII usernames and paths, long paths, reserved Windows names,
+  trailing dots/spaces, locked files, antivirus and indexing interference,
+  sleep/wake, network loss, and restart during active work.
+- [ ] Verify atomic replacement, rename, flush, cleanup, retry, and interrupted
+  writes on NTFS and OneDrive folders. Cleanup must not escape its task's files.
 
-1. Select the candidate Windows version and CPU matrix based on supported
-   Electron, Zotero, OneDrive, Obsidian, Python, and provider-CLI combinations.
-2. Define the initial feature contract and decide whether every macOS feature is
-   required for the first Windows release.
-3. Add platform capability interfaces and keep unsupported operations fail-closed.
-4. Convert current macOS-only assumptions into explicit platform tests before
-   changing behavior.
+## 5. Release requirements and future work
 
-### Phase 1: Platform storage adapters
+For each later release, complete the [release checklist](../RELEASE_CHECKLIST.md)
+and update this record. Preserve the following requirements:
 
-1. Implement and unit-test Windows Zotero profile discovery.
-2. Implement Windows OneDrive root validation and cloud-state confirmation behind
-   the same narrow interface used by macOS.
-3. Validate canonical path equality and PDF transaction behavior on Windows.
-4. Add failure-injection tests for offline sync, conflicts, locked files,
-   cancellation, timeout, and restart.
+- Run locked dependency installation, dependency audits, Node/Python tests, and
+  platform-specific integration tests on native Windows CI.
+- Audit unpacked and packaged resources for secrets, personal paths, private
+  data, required skills, licenses, notices, and the read-only site snapshot.
+  Reject undeclared artifacts and obsolete update feeds.
+- Generate checksums from the final installers, verify them after transfer, and
+  stop publication if either platform's build, audit, or checksum check fails.
+- Complete clean-VM and real-machine acceptance for every claimed configuration;
+  document any failures or untested cases rather than marking them complete.
+- Keep English and Chinese installation, usage, troubleshooting, security,
+  release notes, checksum instructions, and compatibility statements aligned.
 
-### Phase 2: Reading runtime
-
-1. Add safe Windows Python discovery and persist the verified interpreter path.
-2. Replace POSIX-only skill commands with platform-neutral, app-owned operations
-   or documented Windows equivalents selected by code.
-3. Validate each provider adapter independently on Windows.
-4. Run concurrent reads, cancellation, watchdog, note creation, figure extraction,
-   code retrieval, and cleanup against a disposable vault.
-
-### Phase 3: Installer and lifecycle
-
-1. Add Windows packaging configuration, icon assets, and reproducible artifact
-   names without changing the manual-update product policy.
-2. Test clean install, first launch, reinstall, manual upgrade, downgrade refusal
-   if applicable, uninstall, and reinstall after uninstall.
-3. Verify that intended local data is retained across upgrades and that secrets
-   are not copied into the installer or logs.
-4. Finalize signing, checksum, user-facing download, and first-launch guidance.
-
-### Phase 4: CI, security, and release candidate
-
-1. Add native `windows-latest` CI for every candidate release architecture.
-2. Run source tests, packaged-app audits, installer validation, and smoke tests on
-   Windows rather than cross-compiling and assuming compatibility.
-3. Publish a clearly labeled prerelease only after all automated gates pass.
-4. Complete clean-VM and real-machine acceptance testing before declaring a
-   stable Windows release.
-
-## 5. CI and security gates
-
-A Windows release candidate must satisfy all of the following:
-
-- locked dependency installation, dependency audit, Node tests, and Python tests
-  pass on native Windows CI;
-- provider, path, process, credential, PDF-store, Zotero, and OneDrive adapters
-  have Windows-specific unit and integration coverage;
-- packaged resources contain the required skill, license, notices, and read-only
-  site snapshot, with no config, credentials, tokens, private vault data, or
-  developer-specific paths;
-- `app/release-audit.js` is refactored from its current assumption of exactly two
-  packaged `app.asar` files into an explicit per-platform/per-architecture
-  artifact manifest;
-- `test/release-audit.test.js` no longer asserts that `dist:win` is absent, while
-  still rejecting undeclared artifacts and stale update feeds;
-- source and package scanning detects Windows personal paths such as
-  `C:\\Users\\<name>\\...`, in addition to the existing macOS user-path check;
-- installer contents and unpacked `app.asar` pass the same secret, privacy, and
-  allowlist audits as the macOS packages;
-- CI produces checksums from the exact release artifacts and verifies them after
-  artifact transfer; and
-- release jobs cannot publish partial or mixed-version assets when any platform
-  build, audit, or checksum verification fails.
-
-## 6. Installation and real-machine acceptance gates
-
-For every operating-system version and architecture eventually listed as
-supported, test on a clean VM and at least one representative real machine:
-
-- installer download, checksum verification, first launch, shortcut/start-menu
-  launch, normal quit, relaunch, and crash-free idle behavior;
-- manual upgrade from the previous supported Windows build with settings, cache,
-  vault selection, and usable encrypted Zotero credentials preserved as intended;
-- uninstall and reinstall behavior, including an explicit check of which local
-  data remains;
-- online and offline report loading, search, navigation, sandbox boundaries, and
-  external-link routing;
-- Zotero key verification, active-profile discovery, OneDrive root matching,
-  concurrent PDF adds, duplicate reconciliation, cancellation, retry, removal,
-  and cross-device linked-attachment access;
-- OneDrive online-only, locally available, syncing, conflicted, paused, signed-out,
-  and offline states, with no Zotero metadata success before cloud confirmation;
-- Obsidian vault discovery, already-read state, note opening, manual read-state
-  changes, and protection against broad or sensitive vault paths;
-- every provider advertised as supported, including login detection, one complete
-  read, concurrent reads, cancellation, timeout, quota/error display, output
-  parsing, and cache cleanup; and
-- non-ASCII Windows usernames and paths, long paths, locked files, antivirus
-  scanning, sleep/wake, network interruption, and application restart during
-  active work.
-
-Tests that mutate Zotero, OneDrive, Obsidian, or provider accounts must use
-maintainer-controlled fixtures and disposable data, never a contributor's
-personal library or vault.
-
-## 7. Stable release gate
-
-Windows may be marked supported only when all of these conditions are true:
-
-1. the exact supported Windows versions, CPU architectures, features, installer
-   format, signing state, and manual-upgrade policy are documented;
-2. native CI, packaged audits, clean-VM tests, and real-machine end-to-end tests
-   pass for every claimed configuration;
-3. English and Chinese installation, usage, troubleshooting, privacy, security,
-   release-note, and checksum instructions are synchronized;
-4. the GitHub Release contains only declared, version-matched artifacts and a
-   verified checksum manifest; and
-5. maintainers have completed an updated release checklist that covers both the
-   existing macOS channel and the new Windows channel.
-
-With v0.3.1, Windows 10/11 on x64 is a supported release target on this basis,
-and the checklist above remains the standard every later Windows release must
-keep meeting. For configurations without corresponding tested artifacts —
-currently Windows arm64 and every Linux target — repository text and issue
-responses must continue to say **planned, not supported or released**, and must
-not use “compatible,” “preview available,” or a release date.
+Future work includes evaluating Authenticode signing and Windows arm64 builds.
+Linux would need its own platform work and acceptance plan. No release date is
+set for these targets.

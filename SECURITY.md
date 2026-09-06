@@ -4,181 +4,91 @@
 
 ## Supported versions and platforms
 
-Security fixes are provided for the current `main` branch and for the latest
-stable PaperReader desktop release that actually exists on the official
-[GitHub Releases](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases)
-page. If that page has no PaperReader desktop release, only the current `main`
-branch is supported.
+Security fixes cover the current `main` branch and the latest PaperReader desktop release on the official [GitHub Releases](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases) page, currently v0.3.1.
 
 | Software or platform | Status |
 |---|---|
 | Current `main` branch | Supported |
-| Latest PaperReader macOS (12+) stable release that actually exists on Releases | Supported |
-| Latest PaperReader Windows 10/11 (`x64`) stable release that actually exists on Releases | Supported |
-| v0.3.1 target in this source tree | Candidate until its tag, Release, three installers, and the merged `SHA256SUMS.txt` actually exist |
-| Retired v0.2 browser writer | Unsupported; do not use for a new installation |
-| Windows `arm64` | Unsupported; no build is produced |
-| Linux | Unsupported; there is no official installer or release commitment |
+| PaperReader v0.3.1 for macOS 12+ (`arm64`, `x64`) | Released; supported |
+| PaperReader v0.3.1 for Windows 10/11 (`x64`) | Released; supported |
+| Older desktop releases | Upgrade to the latest release for fixes |
+| Retired v0.2 browser writer | Unsupported; do not use |
+| Windows `arm64` and Linux | Unsupported; no official installer |
 
-The retired v0.2 WebDAV upload and encrypted website credential bundle must not
-be used for a new installation. Cross-platform helpers or launch scripts in the
-repository do not place a platform in the support matrix.
+The v0.2 WebDAV upload flow and encrypted website credential bundle are retired. See [Credential handling and migration](#credential-handling-and-migration) if you used that version.
 
 ## Report a vulnerability
 
-Use the repository's **Security → Report a vulnerability** form when it is
-available. Include the affected version, platform, minimal reproduction, and
-impact, but do not include a real API key, password, private paper, vault note,
-or unredacted App-support directory. If private reporting is unavailable, open
-a minimal public issue asking the maintainers for a private channel and omit
-all exploit details and secrets until one is provided.
+Use the repository's **Security > Report a vulnerability** form when available. Include the affected version, platform, minimal reproduction, and impact. Omit real API keys, passwords, private papers, vault notes, and unredacted App-support files.
 
-Please do not test against another person's Zotero, OneDrive, Obsidian vault,
-AI-provider account, or GitHub installation. We will acknowledge a usable
-report and coordinate disclosure after a fix is available.
+If private reporting is unavailable, open a minimal public issue asking for a private channel. Keep exploit details and secrets out of the issue. Maintainers will acknowledge a usable report and coordinate disclosure after a fix is available.
+
+Only test accounts, devices, libraries, vaults, and deployments you own or are authorized to test.
 
 ## Scope
 
-In scope:
+This policy covers:
 
-- credential storage, permission checks, and migration in supported code or a
-  supported desktop release;
-- report iframe sandboxing, the App bridge, IPC allowlists, and user-gesture
-  validation;
-- data flows PaperReader initiates through Zotero, OneDrive, Obsidian, and local
-  AI CLIs;
-- path validation, file writes, cache cleanup, package boundaries, and release
-  artifact integrity; and
-- handling of untrusted papers, PDFs, HTML, repositories, and provider output.
+- Credential storage, permission checks, and migration in supported code and desktop releases.
+- Report iframe sandboxing, the App bridge, IPC allowlists, and user-gesture validation.
+- Data flows PaperReader initiates through Zotero, OneDrive, Obsidian, and local AI CLIs.
+- Path validation, file writes, cache cleanup, package contents, and release integrity.
+- Handling of untrusted papers, PDFs, HTML, repositories, and AI output.
 
-Out of scope:
-
-- the retired v0.2 browser mutation path;
-- unreleased and unsupported platform builds (Linux, Windows `arm64`);
-- vulnerabilities wholly within Zotero, OneDrive, Obsidian, GitHub, arXiv, or
-  an AI provider unless PaperReader's integration or boundary handling causes
-  the issue;
-- testing against accounts, devices, libraries, vaults, or deployments the
-  reporter does not own; and
-- provider billing, quotas, retention policies, or service availability.
+It does not cover the retired v0.2 browser writer, unsupported platforms, or vulnerabilities wholly within an external service unless PaperReader's integration causes the issue. Provider billing, quotas, retention policies, and service availability are also outside this project's scope.
 
 ## Data and trust boundaries
 
-The local paths below use the macOS layout; on Windows the same PaperReader
-files live under `%APPDATA%\PaperReader\` and the same boundaries apply.
+The paths below use the macOS layout. On Windows, PaperReader stores the corresponding files under `%APPDATA%\PaperReader\`.
 
-| Data/action | Destination | Boundary |
+| Data or action | Destination | Handling |
 |---|---|---|
-| Public reports | Project GitHub Pages / local cache | Read-only report content is untrusted and sandboxed |
-| Zotero API key and user ID | `~/Library/Application Support/PaperReader/zotero-credentials.secure.json` | Encrypted with Electron `safeStorage` (Keychain-backed on macOS, DPAPI-backed on Windows); plaintext fallback is refused |
-| Non-secret App settings | `~/Library/Application Support/PaperReader/config.json` | Local file; may reveal private filesystem paths |
+| Public reports | Project GitHub Pages and local cache | Treated as untrusted content and displayed in a sandboxed iframe |
+| Zotero API key and user ID | `~/Library/Application Support/PaperReader/zotero-credentials.secure.json` | Encrypted with Electron `safeStorage`, backed by Keychain on macOS and DPAPI on Windows; no plaintext fallback |
+| App settings | `~/Library/Application Support/PaperReader/config.json` | Stored locally; may contain private filesystem paths |
 | Report cache | `~/Library/Application Support/PaperReader/site-cache/` | Public report data cached locally |
-| Reading scratch | `~/Library/Application Support/PaperReader/paper-cache/` | App-owned, outside the vault; exposed to a provider as `$PAPERREADER_CACHE_DIR` |
-| Zotero metadata | Zotero Web API and Zotero Sync | Personal-library read/write key; never sent into report HTML |
-| Linked PDF bytes | User-selected OneDrive folder | OneDrive sync, confirmed fail-closed by macOS File Provider or the Windows NTFS cloud-files placeholder state; separate from Zotero metadata sync |
-| Finished paper notes | User-selected Obsidian vault | May include paper text, figures, source snippets, and private annotations |
-| AI reading request | Selected OpenAI Codex CLI (`codex`), Claude Code, or TraeCode provider | Provider CLI may transmit the paper, prompt, context, and diagnostics under provider terms |
+| Reading temporary files | `~/Library/Application Support/PaperReader/paper-cache/` | Outside the vault; shared with the AI CLI through `$PAPERREADER_CACHE_DIR` |
+| Zotero metadata | Zotero Web API and Zotero Sync | Requires a personal-library read/write key; credentials are not passed to report HTML |
+| Linked PDFs | User-selected OneDrive folder | Synced by OneDrive, separately from Zotero metadata |
+| Completed notes | User-selected Obsidian vault | May include paper text, figures, code excerpts, and private annotations |
+| AI reading requests | Selected Codex, Claude Code, or Trae CLI | May send papers, prompts, context, and diagnostics to the provider under its terms |
 
-The public website is read-only. It does not receive Zotero credentials, write
-OneDrive files, start a local AI CLI, or modify a vault.
+The public website is read-only. It does not receive Zotero credentials, write OneDrive files, start a local AI CLI, or modify a vault.
 
-## Local provider permissions and network use
+Before writing Zotero metadata, PaperReader checks OneDrive's local state. macOS checks File Provider's upload and conflict status. Windows currently checks only the file's reparse-point attribute, which does not prove that uploading has finished or that the cloud copy is conflict-free. If the platform check does not pass, the save stops. Neither platform downloads or compares the remote PDF; confirm OneDrive has finished syncing before using the PDF on another device.
 
-PaperReader resolves the bundled `paper-reading/SKILL.md` to an absolute path
-and passes that exact path to the selected AI CLI. The Codex adapter runs
-`codex exec --json --ephemeral` with a named permission profile based on
-`:workspace`. Filesystem reads are denied by default; only Codex's minimal
-runtime, the bundled skill, the probed Python/PyMuPDF runtime, selected vault
-content outside `.obsidian`, and the App cache are exposed. That vault content
-and cache are writable, and network access is enabled. System temporary
-directories are denied and redirected into App cache.
+## Local AI permissions and network use
 
-Before reporting Codex ready, PaperReader forces a real local parse of every
-security-sensitive override using a random, deliberately missing output-schema
-path. It accepts only the exact missing-file failure; this creates no schema
-file and does not invoke a model. The adapter ignores user config and
-exec-policy rules for the job, marks the vault untrusted so project-scoped
-`.codex` config/hooks/rules are skipped, and disables global/vault `AGENTS.md`
-discovery, plugins, apps, hooks, skill discovery, login shells, and shell
-snapshots. It exposes only a core shell environment plus exact
-`$PAPERREADER_CACHE_DIR` and `$PAPERREADER_PYTHON` values. Sandboxed commands
-cannot read `$CODEX_HOME`, SSH material, PaperReader settings, the vault's
-`.obsidian` configuration/plugins, or unrelated home-directory files; Codex
-itself still authenticates through `codex login`. These beta permission
-profiles are defense in depth rather than a complete OS security boundary.
-Claude and Trae run in their provider-specific non-interactive bypass modes.
-Use only a trusted vault, do not point it at a broad personal folder, and review
-the provider's privacy, retention, and billing terms.
+PaperReader passes the bundled `paper-reading/SKILL.md` to the selected AI CLI. AI reading can write notes and attachments in the selected vault and use the App's reading cache. Network access is enabled, and the provider may receive content from those locations. Choose a dedicated vault and review the provider's privacy, retention, and billing terms.
 
-PaperReader rejects a vault that is the filesystem root, the user home, an
-ancestor containing that home, or a common broad top-level home folder such as
-`Documents`, `Downloads`, `Library`, `.config`, `.local`, `.codex`, or `.ssh`.
-A dedicated nested folder remains valid. The Codex adapter additionally rejects
-any vault overlap with PaperReader user data/cache, `$CODEX_HOME`, or the user's
-SSH directory so a writable vault grant cannot swallow those protected roots.
+The Codex adapter uses a named permission profile based on `:workspace`. It grants reads to the minimum runtime, bundled skill, selected Python/PyMuPDF runtime, vault content outside `.obsidian`, and App cache. Vault content and cache are writable. The profile denies access to Codex configuration and credentials in `$CODEX_HOME`, SSH files, PaperReader settings, `.obsidian`, and unrelated home-directory files. Temporary files are directed into the App cache. Codex itself still authenticates through `codex login`.
 
-Papers, PDFs, project pages, repositories, citations, and metadata may contain
-prompt-injection text. The bundled skill explicitly treats all of them as data,
-rejects embedded instructions, and forbids reading credentials or unrelated local
-files. This is a behavioral guard in addition to the sandbox, not a replacement
-for OS isolation; stop a job if its requested command or output looks unrelated
-to paper analysis.
+The adapter checks that the installed Codex CLI can parse its permission settings before reporting it ready; this local check does not invoke a model. For reading jobs, it skips user and project configuration, execution-policy rules, and `AGENTS.md` discovery. It also disables plugins, apps, hooks, skill discovery, login shells, and shell snapshots, and supplies a restricted shell environment. These beta permission profiles add protection but do not provide a complete operating-system security boundary.
 
-[OpenAI Codex CLI (`codex`)](https://developers.openai.com/codex/cli/) and
-Claude Code are independently installed public CLIs. Codex uses its own
-ChatGPT/API authentication; Claude uses its own subscription/OAuth session.
-TraeCode support applies only to users who have already been provided a
-supported CLI and account; this project does not distribute or provision it.
-PaperReader does not collect or save credentials for any AI provider.
+Claude and Trae use their own non-interactive modes that bypass permission prompts. They do not receive the Codex permission profile, so the same file-access restrictions must not be assumed for those providers.
 
-PaperReader contains no built-in analytics or telemetry. Feature-required
-network traffic still goes to the public report site, arXiv, Zotero, OneDrive
-(macOS File Provider or the Windows OneDrive sync engine), and the selected AI
-provider. External services
-may apply their own logging and telemetry policies.
+PaperReader rejects the filesystem root, the home directory, its ancestors, and broad home folders such as `Documents`, `Downloads`, `Library`, `.config`, `.local`, `.codex`, and `.ssh` as vaults. A dedicated nested folder is allowed. For Codex, the vault must also be separate from PaperReader data and cache, `$CODEX_HOME`, and the user's SSH directory.
+
+Papers, PDFs, project pages, repositories, citations, and metadata may contain prompt injection. The bundled skill instructs the AI to treat that content as data, ignore embedded instructions, and avoid credentials or unrelated local files. Those instructions cannot guarantee that an AI will follow them or block every injection. Stop a job if its commands or output are unrelated to paper analysis.
+
+Install and authenticate AI CLIs separately. Codex uses its own ChatGPT/API authentication, and Claude uses its own subscription/OAuth session. Trae support requires an independently obtained, supported CLI and account. PaperReader does not collect or store AI-provider credentials.
+
+PaperReader has no built-in analytics or telemetry. Its features still contact the public report site, arXiv, Zotero, OneDrive, and the selected AI provider. Those services may apply their own logging and telemetry policies.
 
 ## Credential handling and migration
 
-- Never put Zotero keys, WebDAV passwords, AI credentials, OneDrive tokens, or
-  real vault paths in source, screenshots, logs, test fixtures, issues, release
-  notes, or release artifacts.
-- A Zotero key must belong to the same personal-library account used by Zotero
-  desktop and must be limited to the required library read/write permissions.
-- Anyone who used v0.2 must revoke and rotate every Zotero key and WebDAV
-  password that entered the old browser bundle. Deleting a file from the latest
-  revision does not remove it from Git history or revoke the credential.
-- Clearing the key in PaperReader removes the local encrypted envelope. Deleting
-  the App alone does not: local support data is intentionally retained for
-  upgrades.
-- Do not publish the App support directory. Even encrypted files and non-secret
-  configuration can disclose usernames, paths, providers, or library structure.
+- Keep Zotero keys, WebDAV passwords, AI credentials, and OneDrive tokens out of source, screenshots, logs, test fixtures, issues, and release files. Redact private paths before sharing diagnostics.
+- Use a Zotero key for the same personal-library account as Zotero desktop, with only the required library read/write permissions.
+- If you used v0.2, revoke and replace every Zotero key and WebDAV password stored in the old website bundle. Deleting a file from the current revision does not erase Git history or revoke credentials.
+- Clearing the key in PaperReader deletes the local encrypted credential file. Removing the App alone retains its user data for later installation or upgrades.
+- Do not publish the App-support directory. Even encrypted files and settings can reveal usernames, paths, selected providers, or library structure.
 
 ## Release integrity
 
-This source tree targets v0.3.1, but it remains a candidate until the matching
-tag, GitHub Release, three installers, and the merged `SHA256SUMS.txt` actually
-exist. Documentation
-must not call it a published stable release before then.
+The [v0.3.1 Release](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases/tag/v0.3.1) provides two macOS DMGs, one Windows installer, and `SHA256SUMS.txt`. All installers are unsigned: the macOS builds have no Developer ID signature or Apple notarization, and the Windows installer has no Authenticode signature.
 
-The candidate v0.3.1 installers are unsigned: the DMGs are unnotarized and the
-Windows setup has no Authenticode signature. After an official
-release exists, download the platform-correct installer and `SHA256SUMS.txt`
-from that same Release, use the matching checksum command in
-[`README.md`](README.md),
-and require the check to pass. A SHA-256 match detects a corrupt download;
-it does not replace Apple signing/notarization or Windows Authenticode signing
-and cannot prove provenance if
-the release account or channel is compromised.
+Download the installer and checksum list from the same official Release, and follow the verification steps in the [installation guide](app/README.md). A SHA-256 match detects a damaged download. It does not replace signing or prove authenticity if the release account or download channel is compromised.
 
-Each newly downloaded App bundle may require Finder's Control-click/right-click
-**Open** exception on first launch. Never advise users to disable Gatekeeper
-globally.
+macOS or Windows may block an unsigned app. First-launch steps depend on the operating-system version and security policy; follow the installation guide and only make an exception for a download you trust. Keep Gatekeeper, SmartScreen, Defender, and other system protections enabled.
 
-On Windows, first run of the unsigned installer may trigger Microsoft Defender
-SmartScreen. After the SHA-256 has been verified, **More info** → **Run
-anyway** applies to that one file only. Never advise users to disable
-SmartScreen, Defender, or other Windows security controls globally.
-
-Maintainers must follow the [English release checklist](RELEASE_CHECKLIST.md) or
-the [Chinese checklist](RELEASE_CHECKLIST_ZH.md), including secret scans,
-artifact audits, tests, checksum verification, and stable-channel publication.
+Maintainer checks for tests, credential scans, installer audits, and checksum verification are documented in the [release checklist](RELEASE_CHECKLIST.md).

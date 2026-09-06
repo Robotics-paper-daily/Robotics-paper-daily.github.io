@@ -1,403 +1,200 @@
 # PaperReader v0.3.1
 
-[中文版本](README_ZH.md)
+[中文版本](README_ZH.md) · [Windows roadmap](../docs/WINDOWS_ROADMAP.md) · [Security](../SECURITY.md)
 
-PaperReader is the desktop companion to Robotics Daily Papers. The public site
-is read-only; all operations that need local files or local credentials live in
-this Electron app.
+PaperReader is the desktop companion to Robotics Daily Papers. Browse daily reports, save papers to Zotero, and use a local AI CLI to create reading notes in Obsidian. The public website provides read-only reports; Zotero and note-writing controls are available in the desktop app.
 
-This source tree targets v0.3.1 for macOS and Windows in three builds:
+v0.3.1 is available on [GitHub Releases](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases/tag/v0.3.1):
 
-- `PaperReader-0.3.1-arm64.dmg` — Apple Silicon (M1 and newer)
-- `PaperReader-0.3.1-x64.dmg` — Intel Mac
-- `PaperReader-0.3.1-x64-Setup.exe` — Windows 10/11 (`x64`), NSIS per-user installer
-
-It remains a release candidate until the matching tag, GitHub Release, all
-three installers, and the merged `SHA256SUMS.txt` actually exist. Check the
-official
-[Releases page](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases)
-before treating it as published.
-
-| Platform | Status |
+| Platform | Installer |
 |---|---|
-| macOS 12+ (`arm64`, `x64`) | v0.3.1 release target; unsigned and unnotarized candidate |
-| Windows 10 and Windows 11 (`x64`) | v0.3.1 release target; unsigned NSIS installer candidate, feature-identical to macOS |
-| Windows `arm64` | Not built |
-| Linux | Unsupported; no installer or validated workflow |
+| macOS 12+, Apple Silicon (M1 and newer) | `PaperReader-0.3.1-arm64.dmg` |
+| macOS 12+, Intel | `PaperReader-0.3.1-x64.dmg` |
+| Windows 10 and Windows 11, `x64` | `PaperReader-0.3.1-x64-Setup.exe` |
 
-`run-windows.bat` is an experimental source development launcher, not a
-supported product, release, or installer — the supported Windows entry point is
-the Setup installer. The delivered platform adapters, packaging, and CI, plus
-the remaining acceptance and hardening work, are tracked in the
-[Windows roadmap](../docs/WINDOWS_ROADMAP.md).
+The release also includes `SHA256SUMS.txt`. Windows `arm64` and Linux installers are not available.
 
-## What the app does
+## Download and install
 
-- **Add to Zotero:** places a validated arXiv PDF in Zotero's OneDrive-backed
-  Linked Attachment Base Directory and creates a matching `linked_file` item.
-- **「帮我读」:** starts a locally authenticated OpenAI Codex CLI (`codex`),
-  Claude Code CLI, or TraeCode CLI with the bundled `paper-reading` skill and
-  writes a structured Obsidian note.
-- **Already-read state:** detects notes in the selected vault and opens them
-  directly.
-- **Latest reports:** fetches the current published report manifest and pages,
-  then falls back to an offline cache or bundled snapshot when needed.
+Download the installer for your machine and `SHA256SUMS.txt` from the release above. Both macOS installers are unsigned and unnotarized; the Windows installer has no Authenticode signature. SHA-256 checks detect a damaged or mismatched download, but do not replace code signing or establish authenticity if the release channel is compromised.
 
-The Add to Zotero and reading controls are injected by PaperReader. They are not
-maintained as browser features and are not shown on the public website.
+### macOS
+
+In Terminal, open your Downloads directory and run the command matching your Mac:
+
+```bash
+cd ~/Downloads
+# Apple Silicon
+grep 'PaperReader-0.3.1-arm64.dmg$' SHA256SUMS.txt | shasum -a 256 -c -
+# Intel
+grep 'PaperReader-0.3.1-x64.dmg$' SHA256SUMS.txt | shasum -a 256 -c -
+```
+
+After the check reports `OK`, open the DMG and drag PaperReader to Applications. If macOS blocks the first launch because the developer is unidentified or the app is not notarized, follow the per-app approval steps in [Troubleshooting](#troubleshooting).
+
+### Windows
+
+In PowerShell, open your Downloads directory and calculate the installer hash:
+
+```powershell
+Set-Location "$env:USERPROFILE\Downloads"
+Get-FileHash .\PaperReader-0.3.1-x64-Setup.exe -Algorithm SHA256
+```
+
+Compare the hash with the matching line in `SHA256SUMS.txt`. Once they match, run the Setup installer and choose an installation directory. It installs for the current user. If Microsoft Defender SmartScreen warns and you trust the downloaded file, choose **More info** → **Run anyway**. These options may be unavailable on a managed device.
+
+### Upgrading and uninstalling
+
+PaperReader does not download or install new app versions. To upgrade, quit the app, download and verify the newer installer, then replace the existing app in Applications on macOS or run the newer Setup installer on Windows.
+
+Settings, cached reports, and encrypted Zotero credentials are kept in `~/Library/Application Support/PaperReader/` on macOS or `%APPDATA%\PaperReader\` on Windows. Replacing the app reuses these files. Windows uninstall also preserves this directory; remove it separately only if you want to clear the local data. Your Obsidian vault and OneDrive PDFs remain in the locations you selected.
 
 ## Requirements
 
-- macOS 12 or newer, or Windows 10/11 on `x64`;
-- Zotero desktop, installed and running;
-- OneDrive desktop, signed in and syncing locally (on Windows, keep OneDrive
-  Files On-Demand enabled — the current OneDrive default);
-- a dedicated Obsidian vault containing `.obsidian/`; PaperReader rejects the
-  filesystem root, the user home or any ancestor of it, and broad top-level
-  home folders such as `Documents`, `Downloads`, `Library`, `.config`, `.local`,
-  `.codex`, and `.ssh`. A dedicated nested folder is valid. Codex also rejects
-  vaults overlapping PaperReader user data/cache, `$CODEX_HOME`, or SSH;
-- one installed and logged-in provider:
-  - [OpenAI Codex CLI (`codex`)](https://developers.openai.com/codex/cli/):
-    install the public CLI and use its own ChatGPT or supported API login; or
-  - [Claude Code](https://docs.anthropic.com/en/docs/claude-code/getting-started):
-    public `claude` CLI with its subscription/OAuth login; or
-  - TraeCode CLI: `trae-cli` or `trae-agent`, only if a supported CLI build and
-    account have already been provided to you. PaperReader does not distribute
-    or provision TraeCode CLI.
-- Python 3 with PyMuPDF (`fitz`). On macOS it must be a `python3` on the
-  login-shell `PATH` used by a Finder-launched App. One isolated setup is:
+Reading the daily reports requires only PaperReader. To use **Add to Zotero**, install Zotero desktop and OneDrive, sign in to both, and keep them running. Windows also requires OneDrive Files On-Demand to remain enabled.
 
-  ```bash
-  python3 -m venv "$HOME/.paperreader-python"
-  "$HOME/.paperreader-python/bin/python3" -m pip install 'PyMuPDF>=1.24,<2'
-  "$HOME/.paperreader-python/bin/python3" -c 'import fitz; print(fitz.VersionBind)'
-  ```
+For **帮我读** (Read with AI), prepare:
 
-  Add `$HOME/.paperreader-python/bin` to the login-shell `PATH`, restart the App,
-  and verify `python3 -c 'import fitz'` in a login shell. On Windows, install
-  Python 3 from [python.org](https://www.python.org/downloads/) (it includes
-  the `py` launcher), then for example:
+- A dedicated Obsidian vault containing `.obsidian/`. Use a folder for paper notes, not your home directory or an entire `Documents` or `Downloads` directory. The vault must not overlap PaperReader's settings or cache. Codex also rejects vaults overlapping `$CODEX_HOME` or SSH directories.
+- One installed and authenticated AI CLI: [OpenAI Codex CLI (`codex`)](https://developers.openai.com/codex/cli/), [Claude Code (`claude`)](https://docs.anthropic.com/en/docs/claude-code/getting-started), or an independently provided TraeCode CLI (`trae-cli` / `trae-agent`). PaperReader does not distribute or provide accounts for TraeCode CLI.
+- Python 3 with PyMuPDF (`fitz`) for PDF extraction.
 
-  ```bat
-  py -3 -m venv %USERPROFILE%\.paperreader-python
-  %USERPROFILE%\.paperreader-python\Scripts\python.exe -m pip install "PyMuPDF>=1.24,<2"
-  ```
+The app uses the login session managed by the selected CLI. It does not collect or save AI-service credentials. Available models, usage limits, and charges follow that account.
 
-  and select that `python.exe` in Settings (**Python 3 解释器 / Python 3
-  interpreter**), or ensure `py -3 -c "import fitz"` works. Windows detection
-  tries `py -3`, then `python`, then `python3`, persists the exact resolved
-  `python.exe`, and rejects the Microsoft Store python stub automatically.
-  Source builders can use
-  [`../skills/paper-reading/requirements.txt`](../skills/paper-reading/requirements.txt).
+### Python on macOS
 
-PaperReader does not collect or save any AI-provider credential. Codex uses the
-ChatGPT/API authentication already managed by the local `codex` CLI; sandboxed
-job commands are explicitly denied access to `$CODEX_HOME`. Claude and Trae
-likewise use their own local CLI sessions. Usage, model availability, and quotas
-follow those accounts.
+Create an isolated environment:
 
-## Download, verify, and install
+```bash
+python3 -m venv "$HOME/.paperreader-python"
+"$HOME/.paperreader-python/bin/python3" -m pip install 'PyMuPDF>=1.24,<2'
+"$HOME/.paperreader-python/bin/python3" -c 'import fitz; print(fitz.VersionBind)'
+```
 
-1. After v0.3.1 actually appears on the official
-   [Releases page](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases),
-   download the installer matching the machine plus `SHA256SUMS.txt`.
-2. Verify the downloaded file first. On macOS, in Terminal after `cd ~/Downloads`:
-   - Apple Silicon: `grep 'PaperReader-0.3.1-arm64.dmg$' SHA256SUMS.txt | shasum -a 256 -c -`
-   - Intel: `grep 'PaperReader-0.3.1-x64.dmg$' SHA256SUMS.txt | shasum -a 256 -c -`
-   On Windows, in PowerShell:
-   `Get-FileHash .\PaperReader-0.3.1-x64-Setup.exe -Algorithm SHA256`, and
-   compare the printed hash with the Setup.exe line in `SHA256SUMS.txt`; or in
-   Git Bash:
-   `grep 'PaperReader-0.3.1-x64-Setup.exe$' SHA256SUMS.txt | sha256sum -c -`.
-   The check must pass before installing.
-3. macOS: open the DMG and drag PaperReader to Applications. Windows: run the
-   Setup exe — a per-user NSIS installer that lets you choose the install
-   directory.
-4. macOS first launch: in Finder, open Applications, Control-click or
-   right-click PaperReader, choose **Open**, then confirm **Open**. Windows
-   first run: if Microsoft Defender SmartScreen warns, choose **More info** →
-   **Run anyway** for this one verified file.
+In PaperReader settings, select this environment's `python3` under **Python 3 解释器** (Python 3 interpreter). To use automatic detection instead, add `$HOME/.paperreader-python/bin` to your login-shell `PATH` and restart PaperReader.
 
-The installers are unsigned: the DMGs have no Apple Developer ID signature and
-are not notarized, and the Windows setup has no Authenticode signature. The
-per-file approvals above (Finder's right-click **Open**, SmartScreen's **Run
-anyway**) cover this App without disabling Gatekeeper, SmartScreen, or other OS
-security globally — never do that.
+### Python on Windows
 
-### Manual upgrades without resetting settings
+Install Python 3 and its `py` launcher from [python.org](https://www.python.org/downloads/), then run in PowerShell:
 
-Quit PaperReader, download and verify the newer installer, then replace the old
-build: on macOS drag the new App to Applications and replace the existing copy;
-on Windows run the newer Setup exe over the existing installation. The new
-version reuses settings, report cache, and encrypted Zotero credentials under
-`~/Library/Application Support/PaperReader/` on macOS or
-`%APPDATA%\PaperReader\` on Windows.
-Moving the OneDrive linked-attachment directory or switching Zotero profiles
-requires confirming the directory again in Settings. Uninstalling on Windows
-keeps the per-user data in `%APPDATA%\PaperReader`; delete that folder manually
-for a full cleanup.
+```powershell
+py -3 -m venv "$env:USERPROFILE\.paperreader-python"
+& "$env:USERPROFILE\.paperreader-python\Scripts\python.exe" -m pip install "PyMuPDF>=1.24,<2"
+& "$env:USERPROFILE\.paperreader-python\Scripts\python.exe" -c "import fitz; print(fitz.VersionBind)"
+```
+
+Select that `python.exe` under **Python 3 解释器** in PaperReader settings. When the field is empty, the app tries `py -3`, `python`, and `python3` in order. It rejects Microsoft Store launch stubs and requires the detected interpreter to import PyMuPDF successfully.
 
 ## First-run setup
 
-### 1. Prepare Zotero and OneDrive
+PaperReader currently uses Chinese interface labels. The steps below quote those labels with English explanations.
 
-1. Sign in to Zotero desktop with the **same personal-library account** that
-   will own the API key. Enable Zotero Sync and complete one manual sync.
-2. Start OneDrive and wait for sync to become available.
-3. Start Zotero.
-4. In Zotero, open **Settings → Advanced → Files and Folders**.
-5. Set **Linked Attachment Base Directory** to a folder inside OneDrive, such as
-   `OneDrive/Zotero-Attachments`.
+### Zotero and OneDrive
 
-Use a dedicated, flat attachment directory. PaperReader refuses a location
-outside the platform's OneDrive scope — the current OneDrive File Provider
-container on macOS; on Windows, the signed-in account's OneDrive sync folder,
-discovered from the per-user `OneDrive` / `OneDriveConsumer` /
-`OneDriveCommercial` environment variables and compared as resolved real paths
-case-insensitively — and refuses a path that resolves differently from
-Zotero's active profile.
+1. Sign in to Zotero desktop with the personal-library account you will use in PaperReader. Enable Zotero Sync and complete one manual sync.
+2. Start OneDrive and wait until it is signed in and syncing.
+3. In Zotero, open **Settings → Advanced → Files and Folders**. Set **Linked Attachment Base Directory** to a dedicated folder inside OneDrive, such as `OneDrive/Zotero-Attachments`.
+4. Open [Zotero's key creation page](https://www.zotero.org/settings/keys/new). Create a private 24-character API key with personal-library read and write access.
+5. Open PaperReader settings, paste the key into **Zotero API Key**, and choose **验证并安全保存** (Verify and securely save) or **保存全部设置** (Save all settings). The user ID is detected from the key; you do not need to enter it.
+6. Check **Zotero 链接附件基准目录** (Zotero linked attachment base directory). If the app has not filled it in, select the same OneDrive folder configured in Zotero.
 
-### 2. Create and save a Zotero key
+The folder must be within the current OneDrive account's local sync directory and match Zotero's active profile. PaperReader checks the actual resolved path, including links and aliases, before writing. After moving the folder or switching Zotero profiles, confirm the path again.
 
-1. Open [Zotero's key creation page](https://www.zotero.org/settings/keys/new).
-2. Create a private 24-character key for the personal library.
-3. Enable personal-library read access and write access.
-4. In PaperReader → **Settings**, paste the key and choose **Verify and securely
-   save** (or **Save all settings**).
+Zotero credentials are encrypted using the operating system's secure-storage facility: Keychain-backed storage on macOS and DPAPI on Windows. If encryption is unavailable, the app refuses to save the key. The settings page does not reveal a saved key; leaving the field blank keeps it unchanged.
 
-PaperReader calls Zotero's current-key endpoint, verifies the required
-permissions, and derives the numeric user ID automatically. Only the API key is
-entered by the user.
+If you used the retired v0.2 browser integration, revoke any Zotero key or WebDAV password saved in that integration before entering replacement credentials.
 
-The key and user ID are encrypted through Electron `safeStorage`; macOS uses
-the Keychain-backed system facility, and Windows uses the DPAPI-backed one. The
-encrypted envelope is stored with private
-file permissions in the app's user-data directory. There is no plaintext
-fallback: if system encryption is unavailable, PaperReader refuses to save the
-credential. The settings screen never displays a stored key again.
+### Obsidian and AI reading
 
-If v0.2's retired browser writer ever held a Zotero key or WebDAV password,
-revoke and rotate those credentials before configuring v0.3.1. Removing an old
-bundle from the current checkout cannot revoke a secret present in Git history.
+1. Select your paper-note vault under **Obsidian 笔记库路径** (Obsidian vault path).
+2. Choose **Codex**, **Claude**, or **Trae** under **本地 AI CLI**. The app detects an installed CLI; use the file picker if detection fails.
+3. Complete login in the selected CLI's own terminal interface.
+4. Select a Python interpreter as described above, then choose **重新检测** (Check again).
+5. Once the required checks pass, choose **保存全部设置** (Save all settings).
 
-Saving the key also causes the shell to build a read-only, fully paginated
-presence index of the personal library. PaperReader extracts explicit arXiv IDs
-from bibliographic items across all collections and supported item types. An
-existing item outside the `Daily Paper` tree is shown as **In Zotero**, but its
-real item key is not exposed to the report and it is never granted remove or
-repair permission. New parent items created by v0.3.0 and later carry the
-visible Zotero
-tag `paperreader-managed-v1`. Repair and Remove require both that tag and current
-membership in the `Daily Paper` collection tree. Legacy or manually created
-untagged items remain presence-only even if they are already in that tree.
+On first setup, discovery prefers Codex, then Claude, then Trae. It preserves a provider you have already selected. The `paper-reading` skill is bundled with the app; you do not need to install it in the vault.
 
-### 3. Confirm the attachment directory
+For notes across devices, use either a vault in OneDrive or a vault outside OneDrive with Obsidian Sync. Do not use both synchronizers on the same vault. Keep Zotero's linked-PDF directory outside the vault, and wait for sync to finish before editing the same note on another device.
 
-PaperReader detects the active Zotero profile and its configured linked-file
-base directory — reading `profiles.ini` and `prefs.js` under
-`~/Library/Application Support/Zotero` on macOS and `%APPDATA%\Zotero\Zotero`
-on Windows. If the directory is not populated automatically, choose the
-same OneDrive folder in PaperReader Settings. The app compares resolved real
-paths, not just display strings, and validates them again before every write.
+## Saving papers to Zotero
 
-### 4. Configure Obsidian and a provider
+Choose **Add to Zotero** on a paper card or search result, or enter an arXiv link. PaperReader downloads and validates the PDF, checks local OneDrive file state, and creates the Zotero item and linked attachment. Zotero syncs the library record; OneDrive syncs the PDF. Wait for PaperReader's final success, then sync Zotero desktop to see the new item.
 
-1. Select the dedicated Obsidian vault that will receive paper notes. Do not
-   select a filesystem/home root, a broad top-level personal folder, or a path
-   overlapping PaperReader user data/cache, `$CODEX_HOME`, or SSH.
-2. Select **Codex**, **Claude**, or **Trae**.
-3. Accept the automatically detected executable, or choose it manually.
-4. Complete provider login in its own terminal CLI if not already authenticated.
-5. Adjust the model and concurrency only if needed.
+On Windows, the current check only tests the local reparse-point attribute. It does not prove that the PDF has finished uploading, has no cloud conflict, or is available on another device. Confirm synchronization in OneDrive before relying on cross-device access; further real-device validation is tracked in the [Windows roadmap](../docs/WINDOWS_ROADMAP.md).
 
-For cross-device notes, choose one setup: place the whole vault in OneDrive and
-open that synced folder on every device, or keep the vault outside OneDrive and
-use Obsidian Sync. Never run both synchronizers on the same vault. Keep the
-Zotero linked-PDF directory outside the vault, and wait for sync to finish before
-editing the same note on another Mac.
+The Zotero PDF/OneDrive queue has a fixed concurrency of **4**. Additional papers wait in submission order (FIFO), including batches larger than ten. Repeated requests for the same paper operation are merged while queued or running. This queue is independent of AI reading concurrency.
 
-On a fresh configuration, first-run discovery prefers an installed Codex CLI,
-then Claude, then an independently provided Trae CLI; with none detected,
-onboarding remains on Codex. A provider already chosen explicitly is never
-overwritten. An empty `codexModel` uses Codex's service/built-in default for the
-isolated task without loading the user's `config.toml`; filling it applies an
-explicit model to PaperReader jobs. The
-`paper-reading` skill ships in `Resources/skills`;
-the vault does not need its own copy. PaperReader resolves the bundled
-`paper-reading/SKILL.md` to an absolute path and passes that exact path to the
-selected CLI. Legacy vault-local skill locations remain a compatibility
-fallback.
+Cards and search results are saved under `Daily Paper/<report date>`. Manually entered arXiv links use `Daily Paper/<arXiv first-published date>`, which may differ from the day you save the paper.
 
-## Add-to-Zotero guarantees
+If a save fails after the PDF is written to the OneDrive folder, leave that file in place and retry the same paper. PaperReader can reuse the validated file and reconcile an existing Zotero item. A PDF appearing in OneDrive alone does not mean the complete save succeeded.
 
-Zotero and OneDrive have separate synchronization roles. Zotero Web API owns
-the parent item, collection membership, tags, and linked-attachment metadata.
-OneDrive owns only the PDF bytes. Zotero desktop receives metadata through
-normal Zotero Sync, then resolves `attachments:<filename>.pdf` against that
-device's local Linked Attachment Base Directory. Seeing a PDF in OneDrive is
-therefore not evidence that the Zotero API write or desktop metadata sync has
-completed.
+PaperReader also checks the personal library for existing arXiv papers. Existing items are shown as **In Zotero**, **已在库中**, or **已在 Zotero** (Already in Zotero), depending on the view, without creating another copy. Repair and removal are available only for items with the `paperreader-managed-v1` tag that still belong to the `Daily Paper` collection tree. Legacy or manually created items without that tag remain read-only in PaperReader, even when they are inside that tree.
 
-A single user click starts the save; PaperReader does not show a redundant
-second confirmation. The privileged operation still requires a recent physical
-pointer/keyboard gesture in the focused window.
+Removing an eligible item deletes its Zotero record and linked-attachment record. It leaves the PDF in OneDrive.
 
-For each save, PaperReader:
+## Reading papers and opening notes
 
-1. normalizes the arXiv ID and obtains canonical metadata;
-2. checks the Zotero profile and exact OneDrive base-directory real path;
-3. downloads the PDF and validates the response, file signature, and size;
-4. writes through an exclusive temporary file and atomically commits without
-   replacing a conflicting existing file;
-5. asks the platform cloud check to confirm an uploaded, conflict-free OneDrive
-   state — macOS File Provider on Mac; on Windows the NTFS cloud-files
-   placeholder attributes set by the OneDrive sync engine, which requires
-   OneDrive Files On-Demand (the default) and stays fail-closed;
-6. re-opens and hashes the committed PDF; and
-7. creates/reconciles the Zotero parent and `linked_file` child with a flat
-   `attachments:<filename>.pdf` path.
+Choose **帮我读** on a paper card to start an AI reading task. Progress appears in the app. The resulting folder, `<vault>/<date>/<title>/`, normally contains a Markdown note, the original PDF, and extracted figures. When the paper provides an open-source implementation, the task also downloads relevant source files.
 
-The Zotero PDF/OneDrive materialization stage has a fixed maximum concurrency
-of **4**. Bursts larger than ten papers are accepted: four operations run while
-the rest wait in FIFO order. The queue coalesces the same operation key while
-it is queued or running, and every success or failure releases its slot. This
-fixed queue is separate from AI reading concurrency; Zotero Web API work before
-and after it uses its own timeout, idempotency, and reconciliation controls.
+If a matching note already exists, the card shows **笔记** (Note) and opens it. To mark the paper as read, check the final `- [ ] ✅ 已读` checkbox in Obsidian so it becomes `- [x]`. Only this checkbox changes the card to **✓ 已读**; generating or opening the note does not mark it read.
 
-For a daily card or search result, the destination is
-`Daily Paper/<report date>`. For a manually entered arXiv link, it is
-`Daily Paper/<arXiv first-published date>`. The collection date can therefore
-differ from the day the user clicks Add.
+Temporary extraction files are stored outside the vault in PaperReader's `paper-cache/` directory and cleaned after the task. Completed notes, PDFs, figures, and downloaded source files stay in the vault and sync with it.
 
-Metadata is not treated as success until the local file and cloud state are
-confirmed. A Zotero API failure after the OneDrive commit can leave a validated,
-reusable PDF in the linked directory. Keep it in place: the same-paper retry
-uses deterministic identities and reconciliation rather than uploading or
-creating blindly. OneDrive may show that PDF before Zotero shows metadata.
-Wait for the App's final success, then run Zotero desktop Sync.
+## Settings
 
-**Remove** applies only to an item that still has the
-`paperreader-managed-v1` tag and remains inside the `Daily Paper` tree. It
-deletes the Zotero parent/child metadata but deliberately leaves the OneDrive
-PDF on disk. Untagged legacy/manual items and items outside the managed tree are
-presence-only and cannot be repaired or removed by PaperReader.
+AI reading concurrency defaults to `10` and can be set from 1–16. It is independent of the fixed Zotero PDF queue. Lower it if your AI account reaches a usage limit or tasks often wait for capacity.
 
-## Local reading flow
-
-```text
-paper card 「帮我读」
-  → trusted app bridge → bounded JobQueue
-  → selected local provider
-      ├─ Codex: codex exec --json --ephemeral ...
-      ├─ Claude: claude -p ... --output-format stream-json
-      └─ Trae: trae-cli / trae-agent exec --json ... -C <vault>
-  → exact resolved path to bundled paper-reading/SKILL.md
-  → normalized progress events
-  → <vault>/<date>/<title>/
-```
-
-The result normally contains the Markdown note, downloaded paper, and any
-attachments/code generated by the skill. If a matching folder already exists,
-the card displays **笔记** and opens the note instead of launching another job.
-The card displays **✓ 已读** only when the note's final
-`- [ ] ✅ 已读` checkbox has been checked in Obsidian (`- [x]`). The checkbox
-is the sole read-status signal; merely generating or opening a note is not.
-
-Temporary read inputs live outside the vault in the App-owned
-`~/Library/Application Support/PaperReader/paper-cache/` on macOS or
-`%APPDATA%\PaperReader\paper-cache\` on Windows, passed to the provider
-as `$PAPERREADER_CACHE_DIR`. On Windows, providers are spawned as native
-executables (`codex.exe`, `claude.exe`, `trae-cli.exe` / `trae-agent.exe`) with
-`shell: false`, and cancellation ends the whole process tree through `taskkill`. Completed jobs remove only their own intermediates;
-startup sweeps abandoned scratch entries without deleting the cache root. The
-finished note folder, original PDF, extracted figures, and optional code are
-intentional vault content and sync with the vault.
-
-## Settings reference
-
-AI reading concurrency defaults to `10` and can be configured from 1–16. It is
-independent of the fixed four-slot Zotero PDF/OneDrive queue described above.
-
-All private local App files are under the App's user-data directory —
-`~/Library/Application Support/PaperReader/` on macOS,
-`%APPDATA%\PaperReader\` on Windows: non-secret settings are in
-`config.json`, encrypted Zotero data is in `zotero-credentials.secure.json`,
-downloaded report cache is in `site-cache/`, and disposable reading scratch is
-in `paper-cache/`. Zotero/OneDrive linked PDFs and the selected Obsidian vault
-remain at the user-chosen paths. Never attach the support directory or a vault
-to a public issue without reviewing it for private paths and content.
-
-| Setting | Default | Purpose |
+| Setting | Default | Meaning |
 |---|---|---|
-| `provider` | `codex`; fresh detection prefers `codex` → `claude` → `trae` | local reading provider; an explicit choice is preserved |
-| `vaultPath` | auto-detected | Obsidian notes destination |
-| `zoteroLinkedAttachmentRoot` | auto-detected/empty | exact Zotero OneDrive linked-file base |
-| `codexPath` | auto-detected | `codex` executable override |
-| `claudePath` | auto-detected | `claude` executable override |
-| `traePath` | auto-detected | `trae-cli` / `trae-agent` override |
-| `pythonPath` | empty | optional "Python 3 解释器 / Python 3 interpreter" override; empty auto-probes (`python3` on macOS; `py -3`, `python`, `python3` on Windows) and the interpreter must import PyMuPDF |
-| `codexModel` | empty | optional Codex model override; empty uses the isolated task's service/built-in default without loading user `config.toml` |
-| `codexReasoningEffort` | empty | optional Codex reasoning override; empty uses the isolated task's service/built-in default without loading user `config.toml` |
+| `provider` | Codex; first setup detects available CLIs | AI service used for reading |
+| `vaultPath` | Detected when possible | Obsidian note destination |
+| `zoteroLinkedAttachmentRoot` | Detected when possible | OneDrive folder configured in Zotero |
+| `codexPath`, `claudePath`, `traePath` | Detected | Optional CLI executable paths |
+| `pythonPath` | Detected | Python interpreter with PyMuPDF installed |
+| `codexModel` | Empty | Uses the isolated task's default model; set a name to select a model explicitly |
+| `codexReasoningEffort` | Empty | Uses the isolated task's default reasoning effort |
 | `model` | `sonnet` | Claude model alias |
-| `traeModel` | `gpt-5.4` | Trae model; settings can refresh the live model list |
-| `traeBackendVariant` | `max` | optional Trae backend variant |
+| `maxBudgetUsd` | `0` | Claude per-read budget in USD; `0` disables the cap |
+| `traeModel` | `gpt-5.4` | Trae model; refresh its available models in settings |
+| `traeBackendVariant` | `max` | Trae context mode |
 | `traeReasoningEffort` | `ultra` | Trae reasoning effort |
-| `concurrency` | `10` | simultaneous AI reads, clamped to 1–16; does not change Zotero PDF concurrency |
-| `maxBudgetUsd` | `0` | optional Claude per-read cap; 0 disables it |
-| `liveBase` | project GitHub Pages URL | latest report source; empty means offline-only |
+| `concurrency` | `10` | Simultaneous AI reads, from 1–16 |
+| `liveBase` | Project GitHub Pages URL | Daily report source; empty uses offline content |
 
-Provider settings are preserved when switching among Codex, Claude, and Trae.
+Switching providers preserves each provider's settings. Codex tasks do not load your personal `config.toml`; select any required model or reasoning settings in PaperReader.
 
-## Security boundary
+## Privacy and permissions
 
-Published daily HTML is data, not an authority. PaperReader serves it in a
-unique-origin sandbox with a restrictive content policy. Only bundled scripts
-can request a small, typed set of actions through the shell; the report cannot
-read credentials, call Electron directly, choose filesystem destinations, or
-make arbitrary privileged requests.
+AI reading sends paper content, prompts, and generated context to the selected AI service through its CLI. Its own terms also govern diagnostics and account usage. PaperReader does not collect AI login credentials or include analytics or telemetry. Report retrieval and Zotero saving connect to the report website, arXiv, Zotero, and OneDrive.
 
-The main process additionally checks the caller frame, action schema, current
-report identity, focus, and recent physical user gesture. Zotero credentials
-remain in the trusted app layer and are never sent into the report iframe.
+Codex tasks can read the required runtime, bundled skill, Python environment, selected vault content outside `.obsidian`, and app reading cache. They can write the allowed vault content and cache, and access the network. Task commands cannot read `$CODEX_HOME`, SSH files, PaperReader settings, or unrelated home-directory files; `.obsidian` settings and plugins are excluded from both reading and writing. Codex itself still uses its existing CLI login. This permission configuration is a beta additional safeguard, not a complete operating-system security boundary.
 
-OpenAI Codex, Claude Code, and TraeCode are separate cloud providers. Their CLIs
-may transmit the paper, prompt, generated context, and provider diagnostics
-under their own terms. PaperReader does not collect or save their login
-credentials. The Codex adapter runs `codex exec --json --ephemeral` with a named
-permission profile based on `:workspace`. Reads are denied by default and are
-opened only for Codex's minimal runtime, the bundled skill, the probed
-Python/PyMuPDF runtime, selected vault content outside `.obsidian`, and the App
-cache. The same vault content and cache are writable. System temporary
-directories are denied and redirected into
-the cache; network access is enabled; and interactive approvals are disabled.
-Before the App reports Codex ready, it forces a real local parse of every
-security-sensitive override by passing a random, deliberately missing output
-schema path. Only that exact missing-file failure is accepted; the probe creates
-no schema file and never invokes a model. The adapter ignores general user
-config/rules, marks the vault untrusted so
-project-scoped `.codex` config/hooks/rules are skipped, and disables
-global/vault `AGENTS.md` discovery, plugins, apps, hooks, skill discovery, login shells, and shell
-snapshots; and gives generated shell
-commands only a core environment plus exact cache and Python paths. Sandboxed
-commands cannot read `$CODEX_HOME`, SSH material, PaperReader settings, or
-unrelated home-directory files; the vault's `.obsidian` configuration and
-plugins are also unreadable and unwritable. Codex itself can still authenticate through
-`codex login`. Permission profiles are a beta defense in depth, not an OS
-security boundary. Claude and Trae run in their provider-specific
-non-interactive bypass modes. Use only a trusted vault and account.
+Claude and Trae use their own non-interactive modes with permission prompts bypassed. They do not receive the same file-access restrictions as Codex. Use a dedicated vault and only run tasks with a CLI account you trust.
 
-Paper/PDF/HTML/repository content is untrusted input. The bundled skill rejects
-embedded instructions and forbids reading credentials or unrelated local files;
-stop a task if a generated command or output is unrelated to paper analysis.
+Published report pages cannot access Zotero credentials or write directly to your files. Papers, PDFs, web pages, and linked repositories are still untrusted inputs; stop a reading task if its commands or output are unrelated to paper analysis. See the [security policy](../SECURITY.md) for implementation details and vulnerability reporting.
 
-PaperReader has no built-in analytics or telemetry. Feature-required traffic
-still goes to the public report site, arXiv, Zotero, OneDrive (macOS File
-Provider or the Windows OneDrive sync engine), and the selected AI provider.
-See [`../SECURITY.md`](../SECURITY.md)
-for the complete data-flow and disclosure policy.
+## Troubleshooting
 
-## Run from source
+- **API key rejected:** use a 24-character key with personal-library read and write access. Group-only or read-only access is insufficient. Confirm Zotero desktop uses the same account.
+- **Attachment directory mismatch:** check the active Zotero profile and select the same OneDrive folder in PaperReader. A shortcut or symbolic link does not bypass this check.
+- **OneDrive file-state check fails:** check that OneDrive is running, signed in, and syncing the selected directory. On Windows, keep Files On-Demand enabled. Retry after sync resumes.
+- **PDF is in OneDrive but the Zotero item is missing:** wait for the app's final result. After success, sync Zotero desktop and search by arXiv ID. Check `Daily Paper/<report date>` for cards/search or `Daily Paper/<first-published date>` for manual arXiv links.
+- **Item appears on zotero.org but not in Zotero desktop:** run Zotero Sync and check its sync errors.
+- **Another device cannot open the linked PDF:** set Zotero's Linked Attachment Base Directory to that device's local copy of the same OneDrive folder and wait for the PDF to download.
+- **A failed save left a PDF behind:** keep the file and retry the same paper. Removing a Zotero item also leaves its OneDrive PDF in place.
+- **An existing item cannot be repaired or removed:** check that it has the `paperreader-managed-v1` tag and remains inside `Daily Paper`. Other items are read-only in PaperReader.
+- **CLI not found or not logged in:** install and log in to the selected CLI in a terminal, then select its executable in settings. Trae requires a separately provided CLI and account.
+- **`fitz` is missing:** follow the Python setup above and select that environment's interpreter. Choose **重新检测** to check it again.
+- **Notes conflict across devices:** use only one sync service for the vault and let the latest copy finish syncing before opening it elsewhere.
+- **AI quota exhausted:** lower **AI 精读并发数** (AI reading concurrency), change the model, or use another configured provider. This does not change Zotero's four-task PDF queue.
+- **macOS warns about an unidentified developer or missing notarization:** verify that you trust the official download, try opening it, then go to **System Settings → Privacy & Security → Open Anyway → Open**. Older macOS versions use **System Preferences → Security & Privacy**. See [Apple's instructions](https://support.apple.com/en-us/102445). These steps do not apply to damaged-app or malware warnings; do not disable Gatekeeper globally.
+- **SmartScreen warns on Windows:** verify the installer, then use **More info → Run anyway** if available and you trust the file. Managed-device policy may prevent this. Do not disable SmartScreen or Defender globally.
+
+For support, review logs or screenshots before sharing them. The app's data directory contains `config.json`, encrypted `zotero-credentials.secure.json`, cached reports in `site-cache/`, and temporary files in `paper-cache/`; do not attach the directory or your vault to a public issue without removing private information.
+
+## Development
+
+Run from source on macOS or Windows:
 
 ```bash
 cd app
@@ -406,117 +203,19 @@ npm test
 npm start
 ```
 
-`prestart` refreshes the bundled site snapshot before Electron launches. The app
-uses Electron 43 and electron-builder 26, locked by `package-lock.json`.
+The app uses Electron 43 and electron-builder 26, with versions locked in `package-lock.json`. `prestart` refreshes the bundled report snapshot. `run-windows.bat` is a source-development helper, not a product installer; use the Setup installer for normal Windows use.
 
-## Build and release
-
-Build both Mac architectures on macOS:
-
-```bash
-cd app
-npm run dist:mac
-```
-
-Build the Windows installer on Windows x64:
-
-```bash
-cd app
-npm run dist:win
-```
-
-The `Build PaperReader` GitHub Actions workflow can be run manually.
-A tag matching `v*` additionally performs the candidate publication flow:
-
-1. install dependencies with `npm ci` on macOS and Windows runners;
-2. run `npm test` and the Python tests on both platforms;
-3. build the unsigned Apple Silicon (`arm64`) and Intel (`x64`) DMGs on macOS
-   and the unsigned `x64` NSIS installer on Windows;
-4. audit the packaged apps and generate per-job checksums, merged into one
-   `SHA256SUMS.txt`; and
-5. publish the three installers plus the merged checksum manifest to a GitHub
-   Release.
-
-Only after the tag, Release, all three installers, and the checksum manifest
-are visible and verified may the documentation call that version a published
-stable release.
-
-Complete [`../RELEASE_CHECKLIST.md`](../RELEASE_CHECKLIST.md) before tagging.
-
-## Troubleshooting
-
-- **API key rejected:** create a 24-character key with personal-library read
-  and write access. Group-only or read-only access is insufficient. Confirm the
-  Zotero desktop client is signed into the same account.
-- **Directory mismatch:** re-open Zotero's active profile, confirm Linked
-  Attachment Base Directory, and select that exact OneDrive folder in
-  PaperReader. Aliases/symlinks do not bypass the real-path comparison.
-- **Cloud confirmation unavailable:** ensure OneDrive is running, the folder is
-  inside the active OneDrive container, and sync is healthy; then retry.
-- **PDF is in OneDrive but Zotero has no item:** wait for the App's final result.
-  If it reports success, click Zotero desktop Sync, inspect
-  `Daily Paper/<report date>` for cards/search or
-  `Daily Paper/<first-published date>` for manual arXiv input, then search the
-  whole library by arXiv ID. Metadata sync and OneDrive sync are separate.
-- **Item appears on zotero.org but not desktop:** the API write succeeded; the
-  desktop Zotero metadata sync has not. Run Sync and inspect sync errors.
-- **Item appears but another Mac cannot open the PDF:** on that Mac, point
-  Zotero's Linked Attachment Base Directory at its local copy of the same
-  OneDrive folder and wait until the PDF is downloaded, not cloud-only.
-- **Add failed after committing a PDF:** keep the validated PDF unchanged and
-  retry the same paper; reconciliation can reuse it.
-- **Remove leaves a PDF:** expected. Remove deletes eligible managed Zotero
-  metadata, never the OneDrive file.
-- **Remove/repair is unavailable for an existing item:** expected for legacy or
-  manual items without `paperreader-managed-v1`, or items moved outside the
-  `Daily Paper` tree. They remain read-only presence matches.
-- **CLI not found:** log in from Terminal and use Settings to select the actual
-  `codex`, `claude`, `trae-cli`, or `trae-agent` executable.
-- **Codex is not authenticated:** run `codex` in Terminal and complete its own
-  ChatGPT/API login. Do not paste that credential into PaperReader. Leave
-  `codexModel` empty to use the isolated task's service/built-in default;
-  PaperReader does not load the user's `config.toml`.
-- **Trae cannot be installed:** this release does not provide a public TraeCode
-  installer. Use Codex or Claude unless you have already received a supported
-  Trae CLI and account.
-- **`fitz` is missing:** on macOS, ensure login-shell `python3 -c 'import fitz'`
-  succeeds, add the isolated environment's `bin` directory to login-shell
-  `PATH`, and restart PaperReader. On Windows, install Python 3 from
-  python.org, create the environment shown above, and select its `python.exe`
-  in Settings (**Python 3 解释器 / Python 3 interpreter**); the Microsoft Store
-  python stub is rejected automatically.
-- **Vault conflicts across devices:** use OneDrive or Obsidian Sync, not both;
-  finish sync on one canonical copy before reopening it elsewhere.
-- **Provider quota exhausted:** lower concurrency or switch model/provider.
-  Codex, Claude, and Trae limits follow the account in their respective CLI.
-- **macOS blocks first launch:** download the official release again, verify
-  `SHA256SUMS.txt`, then Control-click or right-click PaperReader in Finder and
-  choose **Open**. Do not disable Gatekeeper globally.
-- **SmartScreen warns on first run (Windows):** verify the Setup exe against
-  `SHA256SUMS.txt` first, then choose **More info** → **Run anyway** for this
-  one file. Do not turn off SmartScreen, Defender, or other Windows security
-  features globally.
-- **OneDrive cloud state never confirms (Windows):** keep OneDrive running and
-  signed in, keep Files On-Demand enabled, and make sure the linked folder is
-  inside the signed-in account's OneDrive sync folder; a paused or signed-out
-  sync client is never treated as confirmation.
-
-## Important files
+Build the macOS installers on macOS with `npm run dist:mac`, or the Windows installer on Windows x64 with `npm run dist:win`. The `Build PaperReader` workflow runs tests, builds and audits packages, and generates checksums. A `v*` tag also publishes the three installers and merged `SHA256SUMS.txt` to GitHub Releases. Maintainer steps are in the [release checklist](../RELEASE_CHECKLIST.md); Windows implementation and remaining work are in the [Windows roadmap](../docs/WINDOWS_ROADMAP.md).
 
 | File | Role |
 |---|---|
-| `main.js` | BrowserWindow lifecycle, hardened report serving, credentials, IPC, file/cloud orchestration |
-| `preload.js` | narrow `window.paperBridge` API |
-| `renderer.js` / `shell.html` | trusted shell, navigation, jobs, Zotero controls |
-| `report-sandbox.js` / `report-gesture.js` | report content policy and physical-gesture gate |
-| `zotero-credentials.js` / `zotero-key-verify.js` | secure storage and Zotero key verification |
-| `zotero-profile.js` | active profile and linked-directory discovery (macOS and Windows layouts) |
-| `zotero-linked-store.js` | validated, atomic linked-PDF materialization |
-| `onedrive-cloud-verify.js` | cloud upload confirmation: macOS File Provider / Windows cloud-files placeholder attributes |
-| `zotero-pdf-queue.js` | fixed four-slot FIFO queue for PDF/OneDrive materialization |
-| `zotero-save.js` | idempotent Zotero item/attachment reconciliation |
-| `job-queue.js` | provider routing, concurrency, cancel, watchdog |
-| `spawn-codex.js` / `spawn-claude.js` / `spawn-trae.js` | local provider adapters |
-| `skill-locator.js` | bundled skill lookup and legacy fallback |
-| `vault-scan.js` / `cache-clean.js` | already-read detection and cache cleanup |
-| `sync-site.js` | minimal read-only report snapshot for packaging |
+| `main.js`, `preload.js` | App lifecycle, local operations, and the report bridge |
+| `renderer.js`, `shell.html` | Navigation, reading tasks, and Zotero controls |
+| `report-sandbox.js`, `report-gesture.js` | Report isolation and user-action checks |
+| `zotero-credentials.js`, `zotero-key-verify.js` | Credential encryption and key verification |
+| `zotero-profile.js` | Zotero profile and attachment-directory detection |
+| `zotero-linked-store.js`, `onedrive-cloud-verify.js` | PDF validation, local storage, and OneDrive file-state checks |
+| `zotero-pdf-queue.js`, `zotero-save.js` | PDF queue and Zotero item handling |
+| `job-queue.js`, `spawn-codex.js`, `spawn-claude.js`, `spawn-trae.js` | AI task scheduling and CLI adapters |
+| `skill-locator.js`, `vault-scan.js`, `cache-clean.js` | Bundled skill, note detection, and temporary-file cleanup |
+| `sync-site.js` | Bundled report snapshot |

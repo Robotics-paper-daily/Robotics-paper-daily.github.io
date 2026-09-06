@@ -1,213 +1,132 @@
 # PaperReader Windows 路线图
 
-[English version](WINDOWS_ROADMAP.md)
+[English](WINDOWS_ROADMAP.md)
 
-本文档记录了 PaperReader 在发布并正式支持 Windows 版本之前必须完成的工程
-工作。v0.3.1 已经落实这些工作；本文档保留为验收记录与加固待办清单，不是对
-尚未交付平台的兼容性公告。
+PaperReader v0.3.1 首次提供 Windows 安装包。本文记录 Windows 已有实现、可查证的
+验证依据，以及尚需完成的验收工作。
 
-## 状态：已由 v0.3.1 落实
+## 1. 已发布版本
 
-- v0.3.1 交付了受支持的 Windows 10/11 x64 版本：
-  `PaperReader-0.3.1-x64-Setup.exe`（未签名的 NSIS 按用户安装包），与两份
-  macOS DMG 和一份合并的 `SHA256SUMS.txt` 一起发布。
-- 下文阶段 0–4 均已完成：平台存储适配器（Windows Zotero profile 检测、
-  OneDrive 根目录校验、fail-closed 的云端状态确认）、持久化解释器路径的
-  Windows Python 运行时检测、与 shell 无关的论文精读技能、NSIS 打包，以及
-  带按平台发布审计的原生 `windows-latest` CI。
-- 文档其余部分保留为验收记录与加固待办清单——例如第 6 节的真实机器测试
-  矩阵、Authenticode 签名决策与 Windows arm64 构建。
+[v0.3.1 Release](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases/tag/v0.3.1)
+包含面向 Windows 10/11（x64）的 `PaperReader-0.3.1-x64-Setup.exe`、两份 macOS
+DMG 和一份合并的 `SHA256SUMS.txt`。
 
-## 1. 当前支持边界
+Windows 版本使用未签名的 NSIS 安装包，按用户安装，允许选择安装目录。升级时退出
+App，再运行新版 Setup 安装包。安装器配置为卸载时保留 App 数据；升级和重装行为
+仍需完成下方的验收检查。安装步骤见 [App 使用指南](../app/README_ZH.md)。
 
-- PaperReader v0.3.1 是当前面向 macOS 12+（`arm64`、`x64`）与 Windows 10/11
-  （`x64`）的发布目标。在对应 tag、GitHub Release、三份安装包与校验清单实际
-  存在前，它仍是候选版。
-- v0.3.1 目标的 Windows 安装包在原生 `windows-latest` CI 上构建并审计，功能
-  与 macOS 完全一致。
-- `app/run-windows.bat` 仍是供贡献者使用的实验性源码启动器，只会运行
-  `npm ci` 和 `npm start`；它不是安装后的产品，也不是受支持的 Windows 入口——
-  受支持的入口是 Setup 安装包。
-- 除非后续版本明确说明，否则 Windows arm64 与 Linux 均不属于桌面端支持矩阵。
-- 目前尚未应用 Authenticode 签名；签名决策仍在待办清单中。校验和验证始终
-  必需，文档不得建议用户全局关闭 Windows 安全控制。
-- 当前产品与本路线图只采用手动替换升级。任何不同的分发政策都需要另行设计与
-  审查。
+Windows arm64 和 Linux 暂无安装包。Authenticode 签名与新增架构列为后续工作。
+安装前应校验文件，不要全局关闭 Windows 安全控制。`app/run-windows.bat` 是源码
+开发辅助脚本，不是供用户下载的发布安装包。
 
-## 2. 当前可复用的底座
+## 2. v0.3.1 已实现内容
 
-仓库中的这些跨平台基础是 v0.3.1 Windows 移植的起点；每一项现已在 Windows CI
-中运行，而第 6 节的真实机器验收矩阵仍是后续验证待办：
+### Zotero 与 OneDrive
 
-- Electron 外壳、沙箱化报告渲染、搜索、缓存与 Obsidian 笔记状态逻辑大体不依赖
-  特定平台；
-- Obsidian 检测已经包含 `%APPDATA%` 与 `%USERPROFILE%` 路径；
-- Codex、Claude 与 Trae 适配器已经包含 Windows 原生可执行文件查找、
-  `shell: false`、隐藏子进程与基于 `taskkill` 的取消逻辑；
-- 设置使用 Electron 针对平台的 `userData` 目录，Zotero 凭据存储围绕 Electron
-  `safeStorage` 设计；
-- Zotero Web API 元数据与对账层本身不强依赖 macOS；
-- 随 App 打包的 Python 工具已经在若干 Windows 控制台路径中强制输出 UTF-8，
-  并应用了一组初步的 Windows 文件名限制；
-- PDF 写入器已经具备校验、受限下载、哈希与分阶段文件提交，可作为 Windows
-  实现的基础。
+- [Zotero 配置检测](../app/zotero-profile.js)读取 Windows 的
+  `%APPDATA%\Zotero\Zotero` 目录和已设置的链接附件基准目录。
+- [OneDrive 根目录校验](../app/onedrive-root.js)包含 Windows 路径处理；App 会
+  比较所选附件目录与 Zotero 中的设置。
+- [同步状态检查](../app/onedrive-cloud-verify.js)通过 PowerShell 读取 Windows
+  文件属性，包含轮询、取消和超时处理。当前 Windows 条件检查文件的重解析点
+  属性，不会下载远端文件或直接验证其内容；不同 OneDrive 真实同步状态下的
+  可靠性仍需实机验收。
+- 共用的 PDF 保存流程会校验并暂存文件、等待平台状态检查、验证哈希，再创建或
+  核对 Zotero 元数据。最多同时运行 4 个任务的保存队列及托管条目保护同样用于
+  Windows。
 
-## 3. 核心阻塞项（v0.3.1 之前的记录）
+### 精读与本地数据
 
-以下阻塞项按 Windows 尚未交付时的原文保留，同时作为 v0.3.1 各适配器必须实现
-内容的验收记录。
+- [环境检测](../app/env-probe.js)包含 Windows Python 查找，并向精读任务传入
+  已验证的解释器路径。
+- [Codex](../app/spawn-codex.js)、[Claude](../app/spawn-claude.js) 与
+  [Trae](../app/spawn-trae.js) 适配器包含 Windows 可执行文件查找和进程处理。
+  每个工具仍需使用可用的 CLI 和账号单独完成 Windows 端到端验证。
+- 内置的[论文精读技能](../skills/paper-reading/SKILL.md)使用跨平台 Python 工具
+  处理本地文件。日报浏览、搜索、缓存与 Obsidian 笔记状态由共用 App 模块处理。
+- 设置保存在 Electron 对应平台的数据目录中。Zotero 凭据使用 Electron
+  `safeStorage` 加密，不提供明文存储的备用方案。
 
-### 3.1 Zotero 与 OneDrive 集成
+### 打包与 CI
 
-- `zotero-profile.js` 目前只会在 macOS 的
-  `~/Library/Application Support/Zotero` 布局中检测 Zotero。Windows profile
-  检测必须使用有文档依据的 Windows 路径，安全解析当前 profile，并且可以在
-  不读取开发者真实 profile 的情况下测试。
-- `main.js` 目前只接受 macOS OneDrive File Provider 域内的链接附件根目录。
-- `onedrive-cloud-verify.js` 依赖 `/usr/bin/fileproviderctl`，并且有意拒绝非
-  macOS 平台。Windows 需要可信、受时限约束且失败时关闭写入的云端状态适配器；
-  仅看到本地文件存在不能证明 OneDrive 已完成上传。
-- 根目录比较必须正确处理盘符、大小写不敏感路径、junction、reparse point、
-  符号链接以及多个个人版或企业版 OneDrive 根目录，同时不能让目录边界校验被绕过。
-- 完整事务顺序必须保持为：校验配置、暂存并验证 PDF、确认可靠的云端状态、创建或
-  对账 Zotero 元数据，并保留文档规定的重试与回滚行为。
+- [打包配置](../app/package.json)包含 Windows x64 NSIS 目标和
+  `npm run dist:win` 命令。
+- [Build PaperReader](../.github/workflows/build-app.yml) 包含原生
+  `windows-latest` 任务，依次安装锁定依赖、审计依赖、运行 Node 和 Python
+  测试、构建安装包、审计打包资源并生成校验和。
+- [发布审计](../app/release-audit.js)处理两个平台的目录结构，扫描 Windows 和
+  macOS 个人路径，并检查打包资源。
+- 发布任务依赖两个平台构建成功；下载产物后，先验证安装包和三份安装包的合并
+  校验清单，再创建 GitHub Release。
 
-### 3.2 Python 与论文精读运行时
+## 3. 验证依据与范围
 
-- 环境检测目前假设存在 `python3` 命令。Windows 检测必须安全解析并持久化一个
-  确切的 `python.exe`（或经验证的 Python launcher 结果），且该解释器能够导入
-  受支持版本的 PyMuPDF。
-- `skills/paper-reading/SKILL.md` 当前包含 `test`、`$VAR` 与 `cp` 等 POSIX
-  shell 语法。工作流必须改为与 shell 无关，或由 App 自己的可信编排完成，而不是
-  要求 provider 翻译命令。
-- Codex、Claude 与 Trae 的可执行文件检测、登录检查、参数处理、流式输出、取消、
-  超时与进程树清理必须在 Windows 上实际执行，不能根据 macOS 单测推断。
-- 在声明 Windows 支持 Codex 前，必须用 Windows 路径语法和真实 Windows Codex
-  sandbox 验证权限 profile 与受保护的运行时路径。
+v0.3.1 的发布资产和构建工作流提供了打包与上述自动化检查的依据。测试覆盖 Windows
+配置路径、OneDrive 根目录和属性响应、解释器检测、进程适配器及发布审计。相关
+测试包括：
 
-### 3.3 Windows 文件系统行为
+- [Zotero 配置](../test/zotero-profile.test.js)、
+  [OneDrive 根目录](../test/onedrive-root.test.js)和
+  [OneDrive 状态检查](../test/onedrive-cloud-verify.test.js)；
+- [环境检测](../test/env-probe.test.js)及
+  [Codex](../test/spawn-codex.test.js)、[Claude](../test/spawn-claude.test.js)、
+  [Trae](../test/spawn-trae.test.js) 进程适配器；
+- [发布审计](../test/release-audit.test.js)。
 
-- 笔记、附件、缓存与临时文件名必须拒绝保留设备名、非法字符、结尾的点或空格，
-  以及不安全的替代路径形式。
-- 必须定义并测试嵌套 Obsidian 笔记、附件、下载的源码文件与打包资源的路径长度行为。
-- 必须在 NTFS 与 OneDrive 同步目录上测试原子替换、重命名、文件锁、刷盘、清理、
-  重试和写入中断行为。
-- Unicode、非 ASCII 账户名、网络不可用状态，以及文件被 Zotero、OneDrive、
-  杀毒软件或索引程序占用的情况，都需要显式测试。
+其中包含测试数据和模拟响应。这些测试不能证明真实 OneDrive 账号已上传文件，
+也不能证明所有 Windows 配置下的 AI 精读、Windows 10/11 安装与升级都已通过。
 
-### 3.4 打包与应用生命周期
+仓库目前没有一份已完成的实机验收记录覆盖下方矩阵。每一项都需记录 commit、安装包
+校验和、Windows 版本、依赖版本与测试日期后，才能标记完成。安装包已发布并不代表
+这些检查已通过。
 
-- 只有在确定支持的 Windows 与 CPU 矩阵后，才添加明确的 electron-builder `win`
-  配置、Windows 图标资源、产物命名与 `dist:win` 脚本。
-- 选择并测试安装器格式与安装范围、快捷方式、开始菜单集成、安装位置、修复或重复
-  安装行为，以及干净卸载。
-- 定义手动升级行为，并验证替换或升级 App 后，预期保留的 `%APPDATA%` 设置、缓存
-  与加密凭据仍然可用。卸载时是否保留或删除这些数据必须单独说明。
-- 公开分发前必须决定并说明 Authenticode/代码签名与 SmartScreen 策略。无论产物
-  是否签名，都必须提供校验和；文档不得建议用户全局关闭 Windows 安全控制。
-- 平台能力检测必须隐藏或明确禁用不可用流程；Windows 用户不能进入仅适用于 macOS
-  的 Zotero 配置后只得到笼统错误。
+## 4. 待完成验收
 
-## 4. 分阶段实现（已由 v0.3.1 交付）
+在干净的 Windows 10 和 Windows 11 x64 虚拟机上执行以下矩阵，并为每种宣称支持
+的配置至少使用一台有代表性的真实机器。测试应使用维护者控制的账号，以及可丢弃
+的 Zotero、OneDrive 和 Obsidian 数据。
 
-### 阶段 0：冻结契约
+- [ ] 下载安装包、验证校验和，分别安装到默认目录与自选目录；测试快捷方式、
+  开始菜单、退出、重新启动与空闲状态。
+- [ ] 在上一 Windows 版本之上升级，确认设置、缓存、笔记库选择和加密 Zotero
+  凭据仍可使用。测试重复安装、卸载及卸载后重装，记录保留的数据和降级限制。
+- [ ] 测试在线与离线日报、搜索、导航、外部链接和报告沙箱。不可用的平台操作应
+  明确禁用，或返回可据此处理的错误。
+- [ ] 验证 Zotero 凭据与当前配置；测试个人版和企业版 OneDrive、多根目录、
+  盘符大小写、目录联接、重解析点与符号链接，确保无法绕过目录边界校验。
+- [ ] 一次提交超过 10 篇 PDF，确认最多同时运行 4 篇；测试重复条目核对、取消、
+  超时、重试、托管条目移除，以及保存流程每个阶段的中断。
+- [ ] 测试 OneDrive 仅在线、本机可用、上传中、冲突、暂停、退出登录与离线状态。
+  将 Windows 属性检查结果与实际远端可用性比较，确保 PDF 尚无法从云端取得时，
+  不会报告 Zotero 元数据已保存成功。
+- [ ] 在第二台受支持设备上打开链接 PDF，包含一组 macOS 与 Windows 设备。
+  各设备应使用对应的本地 OneDrive 附件基准目录。
+- [ ] 测试 Obsidian 笔记库检测、打开已有笔记、手动修改阅读状态，以及拒绝宽泛或
+  敏感笔记库路径的保护。
+- [ ] 单独测试每个对外提供的 AI 工具：可执行文件与登录检测、一次完整精读、
+  并发精读、取消、无响应检测、超时、配额和错误展示、输出解析、笔记、PDF、图片、
+  源码获取与缓存清理。Trae 测试需要独立获得可用 CLI 和账号。
+- [ ] 使用真实 Windows Codex 沙箱验证权限与受保护的运行时路径。确认选定的
+  Python 解释器能使用 PyMuPDF，且任务无法读取凭据或无关本地文件。
+- [ ] 测试非 ASCII 用户名与路径、长路径、Windows 保留名称、结尾的点或空格、
+  文件锁、杀毒软件与索引程序干扰、睡眠唤醒、断网及任务运行时重启。
+- [ ] 在 NTFS 与 OneDrive 文件夹中验证原子替换、重命名、刷盘、清理、重试和
+  写入中断。清理范围不得超出当前任务文件。
 
-1. 根据 Electron、Zotero、OneDrive、Obsidian、Python 与 provider CLI 的支持
-   组合，选择候选 Windows 版本与 CPU 矩阵。
-2. 定义首个 Windows 版本的功能契约，并决定是否要求首发时覆盖全部 macOS 功能。
-3. 添加平台能力接口，并让不支持的操作继续以失败时关闭的方式处理。
-4. 在修改行为前，把当前仅适用于 macOS 的假设转为明确的平台测试。
+## 5. 后续发布要求与计划
 
-### 阶段 1：平台存储适配器
+之后每次发布都需完成[发布检查清单](../RELEASE_CHECKLIST_ZH.md)，并更新此处的
+验收记录。继续保留以下要求：
 
-1. 实现 Windows Zotero profile 检测并补充单元测试。
-2. 在与 macOS 相同的窄接口后实现 Windows OneDrive 根目录校验与云端状态确认。
-3. 在 Windows 上验证规范路径相等性与 PDF 事务行为。
-4. 为离线同步、冲突、文件锁、取消、超时与重启添加故障注入测试。
+- 在原生 Windows CI 上运行锁定依赖安装、依赖审计、Node/Python 测试与平台集成
+  测试。
+- 审计解包和打包资源中的密钥、个人路径及私有数据，核对必需技能、许可证、第三方
+  说明和只读站点快照；拒绝未声明产物与过期更新订阅文件。
+- 从最终安装包生成校验和，在产物传递后重新验证；任一平台构建、审计或校验失败
+  时停止发布。
+- 对每种宣称支持的配置完成干净虚拟机和实机验收；如有失败或未测试项，应据实
+  记录，不能直接标记完成。
+- 保持中英文安装、使用、排障、安全、发布说明、校验和指令及兼容性声明一致。
 
-### 阶段 2：精读运行时
-
-1. 添加安全的 Windows Python 检测，并持久化经过验证的解释器路径。
-2. 用与平台无关、由 App 持有的操作替换 POSIX 专用技能命令，或由代码选择有文档
-   说明的 Windows 等价命令。
-3. 在 Windows 上独立验证每个 provider 适配器。
-4. 使用一次性 vault 验证并发精读、取消、watchdog、笔记创建、图片抽取、源码获取
-   与缓存清理。
-
-### 阶段 3：安装器与生命周期
-
-1. 添加 Windows 打包配置、图标资产与可复现的产物名称，同时不改变手动更新的
-   产品策略。
-2. 测试全新安装、首次启动、重复安装、手动升级、适用时拒绝降级、卸载与卸载后重装。
-3. 验证升级时保留预期本地数据，并确保安装器与日志中没有密钥。
-4. 最终确定签名、校验和、下载与首次启动说明。
-
-### 阶段 4：CI、安全与候选版本
-
-1. 为每个候选发布架构添加原生 `windows-latest` CI。
-2. 在 Windows 上运行源码测试、打包 App 审计、安装器校验与 smoke test，而不是交叉
-   编译后假设兼容。
-3. 只有全部自动化门槛通过后，才发布明确标记的 prerelease。
-4. 在宣布 Windows 稳定版前，完成干净 VM 与真实机器验收。
-
-## 5. CI 与安全门槛
-
-Windows 候选版本必须满足以下全部条件：
-
-- 锁定依赖安装、依赖审计、Node 测试与 Python 测试在原生 Windows CI 上通过；
-- provider、路径、进程、凭据、PDF 存储、Zotero 与 OneDrive 适配器具有 Windows
-  专用单元测试与集成测试；
-- 打包资源包含必需技能、许可证、第三方说明与只读站点快照，且不包含配置、凭据、
-  token、私有 vault 数据或开发者专属路径；
-- 把 `app/release-audit.js` 从当前“恰好两个打包后的 `app.asar`”假设重构为明确的
-  按平台/架构产物清单；
-- `test/release-audit.test.js` 不再断言 `dist:win` 必须不存在，同时继续拒绝未声明
-  产物与过期更新 feed；
-- 源码与安装包扫描除现有 macOS 用户路径检查外，还能检测
-  `C:\\Users\\<name>\\...` 等 Windows 个人路径；
-- 安装器内容与解包后的 `app.asar` 通过与 macOS 安装包相同的密钥、隐私与 allowlist
-  审计；
-- CI 从准确的发布产物生成校验和，并在产物传递后重新验证；
-- 任一平台构建、审计或校验和验证失败时，发布任务都不能上传不完整或版本混杂的资产。
-
-## 6. 安装与真实机器验收门槛
-
-对于最终列为支持的每一个操作系统版本与架构，都要在干净 VM 和至少一台有代表性的
-真实机器上测试：
-
-- 安装器下载、校验和验证、首次启动、快捷方式或开始菜单启动、正常退出、再次启动，
-  以及空闲时无崩溃；
-- 从上一个受支持 Windows 版本手动升级，并按预期保留设置、缓存、vault 选择与仍可
-  使用的加密 Zotero 凭据；
-- 卸载与重装行为，包括明确检查哪些本地数据仍然保留；
-- 在线与离线报告加载、搜索、导航、沙箱边界与外部链接路由；
-- Zotero key 验证、当前 profile 检测、OneDrive 根目录匹配、并发添加 PDF、重复
-  对账、取消、重试、移除与跨设备链接附件访问；
-- OneDrive 仅在线、本机可用、同步中、冲突、暂停、退出登录与离线状态，并确保云端
-  确认前绝不报告 Zotero 元数据成功；
-- Obsidian vault 检测、已读状态、打开笔记、手动修改已读状态，以及对宽泛或敏感
-  vault 路径的保护；
-- 每一个对外宣称支持的 provider，包括登录检测、一次完整精读、并发精读、取消、
-  超时、额度或错误展示、输出解析与缓存清理；
-- 非 ASCII Windows 用户名与路径、长路径、文件锁、杀毒扫描、睡眠唤醒、网络中断，
-  以及有任务运行时重启应用。
-
-会修改 Zotero、OneDrive、Obsidian 或 provider 账号的测试必须使用维护者控制的
-fixture 与一次性数据，不能使用贡献者个人文献库或 vault。
-
-## 7. 稳定版发布门槛
-
-只有在以下全部条件满足后，才能把 Windows 标记为受支持：
-
-1. 明确记录受支持的 Windows 版本、CPU 架构、功能、安装器格式、签名状态与手动
-   升级策略；
-2. 每个宣称支持的配置都通过原生 CI、打包审计、干净 VM 测试与真实机器端到端测试；
-3. 中英文安装、使用、排障、隐私、安全、版本说明与校验和说明保持同步；
-4. GitHub Release 只包含已声明且版本匹配的产物与经过验证的校验和清单；
-5. 维护者已经完成更新后的发布检查清单，同时覆盖现有 macOS 渠道与新增 Windows
-   渠道。
-
-v0.3.1 据此把 Windows 10/11（x64）列为受支持的发布目标，上述清单仍是之后每个
-Windows 版本必须持续满足的标准。对于没有对应已测试产物的配置——目前是
-Windows arm64 与所有 Linux 目标——仓库文本与 issue 回复必须继续使用
-**已规划，但尚不支持也未发布**，不得使用“兼容”“预览版可用”或给出发布日期。
+后续工作包括评估 Authenticode 签名和 Windows arm64 构建。Linux 需要单独的平台
+实现与验收计划。这些目标目前没有发布日期。

@@ -42,7 +42,7 @@
   </head>
   <body>
     <h1>PaperReader 设置</h1>
-    <p class="sub">「帮我读」会用选定的本地 AI CLI，在下面的 vault 里运行 paper-reading 技能。</p>
+    <p class="sub">配置 AI 服务、笔记保存位置和 Zotero 账号。</p>
 
     <div id="status" class="status"></div>
 
@@ -53,13 +53,13 @@
         <option value="claude">Claude Code</option>
         <option value="trae">TraeCode CLI（仅已获提供的用户）</option>
       </select>
-      <div class="hint">隐私提示：精读会把论文内容与提示发送给所选 CLI 服务。Codex 任务默认拒绝读取本机文件，仅开放最小运行时、内置技能、Python、所选 vault 中除 .obsidian 外的内容和 App 缓存；这些 vault 内容与缓存可写并允许联网，但 .obsidian 配置/插件、$CODEX_HOME、SSH、PaperReader 设置和无关用户文件不可读。该权限配置仍是 beta 级纵深防御，不是完整 OS 隔离。Claude/Trae 使用各自的非交互 bypass 模式。PaperReader 本身不做遥测，也不收集或保存 AI provider 凭据；登录由各 CLI 自己管理。</div>
+      <div class="hint">隐私提示：精读会把论文内容与提示发送给所选 CLI 服务。Codex 任务可读写所选笔记库内容和精读缓存，并可联网，但不能访问 .obsidian 配置、PaperReader 设置、Codex/SSH 凭据目录或无关用户文件；所用权限配置仍处于 beta 阶段，不构成完整系统隔离。Claude 和 Trae 会跳过权限询问，没有相同的文件访问限制，请使用专用笔记库。PaperReader 本身不做遥测，也不收集或保存 AI 服务凭据；登录由各 CLI 自己管理。</div>
     </div>
 
     <div class="field">
-      <label>Obsidian Vault 路径</label>
+      <label>Obsidian 笔记库路径</label>
       <div class="row">
-        <input type="text" id="vaultPath" placeholder="用于保存论文笔记的 Obsidian vault" />
+        <input type="text" id="vaultPath" placeholder="用于保存论文笔记的 Obsidian 笔记库" />
         <button id="pickVault" type="button">选择…</button>
       </div>
       <div id="skillHint" class="hint"></div>
@@ -96,13 +96,13 @@
         <input type="text" id="pythonPath" placeholder="自动探测（Windows: py -3 / python.exe；macOS: PATH 上的 python3）" />
         <button id="pickPython" type="button">选择…</button>
       </div>
-      <div class="hint">论文抽取依赖该解释器可导入 PyMuPDF（fitz）。自动探测失败时，在这里指定已安装 PyMuPDF 的 python 可执行文件。</div>
+      <div class="hint">需要已安装 PyMuPDF（fitz）的 Python 环境。自动探测失败时，请选择该环境的 Python 可执行文件。</div>
     </div>
 
     <div class="field">
-      <label>论文数据源（启动时拉取最新；留空=仅用内置离线快照）</label>
+      <label>论文数据源（留空使用离线内容）</label>
       <input type="text" id="liveBase" placeholder="https://robotics-paper-daily.github.io" />
-      <div class="hint">app 启动直接从这里拉最新论文，无需 git pull；抓取失败自动回退缓存/内置快照。</div>
+      <div class="hint">启动时获取最新日报；连接失败时使用本地缓存或内置快照。</div>
     </div>
 
     <div class="field">
@@ -182,7 +182,7 @@
           <select id="traeModel"></select>
           <button id="refreshModels" type="button" title="从 Trae CLI 重新拉取可用模型">刷新</button>
         </div>
-        <div id="modelHint" class="hint">模型列表来自本机 Trae CLI，负载越低越不容易排队卡住。</div>
+        <div id="modelHint" class="hint">模型列表来自本机 Trae CLI，负载较高时可能需要排队。</div>
       </div>
       <div class="two">
         <div class="field">
@@ -207,7 +207,7 @@
     </div>
 
     <div class="field">
-      <label>并发数</label>
+      <label>AI 精读并发数</label>
       <input type="number" id="concurrency" min="1" max="16" />
     </div>
 
@@ -280,7 +280,7 @@
         btn.disabled = false;
         if (res && res.ok && res.models && res.models.length) {
           renderModelOptions(res.models);
-          hint.textContent = "模型列表来自本机 Trae CLI，负载越低越不容易排队卡住。";
+          hint.textContent = "模型列表来自本机 Trae CLI，负载较高时可能需要排队。";
         } else {
           renderModelOptions(FALLBACK_TRAE_MODELS);
           hint.textContent = `无法从 Trae CLI 获取模型${res && res.reason ? "（" + res.reason + "）" : ""}，已用内置列表。`;
@@ -292,7 +292,7 @@
         document.querySelectorAll(".provider-block").forEach((el) => {
           el.hidden = el.dataset.provider !== provider;
         });
-        $("skillHint").textContent = "paper-reading 技能已随 App 内置；这里只选择笔记保存位置。";
+        $("skillHint").textContent = "选择专门存放论文笔记的 Obsidian 笔记库。";
       }
 
       async function loadSettings() {
@@ -504,7 +504,7 @@
         setStatusLines(box, [
           {
             ok: p.vault.ok,
-            text: `Vault：${p.vault.ok ? p.vault.path : p.vault.reason}`,
+            text: `笔记库：${p.vault.ok ? p.vault.path : p.vault.reason}`,
           },
           {
             ok: p.cli.ok,

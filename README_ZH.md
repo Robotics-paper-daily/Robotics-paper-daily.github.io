@@ -14,14 +14,13 @@
 | 维护者发布检查清单 | [RELEASE_CHECKLIST_ZH.md](RELEASE_CHECKLIST_ZH.md) | [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) |
 | Windows 路线图与验收记录 | [docs/WINDOWS_ROADMAP_ZH.md](docs/WINDOWS_ROADMAP_ZH.md) | [docs/WINDOWS_ROADMAP.md](docs/WINDOWS_ROADMAP.md) |
 
-[第三方声明](THIRD_PARTY_NOTICES.md)为英文权威法律与归属文本；产品、使用、安全、
-发布说明与维护流程均提供了中英文配套。
+[第三方声明](THIRD_PARTY_NOTICES.md)以英文版本为准。
 
 Robotics Daily Papers 是一个机器人学 arXiv 每日摘要项目。GitHub Actions
 定时收集 `cs.RO`、`cs.AI`、`cs.CV` 与 `cs.LG` 的新投稿，先做关键词预筛，
 再由 LLM 评分与分类，最终发布为可搜索的静态归档。
 
-公开网页现在明确定位为**只读站点**：普通浏览器可以查看、搜索每日论文，
+公开网页是**只读站点**：普通浏览器可以查看、搜索每日论文，
 并打开论文或翻译链接；**Add to Zotero** 与 **「帮我读」** 只在 PaperReader
 桌面应用中提供。网页不会接触本机 OneDrive 目录、本地凭据或 AI CLI。
 
@@ -36,28 +35,22 @@ PaperReader 是论文站的本地配套应用。它可以直接从论文卡片�
 - 把结构化笔记写入 Obsidian vault、展示实时进度并打开已有笔记；
 - 启动时获取最新公开报告，失败时回退到本地缓存或内置快照。
 
-> **发布状态：** 当前源码以 macOS 与 Windows 的 v0.3.1 为目标。在对应 tag、
-> GitHub Release、三份安装包与合并的 `SHA256SUMS.txt` 实际存在前，它仍是发布
-> 候选版，不能描述为已经发布的稳定版。请以官方
-> [Releases 页面](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases)
-> 为准。项目源码继续以 MIT License 开源。
+PaperReader v0.3.1 已发布，可从 [GitHub Releases](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases/tag/v0.3.1) 下载。
 
 | 平台 | v0.3.1 状态 |
 |---|---|
-| macOS 12+（`arm64`、`x64`） | 发布目标；候选包未签名且未公证 |
-| Windows 10 与 Windows 11（`x64`） | 发布目标；候选 NSIS 安装包未签名，功能与 macOS 完全一致 |
+| macOS 12+（`arm64`、`x64`） | 已提供 DMG；未签名、未公证 |
+| Windows 10 与 Windows 11（`x64`） | 已提供 NSIS 安装包；未签名 |
 | Windows `arm64` | 未构建 |
 | Linux | 不支持；没有安装包或经过验证的端到端流程 |
 
-`app/run-windows.bat` 只是实验性的源码开发启动脚本，不是受支持的产品、发布版
-或安装包；Windows 上受支持的入口是正式 Setup 安装包。已完成的工程工作与仍在
-清单中的加固事项见 [Windows 路线图](docs/WINDOWS_ROADMAP_ZH.md)。
+Windows 版已包含 Zotero 保存、AI 精读和 Obsidian 笔记功能。部分实机检查仍待完成，
+包括不同 OneDrive 同步状态的验证，详见 [Windows 路线图与验收记录](docs/WINDOWS_ROADMAP_ZH.md)。
 
 ## 安装 PaperReader
 
-在官方 v0.3.1 Release 实际存在后，请从
-[GitHub Releases 页面](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases)
-下载。此前下列文件只是预期发布产物，不是可用下载：
+从 [v0.3.1 发布页](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases/tag/v0.3.1)
+下载与设备匹配的安装包：
 
 | 设备 | 安装包 |
 |---|---|
@@ -90,54 +83,56 @@ grep 'PaperReader-0.3.1-x64-Setup.exe$' SHA256SUMS.txt | sha256sum -c -
 ```
 
 只运行与已下载文件对应的命令；必须显示 `OK`（或哈希与清单完全一致），不匹配时
-请不要安装。不要用已经停用的 v0.2 网页写入功能替代 v0.3.1 候选版。
+请不要安装。校验和用于检查文件完整性，不能证明发布者身份。
+
+macOS 打开 DMG 后，将 PaperReader 拖到“应用程序”；Windows 运行 Setup 安装包，
+按安装向导完成安装。
+
+安装包均未签名，macOS 应用也未经过 Apple 公证。如果首次启动时，macOS 提示无法
+验证开发者或应用未公证，请先确认下载来源可信，再按
+[Apple 官方说明](https://support.apple.com/zh-cn/102445)操作：尝试打开应用后，进入
+**系统设置 → 隐私与安全性 → 仍要打开**，再确认**打开**。此流程不适用于恶意软件
+或应用已损坏的警告。Windows SmartScreen 如果提示无法识别的应用，请先检查来源与
+校验和，再仅对这个安装包选择**更多信息 → 仍要运行**。不要全局关闭系统安全防护。
 
 ### 前置条件
 
-- macOS 12 或更高版本，或 Windows 10/11（`x64`）；
-- 与设备匹配的安装包：Apple Silicon（M1 及更新）下载 `arm64` DMG，Intel Mac
-  下载 `x64` DMG，Windows 下载 `x64` Setup 安装包；
-- 已安装并正在运行的 Zotero 桌面端；
-- 已登录且能在本机同步的 OneDrive 桌面端（Windows 上请保持 OneDrive
-  Files On-Demand 开启，这是当前 OneDrive 的默认设置）；
-- 一个 Obsidian vault；
-- 至少一个已安装并登录的精读 provider：
+浏览报告只需在支持的平台上安装 PaperReader，获取新报告时需要联网。
+以下依赖按需配置：
+
+- **保存到 Zotero：**已安装并运行的 Zotero 桌面端，以及已登录、能在本机同步的
+  OneDrive 桌面端。Windows 上需开启“文件随选”（Files On-Demand）。
+- **精读到 Obsidian：**一个 Obsidian vault、带 PyMuPDF 的 Python 3，以及至少一个
+  已安装并登录的精读服务 CLI：
   - [OpenAI Codex CLI（`codex`）](https://developers.openai.com/codex/cli/)：
     安装公开 CLI，并在 CLI 中使用 ChatGPT 或其支持的 API 认证方式登录；
   - [Claude Code](https://docs.anthropic.com/en/docs/claude-code/getting-started)：安装公开 CLI，
     并用其订阅/OAuth 完成登录；
   - TraeCode CLI（`trae-cli` / `trae-agent`）：仅适用于已经获得
     受支持 CLI 与账号的用户；本项目不对外发布或开通 TraeCode CLI。
-- 带 PyMuPDF 的 Python 3。建议使用隔离环境，并安装技能所需版本。macOS：
 
-  ```bash
-  python3 -m venv "$HOME/.paperreader-python"
-  "$HOME/.paperreader-python/bin/python3" -m pip install 'PyMuPDF>=1.24,<2'
-  "$HOME/.paperreader-python/bin/python3" -c 'import fitz; print(fitz.VersionBind)'
-  ```
+PDF 提取需要 PyMuPDF，建议安装在独立的 Python 环境中。macOS：
 
-  请把 `$HOME/.paperreader-python/bin` 加入登录 shell 的 `PATH`，然后重启
-  PaperReader，以便从 Finder 启动时也能找到这个 `python3`。Windows：从
-  [python.org](https://www.python.org/downloads/) 安装 Python 3（自带 `py`
-  launcher），然后例如：
+```bash
+python3 -m venv "$HOME/.paperreader-python"
+"$HOME/.paperreader-python/bin/python3" -m pip install 'PyMuPDF>=1.24,<2'
+"$HOME/.paperreader-python/bin/python3" -c 'import fitz; print(fitz.VersionBind)'
+```
 
-  ```bat
-  py -3 -m venv %USERPROFILE%\.paperreader-python
-  %USERPROFILE%\.paperreader-python\Scripts\python.exe -m pip install "PyMuPDF>=1.24,<2"
-  ```
+请把 `$HOME/.paperreader-python/bin` 加入登录 shell 的 `PATH`，然后重启
+PaperReader，以便从 Finder 启动时也能找到这个 `python3`。Windows：从
+[python.org](https://www.python.org/downloads/) 安装 Python 3 及 `py` 启动器，
+然后在 PowerShell 中运行：
 
-  再在 PaperReader 设置中选择该 `python.exe`（**Python 3 解释器 / Python 3
-  interpreter**），或确保 `py -3 -c "import fitz"` 可用。Windows 检测会依次
-  尝试 `py -3`、`python`、`python3`，并自动拒绝 Microsoft Store 的 python
-  stub。从源码运行时也可直接使用
-  [`skills/paper-reading/requirements.txt`](skills/paper-reading/requirements.txt)。
+```powershell
+py -3 -m venv "$env:USERPROFILE\.paperreader-python"
+& "$env:USERPROFILE\.paperreader-python\Scripts\python.exe" -m pip install "PyMuPDF>=1.24,<2"
+```
 
-v0.3.1 安装包**均未签名**：DMG 没有 Apple Developer ID 签名、未经过 Apple
-公证，Windows 安装包没有 Authenticode 签名。macOS 首次启动时，请在 Finder 的
-“应用程序”中右键（或按住 Control 点击）PaperReader，选择**打开**，再确认
-**打开**。Windows 首次运行时，Microsoft Defender SmartScreen 可能弹出提示；
-请先确认 SHA-256 校验通过，再只对这一个文件选择**更多信息** → **仍要运行**。
-不要全局关闭 Gatekeeper、SmartScreen 或其他系统安全机制。
+再在 PaperReader 设置中选择该 `python.exe`（**Python 3 解释器**），或确保
+`py -3 -c "import fitz"` 可用。Windows 检测会依次尝试 `py -3`、`python`、`python3`，
+并跳过 Microsoft Store 的 Python 占位程序。从源码运行时也可使用
+[`skills/paper-reading/requirements.txt`](skills/paper-reading/requirements.txt)。
 
 ### 手动升级且保留配置
 
@@ -147,6 +142,9 @@ v0.3.1 安装包**均未签名**：DMG 没有 Apple Developer ID 签名、未经
 `~/Library/Application Support/PaperReader/` 或 Windows 的
 `%APPDATA%\PaperReader\` 中。如果移动 OneDrive 目录或切换 Zotero profile，
 仍需重新确认路径。
+
+如果使用过已停用的 v0.2 网页写入功能，请撤销并更换当时的 Zotero API key 和
+WebDAV 密码。删除旧文件不能使已暴露的凭据失效。
 
 ### 首次配置
 
@@ -161,54 +159,49 @@ v0.3.1 安装包**均未签名**：DMG 没有 Apple Developer ID 签名、未经
    开启文献库访问与写入权限。不要提交或分享这个 key。
 4. 打开 PaperReader → **设置**，粘贴 key 并选择**验证并安全保存**（或
    **保存全部设置**）。
-   PaperReader 会向 Zotero 验证 key，并自动取得数字 user ID；普通用户
-   不需要查找或填写 user ID。
+   PaperReader 会向 Zotero 验证 key，并自动填写用户 ID。
 5. PaperReader 会检测 Zotero 当前 profile 与链接附件目录。如果界面要求
    手动选择目录，请选择 Zotero 中配置的同一个 OneDrive 文件夹；真实路径
    不一致时应用会拒绝保存。
-6. 选择用于接收笔记的 Obsidian vault。`paper-reading` 技能已随应用打包，
-   新 vault 不需要再复制一份技能。请选择专用文件夹；PaperReader 会拒绝文件系统
-   根目录、用户主目录及其祖先目录，也会拒绝 `Documents`、`Downloads`、`Library`、
-   `.config`、`.local`、`.codex`、`.ssh` 等宽泛的主目录一级文件夹。像
-   `~/Documents/PaperReadingDaily` 这样的专用子目录可以使用。Codex 任务还会拒绝
-   与 PaperReader user-data/缓存目录、`$CODEX_HOME` 或用户 SSH 目录重叠的 vault。
+6. 如需精读，选择专用的 Obsidian vault，例如 `~/Documents/PaperReadingDaily`，
+   不要直接选择用户主目录或整个 `Documents`。`paper-reading` 技能已随应用打包，
+   不需要复制到 vault。目录限制详见[安全政策](SECURITY_ZH.md)。
 7. 选择 Codex、Claude 或 Trae，并确认自动检测到的 CLI 路径。开始精读前，
-   先用 provider 自己的 CLI 完成本机登录。Codex 直接使用本机 `codex` CLI
+   先用相应服务的 CLI 完成本机登录。Codex 直接使用本机 `codex` CLI
    已有的 ChatGPT/API 登录；PaperReader 不会要求输入、收集或保存 ChatGPT
-   登录信息或 OpenAI API key。还应在登录 shell 里确认
-   `python3 -c 'import fitz'` 可成功执行。
+   登录信息或 OpenAI API key。开始任务前，确认前面配置的 Python 环境可以导入 `fitz`。
 8. 如需跨设备同步笔记，只选一种方案：把**整个 Obsidian vault**
    放在 OneDrive 中并让每台设备打开该同步文件夹；或者把 vault 放在
    OneDrive 之外并使用 Obsidian Sync。同一个 vault 绝不叠加两个同步器。
    Zotero PDF 附件目录应与 Obsidian vault 分开。
 
-首次新建配置时，provider 自动发现顺序为 Codex、Claude、Trae；三者都未检测
-到时，引导界面仍默认选择 Codex。已经明确选择过的 provider 永远不会被自动
-覆盖。`codexModel` 留空时使用 Codex 隔离任务的服务/内置默认模型，PaperReader
+步骤 1–5 用于配置 Zotero 保存，步骤 6–8 用于配置精读和笔记同步。
+
+首次配置时，AI 工具的检测顺序为 Codex、Claude、Trae；三者都未检测
+到时，引导界面默认选择 Codex。手动选择的工具不会被自动替换。
+`codexModel` 留空时使用 Codex 隔离任务的默认模型，PaperReader
 不会读取个人 `config.toml`；填写后才会为精读任务显式指定模型。
 
 API key 与自动取得的 user ID 使用 Electron `safeStorage` 加密；macOS 走
 Keychain 支持的系统安全存储，Windows 走 DPAPI 支持的系统安全存储。密文位于
 App user-data 目录（macOS 为 `~/Library/Application Support/PaperReader/`，
 Windows 为 `%APPDATA%\PaperReader\`）下的
-`zotero-credentials.secure.json`，非敏感设置位于同目录的 `config.json`。key 不会进入网页、仓库、报告 iframe、
-设置 JSON、日志或生成的笔记。凡是使用过 v0.2 旧网页写入功能的用户，
-都应撤销并轮换过去的 Zotero key 与 WebDAV 密码；删除历史文件无法撤销
-曾经出现在 Git 历史中的凭据。
+`zotero-credentials.secure.json`，非敏感设置位于同目录的 `config.json`。
+PaperReader 不会把 key 写入网页、报告视图、设置 JSON、日志或生成的笔记。
 
 key 保存后，PaperReader 会分页、只读扫描个人文献库，并从不同文献类型与
 集合中识别 arXiv ID。因此重装 App 后，库中已有论文会恢复为 **In Zotero**，
 不再只认识 `Daily Paper` 集合。对于不属于 PaperReader 管理集合的旧条目，
 App 只显示“已在库中”，不会重复创建、移动、补附件或删除原条目。
-v0.3.0 及之后新建的父条目会带可见 tag `paperreader-managed-v1`；只有同时带该 tag
-且仍在 `Daily Paper` 集合树中的条目可被 repair/Remove。无 tag 的旧条目或
+v0.3.0 及之后新建的父条目会带标签 `paperreader-managed-v1`；只有同时带该标签
+且仍在 `Daily Paper` 集合树中的条目可由应用修复或移除。无标签的旧条目或
 手动条目即使在该集合中，也始终只读。
 
 ### 加入 Zotero
 
 Zotero 与 OneDrive 的职责不同：Zotero Web API 创建文献条目、集合与链接附件
-metadata；OneDrive 只同步 PDF 文件字节。之后 Zotero 桌面端通过官方
-Zotero Sync 取回 metadata，并用本机 Linked Attachment Base Directory
+元数据；OneDrive 只同步 PDF 文件。之后 Zotero 桌面端通过官方
+Zotero Sync 取回元数据，并用本机 Linked Attachment Base Directory
 解析 PDF 路径。
 
 点击一次 **Add to Zotero** 即可，不再弹出第二个 PaperReader 确认框。随后
@@ -217,34 +210,34 @@ Zotero Sync 取回 metadata，并用本机 Linked Attachment Base Directory
 1. 重新读取 Zotero 当前 profile，确认 PaperReader 与 Zotero 解析到同一个
    OneDrive 链接附件基准目录；
 2. 下载标准 arXiv PDF，校验内容，并在不覆盖冲突文件的前提下写入目录；
-3. 等待平台云端检查确认 OneDrive 已上传且没有冲突——macOS 为 File Provider，
-   Windows 为 OneDrive 同步引擎维护的 NTFS cloud-files placeholder 属性——
-   再次计算已提交文件的哈希；
+3. 检查本机 OneDrive 同步状态，再次计算已保存文件的哈希；
 4. 创建 Zotero 父条目及 `linked_file` 子附件，其路径为扁平的
    `attachments:<filename>.pdf`。
 
-PDF 下载、本地提交、OneDrive 确认与最终重新哈希阶段使用固定 4 个 slot 的队列。
-一次提交超过 10 篇也会全部接收：最多同时运行 4 篇，其余严格按 FIFO（先进先出）
-排队；同一个 operation key 在 queued 或 running 时会合并，成功或失败都会释放
-slot。该队列与可配置的 AI 精读并发完全独立。
+Zotero 的 PDF 下载、本地保存、OneDrive 检查和最终哈希校验使用固定队列，最多
+同时处理 4 篇，其余按提交顺序排队。同一保存操作尚未结束时，重复请求会合并。
+该限制独立于 AI 精读并发，也不限制所有 Zotero API 请求。排队本身不能避免网络或 API 错误。
+
+macOS 的同步检查读取 File Provider 提供的上传和冲突状态。Windows 目前检查
+本机文件的重解析点属性，不能据此证明上传已完成或云端副本无冲突。两个平台都不会
+下载云端副本来逐字节比对。在另一台设备打开 PDF 前，仍需确认 OneDrive 已完成同步。
 
 日报卡片和搜索结果会归入 `Daily Paper/<报告日期>`；手动输入的
 arXiv 链接会归入 `Daily Paper/<arXiv 首次发布日期>`。因此集合日期可能
-不是你点击 Add 的当天，这是确定性行为。
+不是你点击 Add 的当天。
 
-只要目录、PDF、云端状态或 Zotero API 请求中有一项无法验证，操作就会停止
-并给出可处理的错误。如果在 OneDrive 提交后 API 失败，附件目录可能保留
-一份已校验 PDF；这是可复用的安全状态，同一论文的重试会对账并复用它，
-不会盲目再上传一份。OneDrive 文件可能比 Zotero metadata 更早出现；请先
+目录、PDF、同步状态检查或 Zotero API 请求失败时，应用会提示错误。
+如果在保存 PDF 后失败，附件目录可能保留一份已校验文件，同一论文重试时可以复用。
+OneDrive 文件可能比 Zotero 元数据更早出现；请先
 等 App 报告最终成功，再在 Zotero 桌面端手动同步。**Remove** 只删除
 PaperReader 管理的 Zotero 条目，不删除 OneDrive 中的 PDF。
 
 ### 精读到 Obsidian
 
-点击 **「帮我读」** 后，PaperReader 调用所选的本地 provider。OpenAI Codex
+点击 **「帮我读」** 后，PaperReader 调用所选的本地 CLI。OpenAI Codex
 CLI（`codex`）使用它已有的 ChatGPT/API 登录，Claude 使用已登录的 `claude`
 CLI 及其订阅/OAuth 会话，Trae 使用本机已登录的 `trae-cli` 或
-`trae-agent`。PaperReader 不收集或保存 AI provider 凭据。应用内会显示进度，
+`trae-agent`。PaperReader 不收集或保存 AI 服务凭据。应用内会显示进度，
 结果默认写入：
 
 ```text
@@ -256,38 +249,23 @@ CLI 及其订阅/OAuth 会话，Trae 使用本机已登录的 `trae-cli` 或
 卡片才显示 **✓ 已读**。精读中间文件位于 vault 之外、由 App 管理的
 `$PAPERREADER_CACHE_DIR`，不会当作笔记同步。
 
-所选 provider 是独立的云端服务：CLI 可能会把论文、prompt 与上下文发送给
-该 provider。PaperReader 会把内置 `paper-reading/SKILL.md` 解析后的精确路径
-传给 CLI。Codex 适配器以 `codex exec --json --ephemeral` 非交互运行，并使用基于
-Codex `:workspace` 边界的命名权限配置：文件读取默认拒绝，仅开放 Codex 最小运行
-时、内置技能、探测到的 Python/PyMuPDF 运行时、所选 vault 中除 `.obsidian` 外的
-内容和 App 缓存；这些 vault 内容与 App 缓存可写，系统临时目录被拒绝并重定向到 App 缓存，
-允许联网且不弹交互式授权。
-在把 Codex 标记为可用之前，环境检测会给 CLI 传入随机命名且明确不存在的 output
-schema 路径，强制它在本机真实解析全部安全相关配置；只有返回该精确的缺失文件错误才
-算通过。这个探针不会创建 schema 文件，也不会调用模型。
-适配器同时忽略用户通用的 Codex config/rules，并把 vault 标记为 untrusted，从而跳过
-项目级 `.codex` config/hooks/rules；还会停用用户目录/vault 中的 `AGENTS.md`
-发现、plugins、apps、hooks、技能发现、登录 shell 与 shell snapshot，并只向命令传递核心环境变量以及精确的缓存和 Python
-路径。沙箱命令不能读取 `$CODEX_HOME`、SSH 材料、PaperReader 设置或无关的用户
-目录文件，也不能读取或改写 vault 的 `.obsidian` 配置与插件；Codex 本身仍可通过
-`codex login` 认证。权限配置仍是 beta 级纵深防御，
-不是完整的 OS 安全边界。Claude 与 Trae 使用各自的非交互 bypass 模式。只对可信
-vault 使用，并阅读 provider 自己的条款。论文、PDF、HTML 与代码仓库
-内容都属于不可信输入；内置技能会拒绝其中的嵌入式指令，并禁止读取凭据或无关
-本地文件。若任务生成了与论文分析无关的命令或输出，应立即停止该任务。
-PaperReader 本身没有内置分析或遥测；为实现功能，它仍会按需访问公开报告站、arXiv、Zotero、
-OneDrive/File Provider 与所选 AI provider。Provider 选项、缓存和详细边界见
-[PaperReader 使用说明](app/README.md)。
+CLI 可能会把论文内容、提示词与上下文发送给所选 AI 服务。精读任务可以读写所选
+vault 并联网，不会逐步请求授权。Codex 使用受限的权限配置；Claude 与 Trae 使用
+各自跳过权限确认的模式，不具备同样的限制。请使用不含敏感文件的专用 vault。
+论文内容可能包含恶意指令，仅靠精读提示词无法保证任务不受其影响。
+各服务的权限与数据处理方式详见[安全政策](SECURITY_ZH.md)。
+
+PaperReader 本身没有内置分析或遥测，会按功能需要访问报告站、arXiv、Zotero、
+OneDrive 与所选 AI 服务。
 
 ### 同步排障
 
 - **OneDrive 有 PDF，Zotero 没条目**：等 Add 返回最终成功；确认 API key 与
   Zotero 桌面端是同一账号，点击 Zotero 同步，检查 `Daily Paper/<预期日期>`，
   并按 arXiv ID 搜索整个库。
-- **zotero.org 有条目，桌面端没有**：Zotero metadata 同步尚未完成；它与
+- **zotero.org 有条目，桌面端没有**：Zotero 元数据同步尚未完成；它与
   OneDrive 文件同步互相独立。
-- **另一台 Mac 有条目但打不开 PDF**：该 Mac 也要把 Linked Attachment Base
+- **另一台设备有条目但打不开 PDF**：该设备也要把 Linked Attachment Base
   Directory 指向同一 OneDrive 文件夹在它本机的路径，并等文件下载。
 - **Add 写入 PDF 后失败**：保留已校验文件，直接对同一论文重试；期间
   不要改名或复制。
@@ -296,6 +274,8 @@ OneDrive/File Provider 与所选 AI provider。Provider 选项、缓存和详细
 - **精读在解析前失败**：在登录 shell 运行 `python3 -c 'import fitz'`
   （Windows 运行 `py -3 -c "import fitz"`，或检查设置中选定的解释器），并确认
   所选 AI CLI 已安装、已登录。
+
+更详细的错误排查见 [PaperReader 使用说明](app/README_ZH.md)。
 
 ## 网页功能
 
@@ -311,8 +291,8 @@ GitHub Pages 站点提供：
 7. 无需再次调用 LLM 的历史 Stage-1 重打分。
 
 网页**不保存** Zotero 凭据，不写 PDF，不启动本地 CLI，也不修改 Obsidian
-vault。相关控件只在 PaperReader 中出现。这一边界是有意设计的：浏览器沙箱
-无法为链接附件流程提供所需的本地文件系统与云端确认保证。
+vault。相关控件只在 PaperReader 中出现，由桌面应用访问本机链接附件目录和
+OneDrive 同步状态。
 
 ## 部署自己的只读站点
 
@@ -353,7 +333,7 @@ arXiv API
 只读公开报告
   → 沙箱化报告视图 + 应用内置 bridge
   ├─ Add to Zotero
-  │    → 校验 OneDrive 目录 → 校验 PDF → 云端确认
+  │    → 校验 OneDrive 目录 → 校验 PDF → 本机同步状态检查
   │    → Zotero Web API 父条目 + linked_file 元数据
   └─ 「帮我读」
        → 本地 Codex/Claude/Trae CLI → 内置 paper-reading 技能
@@ -403,6 +383,9 @@ npm start
 PaperReader v0.3.1 使用 Electron 43 与 electron-builder 26；
 `app/package-lock.json` 提供锁定的可复现安装。
 
+`app/run-windows.bat` 是源码开发辅助脚本，不是产品安装包。
+Windows 日常使用请通过 Setup 安装包安装。
+
 在 macOS 本机同时构建两个架构：
 
 ```bash
@@ -420,9 +403,8 @@ npm run dist:win
 推送匹配 `v*` 的语义化版本 tag 会在 macOS 与 Windows runner 上运行 CI：
 安装锁定依赖，在两个平台上执行完整 app 测试，构建未签名的 `arm64` 与 `x64`
 DMG 以及未签名的 Windows NSIS 安装包，审计打包产物，并把这三份安装包和
-合并后的 `SHA256SUMS.txt` 发布到 GitHub Release。只有公开资产核验完成后，
-文档才能将其标为稳定版。打 tag 前维护者必须完成
-[发布检查清单](RELEASE_CHECKLIST_ZH.md)。
+合并后的 `SHA256SUMS.txt` 发布到 GitHub Release。
+完整发布流程见[发布检查清单](RELEASE_CHECKLIST_ZH.md)。
 
 ## 调整过滤策略
 
@@ -442,7 +424,7 @@ python3 src/rebuild_html.py
 .
 ├── .github/workflows/
 │   ├── daily_arxiv.yml          # 摄取、过滤、渲染与发布
-│   └── build-app.yml            # 测试 + Mac DMG 与 Windows 安装包发布目标
+│   └── build-app.yml            # 测试、Mac DMG、Windows 安装包与 GitHub Release
 ├── app/                         # PaperReader Electron 应用
 ├── docs/                        # 平台规划与工程记录
 ├── skills/paper-reading/        # 随 PaperReader 打包的技能

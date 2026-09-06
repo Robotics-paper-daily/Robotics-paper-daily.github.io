@@ -4,13 +4,14 @@
 
 Robotics Daily Papers combines a generated public archive with the PaperReader
 desktop app. Contributions should preserve the trust boundary: the website is
-read-only, while local credentials, filesystem writes, Zotero operations, and
-AI CLI execution stay inside the trusted App process.
+read-only, while credential access, filesystem writes, Zotero operations, and
+AI CLI launches are controlled by the trusted application layer.
 
-v0.3.0 is the current macOS release target and remains a candidate until its
-official tag, Release, two DMGs, and checksum manifest exist. Windows is planned
-but unsupported; follow the [Windows roadmap](docs/WINDOWS_ROADMAP.md) instead
-of treating `app/run-windows.bat` as a product or compatibility result.
+PaperReader v0.3.1 is available for macOS 12+ (Apple Silicon and Intel) and
+Windows 10/11 (x64). The [GitHub Release](https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases/tag/v0.3.1)
+contains two DMGs, a Windows Setup installer, and `SHA256SUMS.txt`. See the
+[Windows roadmap](docs/WINDOWS_ROADMAP.md) for implementation details and
+outstanding platform validation.
 
 ## Before opening an issue
 
@@ -27,9 +28,10 @@ of treating `app/run-windows.bat` as a product or compatibility result.
 
 ## Development setup
 
-The release workflow uses Node.js 22. The publishing pipeline uses Python 3.
-macOS is required to validate the currently supported desktop integration and
-to build both DMGs.
+The release workflow uses Node.js 22. The publishing pipeline requires Python
+3.10 or later. Build and validate the DMGs on macOS and the Setup installer on
+Windows. The commands below use a POSIX shell; on Windows, activate the virtual
+environment with `.venv\Scripts\Activate.ps1` in PowerShell.
 
 ```bash
 git clone <repository-url>
@@ -60,16 +62,17 @@ account.
 - **Desktop app:** trusted orchestration belongs in `app/main.js` and focused
   modules; untrusted reports use the narrow bridge and must not receive secrets
   or arbitrary filesystem/network authority.
-- **Zotero saves:** the PDF download/local commit/OneDrive confirmation/re-hash
-  stage has a fixed four-slot FIFO queue. Same queued/running operation keys are
-  coalesced and every completion releases a slot. It is separate from AI read
+- **Zotero saves:** PDF download, local write, OneDrive confirmation, and final
+  hash verification share a four-task FIFO queue. Duplicate requests with the
+  same operation key share the queued or running task. Completion or failure
+  releases the capacity for the next task. This is separate from AI read
   concurrency, which defaults to 10 and is configurable from 1-16.
 - **Credentials:** Electron `safeStorage` is mandatory. Do not add plaintext
   fallback, browser credential bundles, WebDAV upload paths, or test fixtures
   that resemble real secrets.
-- **Windows:** isolate platform behavior behind narrow adapters and add native
-  Windows tests. A source launcher or a successful Electron window is not
-  enough to claim support.
+- **Windows:** isolate platform behavior in focused adapters and add native
+  Windows tests. Validate affected integrations with the packaged app as well
+  as unit tests; record any remaining real-machine checks in the roadmap.
 
 ## Documentation
 
@@ -110,10 +113,10 @@ git diff --check
 ```
 
 For publishing changes, rebuild the generated reports and inspect representative
-daily pages plus search behavior. For macOS App changes, also test a clean
-source launch. Release candidates require the complete
-[release checklist](RELEASE_CHECKLIST.md), clean-machine DMG installation, and
-artifact verification.
+daily pages plus search behavior. For App changes, also test a clean source
+launch on each affected platform. Releases require the complete
+[release checklist](RELEASE_CHECKLIST.md), clean-machine installation from the
+DMGs and Windows Setup installer, and artifact verification.
 
 ## Pull request expectations
 

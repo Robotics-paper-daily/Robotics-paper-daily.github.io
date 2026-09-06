@@ -1,8 +1,6 @@
 # Third-party notices
 
-This file is maintained in English as the canonical legal and attribution
-record. Chinese project navigation links here directly rather than presenting
-an unofficial translation of license terms.
+Legal and attribution notices are maintained in English.
 
 Robotics Daily Papers and PaperReader are released under the repository's
 [MIT License](LICENSE). This file identifies important third-party components
@@ -32,8 +30,8 @@ by those components or in generated release artifacts.
   respective authors. Source installations retain package license files under
   the installed dependency tree.
 - [PyMuPDF](https://pymupdf.readthedocs.io/en/latest/about.html) — installed
-  separately by the user for PDF extraction, not provided as a v0.3.0 DMG
-  payload. PyMuPDF is offered under the GNU AGPL and a commercial Artifex
+  separately by the user for PDF extraction, not bundled in the PaperReader
+  installers. PyMuPDF is offered under the GNU AGPL and a commercial Artifex
   license; users and redistributors are responsible for complying with the
   license they select. PaperReader's supported version range is declared in
   `skills/paper-reading/requirements.txt`.

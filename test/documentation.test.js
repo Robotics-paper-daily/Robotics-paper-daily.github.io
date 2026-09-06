@@ -17,7 +17,10 @@ const DOCUMENT_PAIRS = Object.freeze([
   ["docs/WINDOWS_ROADMAP.md", "docs/WINDOWS_ROADMAP_ZH.md"],
 ]);
 
-const CORE_DOCUMENTS = Object.freeze(DOCUMENT_PAIRS.flat());
+const CORE_DOCUMENTS = Object.freeze([
+  ...DOCUMENT_PAIRS.flat(),
+  "THIRD_PARTY_NOTICES.md",
+]);
 
 function read(relative) {
   const absolute = path.join(ROOT, relative);
@@ -213,7 +216,18 @@ test("release publishing uses tag-only titles and renderer-managed wrapping", ()
   }
 });
 
-test("README and App guides describe Windows 10/11 as a supported release target", () => {
+test("public app notices use the latest-release link and describe both platforms", () => {
+  const releaseUrl = "https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases/latest";
+  for (const source of ["index.html", "guest.html", "list.html", "search.html", "personal.html", "js/like.js"]) {
+    const contents = read(source);
+    assert.ok(contents.includes(`href="${releaseUrl}"`), `${source} must link to ${releaseUrl}`);
+    assert.match(contents, /macOS/u, source);
+    assert.match(contents, /Windows/u, source);
+    assert.doesNotMatch(contents, /Mac App|#v030-paperreader-for-macos|查看[^<\n]*v0\.3\.0/u, source);
+  }
+});
+
+test("README and App guides describe packaged Windows 10/11 support", () => {
   const englishDocs = ["README.md", "app/README.md"];
   const chineseDocs = ["README_ZH.md", "app/README_ZH.md"];
 
@@ -222,7 +236,7 @@ test("README and App guides describe Windows 10/11 as a supported release target
     matchingBlock(
       contents,
       [/\bWindows\b/iu, /\b10\b/u, /\b11\b/u, /\bx64\b/iu],
-      `${source} must describe Windows 10/11 x64 as a supported release target in one passage`
+      `${source} must describe Windows 10/11 x64 support in one passage`
     );
     const launcherContext = matchingBlock(
       contents,
@@ -242,7 +256,7 @@ test("README and App guides describe Windows 10/11 as a supported release target
     matchingBlock(
       contents,
       [/Windows/iu, /10/u, /11/u, /x64/iu],
-      `${source} 必须在同一段说明 Windows 10/11 x64 已成为受支持的发布目标`
+      `${source} 必须在同一段说明 Windows 10/11 x64 支持`
     );
     const launcherContext = matchingBlock(
       contents,

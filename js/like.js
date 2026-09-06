@@ -58,9 +58,9 @@
     notice.id = "zotero-app-only-notice";
     notice.setAttribute("role", "note");
     notice.innerHTML =
-      '<strong>Add to Zotero 已迁移至 PaperReader Mac App。</strong>' +
-      '<span> 网页版现为只读浏览，不再写入 Zotero/WebDAV，以免产生失效附件。</span>' +
-      '<a href="https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io#v030-paperreader-for-macos" target="_blank" rel="noopener noreferrer">查看 v0.3.0 发布状态</a>';
+      '<strong>Add to Zotero 由 PaperReader 桌面应用提供。</strong>' +
+      '<span> 网页版只读，保存论文请使用 macOS 或 Windows 应用。</span>' +
+      '<a href="https://github.com/Robotics-paper-daily/Robotics-paper-daily.github.io/releases/latest" target="_blank" rel="noopener noreferrer">下载 PaperReader</a>';
     const style = document.createElement("style");
     style.textContent =
       "#zotero-app-only-notice{max-width:1180px;margin:1rem auto;padding:.75rem 1rem;" +

@@ -365,6 +365,6 @@ test("settings status renders an actionable Python / PyMuPDF prerequisite line",
   assert.match(html, /Claude Code/);
   assert.match(html, /TraeCode CLI（仅已获提供的用户）/);
   assert.match(html, /论文内容与提示发送给所选 CLI 服务/);
-  assert.match(html, /不收集或保存 AI provider 凭据/);
+  assert.match(html, /不收集或保存 AI 服务凭据/);
   assert.match(html, /PaperReader 本身不做遥测/);
 });
