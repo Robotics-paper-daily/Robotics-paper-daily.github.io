@@ -1,10 +1,15 @@
 name: Build PaperReader
 
-# Manual runs produce tested unsigned artifacts for both desktop platforms. A
-# semantic-version tag also creates the GitHub release and uploads the two
-# macOS DMGs, the Windows installer, and one merged checksum manifest.
+# macOS apps use ad-hoc signatures; Windows installers are unsigned. A
+# tag push or a publishing manual run creates/updates the package version's
+# release with both macOS DMGs, Windows Setup, and a merged checksum manifest.
 on:
   workflow_dispatch:
+    inputs:
+      publish_release:
+        description: "Publish/replace this package version's Release installers (select main)"
+        type: boolean
+        default: true
   push:
     tags:
       - "v*"
@@ -12,8 +17,33 @@ on:
 permissions:
   contents: read
 
+# Serialize replacements so two runs cannot mix installer/checksum uploads.
+concurrency:
+  group: paperreader-release
+  cancel-in-progress: false
+
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.target.outputs.version }}
+      tag: ${{ steps.target.outputs.tag }}
+      publish: ${{ steps.target.outputs.publish }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Resolve version and validate publication source
+        id: target
+        env:
+          PUBLISH_RELEASE: ${{ inputs.publish_release }}
+        run: node .github/scripts/publish-release.js prepare
+
   build-macos:
+    needs: prepare
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,27 +70,18 @@ jobs:
         working-directory: .
         run: python3 -m unittest discover -s test -p 'test_*.py'
 
-      - name: Verify stable tag matches package version
-        if: startsWith(github.ref, 'refs/tags/v')
-        working-directory: app
-        run: |
-          node - <<'NODE'
-          const version = require('./package.json').version;
-          const tag = process.env.GITHUB_REF_NAME;
-          if (!/^v\d+\.\d+\.\d+$/.test(tag) || tag !== `v${version}`) {
-            throw new Error(`stable release tag ${tag} does not match package version ${version}`);
-          }
-          NODE
-
-      - name: Build unsigned Apple Silicon and Intel DMGs
+      - name: Build ad-hoc signed Apple Silicon and Intel DMGs
         working-directory: app
         run: npm run dist:mac
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
 
-      - name: Audit packaged privacy boundary
+      - name: Audit packaged privacy, macOS deployment targets, and signature integrity
         working-directory: app
         run: node release-audit.js --dist
+
+      - name: Mount and audit the final DMG contents for both architectures
+        run: node .github/scripts/audit-macos-dmgs.js
 
       - name: Validate both installers and write the macOS SHA-256 manifest
         working-directory: app/dist
@@ -88,6 +109,7 @@ jobs:
           if-no-files-found: error
 
   build-windows:
+    needs: prepare
     runs-on: windows-latest
     defaults:
       run:
@@ -116,18 +138,6 @@ jobs:
       - name: Run Python tests
         working-directory: .
         run: python -m unittest discover -s test -p 'test_*.py'
-
-      - name: Verify stable tag matches package version
-        if: startsWith(github.ref, 'refs/tags/v')
-        working-directory: app
-        run: |
-          node - <<'NODE'
-          const version = require('./package.json').version;
-          const tag = process.env.GITHUB_REF_NAME;
-          if (!/^v\d+\.\d+\.\d+$/.test(tag) || tag !== `v${version}`) {
-            throw new Error(`stable release tag ${tag} does not match package version ${version}`);
-          }
-          NODE
 
       - name: Build the unsigned Windows x64 installer
         working-directory: app
@@ -160,8 +170,9 @@ jobs:
           if-no-files-found: error
 
   publish-release:
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: needs.prepare.outputs.publish == 'true'
     needs:
+      - prepare
       - build-macos
       - build-windows
     runs-on: ubuntu-latest
@@ -169,6 +180,10 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
       - uses: actions/download-artifact@v4
         with:
@@ -182,8 +197,10 @@ jobs:
 
       - name: Verify downloaded assets and merge the checksum manifest
         working-directory: release-artifacts
+        env:
+          RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
         run: |
-          version="${GITHUB_REF_NAME#v}"
+          version="${RELEASE_VERSION}"
           arm64="PaperReader-${version}-arm64.dmg"
           x64="PaperReader-${version}-x64.dmg"
           setup="PaperReader-${version}-x64-Setup.exe"
@@ -203,17 +220,9 @@ jobs:
           grep -Eq "^[[:xdigit:]]{64}  ${setup}$" SHA256SUMS.txt
           sha256sum -c SHA256SUMS.txt
 
-      - name: Create GitHub release
+      - name: Publish installers and verify them by downloading from the Release
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-        run: |
-          version="${GITHUB_REF_NAME#v}"
-          gh release create "${GITHUB_REF_NAME}" \
-            release-artifacts/PaperReader-${version}-*.dmg \
-            release-artifacts/PaperReader-${version}-x64-Setup.exe \
-            release-artifacts/SHA256SUMS.txt \
-            --title "${GITHUB_REF_NAME}" \
-            --notes-file RELEASES_NOTES.md \
-            --verify-tag \
-            --latest
+          PUBLISH_RELEASE: ${{ inputs.publish_release }}
+        run: node .github/scripts/publish-release.js publish

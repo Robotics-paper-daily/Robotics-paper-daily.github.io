@@ -9,6 +9,10 @@ Windows 10/11（x64）。v0.3.1 已发布；本清单是可复用模板，不代
 准备下一次发布时，记录测试的 commit、安装包校验和、操作系统与检查结果。完成
 发布前检查后再推送 tag，触发发布；发布后继续完成下方的公开产物检查。
 
+从现有 Release 重建附件时，先将完整改动推送到 `main`，再选择 **Actions → Build PaperReader → Run workflow → main** 并勾选 **publish_release**。目标 Release 由应用版本号决定。两个平台一起重建，替换三份安装包和合并校验清单，再重新下载核验。取消勾选则只构建。不要手动上传本地安装包。
+
+重建不会移动已有标签，Release 说明会记录安装包源码提交和 Actions 运行链接；GitHub 生成的源码压缩包仍对应标签。构建期间如果 `main` 有新提交，手动发布会拒绝上传，需从 `main` 重新运行。附件替换不是原子操作，上传失败后需重新运行；不可变 Release 需要使用新版本号。
+
 ## 1. 范围与版本
 
 - [ ] 目标 tag（`vX.Y.Z`）、App 包配置、依赖锁定文件、窗口和关于页面、文档、资产
@@ -101,7 +105,7 @@ Windows 10/11（x64）。v0.3.1 已发布；本清单是可复用模板，不代
 
 ### macOS
 
-- [ ] 在受支持的 macOS runner 上构建未签名的 `arm64` 与 `x64` DMG（CI 的
+- [ ] 在受支持的 macOS runner 上构建包含 ad-hoc 本地签名应用的 `arm64` 与 `x64` DMG（CI 的
   `build-macos` job 或 `npm run dist:mac`）。
 - [ ] 在匹配架构的干净 Mac、干净虚拟机或干净用户环境中安装每一份 DMG。
 - [ ] 按 [App 使用指南](app/README_ZH.md)验证首次启动：尝试打开后，若 macOS
@@ -110,6 +114,11 @@ Windows 10/11（x64）。v0.3.1 已发布；本清单是可复用模板，不代
 - [ ] 确认打包资源包含 `paper-reading` 技能、脚本、参考文件、依赖声明、图标
   与最小只读站点快照。
 - [ ] 针对解包后的 App 与两份 DMG 运行发布产物审计。
+
+- [ ] 确认 `node release-audit.js --dist` 对两种架构的最低系统要求和签名检查均通过。
+  ad-hoc 签名不提供 Developer ID 身份认证或 Apple 公证；最终 DMG 内的应用也需检查。
+- [ ] 记录 macOS 12 及较新 macOS 上的完整流程结果：启动、报告与搜索、设置、AI 精读、
+  笔记，以及 Zotero/OneDrive 同步。二进制检查通过不等于完整兼容性验收通过。
 
 ### Windows
 
@@ -141,6 +150,8 @@ Windows 10/11（x64）。v0.3.1 已发布；本清单是可复用模板，不代
 - [ ] 确认发布工作流创建正式 GitHub Release，且未标记为预发布版本。
 - [ ] 仅在发布 commit 已审查并授权后创建和推送带注释的版本 tag；该 tag
   可按维护者政策选择 Git 签名。
+- [ ] 手动发布时选择 `main` 并勾选 `publish_release`，确认应用版本号对应预期的新建
+  或现有 Release。必须等待发布任务完成下载与校验，不能只看构建任务成功。
 - [ ] 确认 GitHub Release 标题、发布说明、平台/架构标签、未签名警告（DMG 未
   公证 / Setup 无 Authenticode 签名）、校验和指令、手动升级说明与链接均
   正确。

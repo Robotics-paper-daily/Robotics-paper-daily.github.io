@@ -392,6 +392,11 @@ function auditDist(distDir = path.join(APP_DIR, "dist"), options = {}) {
   for (const asarPath of asars) {
     auditAsar(asarPath, asarApi, options);
     auditPackagedResources(path.dirname(asarPath), options);
+    if (platform === "darwin") {
+      const { auditMacApp } = require("./macos-audit");
+      const minimum = require("./package.json").build.mac.minimumSystemVersion;
+      auditMacApp(path.resolve(path.dirname(asarPath), "..", ".."), minimum);
+    }
   }
 }
 

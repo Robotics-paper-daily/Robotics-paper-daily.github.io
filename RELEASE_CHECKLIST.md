@@ -10,6 +10,10 @@ For the next release, record the tested commit, installer checksums, operating
 systems, and results. Complete the pre-release checks before pushing the tag,
 which triggers publication, then complete the post-publish checks below.
 
+For an Actions-managed rebuild of an existing Release, push the complete changes to `main`, then choose **Actions → Build PaperReader → Run workflow → main** with **publish_release** checked. The package version selects the target Release. Both platform installers are rebuilt together; all three installers and their merged checksums are replaced and downloaded for verification. Uncheck the input for a build-only run. Do not manually attach local installers.
+
+Rebuilds preserve existing tags and record the installer source commit and Actions run in the Release notes. GitHub-generated source archives continue to represent the tag. Manual publication rejects a run if `main` advanced during the build; restart from `main`. Asset replacement is not atomic, so a failed upload must be rerun. Immutable Releases require a new version.
+
 ## 1. Scope and version
 
 - [ ] Release version is identical in the intended tag (`vX.Y.Z`), App package,
@@ -123,7 +127,7 @@ which triggers publication, then complete the post-publish checks below.
 
 ### macOS
 
-- [ ] Build unsigned `arm64` and `x64` DMGs on the supported macOS runner (CI
+- [ ] Build ad-hoc signed `arm64` and `x64` apps in DMGs on the supported macOS runner (CI
   `build-macos` job or `npm run dist:mac`).
 - [ ] Install each DMG on a clean matching Mac or clean VM/user profile.
 - [ ] Verify first launch using the [App guide](app/README.md): after an initial
@@ -132,6 +136,12 @@ which triggers publication, then complete the post-publish checks below.
 - [ ] Confirm packaged resources contain the `paper-reading` skill, scripts,
   references, requirement declaration, icons, and minimal read-only site snapshot.
 - [ ] Run the release artifact audit against the unpacked App and both DMGs.
+- [ ] Confirm `node release-audit.js --dist` passes macOS deployment-target and
+  signature checks for both architectures. Ad-hoc signing does not provide
+  Developer ID authentication or notarization. Audit the final DMG contents too.
+- [ ] Record complete workflow results on macOS 12 and a current macOS version:
+  launch, reports/search, settings, AI reading, notes, and Zotero/OneDrive sync.
+  Passing binary checks alone is not an end-to-end compatibility result.
 
 ### Windows
 
@@ -169,6 +179,9 @@ which triggers publication, then complete the post-publish checks below.
   set an early-access flag.
 - [ ] Create and push the annotated release tag (optionally Git-signed) only
   after the release commit is reviewed and authorized.
+- [ ] For manual publication, select `main` and check `publish_release`; confirm
+  the package version is the intended new or existing Release. Require the
+  publication job to pass its download/hash verification, not only the builds.
 - [ ] Verify the GitHub release title, notes, platform/architecture labels, the
   unsigned (unnotarized DMG / no-Authenticode setup) warnings, checksum
   instructions, manual-upgrade instructions, and links.

@@ -202,11 +202,7 @@ test("core documentation contains no retired automatic-update surface", () => {
   }
 });
 
-test("release publishing uses tag-only titles and renderer-managed wrapping", () => {
-  const workflow = read(".github/workflows/build-app.yml");
-  assert.match(workflow, /--title "\$\{GITHUB_REF_NAME\}"/u);
-  assert.doesNotMatch(workflow, /--title "PaperReader /u);
-
+test("release notes use renderer-managed wrapping", () => {
   for (const source of ["RELEASES_NOTES.md", "RELEASES_NOTES_ZH.md"]) {
     assert.deepEqual(
       hardWrappedProseLines(read(source)),

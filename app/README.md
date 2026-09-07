@@ -205,7 +205,15 @@ npm start
 
 The app uses Electron 43 and electron-builder 26, with versions locked in `package-lock.json`. `prestart` refreshes the bundled report snapshot. `run-windows.bat` is a source-development helper, not a product installer; use the Setup installer for normal Windows use.
 
+Current source builds target macOS 12 and later on both architectures and use ad-hoc code signing (`mac.identity: "-"`) to seal the complete app bundle after packaging. This is not a Developer ID signature or Apple notarization; changing source alone does not replace published downloads. macOS may still require per-app first-launch approval. Do not set the identity to `null`: skipping signing leaves the packaged Electron bundle with invalid signature metadata.
+
+After building, run `node release-audit.js --dist` on macOS. It checks the app and helper Info.plists, every bundled Mach-O deployment target, and complete signature integrity. A newer build SDK alone does not require a newer operating system. Compatibility below macOS 12 is not claimed; AI CLIs, Python/PyMuPDF, Zotero, and OneDrive must also support the user's OS. Before release, test the complete workflows on the oldest supported OS as well as a current Mac.
+
 Build the macOS installers on macOS with `npm run dist:mac`, or the Windows installer on Windows x64 with `npm run dist:win`. The `Build PaperReader` workflow runs tests, builds and audits packages, and generates checksums. A `v*` tag also publishes the three installers and merged `SHA256SUMS.txt` to GitHub Releases. Maintainer steps are in the [release checklist](../RELEASE_CHECKLIST.md); Windows implementation and remaining work are in the [Windows roadmap](../docs/WINDOWS_ROADMAP.md).
+
+To publish from `main`, commit and push all changes, then open **Actions → Build PaperReader → Run workflow**, select **main**, and leave **publish_release** checked. The version in `app/package.json` selects the Release: `0.3.1` replaces all three installers and the checksum manifest under `v0.3.1`; a new version creates a new Release. Both platform builds and the audits must pass. The macOS job mounts both final DMGs and verifies their contents before upload. The publication job downloads all uploaded files and checks them against this build's hashes before reporting success. Uncheck **publish_release** to generate Actions artifacts only.
+
+Existing release tags are not moved. A build-source section in the Release notes links to the exact installer commit and Actions run; GitHub's source archives still follow the tag. Manual publication stops if `main` has advanced since the run started; start a new run from `main` in that case. Replacing release assets is not atomic: if an upload fails, the run fails and must be repeated to restore a consistent set. Immutable Releases require a new version. CI verifies binary requirements and signing, but macOS 12 full-workflow testing remains a separate release check.
 
 | File | Role |
 |---|---|

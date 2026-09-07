@@ -205,7 +205,15 @@ npm start
 
 应用使用 Electron 43 和 electron-builder 26，版本由 `package-lock.json` 锁定。`prestart` 会刷新内置报告快照。`run-windows.bat` 是源码开发辅助脚本，不是产品安装包；日常使用请安装 Windows Setup 安装包。
 
+当前源码构建的两种架构均以 macOS 12 及以上为目标，打包后使用本地 ad-hoc 签名（`mac.identity: "-"`）封装完整应用。这不等于 Developer ID 开发者签名或 Apple 公证，仅修改源码不会替换已发布的下载文件。首次启动仍可能需要单独授权。不要将 identity 设为 `null`：跳过签名会让打包后的 Electron 应用保留无效的签名元数据。
+
+构建后，在 macOS 上运行 `node release-audit.js --dist`，检查应用及辅助进程的 Info.plist、所有内置 Mach-O 文件的最低系统要求和完整签名。构建使用了较新的 SDK，并不代表运行时需要同样新的系统。当前不承诺支持 macOS 12 以下版本；AI CLI、Python/PyMuPDF、Zotero 和 OneDrive 也必须支持设备的系统版本。发布前需在最低支持版本和较新的 Mac 上验证完整工作流程。
+
 在 macOS 上用 `npm run dist:mac` 构建 Mac 安装包，在 Windows x64 上用 `npm run dist:win` 构建 Windows 安装包。`Build PaperReader` 工作流负责测试、构建、产物检查和校验清单生成；`v*` 标签还会将三份安装包与合并的 `SHA256SUMS.txt` 发布到 GitHub Releases。维护者操作见[发布检查清单](../RELEASE_CHECKLIST_ZH.md)，Windows 实现和后续工作见 [Windows 路线图](../docs/WINDOWS_ROADMAP_ZH.md)。
+
+从 `main` 发布时，先提交并推送全部改动，再打开 **Actions → Build PaperReader → Run workflow**，选择 **main** 并保持勾选 **publish_release**。发布目标由 `app/package.json` 的版本号决定：`0.3.1` 会替换现有 `v0.3.1` 下的三份安装包和校验清单；改为新版本号后会创建新 Release。两个平台构建和审计必须全部通过；macOS 构建还会挂载两份最终 DMG 检查包内内容。上传后，发布任务会重新下载所有附件，与本次构建的校验值比对，全部一致才报告成功。取消勾选 **publish_release** 则只生成 Actions 构建产物。
+
+更新附件不会移动已有标签。Release 说明中的构建来源会链接到安装包对应的确切提交和 Actions 运行记录，GitHub 的源码压缩包仍对应原标签。如果运行期间 `main` 有新提交，手动发布会停止，需从 `main` 重新发起运行。附件替换不是原子操作，上传失败时必须重新运行以恢复一致的附件集合；开启不可变发布的 Release 需要使用新版本号。CI 检查二进制要求和签名，macOS 12 的完整流程实测仍是单独的发布验收项。
 
 | 文件 | 作用 |
 |---|---|

@@ -286,13 +286,13 @@ test("electron-builder includes public release metadata and excludes local crede
   assert.strictEqual(Object.hasOwn(appPackage, "dependencies"), false);
   assert.strictEqual(Object.hasOwn(appPackage.build, "publish"), false);
   assert.deepStrictEqual(appPackage.build.mac.target, ["dmg"]);
-  assert.strictEqual(appPackage.build.mac.identity, null);
+  assert.strictEqual(appPackage.build.mac.identity, "-");
   assert.strictEqual(appPackage.build.mac.hardenedRuntime, false);
   assert.strictEqual(appPackage.build.mac.notarize, false);
   assert.strictEqual(appPackage.build.dmg.writeUpdateInfo, false);
 });
 
-test("release workflow publishes only unsigned installers and checksums", () => {
+test("release workflow builds both platforms and delegates installer publication", () => {
   const workflow = fs.readFileSync(
     path.join(__dirname, "..", ".github", "workflows", "build-app.yml"),
     "utf8"
@@ -305,9 +305,8 @@ test("release workflow publishes only unsigned installers and checksums", () => 
     "app/dist/SHA256SUMS-windows.txt",
     "runs-on: windows-latest",
     "npm run dist:win",
-    "release-artifacts/PaperReader-${version}-*.dmg",
-    "release-artifacts/PaperReader-${version}-x64-Setup.exe",
-    "release-artifacts/SHA256SUMS.txt",
+    "node .github/scripts/publish-release.js publish",
+    "node .github/scripts/audit-macos-dmgs.js",
   ]) {
     assert.match(workflow, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), marker);
   }
