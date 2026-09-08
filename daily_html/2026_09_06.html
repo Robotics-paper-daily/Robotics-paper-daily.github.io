@@ -1,0 +1,563 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArXiv Robotics Papers (RL/VLM/World Models/LLMs/VLA/VLN) - September 06, 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.16.4/framer-motion.dev.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        :root {
+            /* New Palette: Light, Clean, Futuristic with Tsinghua Purple accents */
+            --bg-color: #f8fafc; /* Tailwind slate-50 (Very Light Gray) */
+            --card-bg-color: #ffffff; /* White */
+            --text-color: #1e293b; /* Tailwind slate-800 (Dark Gray-Blue) */
+            --text-muted-color: #64748b; /* Tailwind slate-500 (Medium Gray-Blue) */
+            --header-color: #0f172a; /* Tailwind slate-900 (Very Dark Blue) */
+            --highlight-primary: #7B2C9F; /* Tsinghua Purple */
+            --highlight-secondary: #B794D3; /* Light Tsinghua Purple */
+            --border-color: #e2e8f0; /* Tailwind slate-200 (Light Gray) */
+            --shadow-color: rgba(15, 23, 42, 0.08); /* Subtle shadow based on slate-900 */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            line-height: 1.6;
+        }
+
+
+        .bento-grid {
+            display: grid;
+            gap: 1.5rem; /* Tailwind gap-6 */
+            grid-template-columns: 1fr; /* Force single column */
+            padding-bottom: 4rem; /* Add padding at the bottom */
+        }
+
+        .bento-item {
+            /* Apply semi-transparent white background and blur */
+            background-color: rgba(255, 255, 255, 0.7); /* White with 70% opacity */
+            backdrop-filter: blur(10px); /* Apply blur effect */
+            -webkit-backdrop-filter: blur(10px); /* Safari prefix */
+            border-radius: 1rem; /* Slightly larger radius */
+            padding: 1.75rem; /* Slightly more padding */
+            border: 1px solid rgba(226, 232, 240, 0.5); /* Lighter border with transparency */
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.3s ease-out;
+            overflow: hidden; /* Ensure content doesn't overflow */
+            position: relative; /* For potential pseudo-elements */
+        }
+
+        /* Removed ::before pseudo-element for a cleaner look */
+
+
+        .bento-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 20px var(--shadow-color), 0 4px 8px rgba(15, 23, 42, 0.06); /* Adjusted hover shadow */
+        }
+
+        .paper-title {
+            font-size: 1.125rem; /* Tailwind text-lg */
+            font-weight: 600; /* Tailwind font-semibold */
+            color: var(--highlight-primary); /* Use new primary highlight */
+            margin-bottom: 0.75rem; /* Tailwind mb-3 */
+            line-height: 1.4;
+        }
+
+        .paper-summary {
+            font-size: 0.85rem;
+            color: var(--text-muted-color);
+            margin-bottom: 1.25rem;
+            line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
+        }
+
+        .paper-link {
+            display: inline-flex; /* Use flex for icon alignment */
+            align-items: center;
+            font-size: 0.875rem; /* Tailwind text-sm */
+            font-weight: 600;
+            color: var(--highlight-primary);
+            text-decoration: none;
+            padding: 0.5rem 1rem; /* Add padding */
+            border-radius: 0.5rem; /* Slightly rounder */
+            background-color: rgba(123, 44, 159, 0.08); /* Subtle purple background */
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
+
+        .paper-link .report-icon {
+            margin-right: 0.5rem; /* Tailwind mr-2 */
+            transition: transform 0.3s ease;
+        }
+
+        .paper-link:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F; /* Darker purple on hover */
+            transform: translateY(-1px);
+        }
+        .paper-link:hover .report-icon {
+             transform: translateX(2px);
+        }
+
+        .paper-authors {
+            font-size: 0.75rem; /* Tailwind text-xs */
+            color: var(--text-muted-color);
+            margin-top: 1rem; /* Tailwind mt-4 */
+            font-style: italic;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem; /* Tailwind mb-12 */
+            padding-top: 3rem; /* Tailwind pt-12 */
+        }
+
+        .header h1 {
+            font-size: 2.5rem; /* Tailwind text-4xl or 5xl */
+            font-weight: 700; /* Tailwind font-bold */
+            color: var(--header-color);
+            letter-spacing: -0.025em; /* Tailwind tracking-tight */
+            margin-bottom: 0.5rem;
+            /* Optional: Add a subtle text gradient (Tsinghua Purple) */
+            /* background: linear-gradient(90deg, var(--highlight-primary), var(--highlight-secondary)); */
+            /* -webkit-background-clip: text; */
+            /* -webkit-text-fill-color: transparent; */
+        }
+
+        .header p {
+            font-size: 1.125rem; /* Tailwind text-lg */
+            color: var(--text-muted-color);
+            margin-top: 0.5rem; /* Tailwind mt-2 */
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .footer {
+            text-align: center;
+            color: var(--text-muted-color);
+            font-size: 0.875rem; /* Tailwind text-sm */
+            padding-top: 2rem;
+            padding-bottom: 2rem; /* Tailwind py-8 */
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        /* Simple line graphic element (optional) */
+        .line-graphic {
+            height: 1px; /* Thinner line */
+            background: linear-gradient(90deg, rgba(123, 44, 159, 0), var(--highlight-primary), rgba(123, 44, 159, 0));
+            opacity: 0.6;
+            margin: 1.5rem 0; /* Adjust margin */
+        }
+
+        /* Framer Motion requires the script, styles enhance appearance */
+        [data-motion-element] {
+             /* Base styles for elements animated by Framer Motion */
+        }
+
+        .paper-tldr {
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
+        }
+
+        .paper-rating {
+            margin-top: 1rem; /* Tailwind mt-4 */
+            margin-bottom: 1rem; /* Tailwind mb-4 */
+            color: #f59e0b; /* Tailwind amber-500 */
+        }
+
+        .report-icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.125em;
+            overflow: visible;
+            fill: currentColor;
+            flex: 0 0 auto;
+        }
+
+        .paper-rating .report-icon {
+            margin-right: 0.125rem; /* Tailwind mr-0.5 */
+        }
+
+        /* Apply consistent star color to sub-ratings */
+        .paper-sub-ratings .rating-item .report-icon {
+            color: #f59e0b; /* Match overall rating star color (amber-500) */
+            margin-right: 0.125rem; /* Consistent spacing */
+        }
+
+        .filtered-section {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .filtered-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--header-color);
+            margin-bottom: 1rem;
+        }
+
+        .filtered-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .filtered-item {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .filtered-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+        }
+
+        .filtered-item-title-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: color 0.25s ease;
+        }
+
+        .filtered-item-title-link:hover {
+            color: var(--highlight-primary);
+        }
+
+        .filtered-item-title-link .report-icon {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .filtered-item p {
+            margin: 0.25rem 0;
+            color: var(--text-muted-color);
+            font-size: 0.88rem;
+        }
+
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link. The desktop App sets
+           body.zotero-mode after its isolated report RPC is ready; the public
+           website remains read-only. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn .report-icon {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover .report-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
+    </style>
+</head>
+<body class="container mx-auto px-4 antialiased">
+    <motion.div
+        initial="{ opacity: 0, y: -30 }"
+        animate="{ opacity: 1, y: 0 }"
+        transition="{ duration: 0.6, ease: 'easeOut' }"
+        class="header"
+        data-motion-element
+    >
+        <h1>Robotics Daily Papers</h1>
+        <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
+        <p>September 06, 2026</p>
+        <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
+    </motion.div>
+
+    <div class="bento-grid" id="paper-grid">
+        
+        <motion.div
+            initial="{ opacity: 0 }"
+            animate="{ opacity: 1 }"
+            transition="{ duration: 0.5 }"
+            class="bento-item col-span-full text-center text-gray-500"
+            data-motion-element
+        >
+            <p>No papers with overall score >= 6.0 found for today.</p>
+        </motion.div>
+        
+    </div>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <p>没有 overall 低于 6.0 的论文。</p>
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <p>没有一级过滤未通过的论文。</p>
+            </div>
+            
+        </div>
+    </section>
+
+    <footer class="footer">
+        Generated on 2026-09-08 06:06:42 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+    </footer>
+
+
+
+    <script type="application/json" id="papers-data">[]</script>
+
+
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
+</body>
+</html>
