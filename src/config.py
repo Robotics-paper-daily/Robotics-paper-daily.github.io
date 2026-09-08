@@ -212,8 +212,8 @@ STAGE1_PASS_THRESHOLD: int = 5
 # ============================================================================
 # Stage 2 — topic enumeration
 # ============================================================================
-# The LLM picks one bucket per paper. Anything outside this set is coerced to
-# "Other" downstream so the front-end never has to handle unknown values.
+# The LLM picks one bucket per paper. After correction retries, an unknown
+# nonempty topic becomes "Other" only when all other rating fields are valid.
 
 TOPICS: tuple[str, ...] = (
     "VLA",

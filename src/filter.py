@@ -451,15 +451,16 @@ def _coerce_int(value: Any, default: int = 0) -> int:
     return default
 
 
-def _coerce_topic(value: Any) -> str:
+def _canonical_topic(value: Any) -> Optional[str]:
+    """Accept formatting differences, without guessing a topic's meaning."""
     if not isinstance(value, str):
-        return "Other"
-    candidate = value.strip()
-    if candidate in TOPICS:
-        return candidate
-    # case-insensitive match against known topics
-    lower_map = {t.lower(): t for t in TOPICS}
-    return lower_map.get(candidate.lower(), "Other")
+        return None
+    candidate = re.sub(r"[\s_-]+", "", value).casefold()
+    return next((topic for topic in TOPICS if topic.casefold() == candidate), None)
+
+
+def _coerce_topic(value: Any) -> str:
+    return _canonical_topic(value) or "Other"
 
 
 def _coerce_keywords(value: Any) -> list[str]:
@@ -487,9 +488,7 @@ def _rating_validation_errors(parsed: dict) -> list[str]:
     for field in ('tldr', 'tldr_zh'):
         if not isinstance(parsed.get(field), str) or not parsed[field].strip():
             errors.append(f"invalid:{field}")
-    topic = parsed.get('topic')
-    known_topics = {value.lower() for value in TOPICS}
-    if not isinstance(topic, str) or topic.strip().lower() not in known_topics:
+    if _canonical_topic(parsed.get('topic')) is None:
         errors.append("invalid:topic")
     keywords = parsed.get('keywords')
     if (
@@ -516,11 +515,70 @@ def _rating_validation_errors(parsed: dict) -> list[str]:
     return errors
 
 
+def _request_valid_rating(prompt: str, paper_position: str) -> dict:
+    """Correct invalid model output without rerating completed papers."""
+    max_attempts = 3
+    request_prompt = prompt
+    for attempt in range(1, max_attempts + 1):
+        ai_response = call_llm_api(request_prompt, max_tokens=400)
+        if ai_response is None:
+            # The HTTP helper has already exhausted its transport retries.
+            raise LLMUnavailableError(
+                f"论文 {paper_position} 在重试后仍无法评分，停止发布不完整日报。"
+            )
+
+        parsed = extract_json_from_response(ai_response)
+        validation_errors = (
+            _rating_validation_errors(parsed)
+            if isinstance(parsed, dict) else ["invalid:json"]
+        )
+        if not validation_errors:
+            parsed['topic'] = _canonical_topic(parsed['topic'])
+            return parsed
+
+        logging.warning(
+            "论文 %s 的评分响应校验失败 (attempt %s/%s, %s)。",
+            paper_position, attempt, max_attempts, ', '.join(validation_errors),
+        )
+        if attempt == max_attempts:
+            if (
+                validation_errors == ["invalid:topic"]
+                and isinstance(parsed.get('topic'), str)
+                and parsed['topic'].strip()
+            ):
+                logging.warning(
+                    "论文 %s 在 %s 次响应后仍返回未知分类；其他评分字段有效，topic 归为 Other。",
+                    paper_position, max_attempts,
+                )
+                parsed['topic'] = 'Other'
+                return parsed
+            raise LLMUnavailableError(
+                f"论文 {paper_position} 在 {max_attempts} 次响应后评分结构仍无效 "
+                f"({', '.join(validation_errors)})，停止发布。"
+            )
+
+        # Include only local validation diagnostics, never the rejected output.
+        request_prompt = (
+            prompt
+            + "\n\n# Correction required\n"
+            + f"The previous response failed validation: {', '.join(validation_errors)}.\n"
+            + "Return the complete JSON object again, with all required fields, not a patch.\n"
+            + f"topic must be exactly one of: {', '.join(TOPICS)}.\n"
+            + "Use Other if no topic applies. Do not use null, a list, or an empty topic.\n"
+            + "Both summaries must be nonempty strings; keywords must be a nonempty list "
+            + "of nonempty strings; all five scores must be integers from 1 to 10.\n"
+            + "Output only the JSON object."
+        )
+        delay = 2.0 * (2 ** (attempt - 1)) + random.uniform(0, 1)
+        logging.info("等待 %.1fs 后重新请求论文 %s 的评分...", delay, paper_position)
+        time.sleep(delay)
+
+
 def filter_and_rate_papers(papers: list) -> list:
     """Stage 2: send each (Stage-1-passing) paper to the LLM for full scoring.
 
-    Adds tldr / tldr_zh / topic / keywords / 5 score fields. A failed or
-    malformed rating raises instead of allowing an incomplete report to ship.
+    Retry malformed ratings per paper. Only an unknown nonempty topic may
+    fall back to Other; incomplete ratings still stop report publication.
     """
     if papers and not DEEPSEEK_API_KEY:
         raise LLMConfigurationError("未设置 DEEPSEEK_API_KEY 环境变量，无法进行评分。")
@@ -532,30 +590,8 @@ def filter_and_rate_papers(papers: list) -> list:
         summary = paper.get('summary', 'N/A')
 
         prompt = RATE_PROMPT_TEMPLATE % (title, summary)
-        ai_response = call_llm_api(prompt, max_tokens=400)
-
-        if ai_response is None:
-            paper['ai_processed'] = False
-            raise LLMUnavailableError(
-                f"论文 {i+1}/{len(papers)} 在重试后仍无法评分，停止发布不完整日报。"
-            )
-
-        parsed = extract_json_from_response(ai_response)
-
-        if parsed is None or not isinstance(parsed, dict):
-            paper['ai_processed'] = False
-            raise LLMUnavailableError(
-                f"论文 {i+1}/{len(papers)} 的 API 响应不是有效评分 JSON，停止发布。"
-            )
-
-        validation_errors = _rating_validation_errors(parsed)
-        if validation_errors:
-            paper['ai_processed'] = False
-            raise LLMUnavailableError(
-                "论文 "
-                f"{i+1}/{len(papers)} 的 API 评分结构无效 "
-                f"({', '.join(validation_errors)})，停止发布。"
-            )
+        paper['ai_processed'] = False
+        parsed = _request_valid_rating(prompt, f"{i+1}/{len(papers)}")
 
         # String fields
         for key in ('tldr', 'tldr_zh'):

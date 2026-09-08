@@ -65,6 +65,9 @@ def load_filter_module():
 class FilterAPIFailureContractTests(unittest.TestCase):
     def setUp(self):
         self.filter, self.requests = load_filter_module()
+        sleep_patch = mock.patch.object(self.filter.time, "sleep")
+        sleep_patch.start()
+        self.addCleanup(sleep_patch.stop)
         self.filter.DEEPSEEK_API_KEY = "test-secret-that-must-not-leak"
         self.filter.DEEPSEEK_API_BASE = (
             # Assembled at runtime so no credential-bearing URL literal is stored in the repository.
@@ -168,7 +171,7 @@ class FilterAPIFailureContractTests(unittest.TestCase):
 
         self.assertIs(papers[0]["ai_processed"], False)
 
-    def test_unknown_topic_stops_publication(self):
+    def test_unknown_topic_falls_back_after_correction_retries(self):
         invalid = {
             "tldr": "Summary",
             "tldr_zh": "摘要",
@@ -186,8 +189,13 @@ class FilterAPIFailureContractTests(unittest.TestCase):
         )
         papers = [{"title": "Paper", "summary": "Abstract"}]
 
-        with self.assertRaises(self.filter.LLMUnavailableError):
-            self.filter.filter_and_rate_papers(papers)
+        with self.assertLogs(level="WARNING") as logs:
+            rated = self.filter.filter_and_rate_papers(papers)
+
+        self.assertEqual(self.requests.post.call_count, 3)
+        self.assertEqual(rated[0]["topic"], "Other")
+        self.assertIs(rated[0]["ai_processed"], True)
+        self.assertIn("Other", "\n".join(logs.output))
 
     def test_mixed_string_and_non_string_keywords_stop_publication(self):
         invalid = {
