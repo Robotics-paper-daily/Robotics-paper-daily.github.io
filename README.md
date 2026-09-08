@@ -318,8 +318,9 @@ See the [full App guide](app/README.md) for error-specific checks.
 
 The GitHub Pages site provides:
 
-1. daily ingestion with bounded arXiv client retries plus 30/60-second outer
-   delays, while DeepSeek calls use bounded exponential backoff;
+1. daily ingestion with arXiv connection/read timeouts and bounded exponential
+   backoff for rate limits and transient failures, honoring `Retry-After`;
+   DeepSeek calls also use bounded exponential backoff;
 2. a four-tier keyword prefilter followed by DeepSeek scoring;
 3. topic labels, keyword tags, and bilingual TLDRs;
 4. date-keyed JSON and rendered HTML archives;

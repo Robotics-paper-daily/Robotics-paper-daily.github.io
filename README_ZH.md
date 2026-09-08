@@ -281,8 +281,8 @@ OneDrive 与所选 AI 服务。
 
 GitHub Pages 站点提供：
 
-1. 每日数据摄取：arXiv 客户端内部重试后再使用有上限的 30/60 秒外层等待，
-   DeepSeek 请求使用有上限的指数退避；
+1. 每日数据摄取：arXiv 请求设置连接与读取超时，对限流和临时故障使用有界指数退避，
+   并遵守 `Retry-After`；DeepSeek 请求也使用有上限的指数退避；
 2. 四级关键词预筛与后续 DeepSeek 评分；
 3. 主题标签、关键词与中英文 TLDR；
 4. 按日期归档的 JSON 与 HTML；

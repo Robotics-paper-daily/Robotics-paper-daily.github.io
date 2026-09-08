@@ -73,37 +73,29 @@ class ScraperFailureContractTests(unittest.TestCase):
         self.assertEqual([paper["title"] for paper in papers], ["Paper"])
         sleep.assert_called_once_with(30)
 
-    def test_http_failures_retry_and_can_recover(self):
-        self.client.results.side_effect = [
-            FakeHTTPError("429"),
-            FakeHTTPError("503"),
-            [fake_result()],
-        ]
+    def test_http_failure_does_not_restart_transport_retries(self):
+        self.client.results.side_effect = FakeHTTPError("400")
         with mock.patch.object(self.scraper.time, "sleep") as sleep:
-            papers = self.fetch()
+            with self.assertRaisesRegex(self.scraper.ArxivFetchError, "400"):
+                self.fetch()
+        self.client.results.assert_called_once()
+        sleep.assert_not_called()
 
-        self.assertEqual([paper["title"] for paper in papers], ["Paper"])
-        self.assertEqual([call.args[0] for call in sleep.call_args_list], [30, 60])
-
-    def test_http_retry_exhaustion_raises_instead_of_returning_empty(self):
-        self.client.results.side_effect = [
-            FakeHTTPError("503"),
-            FakeHTTPError("503"),
-            FakeHTTPError("503"),
-        ]
-        with mock.patch.object(self.scraper.time, "sleep"):
+    def test_transport_retry_exhaustion_is_not_retried_or_returned_as_empty(self):
+        failure = self.scraper.ArxivFetchError("HTTP 429; retry limit reached")
+        self.client.results.side_effect = failure
+        with mock.patch.object(self.scraper.time, "sleep") as sleep:
             with self.assertRaises(self.scraper.ArxivFetchError):
                 self.fetch()
+        self.client.results.assert_called_once()
+        sleep.assert_not_called()
 
-    def test_final_empty_after_http_failures_is_not_confirmed(self):
-        self.client.results.side_effect = [
-            FakeHTTPError("503"),
-            FakeHTTPError("503"),
-            [],
-        ]
-        with mock.patch.object(self.scraper.time, "sleep"):
-            with self.assertRaises(self.scraper.ArxivFetchError):
-                self.fetch()
+    def test_arxiv_client_internal_http_retries_are_disabled(self):
+        self.client.results.return_value = [fake_result()]
+        self.fetch()
+        self.scraper.arxiv.Client.assert_called_once_with(
+            page_size=100, delay_seconds=10.0, num_retries=0,
+        )
 
     def test_unexpected_empty_page_retry_exhaustion_raises(self):
         self.client.results.side_effect = [
@@ -118,7 +110,7 @@ class ScraperFailureContractTests(unittest.TestCase):
     def test_partial_page_is_discarded_before_retry(self):
         def partial_results():
             yield fake_result("Partial")
-            raise FakeHTTPError("503")
+            raise FakeUnexpectedEmptyPageError("empty later page")
 
         self.client.results.side_effect = [
             partial_results(),
