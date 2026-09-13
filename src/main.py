@@ -4,12 +4,14 @@ import time
 import logging
 import argparse
 import tempfile
-from datetime import date, datetime, timedelta
+from contextlib import contextmanager
+from datetime import date, datetime, timedelta, timezone
 
 # 确保 src 目录在 Python 路径中，以便导入其他模块
 # 这通常在运行脚本时自动处理，或者可以通过设置 PYTHONPATH
 # 或者更好的方式是使用相对导入（如果结构允许）或将项目作为包安装
-from scraper import fetch_cv_papers
+from scraper import ArxivDeferred, build_query, fetch_cv_papers
+from fetch_state import FetchState
 from filter import (
     prefilter_papers_by_keywords,
     filter_and_rate_papers,
@@ -180,7 +182,82 @@ def _write_report(json_filepath: str, papers: list) -> None:
     _write_json_atomic(json_filepath, papers)
 
 
-def main(target_date: date):
+def _report_paths(day):
+    return [
+        os.path.join(DEFAULT_JSON_DIR, f'{day.isoformat()}.json'),
+        os.path.join(DEFAULT_HTML_DIR, f'{day:%Y_%m_%d}.html'),
+        os.path.join(PROJECT_ROOT, 'reports.json'),
+    ]
+
+
+def _capture_files(paths):
+    originals = {}
+    for path in paths:
+        if os.path.exists(path):
+            with open(path, 'rb') as stream:
+                originals[path] = stream.read()
+        else:
+            originals[path] = None
+    return originals
+
+
+def _restore_files(originals):
+    for path, content in originals.items():
+        if content is None:
+            if os.path.exists(path):
+                os.unlink(path)
+        else:
+            temporary = None
+            try:
+                with tempfile.NamedTemporaryFile(dir=os.path.dirname(path), delete=False) as stream:
+                    temporary = stream.name
+                    stream.write(content)
+                os.replace(temporary, path)
+            finally:
+                if temporary and os.path.exists(temporary):
+                    os.unlink(temporary)
+
+
+@contextmanager
+def _rollback_files_on_error(paths):
+    originals = _capture_files(paths)
+    try:
+        yield
+    except Exception:
+        _restore_files(originals)
+        raise
+
+
+def _fetch_category(target_date: date, category: str, state: FetchState) -> list:
+    query = build_query(category, target_date)
+    cached = state.load_snapshot(target_date, category, query)
+    if cached is not None:
+        logging.info("复用完整抓取快照：%s / %s，%s 篇。", target_date, category, len(cached))
+        return cached
+
+    cooldown = state.cooldown()
+    if cooldown:
+        retry_at = datetime.fromisoformat(cooldown['next_retry_at'])
+        state.defer(target_date, category, retry_at, cooldown['reason'])
+        raise ArxivDeferred(cooldown['reason'], retry_at)
+    try:
+        papers = fetch_cv_papers(category=category, specified_date=target_date)
+    except ArxivDeferred as error:
+        state.defer(target_date, category, error.retry_at, str(error))
+        raise
+    state.save_snapshot(target_date, category, query, papers)
+    if category != 'cs.LG':
+        time.sleep(30)
+    return papers
+
+
+def main(target_date: date, *, fetch_state=None):
+    # Keep an existing report intact if rendering/promotion/index-listing fails.
+    with _rollback_files_on_error(_report_paths(target_date)):
+        _generate_report(target_date, fetch_state=fetch_state)
+
+
+def _generate_report(target_date: date, *, fetch_state=None):
     """主执行流程：抓取、过滤、保存、生成HTML。"""
     logging.info(f"开始处理日期: {target_date.isoformat()}")
 
@@ -189,6 +266,10 @@ def main(target_date: date):
     json_filepath = os.path.join(DEFAULT_JSON_DIR, json_filename)
     logging.info(f"目标 JSON 文件路径: {json_filepath}")
 
+    state = fetch_state if fetch_state is not None else FetchState(
+        os.path.join(PROJECT_ROOT, '.arxiv-state')
+    )
+    filtered_papers = None
     # --- 检查 JSON 文件是否存在且 AI 阶段完整 ---
     needs_ai_repair = report_needs_ai_repair(json_filepath)
     if os.path.exists(json_filepath) and not needs_ai_repair:
@@ -208,14 +289,12 @@ def main(target_date: date):
 
             for category in categories:
                 logging.info(f"正在抓取 {category} 类别的论文...")
-                papers = fetch_cv_papers(category=category, specified_date=target_date)
+                papers = _fetch_category(target_date, category, state)
                 for paper in papers:
                     if paper.get('url') not in seen_urls:
                         raw_papers.append(paper)
                         seen_urls.add(paper.get('url'))
                 logging.info(f"{category} 类别抓取到 {len(papers)} 篇论文，去重后当前总计 {len(raw_papers)} 篇。")
-                if category != categories[-1]:
-                    time.sleep(30)
 
             if not raw_papers:
                 logging.info(
@@ -234,30 +313,30 @@ def main(target_date: date):
                 stage1_rejected_papers,
             )
 
-        # --- 3. 保存为 JSON --- #
-        logging.info("步骤 3: 将过滤后的论文保存为 JSON 文件...")
-        _write_report(json_filepath, filtered_papers)
-        logging.info(f"过滤后的论文已保存到: {json_filepath}")
-
-    # --- 4. 生成 HTML (无论 JSON 是新建还是已存在) --- #
-    logging.info("步骤 4: 从 JSON 文件生成 HTML 报告...")
-    # 再次检查 JSON 文件是否实际存在（以防万一）
-    if not os.path.exists(json_filepath):
-        raise FileNotFoundError(f"无法找到 JSON 文件 '{json_filepath}' 来生成 HTML。")
-
-    generate_html_from_json(
-        json_file_path=json_filepath,
-        template_dir=DEFAULT_TEMPLATE_DIR,
-        template_name=DEFAULT_TEMPLATE_NAME,
-        output_dir=DEFAULT_HTML_DIR
-    )
-    expected_html = os.path.join(
-        DEFAULT_HTML_DIR,
-        f"{target_date.strftime('%Y_%m_%d')}.html",
-    )
-    if not os.path.isfile(expected_html):
-        raise RuntimeError(f"HTML 生成器未创建预期报告: {expected_html}")
-    logging.info(f"HTML 报告已生成在: {DEFAULT_HTML_DIR}")
+    # Render before promoting either file: a render failure must not leave a
+    # new formal JSON report that a later run mistakes for completed work.
+    html_filename = f"{target_date.strftime('%Y_%m_%d')}.html"
+    with tempfile.TemporaryDirectory(prefix='.arxiv-render-', dir=PROJECT_ROOT) as staging:
+        staged_json = os.path.join(staging, json_filename)
+        if filtered_papers is not None:
+            _write_report(staged_json, filtered_papers)
+            render_source = staged_json
+        else:
+            render_source = json_filepath
+        generate_html_from_json(
+            json_file_path=render_source,
+            template_dir=DEFAULT_TEMPLATE_DIR,
+            template_name=DEFAULT_TEMPLATE_NAME,
+            output_dir=staging,
+        )
+        staged_html = os.path.join(staging, html_filename)
+        if not os.path.isfile(staged_html):
+            raise RuntimeError(f"HTML 生成器未创建预期报告: {html_filename}")
+        os.makedirs(DEFAULT_JSON_DIR, exist_ok=True)
+        os.makedirs(DEFAULT_HTML_DIR, exist_ok=True)
+        if filtered_papers is not None:
+            os.replace(staged_json, json_filepath)
+        os.replace(staged_html, os.path.join(DEFAULT_HTML_DIR, html_filename))
 
     # --- 5. 更新 reports.json --- #
     logging.info("步骤 5: 更新根目录下的 reports.json 文件...")
@@ -271,7 +350,136 @@ def main(target_date: date):
 
     logging.info(f"日期 {target_date.isoformat()} 的处理流程完成。")
 
-if __name__ == '__main__':
+
+def _report_complete(day: date) -> bool:
+    json_path = os.path.join(DEFAULT_JSON_DIR, f'{day.isoformat()}.json')
+    html_path = os.path.join(DEFAULT_HTML_DIR, f'{day:%Y_%m_%d}.html')
+    return (
+        os.path.isfile(json_path) and os.path.isfile(html_path)
+        and not report_needs_ai_repair(json_path)
+    )
+
+
+def run_pipeline(target_date: date, *, backfill=False, backfill_limit=5,
+                 state_dir=None, result_file=None) -> dict:
+    """Finish complete dates, persist deferred work, and expose a publish manifest."""
+    result = {
+        'schema_version': 1,
+        'completed_dates': [],
+        'deferred_dates': [],
+        'failures': [],
+        'publish_ready': False,
+        'publish_paths': [],
+        'exit_code': 0,
+    }
+    originals = {}
+    try:
+        if backfill_limit < 0:
+            raise ValueError('backfill-limit must not be negative')
+        state = FetchState(state_dir or os.path.join(PROJECT_ROOT, '.arxiv-state'))
+        for day in state.pending_dates():
+            if _report_complete(day):
+                state.complete_date(day)
+        historic = []
+        if backfill:
+            historic = [day for day in state.pending_dates()
+                        if EARLIEST_DATE <= day <= target_date and day != target_date]
+            missing = find_missing_dates(DEFAULT_JSON_DIR, EARLIEST_DATE, target_date)
+            failed = find_failed_ai_dates(DEFAULT_JSON_DIR, EARLIEST_DATE, target_date)
+            for day in sorted(set(missing + failed)):
+                if day != target_date and day not in historic:
+                    historic.append(day)
+            historic = [day for day in historic if not _report_complete(day)][:backfill_limit]
+        resumed = set(state.pending_dates())
+        queue = [day for day in historic if day in resumed]
+        if target_date >= EARLIEST_DATE:
+            queue.append(target_date)
+        queue.extend(day for day in historic if day not in resumed)
+
+        for day in queue:
+            if _report_complete(day):
+                logging.info('日报 %s 已完整，跳过抓取、评分和渲染。', day)
+                state.complete_date(day)
+                continue
+            try:
+                for path, content in _capture_files(_report_paths(day)).items():
+                    originals.setdefault(path, content)
+                main(day, fetch_state=state)
+            except ArxivDeferred as error:
+                result['deferred_dates'].append({
+                    'date': day.isoformat(), 'reason': str(error),
+                    'next_retry_at': error.retry_at.isoformat(),
+                })
+                result['exit_code'] = 2
+                logging.warning('抓取延后：%s；最早重试时间 %s。停止本轮 arXiv 请求。',
+                                day, error.retry_at.isoformat())
+                break
+            except Exception as error:
+                result['failures'].append({'date': day.isoformat(), 'reason': str(error)})
+                result['exit_code'] = 1
+                logging.exception('日期 %s 未完成；保存此前已完成的日报。', day)
+                # Do not restart exhausted transport retries on another date.
+                # Provider/configuration errors also stop further paid calls.
+                break
+            else:
+                result['completed_dates'].append(day.isoformat())
+                # Clear persisted pending work at the start of the next run,
+                # after the checkout contains the complete published report.
+                if day != queue[-1]:
+                    logging.info('等待 30 秒后处理下一个日期。')
+                    time.sleep(30)
+
+        if result['completed_dates']:
+            logging.info('为已完成日报更新搜索索引。')
+            _generate_indexes()
+            result['publish_paths'] = [
+                path
+                for day in result['completed_dates']
+                for path in (f'daily_json/{day}.json', f"daily_html/{day.replace('-', '_')}.html")
+            ] + ['reports.json', 'search_index.json', 'search_index']
+            result['publish_ready'] = True
+    except Exception as error:
+        # An index failure must be retryable in a persistent local checkout too.
+        # Raw snapshots survive; unpublishable formal reports return to baseline.
+        _restore_files(originals)
+        result['failures'].append({'date': None, 'reason': str(error)})
+        result['exit_code'] = 1
+        result['publish_ready'] = False
+        result['publish_paths'] = []
+        logging.exception('流水线未完成；此次不发布。')
+    if result_file:
+        _write_json_atomic(result_file, result)
+    logging.info('运行结果：完成 %s，延后 %s，失败 %s，允许发布=%s。',
+                 len(result['completed_dates']), len(result['deferred_dates']),
+                 len(result['failures']), result['publish_ready'])
+    return result
+
+
+def _generate_indexes():
+    # Generate in isolation so an interrupted index build cannot expose a mix
+    # of old and new shards. The publication manifest is enabled only at the end.
+    with tempfile.TemporaryDirectory(prefix='.arxiv-render-', dir=PROJECT_ROOT) as staging:
+        staged_dir = os.path.join(staging, 'search_index')
+        staged_legacy = os.path.join(staging, 'search_index.json')
+        generate_search_index(DEFAULT_JSON_DIR, staged_dir, staged_legacy)
+        if not os.path.isfile(os.path.join(staged_dir, 'manifest.json')) or not os.path.isfile(staged_legacy):
+            raise RuntimeError('搜索索引生成不完整。')
+        os.makedirs(DEFAULT_SEARCH_INDEX_DIR, exist_ok=True)
+        new_names = set(os.listdir(staged_dir))
+        old_names = set(os.listdir(DEFAULT_SEARCH_INDEX_DIR))
+        legacy_path = os.path.join(PROJECT_ROOT, 'search_index.json')
+        paths = [os.path.join(DEFAULT_SEARCH_INDEX_DIR, name)
+                 for name in new_names | old_names if name.endswith('.json')] + [legacy_path]
+        with _rollback_files_on_error(paths):
+            for name in sorted(new_names):
+                os.replace(os.path.join(staged_dir, name), os.path.join(DEFAULT_SEARCH_INDEX_DIR, name))
+            os.replace(staged_legacy, legacy_path)
+            for name in old_names - new_names:
+                if name.endswith('.json'):
+                    os.unlink(os.path.join(DEFAULT_SEARCH_INDEX_DIR, name))
+
+
+def cli(argv=None):
     parser = argparse.ArgumentParser(description='抓取、过滤并生成 arXiv 机器人学相关论文的每日报告。')
     parser.add_argument(
         '--date',
@@ -290,7 +498,12 @@ if __name__ == '__main__':
         help='单次 backfill 最多补全的天数（默认 5），避免运行时间过长或触发限流。'
     )
 
-    args = parser.parse_args()
+    parser.add_argument('--state-dir', default=os.path.join(PROJECT_ROOT, '.arxiv-state'),
+                        help='跨运行抓取快照及冷却状态目录。')
+    parser.add_argument('--result-file', help='输出本轮完成/延后状态及可发布文件清单。')
+    args = parser.parse_args(argv)
+    if args.backfill_limit < 0:
+        parser.error('--backfill-limit 不能为负数。')
 
     # 确保模板目录和文件存在，否则 HTML 生成会失败
     if not os.path.exists(DEFAULT_TEMPLATE_DIR) or not os.path.exists(os.path.join(DEFAULT_TEMPLATE_DIR, DEFAULT_TEMPLATE_NAME)):
@@ -303,9 +516,9 @@ if __name__ == '__main__':
             logging.info(f"使用用户指定的基准日期: {base_date.isoformat()}")
         except ValueError:
             logging.error("日期格式无效，请使用 YYYY-MM-DD 格式。退出程序。")
-            exit(1)
+            return 1
     else:
-        base_date = date.today()
+        base_date = datetime.now(timezone.utc).date()
         logging.info(f"未指定日期，使用今天的日期作为基准: {base_date.isoformat()}")
 
     # 计算目标日期：基准日期的一天前
@@ -317,45 +530,13 @@ if __name__ == '__main__':
         logging.warning(f"目标日期 {target_date.isoformat()} 早于设定的最早日期 {EARLIEST_DATE.isoformat()}，跳过抓取。")
         logging.info("如需抓取更早的日期，请修改 main.py 中的 EARLIEST_DATE 配置，或使用 --date 参数手动指定日期。")
         if not args.backfill:
-            exit(0)
-    else:
-        # 先处理当天的目标日期
-        main(target_date=target_date)
-
-    # --- Backfill 模式：补全缺失日期 ---
-    if args.backfill:
-        latest_date = target_date if target_date >= EARLIEST_DATE else date.today() - timedelta(days=2)
-        missing = find_missing_dates(DEFAULT_JSON_DIR, EARLIEST_DATE, latest_date)
-        failed_ai = find_failed_ai_dates(DEFAULT_JSON_DIR, EARLIEST_DATE, latest_date)
-        pending = sorted(set(missing + failed_ai))
-        if not pending:
-            logging.info("没有缺失或 AI 评分全失败的日期，无需补全。")
-        else:
-            limit = args.backfill_limit
-            to_process = pending[:limit]
-            logging.info(
-                "发现 %s 个待处理日期（缺失 %s，AI 评分全失败 %s），本次处理 %s 个: %s",
-                len(pending),
-                len(missing),
-                len(failed_ai),
-                len(to_process),
-                [d.isoformat() for d in to_process],
-            )
-            for i, d in enumerate(to_process):
-                logging.info(f"--- Backfill [{i+1}/{len(to_process)}]: {d.isoformat()} ---")
-                main(target_date=d)
-                # 日期之间等待，避免限流
-                if i < len(to_process) - 1:
-                    logging.info("等待 30 秒后继续下一个日期...")
-                    time.sleep(30)
-            remaining = len(pending) - len(to_process)
-            if remaining > 0:
-                logging.info(f"还有 {remaining} 个待处理日期，下次运行 --backfill 将继续补全。")
-
-    # --- 生成搜索索引 ---
-    logging.info("生成分片搜索索引 search_index/（并更新旧客户端兼容索引）...")
-    generate_search_index(
-        DEFAULT_JSON_DIR,
-        DEFAULT_SEARCH_INDEX_DIR,
-        os.path.join(PROJECT_ROOT, 'search_index.json'),
+            return 0
+    result = run_pipeline(
+        target_date, backfill=args.backfill, backfill_limit=args.backfill_limit,
+        state_dir=args.state_dir, result_file=args.result_file,
     )
+    return result['exit_code']
+
+
+if __name__ == '__main__':
+    raise SystemExit(cli())

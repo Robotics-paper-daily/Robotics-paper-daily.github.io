@@ -6,6 +6,8 @@ import requests
 from datetime import date, timedelta, datetime, timezone
 from email.utils import parsedate_to_datetime
 from typing import List, Dict, Optional, Any
+from xml.etree import ElementTree
+from urllib.parse import parse_qs, urlparse
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -13,6 +15,56 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 class ArxivFetchError(RuntimeError):
     """The arXiv client failed, as distinct from a valid empty result set."""
+
+
+class ArxivDeferred(ArxivFetchError):
+    """The endpoint needs a cooldown that must survive this process."""
+
+    def __init__(self, reason: str, retry_at: datetime):
+        super().__init__(reason)
+        if retry_at.tzinfo is None:
+            raise ValueError("retry_at must include a timezone")
+        self.retry_at = retry_at.astimezone(timezone.utc)
+
+
+def build_query(category: str, specified_date: date) -> str:
+    """Keep the established report date window unchanged."""
+    end = datetime.combine(specified_date, datetime.min.time()) - timedelta(hours=6)
+    start = end - timedelta(days=1)
+    return f"cat:{category} AND submittedDate:[{start:%Y%m%d%H%M} TO {end:%Y%m%d%H%M}]"
+
+
+def _validate_atom(content: bytes) -> tuple[int, int, list[str]]:
+    atom = "{http://www.w3.org/2005/Atom}"
+    total_tag = "{http://a9.com/-/spec/opensearch/1.1/}totalResults"
+    try:
+        root = ElementTree.fromstring(content)
+        totals = root.findall(total_tag)
+        if root.tag != atom + "feed" or len(totals) != 1:
+            raise ValueError("missing Atom feed or totalResults")
+        total = int(totals[0].text)
+        starts = root.findall("{http://a9.com/-/spec/opensearch/1.1/}startIndex")
+        if len(starts) != 1:
+            raise ValueError("missing startIndex")
+        start = int(starts[0].text)
+        entries = root.findall(atom + "entry")
+        if total < 0 or start < 0 or start + len(entries) > total or (total == 0 and entries) or (total > 0 and not entries):
+            raise ValueError("inconsistent totalResults and entries")
+        if any("/api/errors" in (entry.findtext(atom + "id") or "") for entry in entries):
+            raise ValueError("arXiv error feed")
+        # arxiv's parser silently skips entries with missing IDs or dates.
+        # Reject such a page before it can become an empty/partial snapshot.
+        for entry in entries:
+            if not (entry.findtext(atom + "id") or "").strip():
+                raise ValueError("entry missing id")
+            for field in ("published", "updated"):
+                value = entry.findtext(atom + field)
+                if not value:
+                    raise ValueError(f"entry missing {field}")
+                datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
+        return total, start, [entry.findtext(atom + "id").strip() for entry in entries]
+    except (ElementTree.ParseError, TypeError, ValueError) as error:
+        raise ArxivFetchError(f"Invalid arXiv Atom response: {error}") from error
 
 
 def _retry_after_seconds(value: Optional[str], now: Optional[datetime] = None) -> float:
@@ -38,6 +90,34 @@ class _ArxivSession(requests.Session):
     CONNECT_TIMEOUT = 10
     READ_TIMEOUT = 90
     RETRY_STATUSES = {408, 429, 500, 502, 503, 504}
+    COOLDOWN_SECONDS = 2 * 60 * 60
+
+    def __init__(self, validate_feed=False, result_limit=None):
+        super().__init__()
+        self.validate_feed = validate_feed
+        self.result_limit = result_limit
+        self.reset_pages()
+
+    def reset_pages(self):
+        self.total_results = None
+        self.entry_ids = set()
+
+    def _record_page(self, content, url):
+        total, start, entry_ids = _validate_atom(content)
+        if self.result_limit is not None and total > self.result_limit:
+            raise ArxivFetchError(
+                f"arXiv query has {total} results, exceeding max_results={self.result_limit}; "
+                "refusing to save a truncated category snapshot."
+            )
+        requested_start = int(parse_qs(urlparse(url).query).get("start", ["0"])[0])
+        if start != requested_start or start != len(self.entry_ids):
+            raise ArxivFetchError("arXiv pagination startIndex does not match the requested complete sequence")
+        if self.total_results is not None and total != self.total_results:
+            raise ArxivFetchError("arXiv totalResults changed during pagination; category is incomplete")
+        if len(set(entry_ids)) != len(entry_ids) or self.entry_ids.intersection(entry_ids):
+            raise ArxivFetchError("arXiv pagination repeated paper IDs; category is incomplete")
+        self.total_results = total
+        self.entry_ids.update(entry_ids)
 
     def request(self, method, url, **kwargs):
         if method.upper() != "GET":
@@ -48,6 +128,9 @@ class _ArxivSession(requests.Session):
         last_reason = "no response"
         stop_reason = "retry limit reached"
         attempts_made = 0
+        saw_rate_limit = False
+        server_retry_at = datetime.now(timezone.utc)
+        long_server_cooldown = False
         for attempt in range(1, self.MAX_ATTEMPTS + 1):
             remaining = deadline - time.monotonic()
             if remaining <= 0:
@@ -78,10 +161,21 @@ class _ArxivSession(requests.Session):
                         response.status_code, attempt, self.MAX_ATTEMPTS,
                         time.monotonic() - started, response.headers.get("X-Cache"),
                     )
+                    if response.status_code == 200 and self.validate_feed:
+                        try:
+                            self._record_page(response.content, url)
+                        except ArxivFetchError:
+                            response.close()
+                            raise
                     return response
                 last_reason = f"HTTP {response.status_code}"
+                saw_rate_limit = saw_rate_limit or response.status_code == 429
                 last_error = requests.HTTPError(last_reason, response=response)
                 retry_after = _retry_after_seconds(response.headers.get("Retry-After"))
+                server_retry_at = max(
+                    server_retry_at,
+                    datetime.now(timezone.utc) + timedelta(seconds=retry_after),
+                )
                 logging.warning(
                     "arXiv %s (request %s/%s, %.1fs, retry_after=%r, "
                     "content_type=%r, cache=%r, body=%r).",
@@ -98,14 +192,22 @@ class _ArxivSession(requests.Session):
             wait = max(backoff, retry_after)
             if wait >= deadline - time.monotonic():
                 stop_reason = f"required cooldown {wait:.1f}s exceeds remaining retry budget"
+                long_server_cooldown = retry_after > 0
                 break
             logging.info("Waiting %.1fs before retrying the same arXiv page...", wait)
             time.sleep(wait)
 
-        raise ArxivFetchError(
+        reason = (
             f"arXiv request failed after {attempts_made} attempts: "
             f"{last_reason}; {stop_reason}. Try again later."
-        ) from last_error
+        )
+        if saw_rate_limit or long_server_cooldown or server_retry_at > datetime.now(timezone.utc):
+            retry_at = max(
+                server_retry_at,
+                datetime.now(timezone.utc) + timedelta(seconds=self.COOLDOWN_SECONDS),
+            )
+            raise ArxivDeferred(reason, retry_at) from last_error
+        raise ArxivFetchError(reason) from last_error
 
 
 def fetch_cv_papers(category: str = 'cs.CV', max_results: int = 2000, specified_date: Optional[date] = None) -> List[Dict[str, Any]]:
@@ -127,6 +229,8 @@ def fetch_cv_papers(category: str = 'cs.CV', max_results: int = 2000, specified_
     Raises:
         ArxivFetchError: The arXiv client failed after bounded retries.
     """
+    if type(max_results) is not int or max_results <= 0:
+        raise ValueError("max_results must be a positive integer")
     if specified_date is None:
         # Default to today (UTC)
         specified_date = datetime.now(timezone.utc).date()
@@ -134,17 +238,7 @@ def fetch_cv_papers(category: str = 'cs.CV', max_results: int = 2000, specified_
     else:
         logging.info(f"Fetching papers for specified date: {specified_date.strftime('%Y-%m-%d')} UTC.")
     
-    # 将specified_date转为datetime
-    specified_date = datetime.combine(specified_date, datetime.min.time())
-    specified_date = specified_date - timedelta(hours=6) # 转换到arxiv时区
-
-    # Format for arXiv API: YYYYMMDDHHMM
-    start_time = specified_date - timedelta(days=1)
-    start_time_str = start_time.strftime('%Y%m%d%H%M')
-    end_time_str = specified_date.strftime('%Y%m%d%H%M')
-
-    # Construct the search query
-    query = f'cat:{category} AND submittedDate:[{start_time_str} TO {end_time_str}]'
+    query = build_query(category, specified_date)
     logging.info(f"Using arXiv query: {query}")
 
     # HTTP recovery belongs to the session, not a second client retry loop.
@@ -161,12 +255,13 @@ def fetch_cv_papers(category: str = 'cs.CV', max_results: int = 2000, specified_
 
     # arxiv 4.0.1 has no public session/timeout argument; keep parsing in arxiv.
     client._session.close()
-    with _ArxivSession() as session:
+    with _ArxivSession(validate_feed=True, result_limit=max_results) as session:
         client._session = session
         max_attempts = 3
         required_empty_confirmations = 3
         consecutive_empty_results = 0
         for attempt in range(1, max_attempts + 1):
+            session.reset_pages()
             papers: List[Dict[str, Any]] = []
             try:
                 results = client.results(search)
@@ -180,6 +275,11 @@ def fetch_cv_papers(category: str = 'cs.CV', max_results: int = 2000, specified_
                         'categories': result.categories,
                         'authors': [author.name for author in result.authors],
                     })
+                if session.total_results is not None and len(papers) != session.total_results:
+                    raise ArxivFetchError(
+                        f"arXiv category is incomplete: parsed {len(papers)} of "
+                        f"{session.total_results} reported results."
+                    )
                 if papers:
                     logging.info(f"Successfully fetched {len(papers)} papers submitted on {specified_date.strftime('%Y-%m-%d')} from {category}.")
                     return papers

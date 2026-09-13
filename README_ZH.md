@@ -290,6 +290,23 @@ GitHub Pages 站点提供：
 6. 缺失日期补全，以及 AI 评分阶段全量失败日报的自动修复；
 7. 无需再次调用 LLM 的历史 Stage-1 重打分。
 
+定时工作流在北京时间（UTC+8）**08:23、14:23、20:23** 运行，GitHub 调度可能延迟。
+已完成日报会跳过；使用 `--backfill` 时，在补抓数量上限内优先恢复此前延后的日期，
+再处理新任务。arXiv 在有界重试后仍持续返回 429 时，会保存至少两小时的冷却时间
+（若 `Retry-After` 要求更久则遵守），停止本轮后续 arXiv 请求，由冷却结束后的运行恢复。
+
+完整分类的原始结果保存在 `.arxiv-state/`，与正式日报分开。分类中途失败会从该分类
+第一页重新抓取；已完成分类可在抓取、评分或发布失败后复用。快照包含查询参数和格式版本，
+快照无效时重新抓取；全局冷却状态损坏时停止运行，等待检查。非待办日期的快照超过 30 天
+后会自动清理。
+
+Actions 从最新的可信工作流 artifact 恢复状态，包括失败运行保存的状态，处理失败时也会
+保存本轮进度。`arxiv-fetch-state-v1` 与 `arxiv-run-diagnostics` 分别保存状态和运行日志，
+保留 14 天；如果没有尚未过期的状态 artifact，则重新抓取缺失数据。只有完整日报及其索引
+才会发布，后续补抓失败不会丢弃此前已完成日期。存在延后任务时，工作流仍显示失败，
+日志和结果清单中会给出最早重试时间；429 不会被记成空日报。这些机制提高恢复能力，
+无法保证 arXiv 始终可用。
+
 网页**不保存** Zotero 凭据，不写 PDF，不启动本地 CLI，也不修改 Obsidian
 vault。相关控件只在 PaperReader 中出现，由桌面应用访问本机链接附件目录和
 OneDrive 同步状态。
@@ -368,6 +385,16 @@ python3 src/main.py --backfill --backfill-limit 3
 python3 src/rescore_stage1.py --dry-run
 python3 src/rebuild_html.py
 ```
+
+本地恢复运行并输出结构化结果：
+
+```bash
+python3 src/main.py --backfill --state-dir .arxiv-state --result-file .arxiv-run/result.json
+```
+
+多次运行之间保留状态目录。退出码 `0` 表示成功或无待处理任务，`2` 表示抓取延后，
+`1` 表示其他失败。结果中的 `publish_ready` 和 `publish_paths` 标识可发布的完整产物，
+即使后续日期延后，之前完成的产物仍可发布。这些本地命令不会自动 commit 或 push。
 
 用 `python3 -m http.server 8000` 可预览静态输出。
 

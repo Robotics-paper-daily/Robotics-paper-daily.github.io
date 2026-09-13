@@ -15,8 +15,14 @@ SRC_DIR = Path(__file__).resolve().parents[1] / "src"
 
 
 def load_main_module():
+    # Load real recovery types while keeping fetch/LLM calls offline.
+    with mock.patch.object(sys, 'path', [str(SRC_DIR), *sys.path]):
+        import fetch_state
+        import scraper as real_scraper
     scraper = types.ModuleType("scraper")
     scraper.fetch_cv_papers = mock.Mock()
+    scraper.ArxivDeferred = real_scraper.ArxivDeferred
+    scraper.build_query = real_scraper.build_query
 
     filter_module = types.ModuleType("filter")
     filter_module.prefilter_papers_by_keywords = mock.Mock()
@@ -34,6 +40,7 @@ def load_main_module():
 
     dependencies = {
         "scraper": scraper,
+        "fetch_state": fetch_state,
         "filter": filter_module,
         "html_generator": html_generator,
         "config": config,

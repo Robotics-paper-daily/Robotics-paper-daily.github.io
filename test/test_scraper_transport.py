@@ -228,6 +228,118 @@ class ArxivTransportTests(unittest.TestCase):
         self.assertEqual(self.close.call_count, 2)
         self.assertIsInstance(self.close.call_args.args[0], scraper._ArxivSession)
 
+    def test_invalid_success_response_never_becomes_empty_papers(self):
+        missing_date = feed_response(["Incomplete"])
+        missing_date._content = missing_date.content.replace(
+            b"<ns0:published>2026-09-01T18:00:00Z</ns0:published>", b"",
+        )
+        invalid_responses = [
+            response(content=b"<html>Rate exceeded</html>"),
+            response(content=b"broken XML"),
+            response(content=f'<feed xmlns="{ATOM}"/>'.encode()),
+            feed_response(total=10),
+            feed_response(["Unexpected"], total=0),
+            missing_date,
+            response(content=(
+                f'<feed xmlns="{ATOM}" xmlns:o="{OPENSEARCH}">'
+                '<o:totalResults>1</o:totalResults><entry>'
+                '<id>http://arxiv.org/api/errors#incorrect_id_format</id>'
+                '</entry></feed>'
+            ).encode()),
+        ]
+        for invalid in invalid_responses:
+            with self.subTest(content=invalid.content):
+                self.request.reset_mock()
+                self.request.return_value = invalid
+                with self.assertRaisesRegex(scraper.ArxivFetchError, "Invalid arXiv Atom"):
+                    self.fetch()
+                self.request.assert_called_once()
+                invalid.close.assert_called_once()
+
+    def test_continuous_429_produces_durable_two_hour_cooldown(self):
+        now = datetime(2026, 9, 12, tzinfo=timezone.utc)
+        self.request.return_value = response(429)
+        with mock.patch.object(scraper, "datetime", wraps=datetime) as clock:
+            clock.now.side_effect = lambda tz=None: now + timedelta(seconds=self.elapsed)
+            with self.assertRaises(scraper.ArxivDeferred) as caught:
+                self.fetch()
+        self.assertEqual(caught.exception.retry_at, now + timedelta(seconds=720 + 7200))
+        self.assertEqual(self.request.call_count, 5)
+
+    def test_long_server_cooldown_is_preserved_across_runs(self):
+        now = datetime(2026, 9, 12, tzinfo=timezone.utc)
+        for status in (429, 503):
+            with self.subTest(status=status):
+                self.request.reset_mock()
+                self.request.return_value = response(status, headers={"Retry-After": "14400"})
+                with mock.patch.object(scraper, "datetime", wraps=datetime) as clock:
+                    clock.now.return_value = now
+                    with self.assertRaises(scraper.ArxivDeferred) as caught:
+                        self.get()
+                self.assertEqual(caught.exception.retry_at, now + timedelta(hours=4))
+                self.request.assert_called_once()
+
+    def test_query_window_is_unchanged(self):
+        self.assertEqual(
+            scraper.build_query("cs.RO", date(2026, 9, 11)),
+            "cat:cs.RO AND submittedDate:[202609091800 TO 202609101800]",
+        )
+
+    def test_result_limit_refuses_truncated_category(self):
+        self.request.return_value = feed_response(["First"], total=2001)
+        with self.assertRaisesRegex(scraper.ArxivFetchError, "exceeding max_results=2000"):
+            self.fetch()
+        self.request.assert_called_once()
+
+    def test_nonpositive_limit_cannot_bypass_http_as_a_valid_empty(self):
+        for limit in (0, -1, False):
+            with self.subTest(limit=limit):
+                with self.assertRaisesRegex(ValueError, "positive integer"):
+                    scraper.fetch_cv_papers(max_results=limit)
+        self.request.assert_not_called()
+
+    def test_changing_total_or_missing_page_cannot_complete_category(self):
+        for second in (
+            feed_response(["Second"], total=3, start=1),
+            feed_response(["Third"], total=2, start=2),
+            feed_response(total=2, start=1),
+        ):
+            with self.subTest(content=second.content):
+                self.request.reset_mock()
+                self.request.side_effect = [feed_response(["First"], total=2), second]
+                with self.assertRaises(scraper.ArxivFetchError):
+                    self.fetch()
+                self.assertEqual(self.request.call_count, 2)
+
+    def test_parser_omitting_an_entry_cannot_produce_complete_snapshot(self):
+        self.request.return_value = feed_response(["First", "Second"], total=2)
+        parse = arxiv._feed.parse
+
+        def omit_one(content):
+            feed = parse(content)
+            feed.results.pop()
+            return feed
+
+        # Simulate a permissive parser dropping one malformed entry on the last
+        # page. The client subsequently requests a duplicate start, which must fail.
+        with mock.patch.object(arxiv._feed, "parse", side_effect=omit_one):
+            with self.assertRaisesRegex(scraper.ArxivFetchError, "startIndex"):
+                self.fetch()
+
+    def test_parser_empty_first_page_cannot_override_nonzero_total(self):
+        self.request.return_value = feed_response(["First"], total=1)
+        parse = arxiv._feed.parse
+
+        def omit_all(content):
+            feed = parse(content)
+            feed.results.clear()
+            return feed
+
+        with mock.patch.object(arxiv._feed, "parse", side_effect=omit_all):
+            with self.assertRaisesRegex(scraper.ArxivFetchError, "parsed 0 of 1"):
+                self.fetch()
+        self.request.assert_called_once()
+
 
 if __name__ == "__main__":
     unittest.main()

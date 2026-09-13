@@ -329,6 +329,29 @@ The GitHub Pages site provides:
    stage failed; and
 7. historical Stage-1 rescoring without another LLM call.
 
+The scheduled workflow runs at **08:23, 14:23, and 20:23 Beijing time** (UTC+8).
+GitHub may delay scheduled runs. Completed reports are skipped; with `--backfill`,
+previously deferred dates are resumed before new work, within the backfill limit.
+If arXiv keeps returning 429 after the bounded retries, the pipeline saves a
+cooldown of at least two hours (longer if required by `Retry-After`) and stops
+further arXiv requests for that run. A later run resumes after the cooldown.
+
+Complete category results are saved under `.arxiv-state/`, separately from
+published reports. An interrupted category is fetched again from its first page;
+completed categories can be reused after a fetching, scoring, or publishing
+failure. Snapshots include the query and schema version. Invalid snapshots are
+fetched again; invalid global cooldown state stops processing for inspection.
+Non-pending snapshots older than 30 days are removed automatically.
+
+Actions restores state from the latest trusted workflow artifact, including
+failed runs, and saves it even when processing fails. The `arxiv-fetch-state-v1`
+and `arxiv-run-diagnostics` artifacts retain state and logs for 14 days. If no
+unexpired state artifact remains, missing data is fetched again. Only complete
+daily reports and their indexes are published; a later backfill failure does not
+discard earlier completed dates. Deferred work remains visible as a failed run,
+with its earliest retry time in the log and result manifest. A 429 never becomes
+an empty report. This improves recovery; it cannot guarantee arXiv availability.
+
 The site does **not** store Zotero credentials, write PDFs, start local CLIs, or
 modify an Obsidian vault. Those controls are shown only in PaperReader, which
 can access the local linked-attachment directory and OneDrive sync status.
@@ -413,6 +436,17 @@ python3 src/main.py --backfill --backfill-limit 3
 python3 src/rescore_stage1.py --dry-run
 python3 src/rebuild_html.py
 ```
+
+For a local recovery run with a machine-readable result:
+
+```bash
+python3 src/main.py --backfill --state-dir .arxiv-state --result-file .arxiv-run/result.json
+```
+
+Keep the state directory between runs. Exit codes are `0` for success/no work,
+`2` for deferred fetching, and `1` for other failures. `publish_ready` and
+`publish_paths` in the result identify complete output that can be published even
+when a later date is deferred. These local commands do not commit or push files.
 
 Preview the static output with `python3 -m http.server 8000`.
 

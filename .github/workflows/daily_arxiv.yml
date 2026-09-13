@@ -2,8 +2,8 @@ name: Daily arXiv Paper Fetch and Filter
 
 on:
   schedule:
-    # Runs 'at 00:00 UTC' every day (08:00 CST / Beijing time)
-    - cron: '0 0 * * *'
+    # Initial run and two recovery opportunities: 08:23, 14:23, 20:23 Beijing time.
+    - cron: '23 0,6,12 * * *'
   workflow_dispatch: # Allows manual triggering
 
 concurrency:
@@ -15,8 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write     # Needed to push changes back to the repository
-      pages: write        # Needed to deploy to GitHub Pages
-      id-token: write     # Needed for OpenID Connect authentication with GitHub Pages
+      actions: read       # Restore state saved by previous runs, including failed runs
 
     steps:
     - name: Checkout repository
@@ -34,40 +33,76 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+    - name: Restore arXiv progress from the latest trusted run
+      id: restore
+      uses: actions/github-script@v8
+      with:
+        retries: 3
+        script: |
+          const { restoreState } = require('./.github/scripts/arxiv-state.js');
+          await restoreState({ github, context, core });
+
     - name: Run script to fetch, filter, and generate report
+      id: fetch
+      continue-on-error: true
       env:
         DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         # Only the canonical repository keeps its legacy SJTU key contract.
         # Forks without explicit variables default to the official provider.
         DEEPSEEK_API_BASE: ${{ vars.DEEPSEEK_API_BASE || (github.repository == 'Robotics-paper-daily/Robotics-paper-daily.github.io' && 'https://models.sjtu.edu.cn/api/v1' || 'https://api.deepseek.com') }}
         DEEPSEEK_MODEL: ${{ vars.DEEPSEEK_MODEL || (github.repository == 'Robotics-paper-daily/Robotics-paper-daily.github.io' && 'deepseek-chat' || 'deepseek-v4-flash') }}
-      run: python src/main.py --backfill
+      run: |
+        mkdir -p .arxiv-run
+        set -o pipefail
+        python src/main.py --backfill --state-dir .arxiv-state --result-file .arxiv-run/result.json 2>&1 | tee .arxiv-run/run.log
+
+    - name: Save arXiv progress even when processing is deferred or fails
+      if: ${{ always() && steps.restore.outcome == 'success' && steps.fetch.outcome != 'skipped' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: arxiv-fetch-state-v1
+        overwrite: true
+        path: |
+          .arxiv-state/state.json
+          .arxiv-state/snapshots/**/*.json
+        include-hidden-files: true
+        if-no-files-found: error
+        retention-days: 14
+
+    - name: Save processing result and log
+      if: ${{ always() && steps.fetch.outcome != 'skipped' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: arxiv-run-diagnostics
+        overwrite: true
+        path: .arxiv-run/
+        include-hidden-files: true
+        if-no-files-found: error
+        retention-days: 14
+
+    - name: Validate and stage only completed reports
+      id: publication
+      if: ${{ !cancelled() && steps.restore.outcome == 'success' && steps.fetch.outcome != 'skipped' }}
+      run: node .github/scripts/arxiv-state.js stage
 
     - name: Commit and push changes
+      if: ${{ !cancelled() && steps.publication.outputs.publish == 'true' }}
+      env:
+        TARGET_BRANCH: ${{ github.event.repository.default_branch }}
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add -A -- daily_json/ daily_html/ index.html reports.json search_index.json search_index/ search.html list.html guest.html personal.html js/
-        # Check if there are changes to commit
+        # Only paths approved by the validated per-run result were staged above.
         if git diff --staged --quiet; then
           echo "No changes to commit."
         else
           git commit -m "Update daily arXiv papers $(date +'%Y-%m-%d')"
-          target_branch="${{ github.event.repository.default_branch }}"
-          git pull --rebase origin "${target_branch}"
-          git push origin "HEAD:${target_branch}"
+          git pull --rebase origin "$TARGET_BRANCH"
+          git push origin "HEAD:$TARGET_BRANCH"
         fi
 
-    # - name: Setup Pages
-    #   uses: actions/configure-pages@v5
-
-    # - name: Upload artifact
-    #   uses: actions/upload-pages-artifact@v3
-    #   with:
-    #     # Upload entire repository content, as index.html is at the root
-    #     # and daily_json/ and daily_html/ are needed.
-    #     path: '.'
-
-    # - name: Deploy to GitHub Pages
-    #   id: deployment
-    #   uses: actions/deploy-pages@v4
+    - name: Report deferred or failed processing without hiding it
+      if: ${{ always() && steps.fetch.outcome != 'skipped' }}
+      env:
+        FETCH_OUTCOME: ${{ steps.fetch.outcome }}
+      run: node .github/scripts/arxiv-state.js finish
