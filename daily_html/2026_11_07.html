@@ -1,0 +1,1922 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArXiv Robotics Papers (RL/VLM/World Models/LLMs/VLA/VLN) - November 07, 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.16.4/framer-motion.dev.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        :root {
+            /* New Palette: Light, Clean, Futuristic with Tsinghua Purple accents */
+            --bg-color: #f8fafc; /* Tailwind slate-50 (Very Light Gray) */
+            --card-bg-color: #ffffff; /* White */
+            --text-color: #1e293b; /* Tailwind slate-800 (Dark Gray-Blue) */
+            --text-muted-color: #64748b; /* Tailwind slate-500 (Medium Gray-Blue) */
+            --header-color: #0f172a; /* Tailwind slate-900 (Very Dark Blue) */
+            --highlight-primary: #7B2C9F; /* Tsinghua Purple */
+            --highlight-secondary: #B794D3; /* Light Tsinghua Purple */
+            --border-color: #e2e8f0; /* Tailwind slate-200 (Light Gray) */
+            --shadow-color: rgba(15, 23, 42, 0.08); /* Subtle shadow based on slate-900 */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            line-height: 1.6;
+        }
+
+
+        .bento-grid {
+            display: grid;
+            gap: 1.5rem; /* Tailwind gap-6 */
+            grid-template-columns: 1fr; /* Force single column */
+            padding-bottom: 4rem; /* Add padding at the bottom */
+        }
+
+        .bento-item {
+            /* Apply semi-transparent white background and blur */
+            background-color: rgba(255, 255, 255, 0.7); /* White with 70% opacity */
+            backdrop-filter: blur(10px); /* Apply blur effect */
+            -webkit-backdrop-filter: blur(10px); /* Safari prefix */
+            border-radius: 1rem; /* Slightly larger radius */
+            padding: 1.75rem; /* Slightly more padding */
+            border: 1px solid rgba(226, 232, 240, 0.5); /* Lighter border with transparency */
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.3s ease-out;
+            overflow: hidden; /* Ensure content doesn't overflow */
+            position: relative; /* For potential pseudo-elements */
+        }
+
+        /* Removed ::before pseudo-element for a cleaner look */
+
+
+        .bento-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 20px var(--shadow-color), 0 4px 8px rgba(15, 23, 42, 0.06); /* Adjusted hover shadow */
+        }
+
+        .paper-title {
+            font-size: 1.125rem; /* Tailwind text-lg */
+            font-weight: 600; /* Tailwind font-semibold */
+            color: var(--highlight-primary); /* Use new primary highlight */
+            margin-bottom: 0.75rem; /* Tailwind mb-3 */
+            line-height: 1.4;
+        }
+
+        .paper-summary {
+            font-size: 0.85rem;
+            color: var(--text-muted-color);
+            margin-bottom: 1.25rem;
+            line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
+        }
+
+        .paper-link {
+            display: inline-flex; /* Use flex for icon alignment */
+            align-items: center;
+            font-size: 0.875rem; /* Tailwind text-sm */
+            font-weight: 600;
+            color: var(--highlight-primary);
+            text-decoration: none;
+            padding: 0.5rem 1rem; /* Add padding */
+            border-radius: 0.5rem; /* Slightly rounder */
+            background-color: rgba(123, 44, 159, 0.08); /* Subtle purple background */
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
+
+        .paper-link .report-icon {
+            margin-right: 0.5rem; /* Tailwind mr-2 */
+            transition: transform 0.3s ease;
+        }
+
+        .paper-link:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F; /* Darker purple on hover */
+            transform: translateY(-1px);
+        }
+        .paper-link:hover .report-icon {
+             transform: translateX(2px);
+        }
+
+        .paper-authors {
+            font-size: 0.75rem; /* Tailwind text-xs */
+            color: var(--text-muted-color);
+            margin-top: 1rem; /* Tailwind mt-4 */
+            font-style: italic;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem; /* Tailwind mb-12 */
+            padding-top: 3rem; /* Tailwind pt-12 */
+        }
+
+        .header h1 {
+            font-size: 2.5rem; /* Tailwind text-4xl or 5xl */
+            font-weight: 700; /* Tailwind font-bold */
+            color: var(--header-color);
+            letter-spacing: -0.025em; /* Tailwind tracking-tight */
+            margin-bottom: 0.5rem;
+            /* Optional: Add a subtle text gradient (Tsinghua Purple) */
+            /* background: linear-gradient(90deg, var(--highlight-primary), var(--highlight-secondary)); */
+            /* -webkit-background-clip: text; */
+            /* -webkit-text-fill-color: transparent; */
+        }
+
+        .header p {
+            font-size: 1.125rem; /* Tailwind text-lg */
+            color: var(--text-muted-color);
+            margin-top: 0.5rem; /* Tailwind mt-2 */
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .footer {
+            text-align: center;
+            color: var(--text-muted-color);
+            font-size: 0.875rem; /* Tailwind text-sm */
+            padding-top: 2rem;
+            padding-bottom: 2rem; /* Tailwind py-8 */
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        /* Simple line graphic element (optional) */
+        .line-graphic {
+            height: 1px; /* Thinner line */
+            background: linear-gradient(90deg, rgba(123, 44, 159, 0), var(--highlight-primary), rgba(123, 44, 159, 0));
+            opacity: 0.6;
+            margin: 1.5rem 0; /* Adjust margin */
+        }
+
+        /* Framer Motion requires the script, styles enhance appearance */
+        [data-motion-element] {
+             /* Base styles for elements animated by Framer Motion */
+        }
+
+        .paper-tldr {
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
+        }
+
+        .paper-rating {
+            margin-top: 1rem; /* Tailwind mt-4 */
+            margin-bottom: 1rem; /* Tailwind mb-4 */
+            color: #f59e0b; /* Tailwind amber-500 */
+        }
+
+        .report-icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.125em;
+            overflow: visible;
+            fill: currentColor;
+            flex: 0 0 auto;
+        }
+
+        .paper-rating .report-icon {
+            margin-right: 0.125rem; /* Tailwind mr-0.5 */
+        }
+
+        /* Apply consistent star color to sub-ratings */
+        .paper-sub-ratings .rating-item .report-icon {
+            color: #f59e0b; /* Match overall rating star color (amber-500) */
+            margin-right: 0.125rem; /* Consistent spacing */
+        }
+
+        .filtered-section {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .filtered-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--header-color);
+            margin-bottom: 1rem;
+        }
+
+        .filtered-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .filtered-item {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .filtered-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+        }
+
+        .filtered-item-title-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: color 0.25s ease;
+        }
+
+        .filtered-item-title-link:hover {
+            color: var(--highlight-primary);
+        }
+
+        .filtered-item-title-link .report-icon {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .filtered-item p {
+            margin: 0.25rem 0;
+            color: var(--text-muted-color);
+            font-size: 0.88rem;
+        }
+
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link. The desktop App sets
+           body.zotero-mode after its isolated report RPC is ready; the public
+           website remains read-only. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn .report-icon {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover .report-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
+    </style>
+</head>
+<body class="container mx-auto px-4 antialiased">
+    <motion.div
+        initial="{ opacity: 0, y: -30 }"
+        animate="{ opacity: 1, y: 0 }"
+        transition="{ duration: 0.6, ease: 'easeOut' }"
+        class="header"
+        data-motion-element
+    >
+        <h1>Robotics Daily Papers</h1>
+        <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
+        <p>November 07, 2026</p>
+        <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
+    </motion.div>
+
+    <div class="bento-grid" id="paper-grid">
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.0, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                Failure Prediction and Classification in Vision-Language-Action Models Via Calibrated Latent Probing
+                
+                <span class="topic-chip topic-vla">VLA</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">failure detection</span>
+                
+                <span class="kw">latent probing</span>
+                
+                <span class="kw">calibration</span>
+                
+                <span class="kw">vision-language-action models</span>
+                
+                <span class="kw">manipulation</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文提出了VLA-Tug，一种用于视觉-语言-动作模型的轻量级潜在探针，能够改善早期故障检测，并提供漏检率和误报率的有界保证，同时预测故障模式以支持实时机器人操作中的纠正动作。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper introduces VLA-Tug, a lightweight latent probe for Vision-Language-Action models that improves early failure detection and provides calibrated bounds on missed-detection and false-alarm rates, while also predicting failure modes to enable corrective actions during real-time robot manipulation.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Vision-Language-Action models (VLAs) enable general-purpose embodied intelligence, but their performance is brittle under distribution shift, where unanticipated failures can damage equipment or endanger people. Deploying VLAs in real-world systems therefore requires a runtime monitor that is timely, calibrated, and informative while being efficient enough to run on the edge. Existing methods fail to fulfill these requirements. We present VLA-Tug, a lightweight probe over the latent layers of a VLA backbone that improves early failure detection and bounds the missed-detection and false-alarm rates, with minimal inference overhead. We show that supervising on the pre-failure segment of a trajectory increases early failure detection at matched false-positive rates by up to 30% over the strongest learned baseline. Under shift to unseen tasks, the bounds on missed-detection and false-alarm rates remain valid in up to 86% of runs, versus at most 21% for baselines. Unlike existing methods, VLA-Tug predicts the failure mode to enable corrective actions, raising top-3 accuracy on unseen tasks by up to 44% over a majority baseline. VLA-Tug enables real-time monitoring where the well-timed and informative probe supports lightweight steering that improves task success. We release a dataset of 3,180 annotated manipulation episodes to support future work on latent failure detection in VLAs at https://vla-tug.github.io.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>视觉-语言-动作模型（VLAs）实现了通用具身智能，但其性能在分布偏移下表现脆弱，此时未预料的故障可能损坏设备或危及人员安全。因此，在真实世界系统中部署VLAs需要一种运行时监控机制，该机制需具备及时性、校准性和信息丰富性，同时还需足够高效以在边缘设备上运行。现有方法无法满足这些要求。我们提出VLA-Tug，一种轻量级探针，作用于VLA骨干网络的潜层，能够改进早期故障检测，并限制漏检率和误报率，同时将推理开销降至最低。我们表明，在轨迹的故障前片段上进行监督，在匹配的误报率下，早期故障检测率较最强的学习基线可提升高达30%。在面对未见任务偏移时，漏检率和误报率的界限在多达86%的运行中保持有效，而基线方法最多仅为21%。与现有方法不同，VLA-Tug能够预测故障模式以支持纠正措施，在未见任务上的top-3准确率较多数基线提升高达44%。VLA-Tug实现了实时监控，其及时且信息丰富的探针支持轻量级导向，从而提升任务成功率。我们发布了一个包含3,180个带标注操作片段的数据集，以支持未来关于VLAs中潜层故障检测的研究，数据集地址为https://vla-tug.github.io。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(10/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2611.08425v1" target="_blank" class="paper-link">
+                <svg class="report-icon report-icon-pdf mr-1" data-report-icon="pdf" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 2.5h7l4 4v15H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2.5v4h4M9.2 17.8v-5.6h1.65a1.75 1.75 0 010 3.5H9.2m5.1 2.1v-5.6h1.25c1.5 0 2.45 1.05 2.45 2.8s-.95 2.8-2.45 2.8z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Michal P. Podolinsky, Yunhao Yang, Daniel Little, Hong Lu, Rohan Siva, Olin Goudey, Neel P. Bhatt, Matthias Scheutz, Ufuk Topcu</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.05, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                OopsieRecover: Learning Transferable VLA Corrections from Semantic Interventions
+                
+                <span class="topic-chip topic-vla">VLA</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">VLA corrections</span>
+                
+                <span class="kw">abduction</span>
+                
+                <span class="kw">semantic interventions</span>
+                
+                <span class="kw">cost learning</span>
+                
+                <span class="kw">robotic manipulation</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>OopsieRecover 通过溯因推理从少量纠正演示中推断意图，并将其编码为密集空间表示和条件成本，使VLA策略能够从失败中恢复并将纠正推广到新物体和场景。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> OopsieRecover uses abduction to infer intent from a few corrective demonstrations, encoding them as dense spatial representations and conditional costs to make VLA policies recover from failures and generalize corrections to novel objects and scenes.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Vision-Language-Action (VLA) models can perform a wide range of robotic manipulation tasks, but often fail during deployment. Teaching them to recover from these failures requires substantial corrective data: existing approaches learn to recover from failures by directly associating corrective actions with the observations in which they were demonstrated. For instance, DAgger-like fine-tuning can require tens to hundreds of interactions, yet the resulting policy may still fail to generalize the learned corrections beyond the demonstrated scenarios. We hypothesize that semantics can capture the underlying reasons for failures and their corrections, enabling policies to learn from only a handful of corrective demonstrations and generalize those corrections to novel objects, and scene variations. We propose OopsieRecover, a framework that uses abduction to infer the intent behind a small set of corrective demonstrations and encodes the inferred knowledge as dense spatial representations and conditional costs. These costs capture when a behavior is undesirable and steer the policy toward more desirable action regions. We experiment across 6 tasks and variations in object poses, scenes, and related tasks, and find that only a handful of corrective demonstrations can enable a VLA to overcome failures across a broad range of novel situations, without requiring new corrective data for each variation. Please refer to https://robin-lab.cs.utexas.edu/oopsierecover for videos.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>视觉-语言-动作(VLA)模型能够执行广泛的机器人操作任务，但在部署过程中常常失败。教这些模型从失败中恢复需要大量的纠正数据：现有方法通过直接将纠正动作与演示时的观察状态相关联来学习失败恢复。例如，类似DAgger的微调方法可能需要数十到数百次交互，但得到的策略仍然可能无法将学到的纠正泛化到演示场景之外。我们假设语义能够捕捉失败的潜在原因及其纠正措施，从而使策略仅凭少量纠正演示即可学习，并将这些纠正泛化到新物体和场景变化中。我们提出了OopsieRecover框架，该框架利用溯因推理来推断少量纠正演示背后的意图，并将推断出的知识编码为密集空间表示和条件成本。这些成本捕捉了何时行为是不期望的，并引导策略朝向更期望的动作区域。我们在6个任务以及物体姿态、场景和相关任务的变化上进行了实验，发现仅需少量纠正演示即可使VLA在广泛的新场景中克服失败，而无需为每种变化收集新的纠正数据。视频请参考 https://robin-lab.cs.utexas.edu/oopsierecover 。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(10/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2611.08462v1" target="_blank" class="paper-link">
+                <svg class="report-icon report-icon-pdf mr-1" data-report-icon="pdf" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 2.5h7l4 4v15H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2.5v4h4M9.2 17.8v-5.6h1.65a1.75 1.75 0 010 3.5H9.2m5.1 2.1v-5.6h1.25c1.5 0 2.45 1.05 2.45 2.8s-.95 2.8-2.45 2.8z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="1" title="在 hjfy.top 翻译为中文">
+                <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="1" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Arpit Bahety, Skand Peri, Sriniket Ambatipudi, Chen Xu, Haruki Nishimura, Masha Itkina, Roberto Martín-Martín</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.1, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                Latent RL Priors for Data-Efficient Dexterous Manipulation
+                
+                <span class="topic-chip topic-manipulation">Manipulation</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">dexterous manipulation</span>
+                
+                <span class="kw">latent RL prior</span>
+                
+                <span class="kw">flow-matching action decoder</span>
+                
+                <span class="kw">visual adaptation</span>
+                
+                <span class="kw">data-efficient policy learning</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文提出潜在RL先验（Latent RL Priors）两阶段框架，先将特权强化学习控制知识蒸馏到流匹配动作解码器中，再学习视觉接口将图像映射到潜在上下文，实现数据高效的灵巧操作，在低数据量下优于全参数微调基线。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> The paper introduces Latent RL Priors, a two-stage framework that distills privileged RL control knowledge into a flow-matching action decoder and then learns a visual interface to map images to the latent context, enabling data-efficient visual dexterous manipulation and outperforming full-parameter fine-tuning baselines in low-data regimes.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Learning dexterous manipulation from limited visual demonstrations is challenging because policies must acquire both perceptual grounding and precise control, while reinforcement learning (RL) in simulation can acquire rich control behaviors from large-scale interaction with privileged information. We introduce \textbf{Latent RL Prior}, a two-stage framework that reuses this control knowledge for data-efficient visual policy learning. During privileged pretraining, we distill large-scale RL rollouts into a flow-matching action decoder conditioned on proprioception and latent task context. During visual adaptation, we freeze the decoder and learn a visual interface that maps images to its latent context using action supervision alone, without privileged labels or latent targets. The same decoder can further be shared across arms by learning coordinated visual contexts for bimanual manipulation. Across three simulated tasks, our method outperforms full-parameter fine-tuning of $π_{0.5}$ and GR00T N1.7 in the low-data regime; on door lifting and bimanual assembly, it surpasses full-data baselines using $10\times$ and $5\times$ fewer demonstrations, respectively. Further analysis shows that direct visual-to-latent conditioning improves adaptation performance and training stability over routing visual predictions through the pretrained state encoder. Robustness to unseen mass variation and greater linear accessibility of contact-force information in decoder representations further provide evidence of retained RL-acquired control knowledge. Project website: https://yixiaowang7.github.io/latent-rl-prior-page/.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>从有限的视觉演示中学习灵巧操作颇具挑战性，因为策略必须同时具备感知基础和精确控制能力，而基于特权信息的仿真强化学习（RL）则能从大规模交互中习得丰富的控制行为。我们提出\textbf{潜在RL先验}（Latent RL Prior），一种两阶段框架，可复用该控制知识以实现数据高效的视觉策略学习。在特权预训练阶段，我们将大规模RL轨迹蒸馏为以本体感觉和潜在任务上下文为条件的流匹配动作解码器。在视觉适应阶段，我们冻结解码器，仅利用动作监督学习一个将图像映射至其潜在上下文的视觉接口，无需特权标签或潜在目标。该解码器还可通过为双臂操作学习协调的视觉上下文，在多个机械臂之间共享。在三个仿真任务中，我们的方法在低数据情境下优于对$π_{0.5}$和GR00T N1.7的全参数微调；在抬门和双臂装配任务中，我们分别仅用$10\times$和$5\times$更少的演示即可超越全数据基线。进一步分析表明，直接进行视觉到潜在的调节，比将视觉预测经由预训练状态编码器路由，能提升适应性能和训练稳定性。对未见质量变化的鲁棒性以及解码器表征中接触力信息更高的线性可及性，进一步提供了保留RL习得控制知识的证据。项目网站：https://yixiaowang7.github.io/latent-rl-prior-page/。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2611.08458v1" target="_blank" class="paper-link">
+                <svg class="report-icon report-icon-pdf mr-1" data-report-icon="pdf" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 2.5h7l4 4v15H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2.5v4h4M9.2 17.8v-5.6h1.65a1.75 1.75 0 010 3.5H9.2m5.1 2.1v-5.6h1.25c1.5 0 2.45 1.05 2.45 2.8s-.95 2.8-2.45 2.8z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="2" title="在 hjfy.top 翻译为中文">
+                <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="2" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Yixiao Wang, Peiyi Chen, Mustafa Mukadam, Shreekant Gayaka, Masayoshi Tomizuka, Son Tran</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.15000000000000002, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                T3R: Training-Free Two-Stage Token Refinement Towards Efficient and Robust VLA Models
+                
+                <span class="topic-chip topic-vla">VLA</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">VLA</span>
+                
+                <span class="kw">token pruning</span>
+                
+                <span class="kw">attention biasing</span>
+                
+                <span class="kw">robustness</span>
+                
+                <span class="kw">efficiency</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>T3R 提出了一种无需训练的两阶段 token 细化框架，通过剪枝无关视觉 token 并偏置注意力到关键区域，提升 VLA 模型的效率与鲁棒性。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> T3R proposes a training-free two-stage token refinement framework that prunes irrelevant visual tokens and biases attention toward action-critical regions to improve efficiency and robustness of VLA models.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Vision-Language-Action (VLA) models enable end-to-end robot control, but inference is increasingly expensive. Each decision processes hundreds of visual tokens, often across multiple cameras, leading to substantial computation while allowing irrelevant background content to distract action prediction under distribution shift. We argue that these issues stem from two complementary forms of redundancy: many visual tokens are spatially irrelevant, while attention over the remaining tokens is often misallocated. Based on this observation, we propose T3R, a Training-Free Two-Stage Token Refinement framework. In the first stage, segmentation-guided token pruning removes irrelevant visual patches to reduce computation and eliminate distracting context. In the second stage, saliency-guided attention biasing reallocates attention toward action-critical visual regions and language instructions within the retained tokens. Together, pruning produces a cleaner candidate set, while attention biasing further emphasizes the most decision-relevant evidence, yielding a better accuracy-efficiency frontier than either stage alone. On LIBERO-Spatial, T3R removes 85% of scene-camera visual tokens while essentially matching the unpruned success rate, and improves success by up to 7 percentage points under out-of-distribution object-placement perturbations. The timing comparison attributes 7.8 ms per inference call to pruning and attention-bias application. As input resolution increases, LLM-forward profiling shows up to a 3.3x speedup over the unpruned baseline. Evaluations across LIBERO, SIMPLER, and RoboTwin with three VLA backbones show the strongest accuracy-efficiency benefits in multi-camera settings. These results demonstrate that training-free token refinement is a practical approach to efficient and robust VLA inference.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>视觉-语言-动作（VLA）模型实现了端到端的机器人控制，但其推理成本日益高昂。每次决策需处理数百个视觉令牌，且通常来自多个摄像头，这不仅导致大量计算开销，还会在分布偏移下使无关背景内容干扰动作预测。我们认为，这些问题源于两种互补形式的冗余：大量视觉令牌在空间上无关，而对剩余令牌的注意力分配常常失衡。基于这一观察，我们提出T3R，一种无需训练的两阶段令牌精炼框架。第一阶段，基于分割引导的令牌剪枝移除无关视觉区域，以减少计算量并消除干扰性上下文；第二阶段，基于显著性引导的注意力偏置在保留令牌中重新分配注意力，使其聚焦于动作关键视觉区域和语言指令。二者结合，剪枝生成更干净的候选集，注意力偏置则进一步强调与决策最相关的证据，相比任一单独阶段均实现更优的精度-效率平衡。在LIBERO-Spatial上，T3R移除了85%的场景摄像头视觉令牌，同时基本保持未剪枝的成功率，并且在分布外物体放置扰动下将成功率提升最多7个百分点。时间对比显示，每次推理调用中剪枝和注意力偏置应用各占7.8毫秒。随着输入分辨率增加，LLM前向分析显示，相比未剪枝基线最高可实现3.3倍的加速。在LIBERO、SIMPLER和RoboTwin上的评估以及三种VLA骨干网络的测试表明，多摄像头设置下精度-效率收益最为显著。这些结果证明，无需训练的令牌精炼是高效且鲁棒VLA推理的一种实用方法。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2611.08413v1" target="_blank" class="paper-link">
+                <svg class="report-icon report-icon-pdf mr-1" data-report-icon="pdf" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 2.5h7l4 4v15H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2.5v4h4M9.2 17.8v-5.6h1.65a1.75 1.75 0 010 3.5H9.2m5.1 2.1v-5.6h1.25c1.5 0 2.45 1.05 2.45 2.8s-.95 2.8-2.45 2.8z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="3" title="在 hjfy.top 翻译为中文">
+                <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="3" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Mohammed Hassan, Zhenyang Chen, Zheng Wang, Zhixin Zhu, Tianlong Chen,  Yingyan,  Lin, Chaojian Li</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.2, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                Social Humanoid: Socially Responsive Human-Humanoid Interaction
+                
+                <span class="topic-chip topic-humanoidembodied">HumanoidEmbodied</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">human-humanoid interaction</span>
+                
+                <span class="kw">whole-body motion generation</span>
+                
+                <span class="kw">hierarchical policy</span>
+                
+                <span class="kw">adaptive retargeting</span>
+                
+                <span class="kw">socially responsive behavior</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>Social Humanoid 提出了一种分层系统，使29自由度的仿人机器人能够通过预测和响应人类伙伴来执行社交响应全身运动，并利用自适应重定向生成的新基准进行训练，在仿真和真实世界中得到验证。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> Social Humanoid introduces a hierarchical system enabling a 29-DoF humanoid robot to perform socially responsive whole-body motion by predicting and reacting to a human partner, trained on a new 260-hour human-humanoid interaction benchmark via adaptive retargeting, and validated in simulation and real world.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Humanoid robots are typically trained as solitary agents, leaving them unable to coordinate physically with human partners who naturally anticipate and adjust to one another. To bridge this gap, we present Social Humanoid, a hierarchical system that generates and executes socially responsive whole-body motion on a 29-DoF Unitree G1 conditioned on a human partner's motion. Its high-level policy performs flexible sequence modeling of human and humanoid motion through a shared tokenized representation, generating reactive humanoid motion and anticipating the partner's motion when they are occluded, while a low-level whole-body tracking controller executes the generated motion on the robot. To train the system, we introduce a two-phase adaptive retargeting procedure that retargets one interaction partner to the robot while morphing the other partner to preserve contact dynamics, reachability, and relative body scale. We apply this procedure across five motion-capture datasets to produce a new Human-Humanoid Interaction (HHI) benchmark of 260 hours of human-humanoid interactions. Our results demonstrate that Social Humanoid produces coordinated, human-aligned behavior across diverse interaction types in simulation and the real world. Project page: https://von31.github.io/social-humanoid/</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>人形机器人通常作为独立智能体进行训练，导致它们无法与人类伙伴进行身体上的协调配合，而人类伙伴天生就会相互预判和调整。为弥合这一差距，我们提出了Social Humanoid——一个分层系统，能够在29自由度Unitree G1机器人上，以人类伙伴的运动为条件，生成并执行具有社交响应能力的全身运动。其高层策略通过共享的令牌化表示，对人类与人形机器人的运动进行灵活的序列建模，生成响应性的人形运动，并在伙伴被遮挡时预测其运动；而低层全身跟踪控制器则负责在机器人上执行生成的运动。为训练该系统，我们引入了一种两阶段自适应重定向流程，将一个交互伙伴重定向至机器人，同时对另一个伙伴进行形变处理，以保持接触动力学、可达性和相对身体尺度。我们将该流程应用于五个动作捕捉数据集，构建了一个全新的“人-人形机器人交互”（HHI）基准，包含260小时的人-人形机器人交互数据。实验结果表明，Social Humanoid在仿真和真实世界中均能在多样化的交互类型中产生协调一致、与人类对齐的行为。项目页面：https://von31.github.io/social-humanoid/</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2611.08407v1" target="_blank" class="paper-link">
+                <svg class="report-icon report-icon-pdf mr-1" data-report-icon="pdf" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 2.5h7l4 4v15H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2.5v4h4M9.2 17.8v-5.6h1.65a1.75 1.75 0 010 3.5H9.2m5.1 2.1v-5.6h1.25c1.5 0 2.45 1.05 2.45 2.8s-.95 2.8-2.45 2.8z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="4" title="在 hjfy.top 翻译为中文">
+                <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="4" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Vongani H. Maluleke, James Ni, Kie Horiuchi, Lea Wilken, Jiahui Lei, Evonne Ng, Roei Herzig, Jitendra Malik, Trevor Darrell, Angjoo Kanazawa</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.25, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                VFlash: Fast, Accurate Visual Planning via Flash Primitive Decoding
+                
+                <span class="topic-chip topic-vla">VLA</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">visual planning</span>
+                
+                <span class="kw">flash primitive decoding</span>
+                
+                <span class="kw">autoregressive vision-language model</span>
+                
+                <span class="kw">world action model</span>
+                
+                <span class="kw">robot trajectory</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>VFlash 通过轻量级草稿模型一次性预测完整视觉原语（点、框、轨迹），加速视觉规划，提升机器人轨迹任务的空间精度和生成速度，并提升世界动作模型的成功率。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> VFlash accelerates visual planning in vision-language models by using a lightweight drafter to predict entire visual primitives (points, boxes, trajectories) in one forward pass, improving spatial accuracy and speed for robot trajectory tasks and world action model conditioning.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Models for physical AI tasks, such as robotics and autonomous driving, need not reason solely in language. They can use visual plans--points, bounding boxes, and trajectories--to represent spatial goals and anticipate motion. However, autoregressive vision-language models generate these plans one coordinate token at a time, making richer predictions increasingly costly. We introduce VFlash, a method for fast, accurate visual planning through Flash Primitive Decoding. VFlash exploits the known structure of visual primitives to predict their coordinates jointly, using a lightweight drafter that generates an entire primitive in one forward pass. The layout adapts to the primitive's type, dimensionality, and length, supporting compact boxes and long, variable-length trajectories. Crucially, spatial accuracy need not require reproducing an autoregressive model's exact token sequence. VFlash therefore trains on annotated primitives and directly accepts structurally valid predictions without target-token agreement. Across the evaluated 2D and 3D robot trajectory tasks, VFlash consistently reduces prediction errors relative to autoregressive decoding. Preliminary single-rollout measurements indicate approximately 25x faster generation for 3D point motion forecasting. A world action model conditioned on VFlash plans achieves 70.2% average success across four MolmoSpaces task suites, compared with 62.6% for the baseline.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>摘要：
+物理AI任务（如机器人和自动驾驶）的模型无需仅依赖语言进行推理。它们可以利用视觉规划——点、边界框和轨迹——来表示空间目标并预测运动。然而，自回归视觉语言模型每次仅生成一个坐标令牌，导致更丰富的预测成本不断上升。我们提出了VFlash，一种通过闪存基元解码实现快速、准确视觉规划的方法。VFlash利用视觉基元的已知结构联合预测其坐标，使用轻量级草稿模型在一次前向传播中生成整个基元。该布局适应基元的类型、维度和长度，支持紧凑的边界框以及长且可变长度的轨迹。关键在于，空间精度并不需要复现自回归模型的精确令牌序列。因此，VFlash在标注基元上训练，直接接受结构有效的预测，无需目标令牌匹配。在评估的2D和3D机器人轨迹任务中，VFlash持续降低了相对于自回归解码的预测误差。初步的单次采样测量表明，3D点运动预测的生成速度提高了约25倍。以VFlash规划为条件的世界动作模型在四个MolmoSpaces任务套件中实现了70.2%的平均成功率，而基线为62.6%。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2611.08449v1" target="_blank" class="paper-link">
+                <svg class="report-icon report-icon-pdf mr-1" data-report-icon="pdf" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 2.5h7l4 4v15H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2.5v4h4M9.2 17.8v-5.6h1.65a1.75 1.75 0 010 3.5H9.2m5.1 2.1v-5.6h1.25c1.5 0 2.45 1.05 2.45 2.8s-.95 2.8-2.45 2.8z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="5" title="在 hjfy.top 翻译为中文">
+                <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="5" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Yu-Cheng Chou, Shihao Wang, Jin Huang, Chi-Pin Huang, Chiao-An Yang, Xianzhe Fan, Jing Wang, Zhiqi Li, Yuanguo Kuang, Ruijie Zheng, Johan Bjorck, Sifei Liu, Hang Su, Abhishek Badki, Lei Zhang, Alan Yuille, Linxi "Jim'' Fan, Jan Kautz, Zhiding Yu</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.30000000000000004, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                SCALE: Real-Time Latent Communication for Cyber-Physical Agents
+                
+                <span class="topic-chip topic-other">Other</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">latent communication</span>
+                
+                <span class="kw">cyber-physical agents</span>
+                
+                <span class="kw">real-time scheduling</span>
+                
+                <span class="kw">bandwidth constraints</span>
+                
+                <span class="kw">multi-agent collaboration</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>SCALE 提出了一种针对物理信息融合系统的实时潜空间通信方法，通过 token 匹配和调度器在带宽受限下减少冗余传输、满足任务截止时间，从而提升多智能体机器人系统的性能。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> SCALE introduces a real-time latent communication method for cyber-physical agents, using token matching and a scheduler to reduce bandwidth usage while meeting task deadlines, improving performance in multi-agent robotic systems.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Latent communication enables agents to collaborate efficiently by directly exchanging intermediate model representations rather than raw sensor data or text messages. Existing approaches, however, are primarily designed for LLM agents and do not consider the bandwidth constraints and heterogeneous task deadlines faced by cyber-physical agents. In this work, we propose SCALE, a real-time latent communication method tailored for cyber-physical agents. Motivated by the spatio-temporal continuity of the physical world, SCALE matches tokens across consecutive latent messages using similarity scores to identify reusable information and avoid redundant transmission. It then profiles the semantic gain and communication cost of transmitting different amounts of latent information. Based on these profiles, SCALE employs a real-time scheduler that jointly determines which pending messages to transmit and how many latent tokens to send, subject to available bandwidth and task deadlines. We evaluate SCALE across three cyber-physical benchmarks and a physical spider robot case study under diverse network conditions and heterogeneous task deadlines. Our results show that SCALE significantly improves both task performance and on-time delivery in bandwidth-constrained networks. Our code is available at: https://anonymous.4open.science/r/SCALE-4E80/.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>潜在通信使智能体能够通过直接交换中间模型表示而非原始传感器数据或文本来实现高效协作。然而，现有方法主要针对大语言模型智能体设计，未考虑信息物理智能体所面临的带宽约束和异构任务截止时间。本文提出SCALE，一种专为信息物理智能体设计的实时潜在通信方法。受物理世界时空连续性的启发，SCALE利用相似度分数对相邻潜在消息中的令牌进行匹配，以识别可重用信息并避免冗余传输。随后，它刻画了传输不同数量潜在信息所带来的语义增益和通信成本。基于这些刻画结果，SCALE采用实时调度器，在可用带宽和任务截止时间的约束下，联合决定传输哪些待处理消息以及发送多少潜在令牌。我们在三个信息物理基准测试和一个物理蜘蛛机器人案例研究中，在多种网络条件和异构任务截止时间下对SCALE进行了评估。结果表明，SCALE在带宽受限网络中显著提升了任务性能和准时交付率。我们的代码可在以下地址获取：https://anonymous.4open.science/r/SCALE-4E80/。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(6/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2611.08390v1" target="_blank" class="paper-link">
+                <svg class="report-icon report-icon-pdf mr-1" data-report-icon="pdf" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 2.5h7l4 4v15H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2.5v4h4M9.2 17.8v-5.6h1.65a1.75 1.75 0 010 3.5H9.2m5.1 2.1v-5.6h1.25c1.5 0 2.45 1.05 2.45 2.8s-.95 2.8-2.45 2.8z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="6" title="在 hjfy.top 翻译为中文">
+                <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="6" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Shanghao Shi, Jian Xiao, Ching-Hsiang Chan, Sanjoy Baruah, Sastry Kompella, Yevgeniy Vorobeychik, William Yeoh, Ning Zhang</p>
+            
+        </motion.div>
+        
+    </div>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08398v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        A Multimodal Haptic Interface for Simultaneous Softness and Thermal Modulation
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                    
+                    <span class="topic-chip topic-other">Other</span>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="7" title="在 hjfy.top 翻译为中文">
+                        <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="7" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Joshua Brown, Fernando Bello, Lynette Jones</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出了一种多模态触觉接口，结合粒子堵塞的刚度控制与冷热水热传递的温度调节，实现软硬度和温度的同步变化。原型实现了300%的刚度增加和10°C至50°C的精确温度控制（误差0.2°C），面向虚拟现实、医疗模拟和情感触觉等应用。</p>
+                
+                <p><strong>Overall:</strong> 3/10</p>
+                
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08392v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Learning a patient world model for health system simulation in intensive care
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                    
+                    <span class="topic-chip topic-other">Other</span>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="8" title="在 hjfy.top 翻译为中文">
+                        <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="8" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yingtai Li, Ruoyan Wang, Yu Li, Shaohua Kevin Zhou</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文提出一种基于纵向电子病历训练的患者世界模型，用于重症监护中的医疗系统仿真，支持场景特定查询与政策评估，无需重建模型。</p>
+                
+                <p><strong>Overall:</strong> 2/10</p>
+                
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08445v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        A Hidden Markov Preference Model for Online Prediction of Adversary Actions
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Angel Daruna, Michael Cogswell, Tixiao Shan, Yi Yao, Han-Pang Chiu, Ajay Divakaran</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08393v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Adaptive Low-Light Enhancement for Road Anomaly Detection: A Multi-Architecture Benchmark and Edge Deployment Study
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Obed Honour Eje, Oluwatosin Kolade, Glory Bagai, Taliha Abiodun Folorunso</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08457v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Adversarial Training with Large Step Sizes: Implicit Bias, Optimization, and Sharpness
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yi Feng, Andrea Paudice</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08417v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Benchmarks as Software: Terminal-Bench and the Case for Continuous Benchmarks
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> E. Kelly Buchanan, Crystal Zhou, Scott W. Linderman, Christopher Ré</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08409v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Conformal Prediction for Time-Dependent PDEs
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Joshua Stiller, Annika Schneider, Eyke Hüllermeier</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08421v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Data-driven discovery of intrinsic Lie point symmetries of differential equation systems
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ilker Gurcan, Kadir Ustun, Ramazan Gokberk Cinbis</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08486v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Do You Miss the Nights We Spent Crafting Figures? Rethinking Teaser and Framework Figures in the Age of Generative AI
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Xiaoqi Zhao, Youwei Pang, Kailai Zhou</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08441v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Edge-Assisted Crowdsensing for Explainable Cyclist Safety Perception
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Hongsen Cao, Chia-Yen Chiang, Mona Jaber, Meihui Wang, Yasmin Fathy</p>
+                
+                <p><strong>Stage1:</strong> score=2 below threshold 5 <span style="opacity: 0.7;">[hits: vision language model, vlm]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08477v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        EgoGeneralist: Unifying Egocentric Action-Video Tasks through Video-Native Modeling
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yanlin Jin, Bowen Yang, Cheng Zhang, Yifan Yang, Zhe Li, Jianfei Cai, Kai Zhu</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08383v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        FedReason: Large Language Models as Weight-Space Meta-Aggregators for Heterogeneous Federated Learning
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ali Mohammadi Ruzbahani, Abbas Yazdinejad, Hadis Karimipour</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08386v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Hybrid Machine Learning for Imbalanced Landing-Phase Safety Event Prediction from Flight Data
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Taha Asghar, Bilal Mufti, Syed Qasim Zaheer, Luqman Ahmed</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08439v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Label-Wording Augmentation in a Typed-Decision Encoder: Gains on Unfamiliar Words, Not on Abbreviations or Codes
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Vladimir Beskorovainyi</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08433v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        MedGraph: Maintaining Patient State with Graph Memory for Long-Term Medical Dialogue
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Donghua Zhang, Zizheng Wang, Ze Dong, Yiding Feng, Siyu Qian</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08420v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        On the limitations of molecular representations
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Acer Blake, Fergus Imrie, Charlotte M. Deane</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08452v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        ReproBridge: Building Reproducibility into ML Research Artifacts
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yubo Wang, Rui Meng, Jaehyun Nam, Tomas Pfister, Jinsung Yoon</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08436v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        SM4RT: Cascaded Feed-forward Model for 4D Reconstruction
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Pang-Chi Lo, Jhao-Syun Lai, Tsung-Wei Ke</p>
+                
+                <p><strong>Stage1:</strong> score=2 below threshold 5 <span style="opacity: 0.7;">[hits: waymo]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08469v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Same Behavior, Different Mechanism: What Finite Experiments Can Certify About Integrated Information
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Linqian Wu, Diaoxuan He</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08478v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Scientist World: Grow a Research World for AI-Scientists
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Taiming Lu, Sachin Konan, Zhuang Liu</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08414v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Spectral and Subspace Dynamics of LoRA in Supervised Fine-Tuning and Reinforcement Learning
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Chenruo Liu, Zihan Wang, Yijun Dong, Qi Lei</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: reinforcement learning]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08403v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        StepBack: Step-Level Error-Localized Resampling for Efficient Test-Time Reasoning
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yang Ouyang, Jung-Eun Kim</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08483v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        SwarmEvolve: Latent Agent Swarms for Evolutionary Discovery and Optimization
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Qile Jiang, George Em Karniadakis</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08394v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Synthesis of Ovarian Cancer Multi-Omics Datasets: A Biology-Informed Evaluation Framework
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Déborah Boyenval, Alina Malyutina, Jaana Oikkonen, Sammeli Liikkanen, Sampsa Hautaniemi</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08412v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        The Gold Rush in AI4Math, II: What are signatures of AI-assisted Proofs?
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yuanchuan Guo, Jiashun Jin, Zheng Tracy Ke, Bingcheng Sui</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08428v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        The Power of Meta Access in the Software of the Future --- Demonstrated on LLM Chat UIs and Chat AI
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Julian Kunkel, Ali Doosthosseini</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08465v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Towards interpreting any residual stream direction by scaling activation inversion
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Celeste De Schamphelaere, Juan J. Vazquez, Ari Spiesberger, Tomáš Gavenčiak, Gavin Leech, Euan Ong, Jiahai Feng</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08438v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Understanding AI from the Inside: The State of Mechanistic Interpretability for AI Safety
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Fazl Barez, Tung-Yu Wu, Hunar Batra, Gabriele Dominici, Florent Draye, Yanai Elazar, Damiano Fornasiere, Antía García, Abir Harrasse, Riley Harris, Sara Hooker, Michael Lan, Belinda Z. Li, Aaron Maiwald, Narmeen Fatimah Oozeer, Naomi Saphra, Or David Shafran, Adi Simhi, Robert Trager, Shriyash Kaustubh Upadhyay, Ziyu Yao, Yu Zhao, Shay B. Cohen, Mor Geva, Yoshua Bengio, Stella Biderman, Hassan Sajjad</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08453v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Unpacking the Compute Efficiency of Strong-to-Weak OPD against GRPO
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zeyu Leo Liu, Yang Li, Bo Pang, Emre Can Acikgoz, Xuan-Phi Nguyen, Anurag Koul, Srijan Bansal, Erik Nijkamp, Shafiq Joty, Semih Yavuz</p>
+                
+                <p><strong>Stage1:</strong> score=2 below threshold 5 <span style="opacity: 0.7;">[hits: policy optimization, reinforcement learning]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08487v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        User Embeddings are Superpositions of Interpretable Behavioral Modes
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jonathan Kozaczuk, Zheng Dong, Noyan Evirgen, Keivan Majidi, Eddie K. H. Ng, Chris Porter, Qi Zhao, Jia Geng, Changmao Li, Brandon R. Feng</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08485v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Where and Why is Grounded Reasoning Useful?
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> David Yan, Le Xue, Forrest Huang, Qiuyi Zhang, Dustin Tran, Andrew M. Dai, Yinfei Yang</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.08472v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        XStack: A Benchmark for ML Repo Migration
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Linrong Cai, Taiming Lu, Haozhe Chen, Zhuang Liu</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+        </div>
+    </section>
+
+    <footer class="footer">
+        Generated on 2026-11-08 06:22:59 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+    </footer>
+
+
+
+    <script type="application/json" id="papers-data">[{"title": "Failure Prediction and Classification in Vision-Language-Action Models Via Calibrated Latent Probing", "summary": "Vision-Language-Action models (VLAs) enable general-purpose embodied intelligence, but their performance is brittle under distribution shift, where unanticipated failures can damage equipment or endanger people. Deploying VLAs in real-world systems therefore requires a runtime monitor that is timely, calibrated, and informative while being efficient enough to run on the edge. Existing methods fail to fulfill these requirements. We present VLA-Tug, a lightweight probe over the latent layers of a VLA backbone that improves early failure detection and bounds the missed-detection and false-alarm rates, with minimal inference overhead. We show that supervising on the pre-failure segment of a trajectory increases early failure detection at matched false-positive rates by up to 30% over the strongest learned baseline. Under shift to unseen tasks, the bounds on missed-detection and false-alarm rates remain valid in up to 86% of runs, versus at most 21% for baselines. Unlike existing methods, VLA-Tug predicts the failure mode to enable corrective actions, raising top-3 accuracy on unseen tasks by up to 44% over a majority baseline. VLA-Tug enables real-time monitoring where the well-timed and informative probe supports lightweight steering that improves task success. We release a dataset of 3,180 annotated manipulation episodes to support future work on latent failure detection in VLAs at https://vla-tug.github.io.", "url": "http://arxiv.org/abs/2611.08425v1", "authors": ["Michal P. Podolinsky", "Yunhao Yang", "Daniel Little", "Hong Lu", "Rohan Siva", "Olin Goudey", "Neel P. Bhatt", "Matthias Scheutz", "Ufuk Topcu"], "keywords": ["failure detection", "latent probing", "calibration", "vision-language-action models", "manipulation"]},{"title": "OopsieRecover: Learning Transferable VLA Corrections from Semantic Interventions", "summary": "Vision-Language-Action (VLA) models can perform a wide range of robotic manipulation tasks, but often fail during deployment. Teaching them to recover from these failures requires substantial corrective data: existing approaches learn to recover from failures by directly associating corrective actions with the observations in which they were demonstrated. For instance, DAgger-like fine-tuning can require tens to hundreds of interactions, yet the resulting policy may still fail to generalize the learned corrections beyond the demonstrated scenarios. We hypothesize that semantics can capture the underlying reasons for failures and their corrections, enabling policies to learn from only a handful of corrective demonstrations and generalize those corrections to novel objects, and scene variations. We propose OopsieRecover, a framework that uses abduction to infer the intent behind a small set of corrective demonstrations and encodes the inferred knowledge as dense spatial representations and conditional costs. These costs capture when a behavior is undesirable and steer the policy toward more desirable action regions. We experiment across 6 tasks and variations in object poses, scenes, and related tasks, and find that only a handful of corrective demonstrations can enable a VLA to overcome failures across a broad range of novel situations, without requiring new corrective data for each variation. Please refer to https://robin-lab.cs.utexas.edu/oopsierecover for videos.", "url": "http://arxiv.org/abs/2611.08462v1", "authors": ["Arpit Bahety", "Skand Peri", "Sriniket Ambatipudi", "Chen Xu", "Haruki Nishimura", "Masha Itkina", "Roberto Mart\u00edn-Mart\u00edn"], "keywords": ["VLA corrections", "abduction", "semantic interventions", "cost learning", "robotic manipulation"]},{"title": "Latent RL Priors for Data-Efficient Dexterous Manipulation", "summary": "Learning dexterous manipulation from limited visual demonstrations is challenging because policies must acquire both perceptual grounding and precise control, while reinforcement learning (RL) in simulation can acquire rich control behaviors from large-scale interaction with privileged information. We introduce \\textbf{Latent RL Prior}, a two-stage framework that reuses this control knowledge for data-efficient visual policy learning. During privileged pretraining, we distill large-scale RL rollouts into a flow-matching action decoder conditioned on proprioception and latent task context. During visual adaptation, we freeze the decoder and learn a visual interface that maps images to its latent context using action supervision alone, without privileged labels or latent targets. The same decoder can further be shared across arms by learning coordinated visual contexts for bimanual manipulation. Across three simulated tasks, our method outperforms full-parameter fine-tuning of $\u03c0_{0.5}$ and GR00T N1.7 in the low-data regime; on door lifting and bimanual assembly, it surpasses full-data baselines using $10\\times$ and $5\\times$ fewer demonstrations, respectively. Further analysis shows that direct visual-to-latent conditioning improves adaptation performance and training stability over routing visual predictions through the pretrained state encoder. Robustness to unseen mass variation and greater linear accessibility of contact-force information in decoder representations further provide evidence of retained RL-acquired control knowledge. Project website: https://yixiaowang7.github.io/latent-rl-prior-page/.", "url": "http://arxiv.org/abs/2611.08458v1", "authors": ["Yixiao Wang", "Peiyi Chen", "Mustafa Mukadam", "Shreekant Gayaka", "Masayoshi Tomizuka", "Son Tran"], "keywords": ["dexterous manipulation", "latent RL prior", "flow-matching action decoder", "visual adaptation", "data-efficient policy learning"]},{"title": "T3R: Training-Free Two-Stage Token Refinement Towards Efficient and Robust VLA Models", "summary": "Vision-Language-Action (VLA) models enable end-to-end robot control, but inference is increasingly expensive. Each decision processes hundreds of visual tokens, often across multiple cameras, leading to substantial computation while allowing irrelevant background content to distract action prediction under distribution shift. We argue that these issues stem from two complementary forms of redundancy: many visual tokens are spatially irrelevant, while attention over the remaining tokens is often misallocated. Based on this observation, we propose T3R, a Training-Free Two-Stage Token Refinement framework. In the first stage, segmentation-guided token pruning removes irrelevant visual patches to reduce computation and eliminate distracting context. In the second stage, saliency-guided attention biasing reallocates attention toward action-critical visual regions and language instructions within the retained tokens. Together, pruning produces a cleaner candidate set, while attention biasing further emphasizes the most decision-relevant evidence, yielding a better accuracy-efficiency frontier than either stage alone. On LIBERO-Spatial, T3R removes 85% of scene-camera visual tokens while essentially matching the unpruned success rate, and improves success by up to 7 percentage points under out-of-distribution object-placement perturbations. The timing comparison attributes 7.8 ms per inference call to pruning and attention-bias application. As input resolution increases, LLM-forward profiling shows up to a 3.3x speedup over the unpruned baseline. Evaluations across LIBERO, SIMPLER, and RoboTwin with three VLA backbones show the strongest accuracy-efficiency benefits in multi-camera settings. These results demonstrate that training-free token refinement is a practical approach to efficient and robust VLA inference.", "url": "http://arxiv.org/abs/2611.08413v1", "authors": ["Mohammed Hassan", "Zhenyang Chen", "Zheng Wang", "Zhixin Zhu", "Tianlong Chen", " Yingyan", " Lin", "Chaojian Li"], "keywords": ["VLA", "token pruning", "attention biasing", "robustness", "efficiency"]},{"title": "Social Humanoid: Socially Responsive Human-Humanoid Interaction", "summary": "Humanoid robots are typically trained as solitary agents, leaving them unable to coordinate physically with human partners who naturally anticipate and adjust to one another. To bridge this gap, we present Social Humanoid, a hierarchical system that generates and executes socially responsive whole-body motion on a 29-DoF Unitree G1 conditioned on a human partner\u0027s motion. Its high-level policy performs flexible sequence modeling of human and humanoid motion through a shared tokenized representation, generating reactive humanoid motion and anticipating the partner\u0027s motion when they are occluded, while a low-level whole-body tracking controller executes the generated motion on the robot. To train the system, we introduce a two-phase adaptive retargeting procedure that retargets one interaction partner to the robot while morphing the other partner to preserve contact dynamics, reachability, and relative body scale. We apply this procedure across five motion-capture datasets to produce a new Human-Humanoid Interaction (HHI) benchmark of 260 hours of human-humanoid interactions. Our results demonstrate that Social Humanoid produces coordinated, human-aligned behavior across diverse interaction types in simulation and the real world. Project page: https://von31.github.io/social-humanoid/", "url": "http://arxiv.org/abs/2611.08407v1", "authors": ["Vongani H. Maluleke", "James Ni", "Kie Horiuchi", "Lea Wilken", "Jiahui Lei", "Evonne Ng", "Roei Herzig", "Jitendra Malik", "Trevor Darrell", "Angjoo Kanazawa"], "keywords": ["human-humanoid interaction", "whole-body motion generation", "hierarchical policy", "adaptive retargeting", "socially responsive behavior"]},{"title": "VFlash: Fast, Accurate Visual Planning via Flash Primitive Decoding", "summary": "Models for physical AI tasks, such as robotics and autonomous driving, need not reason solely in language. They can use visual plans--points, bounding boxes, and trajectories--to represent spatial goals and anticipate motion. However, autoregressive vision-language models generate these plans one coordinate token at a time, making richer predictions increasingly costly. We introduce VFlash, a method for fast, accurate visual planning through Flash Primitive Decoding. VFlash exploits the known structure of visual primitives to predict their coordinates jointly, using a lightweight drafter that generates an entire primitive in one forward pass. The layout adapts to the primitive\u0027s type, dimensionality, and length, supporting compact boxes and long, variable-length trajectories. Crucially, spatial accuracy need not require reproducing an autoregressive model\u0027s exact token sequence. VFlash therefore trains on annotated primitives and directly accepts structurally valid predictions without target-token agreement. Across the evaluated 2D and 3D robot trajectory tasks, VFlash consistently reduces prediction errors relative to autoregressive decoding. Preliminary single-rollout measurements indicate approximately 25x faster generation for 3D point motion forecasting. A world action model conditioned on VFlash plans achieves 70.2% average success across four MolmoSpaces task suites, compared with 62.6% for the baseline.", "url": "http://arxiv.org/abs/2611.08449v1", "authors": ["Yu-Cheng Chou", "Shihao Wang", "Jin Huang", "Chi-Pin Huang", "Chiao-An Yang", "Xianzhe Fan", "Jing Wang", "Zhiqi Li", "Yuanguo Kuang", "Ruijie Zheng", "Johan Bjorck", "Sifei Liu", "Hang Su", "Abhishek Badki", "Lei Zhang", "Alan Yuille", "Linxi \"Jim\u0027\u0027 Fan", "Jan Kautz", "Zhiding Yu"], "keywords": ["visual planning", "flash primitive decoding", "autoregressive vision-language model", "world action model", "robot trajectory"]},{"title": "SCALE: Real-Time Latent Communication for Cyber-Physical Agents", "summary": "Latent communication enables agents to collaborate efficiently by directly exchanging intermediate model representations rather than raw sensor data or text messages. Existing approaches, however, are primarily designed for LLM agents and do not consider the bandwidth constraints and heterogeneous task deadlines faced by cyber-physical agents. In this work, we propose SCALE, a real-time latent communication method tailored for cyber-physical agents. Motivated by the spatio-temporal continuity of the physical world, SCALE matches tokens across consecutive latent messages using similarity scores to identify reusable information and avoid redundant transmission. It then profiles the semantic gain and communication cost of transmitting different amounts of latent information. Based on these profiles, SCALE employs a real-time scheduler that jointly determines which pending messages to transmit and how many latent tokens to send, subject to available bandwidth and task deadlines. We evaluate SCALE across three cyber-physical benchmarks and a physical spider robot case study under diverse network conditions and heterogeneous task deadlines. Our results show that SCALE significantly improves both task performance and on-time delivery in bandwidth-constrained networks. Our code is available at: https://anonymous.4open.science/r/SCALE-4E80/.", "url": "http://arxiv.org/abs/2611.08390v1", "authors": ["Shanghao Shi", "Jian Xiao", "Ching-Hsiang Chan", "Sanjoy Baruah", "Sastry Kompella", "Yevgeniy Vorobeychik", "William Yeoh", "Ning Zhang"], "keywords": ["latent communication", "cyber-physical agents", "real-time scheduling", "bandwidth constraints", "multi-agent collaboration"]},{"title": "A Multimodal Haptic Interface for Simultaneous Softness and Thermal Modulation", "summary": "Haptic interactions, such as touching an object in virtual reality, involve detecting a plethora of sensations through the skin. Whilst tactile displays exist to simulate and manipulate all of these cues individually, little progress has been made constructing devices that can control multiple cues simultaneously. This paper presents a tactile display technology that offers both softness and temperature change.\n  A prototype display, based on particle jamming and the thermal transfer of heated and cooled water, is evaluated in terms of its ability to change both stiffness and temperature. Mechanical evaluations demonstrate controllable stiffness increase of 300%, whilst thermal characterisation showed strong surface uniformity and a range of achievable temperatures from 10\u00b0C up to 50\u00b0C, with closed-loop control maintaining a 0.2\u00b0C error from a setpoint. This work advances the design of multimodal tactile displays with applications to perceptual research, medical simulation, and affective haptics.", "url": "http://arxiv.org/abs/2611.08398v1", "authors": ["Joshua Brown", "Fernando Bello", "Lynette Jones"], "keywords": ["haptic interface", "particle jamming", "thermal modulation", "multimodal tactile display", "softness control"]},{"title": "Learning a patient world model for health system simulation in intensive care", "summary": "Designing healthcare strategies requires anticipating their clinical and operational consequences before implementation, a task that often relies on health system simulation. Such a simulation necessitates modeling how patient states evolve and generate care demands. However, conventional approaches typically tailor compact state transitions to a single policy question and omit history-dependent dynamics, thus requiring the redefinition of states and transitions when there is a new question that entails different clinical information. We propose to learn a patient world model from longitudinal EHRs using a neural network to provide a shared clinical representation of patient trajectories that can serve simulation questions across scenarios. Taking ICU operations as an example, we train the model on MIMIC-IV, freeze it, and couple its time-queryable predictions to shared ICU calendars, resources, and queues via scenario-specific mappings, so that one model renders admission demand, care tasks, and discharge proposals across simulations evaluating ICU bed capacity, care dispatch, and post-ICU transfer capacity. Experiments show that our model matches Markov and semi-Markov comparators in aggregate occupancy and directional responses to capacity and dispatch policies. It also reproduces policy gains from replayed observed trajectories. For patients entering the same support state from different prior trajectories, the learned representation captures a 24-h recovery difference (-6.4 predicted versus -6.7 observed percentage points), a contrast missed by compact state models, which propagates into distinct simulated care demand, queue burden, and bed use. These results indicate that a learned world model of patient dynamics has the potential to replace question-specific state models, allowing new care policies to be evaluated by reconfiguring the scenario without model rebuilding.", "url": "http://arxiv.org/abs/2611.08392v1", "authors": ["Yingtai Li", "Ruoyan Wang", "Yu Li", "Shaohua Kevin Zhou"], "keywords": ["patient world model", "health system simulation", "intensive care", "EHR", "MIMIC-IV"]}]</script>
+
+
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
+</body>
+</html>
