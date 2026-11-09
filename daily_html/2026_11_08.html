@@ -1,0 +1,1400 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArXiv Robotics Papers (RL/VLM/World Models/LLMs/VLA/VLN) - November 08, 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.16.4/framer-motion.dev.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        :root {
+            /* New Palette: Light, Clean, Futuristic with Tsinghua Purple accents */
+            --bg-color: #f8fafc; /* Tailwind slate-50 (Very Light Gray) */
+            --card-bg-color: #ffffff; /* White */
+            --text-color: #1e293b; /* Tailwind slate-800 (Dark Gray-Blue) */
+            --text-muted-color: #64748b; /* Tailwind slate-500 (Medium Gray-Blue) */
+            --header-color: #0f172a; /* Tailwind slate-900 (Very Dark Blue) */
+            --highlight-primary: #7B2C9F; /* Tsinghua Purple */
+            --highlight-secondary: #B794D3; /* Light Tsinghua Purple */
+            --border-color: #e2e8f0; /* Tailwind slate-200 (Light Gray) */
+            --shadow-color: rgba(15, 23, 42, 0.08); /* Subtle shadow based on slate-900 */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            line-height: 1.6;
+        }
+
+
+        .bento-grid {
+            display: grid;
+            gap: 1.5rem; /* Tailwind gap-6 */
+            grid-template-columns: 1fr; /* Force single column */
+            padding-bottom: 4rem; /* Add padding at the bottom */
+        }
+
+        .bento-item {
+            /* Apply semi-transparent white background and blur */
+            background-color: rgba(255, 255, 255, 0.7); /* White with 70% opacity */
+            backdrop-filter: blur(10px); /* Apply blur effect */
+            -webkit-backdrop-filter: blur(10px); /* Safari prefix */
+            border-radius: 1rem; /* Slightly larger radius */
+            padding: 1.75rem; /* Slightly more padding */
+            border: 1px solid rgba(226, 232, 240, 0.5); /* Lighter border with transparency */
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.3s ease-out;
+            overflow: hidden; /* Ensure content doesn't overflow */
+            position: relative; /* For potential pseudo-elements */
+        }
+
+        /* Removed ::before pseudo-element for a cleaner look */
+
+
+        .bento-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 20px var(--shadow-color), 0 4px 8px rgba(15, 23, 42, 0.06); /* Adjusted hover shadow */
+        }
+
+        .paper-title {
+            font-size: 1.125rem; /* Tailwind text-lg */
+            font-weight: 600; /* Tailwind font-semibold */
+            color: var(--highlight-primary); /* Use new primary highlight */
+            margin-bottom: 0.75rem; /* Tailwind mb-3 */
+            line-height: 1.4;
+        }
+
+        .paper-summary {
+            font-size: 0.85rem;
+            color: var(--text-muted-color);
+            margin-bottom: 1.25rem;
+            line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
+        }
+
+        .paper-link {
+            display: inline-flex; /* Use flex for icon alignment */
+            align-items: center;
+            font-size: 0.875rem; /* Tailwind text-sm */
+            font-weight: 600;
+            color: var(--highlight-primary);
+            text-decoration: none;
+            padding: 0.5rem 1rem; /* Add padding */
+            border-radius: 0.5rem; /* Slightly rounder */
+            background-color: rgba(123, 44, 159, 0.08); /* Subtle purple background */
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
+
+        .paper-link .report-icon {
+            margin-right: 0.5rem; /* Tailwind mr-2 */
+            transition: transform 0.3s ease;
+        }
+
+        .paper-link:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F; /* Darker purple on hover */
+            transform: translateY(-1px);
+        }
+        .paper-link:hover .report-icon {
+             transform: translateX(2px);
+        }
+
+        .paper-authors {
+            font-size: 0.75rem; /* Tailwind text-xs */
+            color: var(--text-muted-color);
+            margin-top: 1rem; /* Tailwind mt-4 */
+            font-style: italic;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem; /* Tailwind mb-12 */
+            padding-top: 3rem; /* Tailwind pt-12 */
+        }
+
+        .header h1 {
+            font-size: 2.5rem; /* Tailwind text-4xl or 5xl */
+            font-weight: 700; /* Tailwind font-bold */
+            color: var(--header-color);
+            letter-spacing: -0.025em; /* Tailwind tracking-tight */
+            margin-bottom: 0.5rem;
+            /* Optional: Add a subtle text gradient (Tsinghua Purple) */
+            /* background: linear-gradient(90deg, var(--highlight-primary), var(--highlight-secondary)); */
+            /* -webkit-background-clip: text; */
+            /* -webkit-text-fill-color: transparent; */
+        }
+
+        .header p {
+            font-size: 1.125rem; /* Tailwind text-lg */
+            color: var(--text-muted-color);
+            margin-top: 0.5rem; /* Tailwind mt-2 */
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .footer {
+            text-align: center;
+            color: var(--text-muted-color);
+            font-size: 0.875rem; /* Tailwind text-sm */
+            padding-top: 2rem;
+            padding-bottom: 2rem; /* Tailwind py-8 */
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        /* Simple line graphic element (optional) */
+        .line-graphic {
+            height: 1px; /* Thinner line */
+            background: linear-gradient(90deg, rgba(123, 44, 159, 0), var(--highlight-primary), rgba(123, 44, 159, 0));
+            opacity: 0.6;
+            margin: 1.5rem 0; /* Adjust margin */
+        }
+
+        /* Framer Motion requires the script, styles enhance appearance */
+        [data-motion-element] {
+             /* Base styles for elements animated by Framer Motion */
+        }
+
+        .paper-tldr {
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
+        }
+
+        .paper-rating {
+            margin-top: 1rem; /* Tailwind mt-4 */
+            margin-bottom: 1rem; /* Tailwind mb-4 */
+            color: #f59e0b; /* Tailwind amber-500 */
+        }
+
+        .report-icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.125em;
+            overflow: visible;
+            fill: currentColor;
+            flex: 0 0 auto;
+        }
+
+        .paper-rating .report-icon {
+            margin-right: 0.125rem; /* Tailwind mr-0.5 */
+        }
+
+        /* Apply consistent star color to sub-ratings */
+        .paper-sub-ratings .rating-item .report-icon {
+            color: #f59e0b; /* Match overall rating star color (amber-500) */
+            margin-right: 0.125rem; /* Consistent spacing */
+        }
+
+        .filtered-section {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .filtered-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--header-color);
+            margin-bottom: 1rem;
+        }
+
+        .filtered-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .filtered-item {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .filtered-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+        }
+
+        .filtered-item-title-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: color 0.25s ease;
+        }
+
+        .filtered-item-title-link:hover {
+            color: var(--highlight-primary);
+        }
+
+        .filtered-item-title-link .report-icon {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .filtered-item p {
+            margin: 0.25rem 0;
+            color: var(--text-muted-color);
+            font-size: 0.88rem;
+        }
+
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link. The desktop App sets
+           body.zotero-mode after its isolated report RPC is ready; the public
+           website remains read-only. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn .report-icon {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover .report-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
+    </style>
+</head>
+<body class="container mx-auto px-4 antialiased">
+    <motion.div
+        initial="{ opacity: 0, y: -30 }"
+        animate="{ opacity: 1, y: 0 }"
+        transition="{ duration: 0.6, ease: 'easeOut' }"
+        class="header"
+        data-motion-element
+    >
+        <h1>Robotics Daily Papers</h1>
+        <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
+        <p>November 08, 2026</p>
+        <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
+    </motion.div>
+
+    <div class="bento-grid" id="paper-grid">
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.0, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                On Agentic Manipulation Policies
+                
+                <span class="topic-chip topic-manipulation">Manipulation</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">agentic manipulation policies</span>
+                
+                <span class="kw">generalist AI models</span>
+                
+                <span class="kw">zero-shot manipulation</span>
+                
+                <span class="kw">RoboLab-120</span>
+                
+                <span class="kw">bimanual manipulation</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文提出代理操控策略（AMPs），利用通用AI模型直接控制机械臂，在RoboLab-120和CaP-Gym基准上实现了零样本的最先进性能，大幅超越专用的VLA和WAM策略。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper proposes Agentic Manipulation Policies (AMPs), which use generalist AI models to directly control manipulators, achieving state-of-the-art zero-shot performance on RoboLab-120 and CaP-Gym benchmarks and outperforming specialist VLA and WAM policies by a large margin.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Recent work on robot manipulation has focused on specialist policies trained on demonstrations. We show that generalist AI models can control manipulators more reliably than specialist policies such as vision-language-action models (VLAs) and world-action models (WAMs). We systematically analyze agentic manipulation policies (AMPs), in which a generalist AI model commands the manipulator directly, adapting its actions as the task unfolds. We present AMP1, a reference harness that runs unchanged across single-arm, bimanual, and mobile manipulation. AMP1 achieves state-of-the-art results on the RoboLab-120 and CaP-Gym benchmarks, with no demonstrations or task-specific training. On RoboLab-120, AMP1 reaches an 85.6\% success rate zero-shot, compared to 49.2\% and 42.9\% for leading VLA and WAM policies. The agent succeeds zero-shot in 104 of 108 real-world trials spanning twelve tasks and three robot instances, reducing failure rates by 20x and 15x relative to strong VLA and WAM baselines. The basic harness supplies no grasping, pushing, or placing skills; the agent develops its own strategies, such as searching for hidden objects, using objects as tools, and calibrating its cameras. With the addition of a persistent memory store, the agent can also learn from experience: an augmented harness with a memory representation that is carried across episodes lowers the failure rate on RoboDojo bimanual manipulation tasks by 4.6x relative to zero-shot deployment. Our analysis suggests that AMPs are substantially more general and robust than specialist manipulation policies, providing a promising foundation for robot manipulation.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>近期关于机器人操作的研究主要集中于基于示范训练的专业化策略。我们证明，通用人工智能模型能够比视觉-语言-动作模型（VLA）和世界-动作模型（WAM）等专业化策略更可靠地控制操作器。我们系统性地分析了智能体操作策略（AMP），其中通用人工智能模型直接控制操作器，并随着任务推进实时调整其动作。我们提出了AMP1，一个参考框架，可在单臂、双臂和移动操作场景中无需修改直接运行。AMP1在RoboLab-120和CaP-Gym基准测试中取得了最先进的结果，且无需任何示范或任务特定训练。在RoboLab-120上，AMP1零样本成功率达到85.6%，而领先的VLA和WAM策略分别为49.2%和42.9%。在涵盖十二项任务和三种机器人实例的108次真实世界试验中，该智能体在104次中实现了零样本成功，相较于强VLA和WAM基线，失败率分别降低了20倍和15倍。该基础框架不提供任何抓取、推动或放置技能；智能体自行发展策略，例如搜索隐藏物体、利用物体作为工具以及校准自身摄像头。通过添加持久记忆存储，智能体还能从经验中学习：一个带有跨回合记忆表示的增强框架，在RoboDojo双臂操作任务中，相较于零样本部署，将失败率降低了4.6倍。我们的分析表明，AMP比专业操作策略具有显著更强的通用性和鲁棒性，为机器人操作提供了有前景的基础。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2611.09892v1" target="_blank" class="paper-link">
+                <svg class="report-icon report-icon-pdf mr-1" data-report-icon="pdf" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 2.5h7l4 4v15H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2.5v4h4M9.2 17.8v-5.6h1.65a1.75 1.75 0 010 3.5H9.2m5.1 2.1v-5.6h1.25c1.5 0 2.45 1.05 2.45 2.8s-.95 2.8-2.45 2.8z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Chen Chen, Omid Bagherieh, Naveen Nikamanth Appiah Balaji, Jesse T. Gonzalez, Negin Heravi, Fahad Islam, Xueting Li, Jean-Baptiste Regli, Kejia Ren, Petr Švec, David J. Yoon, Matthias Müller, Vladlen Koltun</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.05, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                Scenario Orchestration for Closed-loop Policy Evaluation of Autonomous Driving
+                
+                <span class="topic-chip topic-autonomousdriving">AutonomousDriving</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">scenario orchestration</span>
+                
+                <span class="kw">closed-loop policy evaluation</span>
+                
+                <span class="kw">constrained optimization</span>
+                
+                <span class="kw">CARLA simulator</span>
+                
+                <span class="kw">scenario-based simulation</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文提出了一种用于自动驾驶策略闭环评估的场景编排器，通过约束优化实时调整非自车角色，以在自车行为变化时可靠实现场景意图，在CARLA仿真中优于脚本化和学习型基线。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper introduces a scenario orchestrator for closed-loop evaluation of autonomous driving policies, which adapts non-ego actors in real-time via constrained optimization to reliably realize scenario intents despite varying ego behavior, improving over scripted and learned baselines in CARLA simulations.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Scenario-based simulation is central to evaluating autonomous-driving policies, but a scenario scripted before execution (i.e., with predetermined, fixed actor routes and speeds) may not preserve its intended interaction once the tested ego policy responds in closed loop. Scripted scenarios cannot adapt to unanticipated ego behavior, while learned traffic actors may remain reactive without reliably realizing a particular scenario intent. We introduce a scenario orchestrator that continuously monitors the joint traffic state and adapts non-ego actors through re-timing, re-routing, and role reassignment for creating a specific scenario intent. At each step, the orchestrator solves a constrained optimization problem that preserves the intended interaction while limiting interventions and maintaining traffic feasibility. We further distinguish scenario realization from policy failure, allowing a test to first be judged based on whether the intended interaction occurred and then by how the ego policy responded. Experiments in the CARLA simulator across multiple scenario families and driving policies show that orchestration realizes targeted interactions more reliably than scripted and learned actor-level baselines, particularly under variations in initial conditions and ego behavior. These results support closed-loop scenario orchestration as a tool for controlled and reproducible policy evaluation.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>基于场景的仿真对于评估自动驾驶策略至关重要，但执行前预先编写的场景（即预设了固定的参与者路线和速度）在测试的自我策略以闭环方式响应后，可能无法保持其预期的交互。脚本化场景无法适应未预料的自我行为，而学习型交通参与者可能保持反应性，却无法可靠地实现特定的场景意图。我们引入了一种场景编排器，它持续监控联合交通状态，并通过重新定时、重新规划路线和角色重新分配来调整非自我参与者，以实现特定的场景意图。在每一步中，编排器求解一个约束优化问题，该问题在保持预期交互的同时，限制干预次数并维持交通可行性。我们进一步区分场景实现与策略失败，使测试首先根据预期交互是否发生进行判断，然后根据自我策略的响应方式进行评估。在CARLA模拟器中跨多个场景族和驾驶策略的实验表明，与脚本化和学习型参与者级基线相比，编排能够在初始条件和自我行为变化的情况下更可靠地实现目标交互。这些结果支持将闭环场景编排作为受控且可复现策略评估的工具。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2611.09888v1" target="_blank" class="paper-link">
+                <svg class="report-icon report-icon-pdf mr-1" data-report-icon="pdf" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 2.5h7l4 4v15H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2.5v4h4M9.2 17.8v-5.6h1.65a1.75 1.75 0 010 3.5H9.2m5.1 2.1v-5.6h1.25c1.5 0 2.45 1.05 2.45 2.8s-.95 2.8-2.45 2.8z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="1" title="在 hjfy.top 翻译为中文">
+                <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="1" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Frieda Rong, Zhaoyue Wang, Veer Kapadia, Vishaka Rajani, Aren A. Babikian, Xujie Si, Mahsa Golchoubian, Raquel Urtasun, Igor Gilitschenski</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.1, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                Grasp-TAGS: Task-Aware Grasp Selection via Critic Distillation for Prehensile Loco-Manipulation
+                
+                <span class="topic-chip topic-manipulation">Manipulation</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">grasp selection</span>
+                
+                <span class="kw">loco-manipulation</span>
+                
+                <span class="kw">reinforcement learning</span>
+                
+                <span class="kw">critic distillation</span>
+                
+                <span class="kw">mobile manipulation</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>Grasp-TAGS 提出了一种任务感知抓取选择方法，利用多抓取PPO策略中蒸馏出的评价者网络在接触前对抓取进行排序，从而提升长时程移动操作的成功率和精度。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> Grasp-TAGS introduces a task-aware grasp selection method that uses a distilled critic network from a multi-grasp PPO policy to rank grasps before contact, improving long-horizon loco-manipulation success and accuracy.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Loco-manipulation, which requires mobile manipulators to coordinate locomotion and manipulation over long horizons, is a key capability for large-object rearrangement in applications such as service robotics and warehouse automation. Despite recent progress, reliably executing these tasks remains challenging because performance depends on complex robot-object and object-environment interaction dynamics. Existing approaches address this challenge either through model-based methods, which often require accurate dynamics models, or through learning-based methods, which reduce this requirement but typically assume a fixed or predefined initial grasp. However, different geometrically stable grasps can lead to substantially different downstream manipulation performance. Therefore, we propose Grasp-TAGS, a task-aware grasp selection framework for goal-conditioned large-object rearrangement. We train a unified PPO-based reinforcement learning policy across multiple initial grasp configurations and distill the learned critic into a lightweight grasp utility network that ranks candidate grasps using only the candidate grasp configuration and goal information. At inference time, we select the grasp with the highest predicted downstream utility for the downstream policy to complete the task, before even making a contact. Experiments demonstrate that Grasp-TAGS improves rearrangement success over both fixed single-grasp policies and random grasp selection, achieving an average success rate of 89.84% compared with 79.87% for the best-performing single-grasp policies, an improvement of 9.97 percentage points. Grasp-TAGS also reduces final orientation errors across all evaluated objects. For more qualitative results, refer to the supplementary webpage: https://rpm-lab-umn.github.io/Grasp-TAGS-web-page/</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>移动操作（Loco-manipulation）要求移动机械臂在长时程范围内协调运动与操作，是在服务机器人和仓库自动化等应用中实现大物体重新排列的关键能力。尽管近期取得了进展，但由于性能依赖于复杂的机器人-物体及物体-环境交互动力学，可靠地执行这些任务仍然具有挑战性。现有方法要么采用基于模型的方法来应对这一挑战，但这类方法通常需要精确的动力学模型；要么采用基于学习的方法，虽降低了对模型精度的要求，但通常假设抓取是固定或预定义的初始抓取。然而，不同的几何稳定抓取可能导致下游操作性能显著不同。为此，我们提出 Grasp-TAGS，一种面向目标条件大物体重新排列的任务感知抓取选择框架。我们在多种初始抓取配置下训练一个统一的基于 PPO 的强化学习策略，并将学得的评论家网络蒸馏为一个轻量级抓取效用网络，该网络仅利用候选抓取配置和目标信息即可对候选抓取进行排序。在推理时，我们在产生任何接触之前，即为下游策略选择具有最高预测下游效用的抓取配置以完成任务。实验表明，Grasp-TAGS 在重新排列任务上的成功率优于固定单一抓取策略和随机抓取选择，平均成功率达到 89.84%，而性能最优的单一抓取策略仅为 79.87%，提升了 9.97 个百分点。此外，Grasp-TAGS 在所有评估物体上均降低了最终方向误差。更多定性结果请参见补充网页：https://rpm-lab-umn.github.io/Grasp-TAGS-web-page/</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2611.09864v1" target="_blank" class="paper-link">
+                <svg class="report-icon report-icon-pdf mr-1" data-report-icon="pdf" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 2.5h7l4 4v15H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2.5v4h4M9.2 17.8v-5.6h1.65a1.75 1.75 0 010 3.5H9.2m5.1 2.1v-5.6h1.25c1.5 0 2.45 1.05 2.45 2.8s-.95 2.8-2.45 2.8z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="2" title="在 hjfy.top 翻译为中文">
+                <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="2" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Xun Tu, Minghao Zou, Karthik Desingh</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.15000000000000002, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                Computer-Use Agents Are Embodied Generalists
+                
+                <span class="topic-chip topic-other">Other</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">computer-use agents</span>
+                
+                <span class="kw">embodied generalists</span>
+                
+                <span class="kw">screenshots</span>
+                
+                <span class="kw">keyboard and mouse actions</span>
+                
+                <span class="kw">competition results</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文提出，通过将物理环境渲染到屏幕上并用键盘鼠标操作，计算机使用智能体（CUA）可以充当具身通用智能体。作者使用单一CUA设计在多项ECCV具身AI竞赛中获奖，无需针对特定任务调整。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This position paper argues that computer-use agents, which interact with software through screenshots and keyboard/mouse actions, can serve as embodied generalists by rendering physical environments on a screen and controlling them via software. The authors demonstrate this by winning prizes across multiple ECCV embodied AI competitions using a single CUA design without task-specific tuning.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> In many areas of AI, general-purpose models have increasingly replaced handcrafted methods and specialized architectures. We argue that embodied AI is poised for a similar shift. Our key claim is that embodied tasks can be formulated as interaction with digital software. Specifically, we build software that renders an agent's view of a physical environment on a screen and provides controls for acting in it. A computer-use agent (CUA) can then perform embodied tasks through the same screenshots and keyboard and mouse actions that it uses to operate ordinary software. Using a single CUA design and changing only the software, our entries win first-, second-, third-, and sixth-place prizes across four ECCV workshop competitions, without any competition-specific agent tuning. These results suggest that the skills CUAs learn on software, such as visual grounding, precise clicking, and exploration, already carry over to embodied tasks, giving CUAs a far broader scope in embodied AI than previously realized. We therefore advocate that computer-use agents can be embodied generalists. Further, we advocate that, by following the training strategy that made computer-use agents general, embodied AI can converge on a single general model as well, ushering in a new era of general embodied AI. Website: https://pranjal2041.github.io/cua-embodied</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>在人工智能的诸多领域中，通用模型已逐渐取代手工设计的方法和专用架构。我们认为，具身AI正迎来类似的转变。我们的核心主张是，具身任务可以被形式化为与数字软件的交互。具体而言，我们构建了能够在屏幕上渲染智能体对物理环境视图的软件，并提供在环境中执行操作的控件。这样一来，计算机使用智能体（CUA）便可以通过其操作普通软件时所使用的截屏、键盘和鼠标动作，来完成具身任务。仅采用单一的CUA设计，且仅更换软件，我们的方案便在四场ECCV研讨会竞赛中分别斩获一、二、三和第六名的奖项，而无需针对具体竞赛进行任何智能体调优。这些结果表明，CUA在软件上习得的技能，如视觉定位、精准点击和探索，已能迁移到具身任务中，使得CUA在具身AI领域的适用范围远超此前认知。因此，我们主张计算机使用智能体能够成为具身通才。更进一步，我们主张，通过遵循使计算机使用智能体实现通用化的训练策略，具身AI同样能够收敛于单一通用模型，从而开启通用具身AI的新纪元。网站：https://pranjal2041.github.io/cua-embodied</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2611.09847v1" target="_blank" class="paper-link">
+                <svg class="report-icon report-icon-pdf mr-1" data-report-icon="pdf" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 2.5h7l4 4v15H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2.5v4h4M9.2 17.8v-5.6h1.65a1.75 1.75 0 010 3.5H9.2m5.1 2.1v-5.6h1.25c1.5 0 2.45 1.05 2.45 2.8s-.95 2.8-2.45 2.8z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="3" title="在 hjfy.top 翻译为中文">
+                <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="3" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Pranjal Aggarwal, Sean Welleck</p>
+            
+        </motion.div>
+        
+    </div>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09877v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Locating Contact on Tendon-Driven Continuum Robots From Tendon Measurements Alone via Constrained Moving Horizon Estimation
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                    
+                    <span class="topic-chip topic-other">Other</span>
+                    
+                    <button class="translate-btn translate-btn-compact" type="button" data-paper-index="4" title="在 hjfy.top 翻译为中文">
+                        <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <span>翻译</span>
+                    </button>
+                    <button class="zotero-btn zotero-btn-compact" type="button" data-paper-index="4" data-state="idle">
+                        <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                        <span class="zotero-label">Add to Zotero</span>
+                    </button>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Haitham El-Hussieny</p>
+                
+                <p><strong>TLDR-CN:</strong> 本文证明了肌腱驱动连续型机器人接触估计的结构性可辨识极限，并提出了利用已知障碍物几何的约束移动视界估计器，实现了实时高精度接触定位和力估计。</p>
+                
+                <p><strong>Overall:</strong> 4/10</p>
+                
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09845v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        AdaptivePnP: Fast Auto-Tuned Plug-and-Play for Deconvolution
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Haley Duba-Sullivan, Emma J. Reid, Charles A. Bouman, Gregery T. Buzzard</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09816v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        BEV3SR: Evidence-Aware 3D Spatial Reasoning from Video
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Fan Zhu, Rui Yu</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: 3d scene, vlm]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09825v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        BitDecoding-FP4: Native FP4 KV Cache Decoding via Algorithm-System Co-Design
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Dayou Du, Woon Yee Ng, Guangming Sheng, Nick Lau, Jianyi Cheng, Luo Mai</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09891v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        CPU-ARC: Agentic Reasoning Caching for on-CPU Reasoning Reuse
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Peter Belcak, Greg Heinrich, Saurav Muralidharan, Shizhe Diao, Pavlo Molchanov</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09836v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Can Agentic Systems Close the Gap in Radiology with Production AI Tools?
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Aubin Charley, Julien Khlaut, Charles Corbière, Pierre Manceron, Corentin Dancette, Léo Machado</p>
+                
+                <p><strong>Stage1:</strong> tier3 exclude hit: ['radiology'] <span style="opacity: 0.7;">[hits: radiology]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09828v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Designing Effective Monitor-Based Interventions for Mitigating Reward Hacking During RL
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Aria Wong, Joshua Engels, Neel Nanda</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5 <span style="opacity: 0.7;">[hits: reinforcement learning]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09822v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Discovering formally verified quantum programs with AI
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Sergey Shirobokov, Ben Jaderberg, Katerina Hristova, George Tsoukalas, Johannes Bausch, Eric Wieser, Francisco J. H. Heras, Nicholas C. Rubin, Guang Hao Low, Sébastien Racanière, Nenad Tomašev, Lei M. Zhang, James Watson, Tanuj Khattar, Aws Albarghouthi, Stavan Jain, Harun Khan, Leopoldo Sarra, Andrew W. Senior, Michael Broughton, Hussain Masoom, Sergio Boixo, Ryan Babbush, Swarat Chaudhuri, Pushmeet Kohli</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09846v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Ensemble Methodology for Reference-Free Confidence Estimation in LLM-based Code Summarization
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Marco Colombo, Balaji A Jayaram, Sowmyakumari Selvaraj, Sumit Tokkar, Animesh Kumar, Aravinda Prasad Sistla, Ravishankar Shetty, Rigel Gjomemo</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09843v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Fifty-Two Shades of Pig: What the UCR Archive Really Asks Classifiers to Do
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Omar Swelam, Jaris Küken, Shi Bin Hoo, Frank Hutter, Lennart Purucker</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09863v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Flow-Guided Target-Space Alignment via Path Consistency
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ruizhi Yuan, Zeqiu Yu, Wei Gao, Wei Chen, Xiwei Tang, Lu Tang</p>
+                
+                <p><strong>Stage1:</strong> tier3 exclude hit: ['mapping', 'single cell'] <span style="opacity: 0.7;">[hits: mapping, single cell]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09882v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        FlowMoP: Stochastic Multi-Person Motion Prediction
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Aadya Agrawal, Ho Kei Cheng, Alexander Schwing</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09866v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        GRAC: Graph-Based Retrieval-Augmented Captioning for Surgical Scene Description
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Rochak Dhakal, Chen Zhao, Soup Cobb, Xin Qian, Xiaofeng Yang, Weihua Zhou</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09818v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Generative Latent Priors for Interpreting and Steering Protein Language Models
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Daniel Hinjos, Lucía Urcelay</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09878v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Graded convolutional networks: scale invariance without the scale and robustness to unknown blur
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Tanush Shaska</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09851v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Health-System-Wide Mapping of Demographic Information in Routine Clinical Histopathology
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Shengjia Chen, Ruchika Verma, Kevin Clare, Paula Restrepo, Jannes Jegminat, Eugenia Alleva, Kuan-lin Huang, Aryeh Stock, Brandon Veremis, Thomas Fuchs, Gabriele Campanella</p>
+                
+                <p><strong>Stage1:</strong> tier3 exclude hit: ['mapping', 'pathology'] <span style="opacity: 0.7;">[hits: mapping, pathology]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09817v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Machine learning for lattice QCD
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Gurtej Kanwar, Scott Lawrence, Alessandro Nada, Phiala Shanahan</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09887v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        On the (non-)closedness of the set of ReLU networks
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Eloi Martinet, Leon Bungert</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09872v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        On the Reliability of Majority-Vote Pseudo-Labels in Test-Time Reinforcement Learning
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Haoyu Wang, Ru Wang, Yuanyuan Wang, Jiaxian Guo, Mingming Gong</p>
+                
+                <p><strong>Stage1:</strong> score=4 below threshold 5 <span style="opacity: 0.7;">[hits: reinforcement learning]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09854v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Super-resolved digital terrain models for GEDI geolocation correction: agreement with airborne LiDAR DTM-based corrections at the beam level, not the footprint level
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Natsuki Yuda, Shinichiro Shirota</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09815v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        The Cost of Coverage: Conformalising Native Forecast Uncertainty for GB Wind Power
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Carl Somers</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09894v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Video-Coder: Reinforcing Agentic Coding for Video Generation
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Chaoyang Wang, Sicheng Gao, Junan Hu, Kunyang Li, Dongyang Chen, Yiyang Zhou, Huaxiu Yao, Yong Jae Lee, Radu Timofte, Yuzhang Shang</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: 3d scene, reinforcement learning]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.09880v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        ZeoBench: A Benchmark for Self-Supervised Learning on 3D Zeolite Representations
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Aaron Sun, Yachan Liu, Ping Yang, Peng Bai, Subhransu Maji</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+        </div>
+    </section>
+
+    <footer class="footer">
+        Generated on 2026-11-09 06:53:12 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+    </footer>
+
+
+
+    <script type="application/json" id="papers-data">[{"title": "On Agentic Manipulation Policies", "summary": "Recent work on robot manipulation has focused on specialist policies trained on demonstrations. We show that generalist AI models can control manipulators more reliably than specialist policies such as vision-language-action models (VLAs) and world-action models (WAMs). We systematically analyze agentic manipulation policies (AMPs), in which a generalist AI model commands the manipulator directly, adapting its actions as the task unfolds. We present AMP1, a reference harness that runs unchanged across single-arm, bimanual, and mobile manipulation. AMP1 achieves state-of-the-art results on the RoboLab-120 and CaP-Gym benchmarks, with no demonstrations or task-specific training. On RoboLab-120, AMP1 reaches an 85.6\\% success rate zero-shot, compared to 49.2\\% and 42.9\\% for leading VLA and WAM policies. The agent succeeds zero-shot in 104 of 108 real-world trials spanning twelve tasks and three robot instances, reducing failure rates by 20x and 15x relative to strong VLA and WAM baselines. The basic harness supplies no grasping, pushing, or placing skills; the agent develops its own strategies, such as searching for hidden objects, using objects as tools, and calibrating its cameras. With the addition of a persistent memory store, the agent can also learn from experience: an augmented harness with a memory representation that is carried across episodes lowers the failure rate on RoboDojo bimanual manipulation tasks by 4.6x relative to zero-shot deployment. Our analysis suggests that AMPs are substantially more general and robust than specialist manipulation policies, providing a promising foundation for robot manipulation.", "url": "http://arxiv.org/abs/2611.09892v1", "authors": ["Chen Chen", "Omid Bagherieh", "Naveen Nikamanth Appiah Balaji", "Jesse T. Gonzalez", "Negin Heravi", "Fahad Islam", "Xueting Li", "Jean-Baptiste Regli", "Kejia Ren", "Petr \u0160vec", "David J. Yoon", "Matthias M\u00fcller", "Vladlen Koltun"], "keywords": ["agentic manipulation policies", "generalist AI models", "zero-shot manipulation", "RoboLab-120", "bimanual manipulation"]},{"title": "Scenario Orchestration for Closed-loop Policy Evaluation of Autonomous Driving", "summary": "Scenario-based simulation is central to evaluating autonomous-driving policies, but a scenario scripted before execution (i.e., with predetermined, fixed actor routes and speeds) may not preserve its intended interaction once the tested ego policy responds in closed loop. Scripted scenarios cannot adapt to unanticipated ego behavior, while learned traffic actors may remain reactive without reliably realizing a particular scenario intent. We introduce a scenario orchestrator that continuously monitors the joint traffic state and adapts non-ego actors through re-timing, re-routing, and role reassignment for creating a specific scenario intent. At each step, the orchestrator solves a constrained optimization problem that preserves the intended interaction while limiting interventions and maintaining traffic feasibility. We further distinguish scenario realization from policy failure, allowing a test to first be judged based on whether the intended interaction occurred and then by how the ego policy responded. Experiments in the CARLA simulator across multiple scenario families and driving policies show that orchestration realizes targeted interactions more reliably than scripted and learned actor-level baselines, particularly under variations in initial conditions and ego behavior. These results support closed-loop scenario orchestration as a tool for controlled and reproducible policy evaluation.", "url": "http://arxiv.org/abs/2611.09888v1", "authors": ["Frieda Rong", "Zhaoyue Wang", "Veer Kapadia", "Vishaka Rajani", "Aren A. Babikian", "Xujie Si", "Mahsa Golchoubian", "Raquel Urtasun", "Igor Gilitschenski"], "keywords": ["scenario orchestration", "closed-loop policy evaluation", "constrained optimization", "CARLA simulator", "scenario-based simulation"]},{"title": "Grasp-TAGS: Task-Aware Grasp Selection via Critic Distillation for Prehensile Loco-Manipulation", "summary": "Loco-manipulation, which requires mobile manipulators to coordinate locomotion and manipulation over long horizons, is a key capability for large-object rearrangement in applications such as service robotics and warehouse automation. Despite recent progress, reliably executing these tasks remains challenging because performance depends on complex robot-object and object-environment interaction dynamics. Existing approaches address this challenge either through model-based methods, which often require accurate dynamics models, or through learning-based methods, which reduce this requirement but typically assume a fixed or predefined initial grasp. However, different geometrically stable grasps can lead to substantially different downstream manipulation performance. Therefore, we propose Grasp-TAGS, a task-aware grasp selection framework for goal-conditioned large-object rearrangement. We train a unified PPO-based reinforcement learning policy across multiple initial grasp configurations and distill the learned critic into a lightweight grasp utility network that ranks candidate grasps using only the candidate grasp configuration and goal information. At inference time, we select the grasp with the highest predicted downstream utility for the downstream policy to complete the task, before even making a contact. Experiments demonstrate that Grasp-TAGS improves rearrangement success over both fixed single-grasp policies and random grasp selection, achieving an average success rate of 89.84% compared with 79.87% for the best-performing single-grasp policies, an improvement of 9.97 percentage points. Grasp-TAGS also reduces final orientation errors across all evaluated objects. For more qualitative results, refer to the supplementary webpage: https://rpm-lab-umn.github.io/Grasp-TAGS-web-page/", "url": "http://arxiv.org/abs/2611.09864v1", "authors": ["Xun Tu", "Minghao Zou", "Karthik Desingh"], "keywords": ["grasp selection", "loco-manipulation", "reinforcement learning", "critic distillation", "mobile manipulation"]},{"title": "Computer-Use Agents Are Embodied Generalists", "summary": "In many areas of AI, general-purpose models have increasingly replaced handcrafted methods and specialized architectures. We argue that embodied AI is poised for a similar shift. Our key claim is that embodied tasks can be formulated as interaction with digital software. Specifically, we build software that renders an agent\u0027s view of a physical environment on a screen and provides controls for acting in it. A computer-use agent (CUA) can then perform embodied tasks through the same screenshots and keyboard and mouse actions that it uses to operate ordinary software. Using a single CUA design and changing only the software, our entries win first-, second-, third-, and sixth-place prizes across four ECCV workshop competitions, without any competition-specific agent tuning. These results suggest that the skills CUAs learn on software, such as visual grounding, precise clicking, and exploration, already carry over to embodied tasks, giving CUAs a far broader scope in embodied AI than previously realized. We therefore advocate that computer-use agents can be embodied generalists. Further, we advocate that, by following the training strategy that made computer-use agents general, embodied AI can converge on a single general model as well, ushering in a new era of general embodied AI. Website: https://pranjal2041.github.io/cua-embodied", "url": "http://arxiv.org/abs/2611.09847v1", "authors": ["Pranjal Aggarwal", "Sean Welleck"], "keywords": ["computer-use agents", "embodied generalists", "screenshots", "keyboard and mouse actions", "competition results"]},{"title": "Locating Contact on Tendon-Driven Continuum Robots From Tendon Measurements Alone via Constrained Moving Horizon Estimation", "summary": "Tendon-driven continuum robots can reach through constrained spaces, but contact along their bodies is invisible to the sensors at their motors. We show that this is a structural limitation rather than a tuning problem: the map from contact forces to tendon measurements has a null space of dimension at least seven, so no estimator that leaves the contact support free can locate contact. When the obstacle geometry is known, however, non-penetration and complementarity make the contact force locally identifiable, and we prove that the resulting system with unknown contact inputs is locally exponentially strongly detectable. We present a constrained moving horizon estimator (MHE) that encodes these conditions and runs in real time as one quadratic program per sample, and we give a local, mode-wise robust stability result for it. In a finite- element benchmark of a two-section robot pressing and sliding on a wall, the estimator located contact to 0.9 mm and estimated contact force to 0.22 N, compared with 65 mm and 0.72 N for a tuned extended Kalman filter (EKF) with state projection. The estimator tolerated millimeter- level errors in the obstacle position and unmodeled wall friction, under which the projected EKF failed. Under randomized model mismatch over 40 trials, including unmodeled tendon friction, it remained better in force and location in every trial. Without contact, the MHE offered no advantage over the EKF, which confirms that its benefit comes from the contact constraints. This report extends a letter submitted to IEEE Control Systems Letters with complete proofs and additional experiments.", "url": "http://arxiv.org/abs/2611.09877v1", "authors": ["Haitham El-Hussieny"], "keywords": ["tendon-driven continuum robot", "contact estimation", "moving horizon estimation", "identifiability", "real-time"]}]</script>
+
+
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
+</body>
+</html>
