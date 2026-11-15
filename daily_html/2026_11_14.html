@@ -1,0 +1,1570 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArXiv Robotics Papers (RL/VLM/World Models/LLMs/VLA/VLN) - November 14, 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.16.4/framer-motion.dev.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        :root {
+            /* New Palette: Light, Clean, Futuristic with Tsinghua Purple accents */
+            --bg-color: #f8fafc; /* Tailwind slate-50 (Very Light Gray) */
+            --card-bg-color: #ffffff; /* White */
+            --text-color: #1e293b; /* Tailwind slate-800 (Dark Gray-Blue) */
+            --text-muted-color: #64748b; /* Tailwind slate-500 (Medium Gray-Blue) */
+            --header-color: #0f172a; /* Tailwind slate-900 (Very Dark Blue) */
+            --highlight-primary: #7B2C9F; /* Tsinghua Purple */
+            --highlight-secondary: #B794D3; /* Light Tsinghua Purple */
+            --border-color: #e2e8f0; /* Tailwind slate-200 (Light Gray) */
+            --shadow-color: rgba(15, 23, 42, 0.08); /* Subtle shadow based on slate-900 */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            line-height: 1.6;
+        }
+
+
+        .bento-grid {
+            display: grid;
+            gap: 1.5rem; /* Tailwind gap-6 */
+            grid-template-columns: 1fr; /* Force single column */
+            padding-bottom: 4rem; /* Add padding at the bottom */
+        }
+
+        .bento-item {
+            /* Apply semi-transparent white background and blur */
+            background-color: rgba(255, 255, 255, 0.7); /* White with 70% opacity */
+            backdrop-filter: blur(10px); /* Apply blur effect */
+            -webkit-backdrop-filter: blur(10px); /* Safari prefix */
+            border-radius: 1rem; /* Slightly larger radius */
+            padding: 1.75rem; /* Slightly more padding */
+            border: 1px solid rgba(226, 232, 240, 0.5); /* Lighter border with transparency */
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.3s ease-out;
+            overflow: hidden; /* Ensure content doesn't overflow */
+            position: relative; /* For potential pseudo-elements */
+        }
+
+        /* Removed ::before pseudo-element for a cleaner look */
+
+
+        .bento-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 20px var(--shadow-color), 0 4px 8px rgba(15, 23, 42, 0.06); /* Adjusted hover shadow */
+        }
+
+        .paper-title {
+            font-size: 1.125rem; /* Tailwind text-lg */
+            font-weight: 600; /* Tailwind font-semibold */
+            color: var(--highlight-primary); /* Use new primary highlight */
+            margin-bottom: 0.75rem; /* Tailwind mb-3 */
+            line-height: 1.4;
+        }
+
+        .paper-summary {
+            font-size: 0.85rem;
+            color: var(--text-muted-color);
+            margin-bottom: 1.25rem;
+            line-height: 1.6;
+        }
+        /* Chinese summary: emphasize for at-a-glance scanning */
+        .paper-summary-zh {
+            font-size: 0.95rem;
+            color: #1e293b;            /* slate-800, darker than English */
+            font-weight: 500;          /* slightly bolder body text */
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 1.25rem;
+            line-height: 1.65;
+        }
+        .paper-summary-zh strong {
+            font-weight: 700;
+            color: var(--highlight-primary);
+        }
+
+        .paper-link {
+            display: inline-flex; /* Use flex for icon alignment */
+            align-items: center;
+            font-size: 0.875rem; /* Tailwind text-sm */
+            font-weight: 600;
+            color: var(--highlight-primary);
+            text-decoration: none;
+            padding: 0.5rem 1rem; /* Add padding */
+            border-radius: 0.5rem; /* Slightly rounder */
+            background-color: rgba(123, 44, 159, 0.08); /* Subtle purple background */
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
+
+        .paper-link .report-icon {
+            margin-right: 0.5rem; /* Tailwind mr-2 */
+            transition: transform 0.3s ease;
+        }
+
+        .paper-link:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F; /* Darker purple on hover */
+            transform: translateY(-1px);
+        }
+        .paper-link:hover .report-icon {
+             transform: translateX(2px);
+        }
+
+        .paper-authors {
+            font-size: 0.75rem; /* Tailwind text-xs */
+            color: var(--text-muted-color);
+            margin-top: 1rem; /* Tailwind mt-4 */
+            font-style: italic;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem; /* Tailwind mb-12 */
+            padding-top: 3rem; /* Tailwind pt-12 */
+        }
+
+        .header h1 {
+            font-size: 2.5rem; /* Tailwind text-4xl or 5xl */
+            font-weight: 700; /* Tailwind font-bold */
+            color: var(--header-color);
+            letter-spacing: -0.025em; /* Tailwind tracking-tight */
+            margin-bottom: 0.5rem;
+            /* Optional: Add a subtle text gradient (Tsinghua Purple) */
+            /* background: linear-gradient(90deg, var(--highlight-primary), var(--highlight-secondary)); */
+            /* -webkit-background-clip: text; */
+            /* -webkit-text-fill-color: transparent; */
+        }
+
+        .header p {
+            font-size: 1.125rem; /* Tailwind text-lg */
+            color: var(--text-muted-color);
+            margin-top: 0.5rem; /* Tailwind mt-2 */
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .footer {
+            text-align: center;
+            color: var(--text-muted-color);
+            font-size: 0.875rem; /* Tailwind text-sm */
+            padding-top: 2rem;
+            padding-bottom: 2rem; /* Tailwind py-8 */
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        /* Simple line graphic element (optional) */
+        .line-graphic {
+            height: 1px; /* Thinner line */
+            background: linear-gradient(90deg, rgba(123, 44, 159, 0), var(--highlight-primary), rgba(123, 44, 159, 0));
+            opacity: 0.6;
+            margin: 1.5rem 0; /* Adjust margin */
+        }
+
+        /* Framer Motion requires the script, styles enhance appearance */
+        [data-motion-element] {
+             /* Base styles for elements animated by Framer Motion */
+        }
+
+        .paper-tldr {
+            font-size: 0.88rem;
+            color: #64748b;            /* slate-500: lighter, supporting role */
+            margin-top: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.55;
+        }
+        /* Chinese TLDR: the at-a-glance lead, biggest and boldest */
+        .paper-tldr-zh {
+            font-size: 1rem;
+            color: #0f172a;            /* slate-900: maximum contrast */
+            margin-top: 0.5rem;
+            margin-bottom: 0.85rem;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+        .paper-tldr-zh strong {
+            color: var(--highlight-primary);
+            font-weight: 700;
+        }
+
+        .paper-rating {
+            margin-top: 1rem; /* Tailwind mt-4 */
+            margin-bottom: 1rem; /* Tailwind mb-4 */
+            color: #f59e0b; /* Tailwind amber-500 */
+        }
+
+        .report-icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.125em;
+            overflow: visible;
+            fill: currentColor;
+            flex: 0 0 auto;
+        }
+
+        .paper-rating .report-icon {
+            margin-right: 0.125rem; /* Tailwind mr-0.5 */
+        }
+
+        /* Apply consistent star color to sub-ratings */
+        .paper-sub-ratings .rating-item .report-icon {
+            color: #f59e0b; /* Match overall rating star color (amber-500) */
+            margin-right: 0.125rem; /* Consistent spacing */
+        }
+
+        .filtered-section {
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .filtered-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--header-color);
+            margin-bottom: 1rem;
+        }
+
+        .filtered-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .filtered-item {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .filtered-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
+        }
+
+        .filtered-item-title-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: color 0.25s ease;
+        }
+
+        .filtered-item-title-link:hover {
+            color: var(--highlight-primary);
+        }
+
+        .filtered-item-title-link .report-icon {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .filtered-item p {
+            margin: 0.25rem 0;
+            color: var(--text-muted-color);
+            font-size: 0.88rem;
+        }
+
+        /* Topic chip — small colored label next to the title */
+        .topic-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.18rem 0.6rem;
+            border-radius: 999px;
+            margin-left: 0.5rem;
+            vertical-align: 2px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topic-vla,
+        .topic-worldmodel {
+            background: rgba(123, 44, 159, 0.12);
+            color: #6B1F8F;
+            border: 1px solid rgba(123, 44, 159, 0.3);
+        }
+        .topic-autonomousdriving {
+            background: rgba(37, 99, 235, 0.12);
+            color: #1d4ed8;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+        }
+        .topic-manipulation,
+        .topic-locomotion,
+        .topic-humanoidembodied {
+            background: rgba(16, 185, 129, 0.12);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .topic-vln,
+        .topic-rlrobot {
+            background: rgba(245, 158, 11, 0.14);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+        }
+        .topic-perception3d,
+        .topic-other {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .paper-keywords {
+            margin-top: 0.4rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+        .paper-keywords .kw {
+            font-size: 0.72rem;
+            color: var(--text-muted-color);
+            background: rgba(100, 116, 139, 0.08);
+            padding: 0.12rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid rgba(100, 116, 139, 0.15);
+        }
+
+        /* Add-to-Zotero button — sibling of .paper-link. The desktop App sets
+           body.zotero-mode after its isolated report RPC is ready; the public
+           website remains read-only. */
+        .zotero-btn {
+            display: none;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--highlight-primary);
+            background-color: rgba(123, 44, 159, 0.08);
+            border: 1px solid rgba(123, 44, 159, 0.2);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        body.zotero-mode .zotero-btn {
+            display: inline-flex;
+        }
+        .zotero-btn:hover {
+            background-color: rgba(123, 44, 159, 0.15);
+            color: #6B1F8F;
+            transform: translateY(-1px);
+        }
+        .zotero-btn.saved {
+            color: #fff;
+            background: linear-gradient(135deg, var(--highlight-primary), var(--highlight-secondary));
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(123, 44, 159, 0.28);
+        }
+        .zotero-btn.saved:hover {
+            filter: brightness(1.08);
+            color: #fff;
+        }
+        .zotero-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        /* Inline-SVG icon container. Sized to match the surrounding text and
+           inherits color from the button via fill="currentColor" on the SVG. */
+        .zotero-btn .zotero-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1em;
+            height: 1em;
+            transition: transform 0.3s ease;
+        }
+        .zotero-btn .zotero-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            display: block;
+        }
+        /* Match the Read Paper hover animation: button lifts (already on
+           .zotero-btn:hover), icon nudges + scales for the same kind of
+           crispness. */
+        .zotero-btn:hover .zotero-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        /* Compact variant used on the low-score (filtered) cards */
+        .zotero-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Translate button — sibling of .paper-link / .zotero-btn.
+           Subtle slate styling so it doesn't compete visually with the
+           Zotero purple. Always visible (translation doesn't require any
+           credentials — it just deep-links to hjfy.top). */
+        .translate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-left: 0.6rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: #475569; /* slate-600 */
+            background-color: rgba(100, 116, 139, 0.08);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            vertical-align: middle;
+        }
+        .translate-btn:hover {
+            background-color: rgba(100, 116, 139, 0.18);
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+        .translate-btn:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+        .translate-btn .report-icon {
+            transition: transform 0.3s ease;
+        }
+        .translate-btn:hover .report-icon {
+            transform: scale(1.18) translateX(1px);
+        }
+
+        .translate-btn-compact {
+            padding: 0.32rem 0.7rem;
+            font-size: 0.78rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Toast notifications for Save / Unsave success+error */
+        #toast-tray {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.7rem 1.1rem;
+            border-radius: 0.5rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            pointer-events: auto;
+            min-width: 200px;
+            max-width: 360px;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            border-left: 4px solid #047857;
+        }
+        .toast-error {
+            border-left: 4px solid #b91c1c;
+            color: #b91c1c;
+        }
+
+    </style>
+</head>
+<body class="container mx-auto px-4 antialiased">
+    <motion.div
+        initial="{ opacity: 0, y: -30 }"
+        animate="{ opacity: 1, y: 0 }"
+        transition="{ duration: 0.6, ease: 'easeOut' }"
+        class="header"
+        data-motion-element
+    >
+        <h1>Robotics Daily Papers</h1>
+        <p>Daily papers related to Robotics, Reinforcement Learning, Vision-Language Models, World Models, LLMs, VLA, and VLN</p>
+        <p>November 14, 2026</p>
+        <div class="line-graphic mt-4 mb-8 mx-auto w-1/4"></div> <!-- Added line graphic -->
+    </motion.div>
+
+    <div class="bento-grid" id="paper-grid">
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.0, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                ProtoVis-Nav: Prototypical Visual Imagination for Visual-Spatial Aligned UAV Navigation
+                
+                <span class="topic-chip topic-vln">VLN</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">vision language navigation</span>
+                
+                <span class="kw">prototypical visual imagination</span>
+                
+                <span class="kw">UAV navigation</span>
+                
+                <span class="kw">visual-spatial alignment</span>
+                
+                <span class="kw">waypoint prediction</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>ProtoVis-Nav 针对无人机视觉语言导航，提出原型视觉想象框架，通过预测局部视觉特征原型来对齐视觉上下文与航点输出，提升导航精度。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> ProtoVis-Nav introduces a prototypical visual imagination framework for UAV vision-language navigation, predicting local visual feature prototypes to align visual context with waypoint outputs and improve navigation accuracy.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Vision language navigation (VLN) is very challenging for Unmanned Aerial Vehicles (UAVs) since small errors in 3D motion prediction can lead to navigation errors and collisions. Unable to fathom execution outcomes in 3D environments, existing methods often struggle to predict accurate navigation waypoints from language instructions. To solve this, we introduce the Prototypical Visual Imagination framework, shortened as ProtoVis-Nav, which forces the model to imagine an outcome-associated local visual representation for the intended next UAV movement. Specifically, we predict feature prototypes and use their linear combination to estimate the visual feature of the target region. In this manner, the VLN model first imagines the local visual representation of the next intended location, and then uses predicted prototypes as context for generating the final action, promoting alignment between visual context and waypoint outputs. Extensive experiments demonstrate the effectiveness of the ProtoVis-Nav framework and show substantial improvements over existing baselines.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>视觉语言导航（VLN）对于无人驾驶飞行器（UAV）而言极具挑战性，因为三维运动预测中的微小误差可能导致导航错误甚至碰撞。现有方法往往难以从语言指令中准确预测导航航点，其原因在于无法在三维环境中推演执行结果。为解决这一问题，我们提出了原型视觉想象框架，简称ProtoVis-Nav，该框架迫使模型为无人机预期的下一步运动想象一个与执行结果相关联的局部视觉表征。具体而言，我们预测特征原型，并通过其线性组合来估计目标区域的视觉特征。通过这种方式，VLN模型首先想象下一预期位置的局部视觉表征，然后利用所预测的原型作为上下文生成最终动作，从而促进视觉上下文与航点输出之间的对齐。大量实验验证了ProtoVis-Nav框架的有效性，并在现有基线方法的基础上取得了显著改进。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2611.17330v1" target="_blank" class="paper-link">
+                <svg class="report-icon report-icon-pdf mr-1" data-report-icon="pdf" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 2.5h7l4 4v15H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2.5v4h4M9.2 17.8v-5.6h1.65a1.75 1.75 0 010 3.5H9.2m5.1 2.1v-5.6h1.25c1.5 0 2.45 1.05 2.45 2.8s-.95 2.8-2.45 2.8z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="0" title="在 hjfy.top 翻译为中文">
+                <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="0" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Guangyuan Sui, Yunzhong Hou, Chi Harold Liu</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.05, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                HEIR: Harness Egocentric Intent for Human-Robot Interactions
+                
+                <span class="topic-chip topic-vla">VLA</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">egocentric intent</span>
+                
+                <span class="kw">human-robot interaction</span>
+                
+                <span class="kw">long-horizon tasks</span>
+                
+                <span class="kw">navigation-manipulation</span>
+                
+                <span class="kw">multimodal</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>HEIR 提出了一个配对人类第一人称视频、目光、语音与机器人轨迹的基准数据集，用于长时程导航-操作任务，并通过离线和真实机器人实验展示了人类中心上下文的价值。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> HEIR presents a benchmark dataset pairing human egocentric video, gaze, and speech with robot trajectories for long-horizon navigation-manipulation tasks, along with offline and real-robot experiments demonstrating the value of human-centric context.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> For robots to assist, serve, and collaborate with humans, they must not only interpret human requests conveyed through language and multimodal intentional cues, but also execute long-horizon tasks that interleave navigation and manipulation. In this paper, we introduce HEIR, a resource for studying how to Harness Egocentric Intent for Human-Robot Interaction. HEIR pairs human speech, measured gaze, and egocentric video with robot observations and teleoperated navigation-manipulation trajectories, while each session preserves successive episodes, with each request fulfilled through multiple execution subtasks. The captured data, together with human-authored annotations, support the study of intent grounding, execution planning, and task completion within a unified interaction setting. To demonstrate the value of HEIR, we conduct extensive offline experiments to evaluate how models benefit from additional human-centric context across these tasks, together with real-robot experiments that assess execution task completion. HEIR thus provides a valuable resource for studying user-centric robot interaction in naturalistic household environments. Our demo and dataset are available online.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>为了让机器人能够协助、服务并与人类协作，它们不仅需要理解通过语言和多模态意图线索传达的人类请求，还需要执行将导航与操作交织在一起的长时程任务。在本文中，我们介绍了HEIR，一个用于研究如何利用自我中心意图进行人机交互的资源。HEIR将人类语音、测量的注视方向以及自我中心视频与机器人观测数据和远程操作的导航-操作轨迹配对，同时每个会话保留了连续的片段，每个请求通过多个执行子任务来完成。所采集的数据连同人工标注，支持在统一的交互场景下研究意图接地、执行规划以及任务完成。为了展示HEIR的价值，我们进行了广泛的离线实验，以评估模型如何从这些任务中额外的人类中心上下文中受益，同时进行了真实机器人实验来评估执行任务完成情况。因此，HEIR为在自然家居环境中研究以用户为中心的机器人交互提供了宝贵的资源。我们的演示和数据集可在网上获取。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(9/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2611.17238v1" target="_blank" class="paper-link">
+                <svg class="report-icon report-icon-pdf mr-1" data-report-icon="pdf" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 2.5h7l4 4v15H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2.5v4h4M9.2 17.8v-5.6h1.65a1.75 1.75 0 010 3.5H9.2m5.1 2.1v-5.6h1.25c1.5 0 2.45 1.05 2.45 2.8s-.95 2.8-2.45 2.8z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="1" title="在 hjfy.top 翻译为中文">
+                <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="1" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Yichi Zhang, Bo Wang, Zhenghan Zhu, Yutong Han, Jiayin Zou, Gao Kejun, Chang Liu, Shaoxuan Xie, Chi Zhang, Shi Haoyang, Zongxuan Lai, Sen Cui, Guocai Yao, Miao Liu</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.1, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                Collaborative Task Allocation for Heterogeneous Multi-Robot Systems Through Iterative Clustering
+                
+                <span class="topic-chip topic-other">Other</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">iterative clustering</span>
+                
+                <span class="kw">task allocation</span>
+                
+                <span class="kw">multi-robot systems</span>
+                
+                <span class="kw">heterogeneous robots</span>
+                
+                <span class="kw">collaborative teams</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>本文提出了一种用于异构多机器人系统协作任务分配的迭代聚类算法，将全局优化问题分解为更小的子问题，并保证效用的单调提升。在仿真中，该方法在计算时间和解质量上优于模拟退火、基于组的拍卖和偏好的博弈方法。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> This paper proposes an iterative clustering algorithm for collaborative task allocation in heterogeneous multi-robot systems, which decomposes the global optimization problem into smaller subproblems and guarantees monotonic utility improvement. The method outperforms simulated annealing, group-based auction, and hedonic game approaches in simulation.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Multi-robot systems face the challenge of efficiently allocating teams of heterogeneous robots to tasks. The task allocation problem is complicated by collaborative interactions between robots where teams of robots develop emergent capabilities that enable them to complete tasks that would be inefficient or impossible for individual robots. To address these challenges, we present an iterative clustering algorithm for collaborative task allocation in heterogeneous multi-robot systems. This approach partitions the computationally intractable global optimization problem into smaller, tractable subproblems by iteratively forming clusters of robots and tasks, then optimizing assignments within each cluster. By ensuring robots remain clustered with their currently assigned tasks, we guarantee monotonic improvement in overall utility with each iteration. We analyze the convergence of the algorithm and characterize how cluster size constraints determine which suboptimal assignments could trap the algorithm. In simulation, iterative clustering consistently outperforms simulated annealing, and a group-based auction in both computation time and solution quality, and outperforms a hedonic game approach in solution quality.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>多机器人系统面临高效地将异构机器人团队分配至任务的挑战。任务分配问题因机器人之间的协作交互而变得复杂，团队中的机器人会涌现出新的能力，使其能够完成单个机器人难以完成或效率低下的任务。为应对这些挑战，我们提出了一种面向异构多机器人系统协作任务分配的迭代聚类算法。该方法将计算上难以处理的全局优化问题分解为多个规模较小、易于处理的子问题，通过迭代地构建机器人与任务的聚类，并在每个聚类内优化分配方案。通过确保机器人始终与其当前分配的任务保持在同一聚类中，我们保证了每次迭代中整体效用的单调提升。我们分析了该算法的收敛性，并刻画了聚类规模约束如何决定可能导致算法陷入次优分配的局部最优解。仿真结果表明，迭代聚类在计算时间和解的质量上均持续优于模拟退火算法和基于群体的拍卖方法，并且在解的质量上优于启发式博弈方法。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(5/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(6/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2611.17213v1" target="_blank" class="paper-link">
+                <svg class="report-icon report-icon-pdf mr-1" data-report-icon="pdf" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 2.5h7l4 4v15H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2.5v4h4M9.2 17.8v-5.6h1.65a1.75 1.75 0 010 3.5H9.2m5.1 2.1v-5.6h1.25c1.5 0 2.45 1.05 2.45 2.8s-.95 2.8-2.45 2.8z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="2" title="在 hjfy.top 翻译为中文">
+                <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="2" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: David R. Martin, Brooks A. Butler, Scott Nivison, Magnus Egerstedt, Mohammad Abdullah Al Faruque, Pramod Khargonekar</p>
+            
+        </motion.div>
+        
+        <motion.div
+            initial="{ opacity: 0, y: 50, scale: 0.9 }"
+            whileInView="{ opacity: 1, y: 0, scale: 1 }"
+            viewport="{ once: true, amount: 0.2 }" /* Trigger when 20% is visible */
+            transition="{ duration: 0.5, delay: 0.15000000000000002, ease: 'easeOut' }"  
+            class="bento-item"
+            data-motion-element
+        >
+            <h2 class="paper-title">
+                Spatial Foundry: A Multimodal Dataset for Spatial Intelligence
+                
+                <span class="topic-chip topic-worldmodel">WorldModel</span>
+                
+            </h2>
+            
+            <div class="paper-keywords">
+                
+                <span class="kw">multimodal dataset</span>
+                
+                <span class="kw">spatial intelligence</span>
+                
+                <span class="kw">3D scenes</span>
+                
+                <span class="kw">world modeling</span>
+                
+                <span class="kw">camera trajectories</span>
+                
+            </div>
+            
+            
+            <p class="paper-tldr-zh"><strong>简要说明：</strong>Spatial Foundry 是一个大规模的多模态数据集，包含带家具的住宅3D场景，以及对齐的视觉、几何和时间数据，旨在支持3D生成、重建、感知和世界建模等空间智能研究。</p>
+            
+            
+            <p class="paper-tldr"><strong>TLDR:</strong> Spatial Foundry is a large multimodal dataset of furnished residential 3D scenes with aligned visual, geometric, and temporal data, designed to support spatial intelligence research in tasks like 3D generation, reconstruction, perception, and world modeling.</p>
+            
+            <p class="paper-summary"><strong>Abstract:</strong> Spatial intelligence requires connecting visual observations to the geometry, objects, and persistent state of an environment. Images alone leave these relationships implicit, while disconnected annotations make it difficult to study appearance, camera motion, and scene changes under a common reference. We introduce Spatial Foundry, a collection of 5,280 furnished residential 3D scene configurations with editable assets and aligned visual, geometric, and temporal data. Its modalities include floor plans, perspective and panoramic RGB, metric depth, point clouds, meshes, instance-level 3D bounding boxes, and camera trajectories paired with video. Shared scene coordinates link observations across views and time; editable source scenes enable additional camera paths and controlled object changes. We describe the data representation and construction workflow, and discuss applications in floor-plan-conditioned 3D generation, geometric reconstruction, instance-level perception, camera-conditioned video generation, shared world modeling, and scene editing. Controlled camera and scene variations support spatial perception and world-model research. The public project page provides videos and an interactive colored point-cloud preview.</p>
+            
+            <p class="paper-summary-zh"><strong>摘要（中文）：</strong>空间智能要求将视觉观察与环境中的几何结构、物体及持久状态联系起来。仅凭图像，这些关系往往隐晦不明，而零散的标注又使得在统一参照系下研究外观、相机运动及场景变化变得困难。为此，我们提出“空间铸造厂”（Spatial Foundry），一个包含5，280个带可编辑资产及对齐的视觉、几何与时序数据的精装修住宅3D场景配置数据集。其模态涵盖平面图、透视与全景RGB图像、度量深度、点云、网格、实例级3D边界框，以及与视频配对的相机轨迹。共享的场景坐标将跨视角与跨时间的观测关联起来；可编辑的源场景支持额外相机路径与受控物体变化。我们描述了数据表示与构建流程，并讨论了其在平面图条件下的3D生成、几何重建、实例级感知、相机条件视频生成、共享世界建模及场景编辑中的应用。受控的相机与场景变化为空间感知及世界模型研究提供了有力支撑。公开项目页面提供了视频与交互式彩色点云预览。</p>
+            
+
+            
+            
+            <div class="paper-sub-ratings" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px; font-size: 0.8em;">
+                
+                <div class="rating-item">
+                    <span class="rating-label">Relevance:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(6/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Novelty:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Clarity:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(8/10)</span>
+                </div>
+                
+                
+                <div class="rating-item">
+                    <span class="rating-label">Potential Impact:</span>
+                    
+                    <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg><svg class="report-icon report-icon-star-half" data-report-icon="star-half" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6V17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    <span class="text-xs text-gray-500 ml-1">(7/10)</span>
+                </div>
+                
+            </div>
+            
+            
+
+            
+            <div class="paper-rating">
+                <span class="rating-label" style="color: #000; font-weight: bold;">Overall:</span>
+                
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star" data-report-icon="star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                    
+                        <svg class="report-icon report-icon-star-outline" data-report-icon="star-outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.6l2.82 5.72 6.31.92-4.56 4.45 1.08 6.28L12 17l-5.65 2.97 1.08-6.28-4.56-4.45 6.31-.92z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                    
+                
+                <span class="text-xs text-gray-500 ml-1">(6/10)</span>
+            </div>
+            
+
+            <a href="http://arxiv.org/abs/2611.17318v1" target="_blank" class="paper-link">
+                <svg class="report-icon report-icon-pdf mr-1" data-report-icon="pdf" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 2.5h7l4 4v15H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 2.5v4h4M9.2 17.8v-5.6h1.65a1.75 1.75 0 010 3.5H9.2m5.1 2.1v-5.6h1.25c1.5 0 2.45 1.05 2.45 2.8s-.95 2.8-2.45 2.8z" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg> Read Paper (PDF)
+            </a>
+            <button class="translate-btn" type="button" data-paper-index="3" title="在 hjfy.top 翻译为中文">
+                <svg class="report-icon report-icon-language" data-report-icon="language" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 5h9M7.5 3v2m3.5 0c-.8 3.7-3.4 6.5-7 7.5m1-5c1.2 2 3.1 3.7 5.4 4.7M13 20l3.2-8h1.6l3.2 8m-7-3h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>翻译 (hjfy)</span>
+            </button>
+            <button class="zotero-btn" type="button" data-paper-index="3" data-state="idle">
+                <span class="zotero-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.231 2.462 7.18 20.923h14.564V24H2.256v-2.462L16.308 3.076H2.975V0h18.256v2.462z"/></svg></span>
+                <span class="zotero-label">Add to Zotero</span>
+            </button>
+            
+            <p class="paper-authors">Authors: Ethan Lin, Yang Song</p>
+            
+        </motion.div>
+        
+    </div>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤已入选但评分较低（overall &lt; 6.0）</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                <p>没有 overall 低于 6.0 的论文。</p>
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="filtered-section">
+        <h2 class="filtered-title">一级过滤未通过</h2>
+        <div class="filtered-grid">
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17323v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        AgentSSL: Can MLE Agents Leverage Unlabeled Data?
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ethan Lin, Akanksha Sarkar, Ziang Liu, Kristin Branson, Jennifer J. Sun</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17235v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Al-Ghasali: A Computational Framework for Simulating Islamic Jurisprudential Rulings via Finite State Automata and Large Language Models
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Elnaserledinellah Mahmoud Abdelwahab</p>
+                
+                <p><strong>Stage1:</strong> score=2 below threshold 5 <span style="opacity: 0.7;">[hits: mapping]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17332v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        ArchSpace: Recording, Reviewing, and Referencing LLM Architecture Research
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jie Wang, Tong Zhu, JiaHao Kuang, Zhe Xu, Yunkai Chai, Dehong Zheng, Yu Cheng, Tao Ji, ZhouHan Lin, Qi Zhang, Bowen Zhou</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17336v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Back to Pixels: Lifting Latent Video Diffusion into Pixel Space
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Yanke Song, Shuo Chen, Chris Rockwell, Guande He, Nan Liu, Desai Xie, Tianpei Gu, Yong-Hyun Park, Aryan V S, Dennis Yuren Menn, Ming-Hsuan Yang, Xun Huang</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17241v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Ballad: Bandit-Based LLM Routing for Automated Heuristic Discovery
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Samidha Verma, Ankit Anand, Sayan Ranu</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17321v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        BrickFlow: Connectivity-Guided Brick Reconstruction
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Peter Kulits, Cordelia Schmid</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17309v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Classical Energies Learn to Reason 1,000x Faster than Looped Models
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Benjamin Hoover, Hugh Blayney, James C. R. Whittington</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17316v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        CoReMem: Cost-Internalizing Memory for Successive Coding Tasks with Prospective Valuation
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Peiwen Li, Harshit Verma, Sophia Zhou, Haiwen Wang, Ngoc Bui, Heng Chang, Fei Fei, David van Dijk, Rex Ying</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17223v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Combinatorial Bernoulli Factories with Polynomially Many Coins
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Renato Paes Leme, Rad Niazadeh</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17298v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Consistent Video-to-Video Translation via Explicit Correspondences
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Gaurav Parmar, Zhengqi Li, Richard Zhang, Jun-Yan Zhu, Srinivasa Narasimhan, Eli Shechtman, Yotam Nitzan</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17225v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Data Archive for 2D and 3D Electrical Impedance Tomography with moderate conductivity contrast phantoms
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> S. J. Hamilton, A. Hauptmann, A. Hänninen, V. Kolehmainen, J. Niskanen, T. Savolainen, J. Toivanen</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17302v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        FLEX-LBP: Learning Local Binary Patterns with Exact Binary Inference for Texture Classification
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Mohamed Alimoussa, Amal El Kaid</p>
+                
+                <p><strong>Stage1:</strong> tier3 exclude hit: ['histology', 'medical imaging'] <span style="opacity: 0.7;">[hits: histology, medical imaging]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17297v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Goal Encoding in LLMs
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Arnab Sen Sharma, Eric Todd, Sheridan Feucht, Andy Arditi, Rohit Gandikota, Natalie Shapira, Gabriele Sarti, Constanza Fierro, Lisa Schut, David Bau</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17329v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Internalizing Investment Mandates: A Neurosymbolic RL Approach to Portfolio Allocation
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Zeynep Yıldız, Satchit Chatterji, Ercan Atam, Erman Acar</p>
+                
+                <p><strong>Stage1:</strong> score=2 below threshold 5 <span style="opacity: 0.7;">[hits: reinforcement learning]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17214v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Introducing Feedback Delays to Non-Delayed Adversarial MDPs: Optimal $\sqrt S$ and $\sqrt K$ Dependencies in Tabular and Linear AMDPs
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Aarush Kulkarni, Khang Nguyen, William Chang, Yan Dai</p>
+                
+                <p><strong>Stage1:</strong> score=2 below threshold 5 <span style="opacity: 0.7;">[hits: policy optimization]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17324v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        K2V: Generative Keyframing For Physically Plausible Video Generation
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Felix O'Mahony, Daniel Olmeda Reino, Roberto Cipolla, Ayush Tewari</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17228v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Linear Regression with Self-Selection Bias in Polynomial Time
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Felix Zhou</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17314v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Linking Rapid Learning to Compositional Structure in Neural Networks: Evidence from Additive Analogies in Meta-Learned Parameter Spaces
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Abigail L. Tenenbaum, R. Thomas McCoy</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17267v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        LiveGeo: Benchmarking Geographic Agents in Continuously Evolving Worlds
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Pengcheng Zhou, Xuanyu Liu, Yanchen Yin, Tianjie Ju, Bobo Li, Shengqiong Wu, Hao Fei, Mong-Li Lee, Wynne Hsu</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17199v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        MALNISI-Infused Graph Construction and Weighted Contrastive Loss based GAT for Unsupervised Representation Learning in HSI
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Soumi Sarkar, Subhadip Boral, Sarbani Palit, Ashish Ghosh</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17294v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Metal Sandbox: Isolated Execution and Command Scheduling for GPU Coding Agents on Apple Silicon
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Haozhe Wang, Lina Chen, Fanqi Wan, Qi Han, Yinmin Zhang, Zheng Ge, Daxin Jiang, Junchi Yan</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17287v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Negative-Only Policy Optimization for One-Sided Verifiable Rewards
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Jiacheng Xu, Shuo He, Fuxiang Zhang, Chaojie Wang, Bo An</p>
+                
+                <p><strong>Stage1:</strong> score=3 below threshold 5 <span style="opacity: 0.7;">[hits: policy optimization, reinforcement learning]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17240v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Objects as Addresses: Instance Binding in Vision Transformer Attention
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Khalil Sabri, Guillaume-Alexandre Bilodeau, Nicolas Saunier, Wassim Bouachir</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17246v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Programming Quantum Circuit Parameters with Large Language Models
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Tiago de Souza Farias, Caio Moraes Porto, Matheus da Silva Fonseca, Nicolas Armando Cabrera Carpi, Anderson de Araujo Oliveira, Celso Jorge Villas-Boas</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17308v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Quantifying structural stability of transparent models for general insurance pricing
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Félix Côté, Marie-Pier Côté</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17220v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Scalable Conversational Assessment: Chat-Based Exams with a Two-Agent LLM Pipeline
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Geoffrey Challen, Craig Zilles</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17226v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Sheaf-Inspired Structured Scoring Extensions of LightGCN for Collaborative Filtering
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ksenia Belkovskaya, Timur Lidzhiev, Maria Stebliy, Alexander Tarakanov</p>
+                
+                <p><strong>Stage1:</strong> tier3 exclude hit: ['collaborative filtering'] <span style="opacity: 0.7;">[hits: collaborative filtering]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17313v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Sketching Language Models for Context Attribution
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Christopher Liaw, Aranyak Mehta, Grigoris Velegkas, Felix Zhou</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17280v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Synthesis Smuggling: Maliciously Hiding Inferred Personal Attributes in LLM Outputs
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Gautam Galada, Supreeth Shastri, Sagnik Ray Choudhury</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17331v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        TTB: Test-time Baking for Efficient Rendering of Decoder-only View Synthesis Models
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Chin-Yang Lin, Ryo Hachiuma, Jaesung Choe, Min-Hung Chen, Yu-Chiang Frank Wang, Yen-Yu Lin, Wei-Chen Chiu, Yu-Lun Liu, Cheng Sun</p>
+                
+                <p><strong>Stage1:</strong> score=2 below threshold 5 <span style="opacity: 0.7;">[hits: mapping]</span></p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17212v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Theoretical and Empirical Analysis of Sparse Convolution
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Keshvi Tuteja, Yu-Hsiang Tsai, Gregor Olenik, Markus Götz, Achim Streit, Hartwig Anzt, Charlotte Debus</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17303v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Towards a Theory of Learnability via Debate
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Tosca Lechner, Vinayak Pathak, Sivan Sabato, Ruth Urner</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17230v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Two mathematical models of knowledge distillation
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Audrey Xie, Ludwig Schmidt, John Duchi</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17334v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        Unbundling Multimodal Vision Encoding
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Ellis Brown, Chris Hoang, Shengyi Qian, Shang-Wen Li, Mike Lewis, Marjan Ghazvininejad, Luke Zettlemoyer, Lucas Beyer, Mengye Ren, Jakob Verbeek, Saining Xie, Hu Xu</p>
+                
+                <p><strong>Stage1:</strong> score=0 below threshold 5</p>
+            </div>
+            
+            <div class="filtered-item">
+                
+                <h3>
+                    <a href="http://arxiv.org/abs/2611.17239v1" target="_blank" class="filtered-item-title-link" rel="noopener noreferrer">
+                        When Both Sides Adapt: The Challenges of Evaluating Interactive LLM Systems
+                        <svg class="report-icon report-icon-external" data-report-icon="external" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 5h6v6m0-6-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 13v5a1 1 0 01-1 1H6a1 1 0 01-1-1V8a1 1 0 011-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                </h3>
+                
+                
+                <p><strong>Authors:</strong> Hannah Li</p>
+                
+                <p><strong>Stage1:</strong> score=1 below threshold 5</p>
+            </div>
+            
+        </div>
+    </section>
+
+    <footer class="footer">
+        Generated on 2026-11-15 06:49:34 UTC. Powered by <a href="https://github.com/scpsyl" target="_blank">scpsyl</a>.
+    </footer>
+
+
+
+    <script type="application/json" id="papers-data">[{"title": "ProtoVis-Nav: Prototypical Visual Imagination for Visual-Spatial Aligned UAV Navigation", "summary": "Vision language navigation (VLN) is very challenging for Unmanned Aerial Vehicles (UAVs) since small errors in 3D motion prediction can lead to navigation errors and collisions. Unable to fathom execution outcomes in 3D environments, existing methods often struggle to predict accurate navigation waypoints from language instructions. To solve this, we introduce the Prototypical Visual Imagination framework, shortened as ProtoVis-Nav, which forces the model to imagine an outcome-associated local visual representation for the intended next UAV movement. Specifically, we predict feature prototypes and use their linear combination to estimate the visual feature of the target region. In this manner, the VLN model first imagines the local visual representation of the next intended location, and then uses predicted prototypes as context for generating the final action, promoting alignment between visual context and waypoint outputs. Extensive experiments demonstrate the effectiveness of the ProtoVis-Nav framework and show substantial improvements over existing baselines.", "url": "http://arxiv.org/abs/2611.17330v1", "authors": ["Guangyuan Sui", "Yunzhong Hou", "Chi Harold Liu"], "keywords": ["vision language navigation", "prototypical visual imagination", "UAV navigation", "visual-spatial alignment", "waypoint prediction"]},{"title": "HEIR: Harness Egocentric Intent for Human-Robot Interactions", "summary": "For robots to assist, serve, and collaborate with humans, they must not only interpret human requests conveyed through language and multimodal intentional cues, but also execute long-horizon tasks that interleave navigation and manipulation. In this paper, we introduce HEIR, a resource for studying how to Harness Egocentric Intent for Human-Robot Interaction. HEIR pairs human speech, measured gaze, and egocentric video with robot observations and teleoperated navigation-manipulation trajectories, while each session preserves successive episodes, with each request fulfilled through multiple execution subtasks. The captured data, together with human-authored annotations, support the study of intent grounding, execution planning, and task completion within a unified interaction setting. To demonstrate the value of HEIR, we conduct extensive offline experiments to evaluate how models benefit from additional human-centric context across these tasks, together with real-robot experiments that assess execution task completion. HEIR thus provides a valuable resource for studying user-centric robot interaction in naturalistic household environments. Our demo and dataset are available online.", "url": "http://arxiv.org/abs/2611.17238v1", "authors": ["Yichi Zhang", "Bo Wang", "Zhenghan Zhu", "Yutong Han", "Jiayin Zou", "Gao Kejun", "Chang Liu", "Shaoxuan Xie", "Chi Zhang", "Shi Haoyang", "Zongxuan Lai", "Sen Cui", "Guocai Yao", "Miao Liu"], "keywords": ["egocentric intent", "human-robot interaction", "long-horizon tasks", "navigation-manipulation", "multimodal"]},{"title": "Collaborative Task Allocation for Heterogeneous Multi-Robot Systems Through Iterative Clustering", "summary": "Multi-robot systems face the challenge of efficiently allocating teams of heterogeneous robots to tasks. The task allocation problem is complicated by collaborative interactions between robots where teams of robots develop emergent capabilities that enable them to complete tasks that would be inefficient or impossible for individual robots. To address these challenges, we present an iterative clustering algorithm for collaborative task allocation in heterogeneous multi-robot systems. This approach partitions the computationally intractable global optimization problem into smaller, tractable subproblems by iteratively forming clusters of robots and tasks, then optimizing assignments within each cluster. By ensuring robots remain clustered with their currently assigned tasks, we guarantee monotonic improvement in overall utility with each iteration. We analyze the convergence of the algorithm and characterize how cluster size constraints determine which suboptimal assignments could trap the algorithm. In simulation, iterative clustering consistently outperforms simulated annealing, and a group-based auction in both computation time and solution quality, and outperforms a hedonic game approach in solution quality.", "url": "http://arxiv.org/abs/2611.17213v1", "authors": ["David R. Martin", "Brooks A. Butler", "Scott Nivison", "Magnus Egerstedt", "Mohammad Abdullah Al Faruque", "Pramod Khargonekar"], "keywords": ["iterative clustering", "task allocation", "multi-robot systems", "heterogeneous robots", "collaborative teams"]},{"title": "Spatial Foundry: A Multimodal Dataset for Spatial Intelligence", "summary": "Spatial intelligence requires connecting visual observations to the geometry, objects, and persistent state of an environment. Images alone leave these relationships implicit, while disconnected annotations make it difficult to study appearance, camera motion, and scene changes under a common reference. We introduce Spatial Foundry, a collection of 5,280 furnished residential 3D scene configurations with editable assets and aligned visual, geometric, and temporal data. Its modalities include floor plans, perspective and panoramic RGB, metric depth, point clouds, meshes, instance-level 3D bounding boxes, and camera trajectories paired with video. Shared scene coordinates link observations across views and time; editable source scenes enable additional camera paths and controlled object changes. We describe the data representation and construction workflow, and discuss applications in floor-plan-conditioned 3D generation, geometric reconstruction, instance-level perception, camera-conditioned video generation, shared world modeling, and scene editing. Controlled camera and scene variations support spatial perception and world-model research. The public project page provides videos and an interactive colored point-cloud preview.", "url": "http://arxiv.org/abs/2611.17318v1", "authors": ["Ethan Lin", "Yang Song"], "keywords": ["multimodal dataset", "spatial intelligence", "3D scenes", "world modeling", "camera trajectories"]}]</script>
+
+
+    <script src="../js/like.js"></script>
+    <script src="../js/translate.js"></script>
+</body>
+</html>
